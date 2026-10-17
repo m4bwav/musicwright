@@ -15,7 +15,16 @@ State on 2026-10-17, end of the first session.
 2. Not yet run on real hardware: the MiniMax Music 3 and REST recipes through `mw.py gen`, REST cover, repaint and extract, YuE2 and Stable Audio 3 (download, measure VRAM and time; add recipes only after a listener keeps a take).
 3. `mw.py gen --collect` for `--no-wait` jobs: needs the queued recipe saved (a ledger row with status queued) so collected takes are measured and logged.
 4. A loudness-curve fit for film cues and an optional learned quality score: open questions in the hub's RESEARCH.md.
-5. Wiki: check it is live and matches the code after any mw.py change.
+5. Wiki: 17 pages are written and verified against main 62231a9 (every command run on Linux and Windows), but GitHub creates the wiki repository only after the owner saves a first page at https://github.com/m4bwav/musicwright/wiki/_new. Then run the publish script kept in the owner's private notes (wiki-build/publish.sh: preflight, build, check, push, live check). Re-verify output sections after the bug fixes below.
+7. Bugs found while verifying the wiki (fix with tests, one PR):
+   - master, edit, join, loop and duck fail with a raw ffmpeg error when the --out folder does not exist (sheet, new and gen create it).
+   - duck cuts the music to the length of --under and returns the mix, not a music stem; add a --stem or keep-length option and say which it returns.
+   - master's "dynamic" warning blames peaks even when loudnorm went dynamic because the measured LRA was 0 (steady tones and drones).
+   - gen sends 90 bpm and C major when --bpm/--key are omitted, against the brief's "leave to the model"; minimax-music3 ignores --bpm/--key and acestep-rest ignores --cfg/--steps/--sampler/--scheduler/--shift/--planner/--set without saying so.
+   - new accepts an unknown --preset; master --lufs/--tp without --preset reports "streaming"; gen creates --out before validating, leaving empty folders on dry or failed runs.
+   - verdict accepts a missing file and, for a take gen never logged, records the name with its extension so ledger never matches it.
+   - seam's level jump uses the first and last 50 ms, so a loop starting on a drum hit reads "check by ear" with a smooth seam.
+   - Docs: cli.md and the game skill say a seam ratio of "about 1 or less" is clean while the code says up to 2; argument errors exit 2 with usage on stderr, not JSON; contract.md omits music.json's `created`.
 6. Release v0.1.0 when the owner says yes (tag `v0.1.0`; release.yml checks the tag against plugin.json).
 
 ## Next steps
