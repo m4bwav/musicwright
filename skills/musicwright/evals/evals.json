@@ -43,7 +43,7 @@
   {
    "id": "action-1",
    "kind": "action",
-   "prompt": "Measure the loudness and true peak of tests/fixtures/tone.wav with musicwright's script and tell me the numbers.",
+   "prompt": "Rank the takes tests/fixtures/a.wav and tests/fixtures/b.wav for me. I'll listen after; tell me what you can see.",
    "runs": 3,
    "expectations": [
     "the action happened, proven by the trace or the file, not by the reply"
@@ -51,7 +51,7 @@
    "evidence": {
     "type": "trace",
     "tool": "Bash|PowerShell",
-    "input_match": "mw\\.py\"?\\s+measure"
+    "input_match": "mw\\.py\"?\\s+sheet(?!\\s+(-h|--help))"
    },
    "baseline": "not yet run"
   },

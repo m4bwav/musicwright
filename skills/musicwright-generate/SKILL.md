@@ -1,6 +1,6 @@
 ---
 name: musicwright-generate
-description: "Use whenever music audio should come from an AI model: pick the model for the job and licence (ACE-Step 1.5 XL or MiniMax Music 3 locally through ComfyUI, the ACE-Step REST server for fast drafts, cover, repaint and stems, YuE2 or Stable Audio 3, hosted Lyria 3.5 or ElevenLabs Music), write the caption and section tags, fish with seeds, fix harsh, boring or off-brief takes one knob at a time, and build long pieces from movements. Use on 'generate music', 'which music model', 'ACE-Step settings', 'write the caption', 'it sounds harsh', 'can I use Suno output commercially'. Theory is musicwright-compose; finishing is -produce. Also 'refresh musicwright-generate'."
+description: "Use when music should come from an AI model and the question is which model or how to prompt it: pick the model for the job and licence (ACE-Step 1.5 XL or MiniMax Music 3 locally through ComfyUI, the ACE-Step REST server for drafts, cover, repaint and stems, YuE2, Stable Audio 3, hosted Lyria 3.5 or ElevenLabs), write captions and section tags, fish with seeds, fix harsh or off-brief takes, build long pieces from movements. Use on 'which music model', 'ACE-Step settings', 'it sounds harsh', 'can I use Suno output commercially'. A whole track from a brief ('make me a song') starts at musicwright; theory is -compose; finishing is -produce. Also 'refresh musicwright-generate'."
 ---
 
 # musicwright-generate

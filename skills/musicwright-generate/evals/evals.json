@@ -51,7 +51,7 @@
    "evidence": {
     "type": "trace",
     "tool": "Bash|PowerShell",
-    "input_match": "mw\\.py\"?\\s+gen.*--dry-run"
+    "input_match": "mw\\.py\"?\\s+gen.*--dry-run(?!\\s+(-h|--help))"
    },
    "baseline": "not yet run"
   },

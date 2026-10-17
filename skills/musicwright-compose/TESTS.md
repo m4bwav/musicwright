@@ -8,6 +8,8 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
-### T-20261017-1 · 2026-10-17 · not yet run · skill · 0/0
-- Suite scaffolded; no run recorded. Write the cases in `evals/evals.json` (at least two trigger prompts, two decoys, one action case with evidence, one outcome case), run the baseline without the skill, then run with it (`evergreen-test`).
+### T-20261017-1 · 2026-10-17 · headless claude -p, one run per case, fresh session, plugin installed from mark-local 0.1.0 · Windows 11 dev machine · 6/6
+- action-1 passed on two counts: the trace regex `mid` first matched a grep for `mido` (too loose), and `motif.mid` was written by a stdlib script and read back; use file evidence (`motif.mid`) instead.
+- outcome-1: the prompt names no artist, so "does not put the name in the prompt" is met trivially; the descriptors (genre, era and production, instruments, voice, mood, form) were given. Name a real artist in the prompt to test it.
+- Harness: one stream-json trace per case in a throwaway clone; MUSICWRIGHT_HOME in a scratch studio, MUSICWRIGHT_COMFYUI and MUSICWRIGHT_ACESTEP on a dead port, a PreToolUse guard refusing `mw.py gen` without --dry-run (no refusals were needed). Baseline not yet run.
 - led to: none

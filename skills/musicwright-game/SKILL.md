@@ -1,6 +1,6 @@
 ---
 name: musicwright-game
-description: "Use whenever music is for a game: seamless loops (bar-exact length, tail crossfaded into the head, seam check), intro-then-loop, vertical layers and stems, stingers, victory and defeat cues, menu, map, combat and boss conventions and lengths, listener fatigue in long sessions, Unity AudioClip import (Streaming, Vorbis, PlayScheduled), OGG loop tags, FMOD and Wwise basics, and Steam's AI disclosure. Runs mw.py loop and seam. Use on 'make this loop seamless', 'music for my deckbuilder', 'combat music with layers', 'import music into Unity', 'why does my loop click', 'intro then loop'. Generating the audio is musicwright-generate. Also 'refresh musicwright-game'."
+description: "Use for the game side of music: seamless loops (bar-exact length, tail crossfaded into the head, seam check), intro-then-loop, vertical layers and stems, stingers, menu, map, combat and boss conventions and lengths, fatigue in long sessions, Unity AudioClip import (Streaming, Vorbis, PlayScheduled), OGG loop tags, FMOD and Wwise basics, Steam's AI disclosure. Runs mw.py loop and seam. Use on 'make this loop seamless', 'combat music with layers', 'import music into Unity', 'why does my loop click', 'intro then loop'. A new piece of game music from a brief starts at musicwright; generating audio is musicwright-generate. Also 'refresh musicwright-game'."
 ---
 
 # musicwright-game

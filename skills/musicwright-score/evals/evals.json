@@ -51,7 +51,7 @@
    "evidence": {
     "type": "trace",
     "tool": "Bash|PowerShell",
-    "input_match": "mw\\.py\"?\\s+join"
+    "input_match": "mw\\.py\"?\\s+join(?!\\s+(-h|--help))"
    },
    "baseline": "not yet run"
   },
