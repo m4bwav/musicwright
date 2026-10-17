@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261017-2 · 2026-10-17 · mw.py loop and OGG output made portable across ffmpeg builds
+- because: L-001
+- files: scripts/mw.py (cmd_loop, out_codec, join)
+- The loop crossfade runs on raw float samples in Python; atrim options are named; .ogg falls back to ffmpeg's built-in Vorbis encoder when libvorbis is missing.
+
 ### C-20261017-1 · 2026-10-17 · Created as an evergreen unit
 - because: user request
 - files: SKILL.md, RESEARCH.md, LEARNINGS.md, evergreen.json (skills: also TESTS.md and evals/evals.json)
