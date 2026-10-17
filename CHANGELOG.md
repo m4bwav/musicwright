@@ -2,7 +2,7 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-10-17)
 
 First release.
 

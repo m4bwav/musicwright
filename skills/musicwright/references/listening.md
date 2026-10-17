@@ -20,7 +20,9 @@ scale up to 8 kHz by default, brightness = energy) and a waveform.
 | an even haze across all frequencies | noise, hiss or reverb wash |
 | a thick waveform pinned to the top and bottom | loud and compressed, possibly clipped (check `measure`) |
 
-Compare takes against each other, not against an ideal: the picture ranks them, it does not
+Rank in this order: parts the brief excluded (a drone or bass under a solo, drums in a bed), then the
+melodic line, then the ending; a silent tail is a trim, not a fault (L-002). Compare takes against each
+other, not against an ideal: the picture ranks them, it does not
 grade music. It cannot show melody quality, timing feel, vocal artefacts, or whether the tune
 sounds like a known song.
 
