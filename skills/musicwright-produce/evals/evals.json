@@ -1,0 +1,77 @@
+{
+ "skill": "musicwright-produce",
+ "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+ "evals": [
+  {
+   "id": "trigger-1",
+   "kind": "trigger",
+   "prompt": "Master this track for Spotify and tell me the before and after loudness.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-produce skill is invoked"
+   ]
+  },
+  {
+   "id": "trigger-2",
+   "kind": "trigger",
+   "prompt": "Is my song clipping? It sounds distorted at the loud parts.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-produce skill is invoked"
+   ]
+  },
+  {
+   "id": "decoy-1",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Write lyrics for a sad country song.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-produce skill is not invoked (songwriting, not finishing)"
+   ]
+  },
+  {
+   "id": "decoy-2",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Make my game's combat music loop without a click.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-produce skill is not invoked (musicwright-game owns loops)"
+   ]
+  },
+  {
+   "id": "action-1",
+   "kind": "action",
+   "prompt": "Normalise tests/fixtures/tone.wav to -16 LUFS and save it as out.wav, then show the measured result.",
+   "runs": 3,
+   "expectations": [
+    "the action happened, proven by the trace or the file, not by the reply"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "mw\\.py\"?\\s+master"
+   },
+   "baseline": "not yet run"
+  },
+  {
+   "id": "outcome-1",
+   "kind": "outcome",
+   "prompt": "What loudness should all the music files in my Unity game be mastered to?",
+   "runs": 3,
+   "expectations": [
+    "regex on the answer: (?i)-1[68] ?LUFS",
+    "explains that platform targets apply to the whole game mix and music files should share one level"
+   ],
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
+  }
+ ]
+}

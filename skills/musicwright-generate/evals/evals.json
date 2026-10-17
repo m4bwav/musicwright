@@ -1,0 +1,77 @@
+{
+ "skill": "musicwright-generate",
+ "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+ "evals": [
+  {
+   "id": "trigger-1",
+   "kind": "trigger",
+   "prompt": "Which local model should I use to generate instrumental music for a commercial indie game?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-generate skill is invoked"
+   ]
+  },
+  {
+   "id": "trigger-2",
+   "kind": "trigger",
+   "prompt": "My ACE-Step tracks sound harsh and brittle, what setting should I change?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-generate skill is invoked"
+   ]
+  },
+  {
+   "id": "decoy-1",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Make this mp3 loop seamlessly in Unity.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-generate skill is not invoked (musicwright-game owns loops)"
+   ]
+  },
+  {
+   "id": "decoy-2",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Generate an image of a guitar for my album cover.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-generate skill is not invoked (image generation, not music)"
+   ]
+  },
+  {
+   "id": "action-1",
+   "kind": "action",
+   "prompt": "Show me the exact ComfyUI graph musicwright would submit for a 30 second calm piano piece, without running it.",
+   "runs": 3,
+   "expectations": [
+    "the action happened, proven by the trace or the file, not by the reply"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "mw\\.py\"?\\s+gen.*--dry-run"
+   },
+   "baseline": "not yet run"
+  },
+  {
+   "id": "outcome-1",
+   "kind": "outcome",
+   "prompt": "Can I sell a game that uses music I generated with MiniMax Music 3? Anything I must do?",
+   "runs": 3,
+   "expectations": [
+    "regex on the answer: (?i)MiniMax-Music3",
+    "mentions showing the attribution in the product and disclosing AI output, and the revenue threshold"
+   ],
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
+  }
+ ]
+}

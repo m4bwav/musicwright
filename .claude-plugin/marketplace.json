@@ -1,0 +1,8 @@
+{
+  "name": "musicwright",
+  "owner": { "name": "Mark Rogers" },
+  "metadata": { "description": "Skills that let AI agents make music for games, films and listening with local or hosted models, checking every take by measurement and a listener's verdict" },
+  "plugins": [
+    { "name": "musicwright", "source": "./", "description": "Seven evergreen music skills: brief and take-loop hub, AI generation, composition and prompt vocabulary, finishing and loudness, game loops, film scoring, and a studio of verdicts and taste, with the mw.py CLI" }
+  ]
+}

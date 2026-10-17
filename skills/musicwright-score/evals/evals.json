@@ -1,0 +1,77 @@
+{
+ "skill": "musicwright-score",
+ "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+ "evals": [
+  {
+   "id": "trigger-1",
+   "kind": "trigger",
+   "prompt": "Score my 2 minute short film so the music builds to the reveal at 1:30.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-score skill is invoked"
+   ]
+  },
+  {
+   "id": "trigger-2",
+   "kind": "trigger",
+   "prompt": "The music in my video cuts abruptly between scenes, how do I fix that?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-score skill is invoked"
+   ]
+  },
+  {
+   "id": "decoy-1",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Make my game's menu music loop.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-score skill is not invoked (musicwright-game owns loops)"
+   ]
+  },
+  {
+   "id": "decoy-2",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Edit my video to cut out the boring parts.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-score skill is not invoked (video editing, not music)"
+   ]
+  },
+  {
+   "id": "action-1",
+   "kind": "action",
+   "prompt": "Join tests/fixtures/a.wav and tests/fixtures/b.wav into one cue with a 2 second crossfade at 6 seconds.",
+   "runs": 3,
+   "expectations": [
+    "the action happened, proven by the trace or the file, not by the reply"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "mw\\.py\"?\\s+join"
+   },
+   "baseline": "not yet run"
+  },
+  {
+   "id": "outcome-1",
+   "kind": "outcome",
+   "prompt": "Two hits in my cut are 7.5 seconds apart. What tempo makes them both land on a downbeat with 16 beats between?",
+   "runs": 3,
+   "expectations": [
+    "regex on the answer: 128",
+    "shows bpm = 60 x beats / seconds"
+   ],
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+dist/
+*-workspace/
+# outputs of mw.py runs (music projects: takes, masters, sheets) kept out of the repository
+takes/
+sheets/
+out/
+ledger.jsonl
+*.wav
+*.flac
+*.mp3
+*.ogg
+*.opus
+*.m4a
+# demo clips for the README may live under .github/
+!.github/**

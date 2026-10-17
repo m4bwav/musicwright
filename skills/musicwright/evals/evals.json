@@ -1,0 +1,77 @@
+{
+ "skill": "musicwright",
+ "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+ "evals": [
+  {
+   "id": "trigger-1",
+   "kind": "trigger",
+   "prompt": "Can you make me a one minute flute solo track, no other instruments?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright skill is invoked"
+   ]
+  },
+  {
+   "id": "trigger-2",
+   "kind": "trigger",
+   "prompt": "I need some background music for my card game's main menu, something hopeful.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright skill is invoked"
+   ]
+  },
+  {
+   "id": "decoy-1",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "How loud should my master be for Spotify?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright skill is not invoked (musicwright-produce owns loudness questions)"
+   ]
+  },
+  {
+   "id": "decoy-2",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Write a Python function that sorts a list of song titles alphabetically.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright skill is not invoked (plain coding, not music making)"
+   ]
+  },
+  {
+   "id": "action-1",
+   "kind": "action",
+   "prompt": "Measure the loudness and true peak of tests/fixtures/tone.wav with musicwright's script and tell me the numbers.",
+   "runs": 3,
+   "expectations": [
+    "the action happened, proven by the trace or the file, not by the reply"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "mw\\.py\"?\\s+measure"
+   },
+   "baseline": "not yet run"
+  },
+  {
+   "id": "outcome-1",
+   "kind": "outcome",
+   "prompt": "I have three takes of a generated track. How do you decide which is best if you can't hear them?",
+   "runs": 3,
+   "expectations": [
+    "regex on the answer: (?i)spectrogram|sheet",
+    "says the listener decides and that the agent has not heard the takes"
+   ],
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
+  }
+ ]
+}

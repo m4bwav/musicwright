@@ -1,0 +1,16 @@
+# Log
+
+Append-only. Newest last.
+
+## 2026-10-17
+
+- Owner's request: an evergreen music plugin that researches AI music making and music making in general, the skills and plugins people use and which models do what, and centralises everything already learned and still to learn about music. Then: a public repo with the full set-up (CI, release workflow, SECURITY.md, banner, wiki).
+- Started from a one-minute solo flute request: three ACE-Step 1.5 XL takes rendered through ComfyUI; spectrograms showed one take with a low drone under the flute and one with a 19 s silent tail. That run became the first test of `mw.py sheet` and `measure`.
+- Four research agents: an inventory of the owner's existing music work (kept private), models and licences (research 01), agent tools and workflows (02), music fundamentals with tested ffmpeg recipes (03). Originals with machine details are in the owner's private notes; the repository copies are generalised.
+- Corrections the research forced on earlier notes: ACE-Step 1.5 is MIT (not Apache 2.0); MiniMax Music 3 is open weights under its own community licence (not CC BY-NC); YuE2 and Stable Audio 3 have native ComfyUI nodes.
+- Named it musicwright (songwright and tunewright are taken). Design: decisions/2026-10-17-hub-studio-and-take-loop.md.
+- Built mw.py (doctor, new, gen, measure, sheet, master, edit, join, loop, seam, duck, analyze, verdict, ledger, note), seven skills with references, evergreen companions and eval suites.
+- Verified on real takes: master to -14 LUFS landed at -14.1 / -1.0 dBTP (loudnorm fell back to dynamic and mw.py said so); an 8-bar loop at 66 bpm came out at exactly 29.0909 s with seam ratio 0.04; OGG loop tags written and read back.
+- Banner: Z-Image Turbo on ComfyUI, 1536x640, seed 101 of four candidates (101, 202, 303, 404; the others had duplicated headphones or a robot hand with no body). Workflow and prompt in .github/images.
+- Repository infrastructure modelled on polywright: plugin and marketplace manifests, AGENTS.md (CLAUDE.md imports it), LICENSE, SECURITY.md, .gitignore, .gitattributes, root CHANGELOG, dependabot, tests and release workflows (ffmpeg from apt, Homebrew and Chocolatey; an analyze job with librosa), `tests/check_skills.py` (adds recipe and preset checks, a LAN-address guard, and allows the owner handle only as the GitHub `m4bwav/` slug), `tests/test_mw.py` (49 tests on synthetic ffmpeg audio, `gen` against a fake local ComfyUI and ACE-Step host) and `scripts/budget.py` (all descriptions green at 7 x 700 characters). No check_discovery.py: ffmpeg is found on PATH or by MUSICWRIGHT_FFMPEG, which test_mw.py covers.
+- mw.py bugs the tests found and fixed: `Path.write_text(newline=)` broke `new` and `note` on Python 3.9 (now `write_lf`); `loop --out x.ogg --ogg` re-encoded the file onto itself (tags now go in the first pass); an `ok: false` result such as `analyze` without librosa exited 0 although references/cli.md promises exit 1; the `--no-wait` hint named a `gen --collect` option that does not exist (the hint now says what is true; adding `--collect` is open).

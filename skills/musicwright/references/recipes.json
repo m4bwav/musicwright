@@ -1,0 +1,60 @@
+{
+ "about": "Named generation recipes for mw.py gen. 'params' are defaults; override with --cfg/--steps/--sampler/--scheduler/--shift/--planner or --set '{json}'. Each recipe says where its numbers came from. Add a recipe only after a run that a listener judged.",
+ "recipes": {
+  "acestep-xl-sft": {
+   "route": "comfy",
+   "graph": "acestep15",
+   "model": "ACE-Step 1.5 XL SFT (MIT)",
+   "use": "default for instrumentals 30 s to 4 min: game beds, themes, solos, film movements",
+   "params": {
+    "unet": "acestep_v1.5_xl_sft_bf16.safetensors",
+    "clip1": "qwen_0.6b_ace15.safetensors",
+    "clip2": "qwen_1.7b_ace15.safetensors",
+    "vae": "ace_1.5_vae.safetensors",
+    "shift": 3.0, "steps": 50, "cfg": 4.5, "sampler": "er_sde", "scheduler": "linear_quadratic",
+    "lm_cfg": 2.0, "temperature": 0.85, "top_p": 0.9, "timesignature": "4", "language": "en"
+   },
+   "timing": "about 80-100 s per 180 s track on a 16 GB RTX 5060 Ti once loaded; peaks about 12.9 GB VRAM",
+   "source": "listener-approved batches (bright melodic electronica with flute leads, 2026-08); cfg 7 sounded harsh to that listener, cfg 4.5 did not. The 1.7B planner sits beside the 10 GB DiT on 16 GB far better than the 4B one."
+  },
+  "acestep-xl-sft-classic": {
+   "route": "comfy",
+   "graph": "acestep15",
+   "model": "ACE-Step 1.5 XL SFT (MIT)",
+   "use": "the ComfyUI template defaults; firmer adherence, harsher top end. Try when 4.5 drifts off the caption.",
+   "params": {
+    "unet": "acestep_v1.5_xl_sft_bf16.safetensors",
+    "clip1": "qwen_0.6b_ace15.safetensors",
+    "clip2": "qwen_4b_ace15.safetensors",
+    "vae": "ace_1.5_vae.safetensors",
+    "shift": 3.0, "steps": 50, "cfg": 7.0, "sampler": "euler", "scheduler": "simple",
+    "lm_cfg": 2.0, "temperature": 0.85, "top_p": 0.9, "timesignature": "4", "language": "en"
+   },
+   "timing": "10-minute tracks take about 9.5-10 minutes on a 16 GB card",
+   "source": "ComfyUI's ACE-Step 1.5 XL template; used for long-form and short film cues 2026-08 to 2026-10"
+  },
+  "minimax-music3": {
+   "route": "comfy",
+   "graph": "minimax3",
+   "model": "MiniMax Music 3 (open weights, MiniMax-Music3 Community License: free commercial use under USD 20M yearly revenue, show 'MiniMax-Music3' in the product, disclose AI output)",
+   "use": "second opinion for songs and long instrumentals; caption as three headings (Global Metadata, Vocal Details, Arrangement with a minute timeline)",
+   "params": {
+    "text_encoder": "minimax_music3_text_encoder_pruned_int8_convrot.safetensors",
+    "unet": "minimax_music3_dit_fp16.safetensors",
+    "vae": "minimax_music3_dav.safetensors",
+    "steps": 30, "cfg": 1.7, "sampler": "euler", "scheduler": "simple",
+    "lm_cfg": 2.0, "top_k": 50, "duration_pad": 1.2, "max_seconds": 340.0
+   },
+   "timing": "3-7 min per take typical; takes came back shorter than asked (98-170 s for 180-195 s); one 240 s beatless request hung over an hour. Use --timeout and render longer than needed.",
+   "source": "ComfyUI audio_minimax_music_3 template; album attempt 2026-08 (quality never judged by a listener)"
+  },
+  "acestep-rest": {
+   "route": "rest",
+   "model": "ACE-Step 1.5 2B turbo + 5Hz LM planner through the ACE-Step REST server (MIT)",
+   "use": "fast drafts (a 60 s take in about 22 s once warm) and the tasks ComfyUI core lacks: cover, repaint, extend, extract",
+   "params": {"format": "wav", "thinking": true},
+   "timing": "60 s -> 22 s, 120 s -> 31 s warm; the first request after server start loads models for about 2.5 min (submit timeout 900 s)",
+   "source": "measured 2026-09-12 and 2026-10-12 on a 16 GB RTX 5060 Ti"
+  }
+ }
+}

@@ -1,0 +1,77 @@
+{
+ "skill": "musicwright-game",
+ "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+ "evals": [
+  {
+   "id": "trigger-1",
+   "kind": "trigger",
+   "prompt": "My game's background music clicks every time it loops. How do I fix it?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-game skill is invoked"
+   ]
+  },
+  {
+   "id": "trigger-2",
+   "kind": "trigger",
+   "prompt": "Make an 8 bar seamless loop at 96 bpm from this track for my Unity game.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-game skill is invoked"
+   ]
+  },
+  {
+   "id": "decoy-1",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Score my 45 second trailer so the music hits the logo reveal.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-game skill is not invoked (musicwright-score owns film)"
+   ]
+  },
+  {
+   "id": "decoy-2",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "How do I make my Unity character jump?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-game skill is not invoked (game code, not music)"
+   ]
+  },
+  {
+   "id": "action-1",
+   "kind": "action",
+   "prompt": "Cut a 4-bar loop at 120 bpm from tests/fixtures/tone.wav into loop.wav and check its seam.",
+   "runs": 3,
+   "expectations": [
+    "the action happened, proven by the trace or the file, not by the reply"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "mw\\.py\"?\\s+loop"
+   },
+   "baseline": "not yet run"
+  },
+  {
+   "id": "outcome-1",
+   "kind": "outcome",
+   "prompt": "How do I play an intro once and then loop the rest of a track in Unity?",
+   "runs": 3,
+   "expectations": [
+    "regex on the answer: (?i)PlayScheduled",
+    "says to ship two clips because Unity cannot loop from file metadata"
+   ],
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
+  }
+ ]
+}

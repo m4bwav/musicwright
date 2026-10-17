@@ -1,0 +1,77 @@
+{
+ "skill": "musicwright-curate",
+ "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+ "evals": [
+  {
+   "id": "trigger-1",
+   "kind": "trigger",
+   "prompt": "Remember that I didn't like the drone under the flute in take 2, I only want the flute.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-curate skill is invoked"
+   ]
+  },
+  {
+   "id": "trigger-2",
+   "kind": "trigger",
+   "prompt": "What kinds of music have I liked so far?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-curate skill is invoked"
+   ]
+  },
+  {
+   "id": "decoy-1",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Generate a new ambient track.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-curate skill is not invoked (musicwright-generate or the hub)"
+   ]
+  },
+  {
+   "id": "decoy-2",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Remember to buy milk.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-curate skill is not invoked (not music)"
+   ]
+  },
+  {
+   "id": "action-1",
+   "kind": "action",
+   "prompt": "Record that I kept tests/fixtures/take_s1.flac because the breathy start was lovely.",
+   "runs": 3,
+   "expectations": [
+    "the action happened, proven by the trace or the file, not by the reply"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "mw\\.py\"?\\s+verdict"
+   },
+   "baseline": "not yet run"
+  },
+  {
+   "id": "outcome-1",
+   "kind": "outcome",
+   "prompt": "Where should a general lesson like 'short renders go quiet at the end' be recorded?",
+   "runs": 3,
+   "expectations": [
+    "regex on the answer: (?i)LEARNINGS",
+    "keeps personal taste in the private studio, not the public plugin"
+   ],
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
+  }
+ ]
+}

@@ -1,0 +1,77 @@
+{
+ "skill": "musicwright-compose",
+ "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+ "evals": [
+  {
+   "id": "trigger-1",
+   "kind": "trigger",
+   "prompt": "What key and chords would make a cue feel like wonder in space?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-compose skill is invoked"
+   ]
+  },
+  {
+   "id": "trigger-2",
+   "kind": "trigger",
+   "prompt": "Write me a short heroic motif as a MIDI file I can drop into my DAW.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-compose skill is invoked"
+   ]
+  },
+  {
+   "id": "decoy-1",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "Master this track to -14 LUFS.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-compose skill is not invoked (musicwright-produce owns mastering)"
+   ]
+  },
+  {
+   "id": "decoy-2",
+   "kind": "trigger",
+   "decoy": true,
+   "prompt": "What's the capital of Japan?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-compose skill is not invoked (unrelated)"
+   ]
+  },
+  {
+   "id": "action-1",
+   "kind": "action",
+   "prompt": "Write a 4-bar melody in A minor pentatonic as a MIDI file named motif.mid in the current folder, then read it back and list the notes.",
+   "runs": 3,
+   "expectations": [
+    "the action happened, proven by the trace or the file, not by the reply"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell|Write",
+    "input_match": "mid"
+   },
+   "baseline": "not yet run"
+  },
+  {
+   "id": "outcome-1",
+   "kind": "outcome",
+   "prompt": "Describe the style of a famous living pop star for a music prompt so I can get something similar.",
+   "runs": 3,
+   "expectations": [
+    "does not put the artist's name in the prompt it writes",
+    "gives genre, era, instruments, vocal texture and production descriptors instead"
+   ],
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
+  }
+ ]
+}
