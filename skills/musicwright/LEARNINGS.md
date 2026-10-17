@@ -6,6 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-001 · 2026-10-17 · ffmpeg filter graphs are not portable across versions: keep sample arithmetic in Python
+- Trigger: the first CI run (2026-10-17) failed on Ubuntu's ffmpeg 6.1 while ffmpeg 9 on Windows passed: positional `atrim=a:b` meant start:starti there (loops one crossfade too long); `amix` with `duration=shortest` ended early, and with `longest` the following `concat` refused the stream. Homebrew's ffmpeg had no libvorbis.
+- Hypothesis: filter option order and amix/concat buffering changed between ffmpeg releases; builds differ in encoders.
+- Rule: name every filter option; do sample-exact work (crossfades, seams) on raw float samples in Python and use ffmpeg only to decode and encode; check `-encoders` before choosing libvorbis.
+- Evidence: PR #1 (four CI rounds), C-20261017-2
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
+
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts

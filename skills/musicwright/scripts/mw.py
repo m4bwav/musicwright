@@ -136,9 +136,30 @@ def need_file(path):
     return p
 
 
+_ENCODERS = None
+
+
+def has_encoder(name):
+    """True when this ffmpeg build has the encoder (Homebrew's ffmpeg, for one, ships without libvorbis)."""
+    global _ENCODERS
+    if _ENCODERS is None:
+        listing = run([ffmpeg_bin(), "-hide_banner", "-encoders"], check=False).stdout
+        _ENCODERS = {ln.split()[1] for ln in listing.splitlines() if len(ln.split()) > 1 and len(ln.split()[0]) == 6}
+    return name in _ENCODERS
+
+
+def vorbis_codec():
+    if has_encoder("libvorbis"):
+        return ["-c:a", "libvorbis", "-q:a", "6"]
+    # ffmpeg's built-in Vorbis encoder: experimental and plainer, but always present
+    return ["-c:a", "vorbis", "-strict", "experimental", "-ac", "2"]
+
+
 def out_codec(path):
     ext = Path(path).suffix.lower()
-    return {".wav": ["-c:a", "pcm_s24le"], ".flac": ["-c:a", "flac"], ".ogg": ["-c:a", "libvorbis", "-q:a", "6"],
+    if ext == ".ogg":
+        return vorbis_codec()
+    return {".wav": ["-c:a", "pcm_s24le"], ".flac": ["-c:a", "flac"],
             ".mp3": ["-c:a", "libmp3lame", "-q:a", "0"], ".opus": ["-c:a", "libopus", "-b:a", "160k"],
             ".m4a": ["-c:a", "aac", "-b:a", "256k"]}.get(ext, [])
 
@@ -353,7 +374,7 @@ def cmd_join(a):
         inputs += ["-i", str(f)]
         if lengths:
             keep = lengths[i] + (x if i < len(files) - 1 else 0)
-            parts.append(f"[{i}:a]atrim=0:{keep},asetpts=PTS-STARTPTS,aresample=48000[p{i}]")
+            parts.append(f"[{i}:a]atrim=start=0:end={keep},asetpts=PTS-STARTPTS,aresample=48000[p{i}]")
         else:
             parts.append(f"[{i}:a]aresample=48000[p{i}]")
     prev = "p0"
@@ -443,27 +464,49 @@ def cmd_loop(a):
         raise MwError(f"loop needs {end:.2f} s of source but the file is {info['duration_s']} s; lower --bars or --start")
     if body <= x:
         raise MwError("loop body must be longer than the crossfade")
-    # out = mix(tail fading out, head fading in) + seg[x : L-x]; length L - x
-    L = end - start
-    fc = (f"[0:a]atrim=start={start}:end={end},asetpts=PTS-STARTPTS,asplit=3[h][m][t];"
-          f"[h]atrim=0:{x},asetpts=PTS-STARTPTS,afade=t=in:d={x}:curve=qsin[hi];"
-          f"[t]atrim={L - x}:{L},asetpts=PTS-STARTPTS,afade=t=out:d={x}:curve=qsin[to];"
-          f"[hi][to]amix=inputs=2:normalize=0:duration=shortest[xf];"
-          f"[m]atrim={x}:{L - x},asetpts=PTS-STARTPTS[mid];"
-          f"[xf][mid]concat=n=2:v=0:a=1[o]")
-    dst = Path(a.out)
-    codec = ["-c:a", "pcm_s16le"] if dst.suffix.lower() == ".wav" else out_codec(dst)
-    samples = int(round(body * a.rate))
-    loop_tags = ["-metadata", "LOOPSTART=0", "-metadata", f"LOOPLENGTH={samples}"]
-    # an .ogg --out with --ogg is tagged in this pass; re-encoding it onto itself would fail
-    meta = loop_tags if a.ogg and dst.suffix.lower() == ".ogg" else []
-    ffmpeg(["-y", "-i", str(src), "-filter_complex", fc, "-map", "[o]", "-ar", str(a.rate)] + codec + meta + [str(dst)])
+    # out = (tail fading out + head fading in) followed by seg[x : L-x]; length L - x.
+    # The crossfade is done here on raw float samples, not in an ffmpeg filter graph:
+    # amix/concat graphs behave differently across ffmpeg versions (6.1 refused them).
+    ch = max(1, min(info["channels"] or 2, 2))
+    rate = a.rate
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_loop_"))
+    try:
+        raw_in, raw_out = tmpd / "in.f32", tmpd / "out.f32"
+        ffmpeg(["-y", "-ss", f"{start:.6f}", "-i", str(src), "-t", f"{end - start:.6f}", "-ac", str(ch),
+                "-ar", str(rate), "-f", "f32le", "-c:a", "pcm_f32le", str(raw_in)])
+        buf = array("f")
+        buf.frombytes(raw_in.read_bytes())
+        if sys.byteorder == "big":
+            buf.byteswap()
+        nx = int(round(x * rate))
+        nbody = int(round(body * rate))
+        have = len(buf) // ch
+        if have < nbody + nx:
+            raise MwError(f"decoded only {have} frames, need {nbody + nx}; lower --bars or --start")
+        out_buf = array("f", buf[: nbody * ch])
+        for i in range(nx):
+            gin = math.sin(0.5 * math.pi * (i + 0.5) / nx)
+            gout = math.cos(0.5 * math.pi * (i + 0.5) / nx)
+            for c in range(ch):
+                out_buf[i * ch + c] = buf[i * ch + c] * gin + buf[(nbody + i) * ch + c] * gout
+        if sys.byteorder == "big":
+            out_buf.byteswap()
+        raw_out.write_bytes(out_buf.tobytes())
+        dst = Path(a.out)
+        codec = ["-c:a", "pcm_s16le"] if dst.suffix.lower() == ".wav" else out_codec(dst)
+        samples = nbody
+        loop_tags = ["-metadata", "LOOPSTART=0", "-metadata", f"LOOPLENGTH={samples}"]
+        # an .ogg --out with --ogg is tagged in this pass; re-encoding it onto itself would fail
+        meta = loop_tags if a.ogg and dst.suffix.lower() == ".ogg" else []
+        ffmpeg(["-y", "-f", "f32le", "-ar", str(rate), "-ac", str(ch), "-i", str(raw_out)] + codec + meta + [str(dst)])
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
     res = {"ok": True, "out": str(dst.resolve()), "loop_length_s": round(body, 4),
            "source_window_s": [round(start, 3), round(end, 3)], "xfade_s": x, "seam": seam_score(dst)}
     if a.ogg:
         og = dst.with_suffix(".ogg")
         if not meta:
-            ffmpeg(["-y", "-i", str(dst), "-c:a", "libvorbis", "-q:a", "6"] + loop_tags + [str(og)])
+            ffmpeg(["-y", "-i", str(dst)] + vorbis_codec() + loop_tags + [str(og)])
         res["ogg"] = str(og.resolve())
         res["ogg_note"] = "LOOPSTART/LOOPLENGTH (in samples) are read by RPG Maker and some players; Unity ignores them, so set Loop on the AudioSource and import the WAV or this OGG"
     if a.bars:
