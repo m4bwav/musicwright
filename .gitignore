@@ -15,3 +15,7 @@ ledger.jsonl
 *.m4a
 # demo clips for the README may live under .github/
 !.github/**
+
+# small synthetic signals for the agent evals
+!tests/fixtures/
+!tests/fixtures/**
