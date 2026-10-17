@@ -469,7 +469,7 @@ def cmd_loop(a):
     fc = (f"[0:a]atrim=start={start}:end={end},asetpts=PTS-STARTPTS,asplit=3[h][m][t];"
           f"[h]atrim=start=0:end={x},asetpts=PTS-STARTPTS,afade=t=in:d={x}:curve=qsin[hi];"
           f"[t]atrim=start={L - x}:end={L},asetpts=PTS-STARTPTS,afade=t=out:d={x}:curve=qsin[to];"
-          f"[hi][to]amix=inputs=2:normalize=0:duration=shortest[xf];"
+          f"[hi][to]amix=inputs=2:normalize=0:duration=longest:dropout_transition=0[xf];"
           f"[m]atrim=start={x}:end={L - x},asetpts=PTS-STARTPTS[mid];"
           f"[xf][mid]concat=n=2:v=0:a=1[o]")
     dst = Path(a.out)
