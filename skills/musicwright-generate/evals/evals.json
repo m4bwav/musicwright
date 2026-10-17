@@ -43,7 +43,7 @@
   {
    "id": "action-1",
    "kind": "action",
-   "prompt": "Show me the exact ComfyUI graph musicwright would submit for a 30 second calm piano piece, without running it.",
+   "prompt": "Show me the exact graph you'd submit to ComfyUI for a 30 second calm piano piece, without running it.",
    "runs": 3,
    "expectations": [
     "the action happened, proven by the trace or the file, not by the reply"
