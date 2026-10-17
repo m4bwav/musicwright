@@ -8,6 +8,13 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
-### T-20261017-1 · 2026-10-17 · not yet run · skill · 0/0
-- Suite scaffolded; no run recorded. Write the cases in `evals/evals.json` (at least two trigger prompts, two decoys, one action case with evidence, one outcome case), run the baseline without the skill, then run with it (`evergreen-test`).
+### T-20261017-2 · 2026-10-17 · headless claude -p, one run per case, fresh session, plugin installed from mark-local at eval-fixes 72be5c3 · Windows 11 dev machine · 6/6
+- All six passed. action-1 ran `mw.py loop tests/fixtures/tone.wav ... --out loop.wav` then seam. decoy-1 (trailer) went to musicwright-score.
+- Harness as T-20261017-1 (throwaway clone, scratch studio, generators on a dead port), with the guard widened to refuse every generation script (comfy_gen.py, h3_*.py, Python run from a generation skill folder) and any POST to a ComfyUI or ACE-Step host. Baseline not yet run.
+- led to: none
+
+### T-20261017-1 · 2026-10-17 · headless claude -p, one run per case, fresh session, plugin installed from mark-local 0.1.0 · Windows 11 dev machine · 6/6
+- action-1 ran `mw.py loop tests/fixtures/tone.wav --start 0 --bars 4 --bpm 120 --xfade 1.5 --out loop.wav` then `mw.py seam loop.wav`; loop.wav exists, 8.0 s, seam clean.
+- decoy-1 (trailer) went to musicwright-score.
+- Harness: one stream-json trace per case in a throwaway clone; MUSICWRIGHT_HOME in a scratch studio, MUSICWRIGHT_COMFYUI and MUSICWRIGHT_ACESTEP on a dead port, a PreToolUse guard refusing `mw.py gen` without --dry-run (no refusals were needed). Baseline not yet run.
 - led to: none

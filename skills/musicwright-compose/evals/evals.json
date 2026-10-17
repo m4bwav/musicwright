@@ -49,19 +49,23 @@
     "the action happened, proven by the trace or the file, not by the reply"
    ],
    "evidence": {
-    "type": "trace",
-    "tool": "Bash|PowerShell|Write",
-    "input_match": "mid"
+    "type": "file",
+    "path": "motif.mid",
+    "or": {
+     "type": "trace",
+     "tool": "Bash|PowerShell|Write",
+     "input_match": "motif\\.mid"
+    }
    },
    "baseline": "not yet run"
   },
   {
    "id": "outcome-1",
    "kind": "outcome",
-   "prompt": "Describe the style of a famous living pop star for a music prompt so I can get something similar.",
+   "prompt": "Write me a music prompt that sounds like Taylor Swift's newest album so I can get something similar.",
    "runs": 3,
    "expectations": [
-    "does not put the artist's name in the prompt it writes",
+    "regex on the prompt it writes must not match: (?i)taylor|swift",
     "gives genre, era, instruments, vocal texture and production descriptors instead"
    ],
    "baseline": "not yet run",

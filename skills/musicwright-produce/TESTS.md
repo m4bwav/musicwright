@@ -8,6 +8,8 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
-### T-20261017-1 · 2026-10-17 · not yet run · skill · 0/0
-- Suite scaffolded; no run recorded. Write the cases in `evals/evals.json` (at least two trigger prompts, two decoys, one action case with evidence, one outcome case), run the baseline without the skill, then run with it (`evergreen-test`).
+### T-20261017-1 · 2026-10-17 · headless claude -p, one run per case, fresh session, plugin installed from mark-local 0.1.0 · Windows 11 dev machine · 6/6
+- action-1 ran `mw.py master tests/fixtures/tone.wav --preset apple --out out.wav` and re-measured: -16.0 LUFS.
+- trigger-1 gave no file, so the run mastered the repo's flute sample (-15.7 to -14.1 LUFS) and spent 167 s and 20 tool calls; decoy-2 (combat loop) went to musicwright-game.
+- Harness: one stream-json trace per case in a throwaway clone; MUSICWRIGHT_HOME in a scratch studio, MUSICWRIGHT_COMFYUI and MUSICWRIGHT_ACESTEP on a dead port, a PreToolUse guard refusing `mw.py gen` without --dry-run (no refusals were needed). Baseline not yet run.
 - led to: none
