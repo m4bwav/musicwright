@@ -2,6 +2,13 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## Unreleased
+
+- `mw.py mix`: layer stems with per-file gain, offset and pan into one file, with aligned stems.
+- `mw.py gen --task cover|repaint|lego|complete|extract --src F --track T`: work from existing audio on the ACE-Step REST server (lego, complete and extract need a base checkpoint); the source is uploaded and the planner is turned off so the new part hears it.
+- `mw.py duck` keeps the music's length when the key is shorter, and `--stem` writes the ducked music alone.
+- master, edit, join, loop, duck and sheet create a missing `--out` folder; gen validates before creating one and no longer creates it on dry runs; the REST route sends `--cfg`, `--steps`, `--shift` and `--set`, and lists options it cannot use.
+
 ## 0.1.0 (2026-10-17)
 
 First release.

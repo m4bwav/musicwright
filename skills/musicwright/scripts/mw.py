@@ -9,7 +9,8 @@ Every command prints exactly one JSON object on stdout and fails soft with
 Commands
   doctor   what is installed and reachable (ffmpeg, ComfyUI hosts, music models, ACE-Step REST)
   new      scaffold a music project folder (brief.md, music.json, takes/, out/, sheets/)
-  gen      render takes through ComfyUI (ACE-Step 1.5 XL, MiniMax Music 3) or the ACE-Step REST API
+  gen      render takes through ComfyUI (ACE-Step 1.5 XL, MiniMax Music 3) or the ACE-Step REST API,
+           including parts added to an existing track (--task lego --src --track)
   measure  loudness (LUFS, LRA, true peak), duration, head and tail silence, clipping signs
   sheet    one PNG of spectrogram + waveform rows for several takes (the agent's way to look)
   master   two-pass loudness normalisation to a named preset
@@ -18,6 +19,7 @@ Commands
   loop     make a seamless loop (tail crossfaded into head), optionally bar-aligned, and check the seam
   seam     score how audible a file's loop seam is
   duck     duck music under dialogue or a video's own sound, optionally remux the video
+  mix      layer stems (gain, offset, pan) into one file and write the aligned stems
   analyze  tempo and key estimate (needs librosa; prints the uv one-liner when missing)
   verdict  record a listener's keep/reject/maybe with notes, copied to the studio
   ledger   list a project's takes with recipes and verdicts
@@ -172,9 +174,34 @@ def http(url, payload=None, timeout=30):
     return json.loads(body.decode("utf-8")) if body else {}
 
 
+def http_multipart(url, fields, files, timeout=30):
+    """POST form fields and files as multipart/form-data; returns the JSON reply."""
+    boundary = "mw" + uuid.uuid4().hex
+    body = bytearray()
+    for k, v in fields.items():
+        body += f'--{boundary}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n'.encode("utf-8")
+    for k, path in files.items():
+        p = Path(path)
+        body += (f'--{boundary}\r\nContent-Disposition: form-data; name="{k}"; filename="{p.name}"\r\n'
+                 f'Content-Type: application/octet-stream\r\n\r\n').encode("utf-8")
+        body += p.read_bytes() + b"\r\n"
+    body += f"--{boundary}--\r\n".encode("utf-8")
+    req = urllib.request.Request(url, data=bytes(body), headers={"Content-Type": f"multipart/form-data; boundary={boundary}"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        data = r.read()
+    return json.loads(data.decode("utf-8")) if data else {}
+
+
 def http_get_bytes(url, timeout=300):
     with urllib.request.urlopen(url, timeout=timeout) as r:
         return r.read()
+
+
+def out_file(path):
+    """--out as a Path with its folder created (ffmpeg does not create folders)."""
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    return p
 
 
 def write_lf(path, text):
@@ -281,8 +308,7 @@ def cmd_sheet(a):
         labels.append(f.name)
     rows = "".join(f"[s{i}][w{i}]" for i in range(len(files)))
     fc = ";".join(parts) + f";{rows}vstack=inputs={2 * len(files)}[v]"
-    dst = Path(a.out)
-    dst.parent.mkdir(parents=True, exist_ok=True)
+    dst = out_file(a.out)
     ffmpeg(["-y"] + inputs + ["-filter_complex", fc, "-map", "[v]", "-frames:v", "1", str(dst)])
     meas = [measure_file(f) for f in files] if a.measure else []
     return {"ok": True, "sheet": str(dst.resolve()), "rows": labels,
@@ -326,7 +352,7 @@ def cmd_master(a):
     p = pr[a.preset]
     ti = a.lufs if a.lufs is not None else p["lufs"]
     tp = a.tp if a.tp is not None else p["true_peak"]
-    dst = Path(a.out) if a.out else src.with_name(f"{src.stem}_{a.preset}.wav")
+    dst = out_file(a.out) if a.out else src.with_name(f"{src.stem}_{a.preset}.wav")
     before = measure_file(src)
     first, mode = loudnorm_two_pass(src, dst, ti, tp, a.lra, a.rate)
     after = measure_file(dst)
@@ -355,7 +381,7 @@ def cmd_edit(a):
         f.append(f"afade=t=in:st=0:d={a.fade_in}:curve=qsin")
     if a.fade_out:
         f.append(f"afade=t=out:st={max(0.0, length - a.fade_out)}:d={a.fade_out}:curve=qsin")
-    dst = Path(a.out)
+    dst = out_file(a.out)
     extra = ["-ar", str(a.rate)] if a.rate else []
     ffmpeg(["-y", "-i", str(src), "-af", ",".join(f)] + extra + out_codec(dst) + [str(dst)])
     return {"ok": True, "out": str(dst.resolve()), "length_s": round(length, 3), **{k: v for k, v in probe(dst).items()}}
@@ -387,7 +413,7 @@ def cmd_join(a):
         parts.append(f"{tail}areverse,afade=t=in:d={a.fade_out}:curve=qsin,areverse[fo]")
         tail = "[fo]"
     fc = ";".join(parts)
-    dst = Path(a.out)
+    dst = out_file(a.out)
     ffmpeg(["-y"] + inputs + ["-filter_complex", fc, "-map", tail] + out_codec(dst) + [str(dst)])
     hits, t = [], 0.0
     if lengths:
@@ -492,7 +518,7 @@ def cmd_loop(a):
         if sys.byteorder == "big":
             out_buf.byteswap()
         raw_out.write_bytes(out_buf.tobytes())
-        dst = Path(a.out)
+        dst = out_file(a.out)
         codec = ["-c:a", "pcm_s16le"] if dst.suffix.lower() == ".wav" else out_codec(dst)
         samples = nbody
         loop_tags = ["-metadata", "LOOPSTART=0", "-metadata", f"LOOPLENGTH={samples}"]
@@ -521,19 +547,130 @@ def cmd_duck(a):
     has_video = any(s.get("codec_type") == "video" for s in json.loads(run(
         [ffmpeg_bin("ffprobe"), "-v", "error", "-show_entries", "stream=codec_type", "-of", "json", str(under)]).stdout or "{}").get("streams", []))
     g = a.music_gain
-    fc = (f"[0:a]volume={g}dB,aresample=48000[mu];[1:a]aresample=48000,asplit=2[sc][keep];"
-          f"[mu][sc]sidechaincompress=threshold={a.threshold}:ratio={a.ratio}:attack={a.attack}:release={a.release}[d];"
-          f"[d][keep]amix=inputs=2:normalize=0:duration=longest[o]")
-    dst = Path(a.out)
+    # the key is padded with silence so the ducked music keeps its own length when the key is shorter
+    key = "[1:a]aresample=48000,apad[sc]" if a.stem else "[1:a]aresample=48000,asplit=2[sc0][keep];[sc0]apad[sc]"
+    fc = (f"[0:a]volume={g}dB,aresample=48000[mu];{key};"
+          f"[mu][sc]sidechaincompress=threshold={a.threshold}:ratio={a.ratio}:attack={a.attack}:release={a.release}[d]")
+    if not a.stem:
+        fc += ";[d][keep]amix=inputs=2:normalize=0:duration=longest[o]"
+    dst = out_file(a.out)
     args = ["-y", "-i", str(music), "-i", str(under), "-filter_complex", fc]
-    if has_video and dst.suffix.lower() in (".mp4", ".mov", ".mkv"):
+    if a.stem:
+        args += ["-map", "[d]"] + out_codec(dst) + [str(dst)]
+    elif has_video and dst.suffix.lower() in (".mp4", ".mov", ".mkv"):
         args += ["-map", "1:v", "-map", "[o]", "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-shortest", str(dst)]
     else:
         args += ["-map", "[o]"] + out_codec(dst) + [str(dst)]
     ffmpeg(args)
-    return {"ok": True, "out": str(dst.resolve()), "remuxed_video": has_video and dst.suffix.lower() in (".mp4", ".mov", ".mkv"),
+    remuxed = not a.stem and has_video and dst.suffix.lower() in (".mp4", ".mov", ".mkv")
+    return {"ok": True, "out": str(dst.resolve()),
+            "returns": "the ducked music alone, at the music's length" if a.stem else ("the video with the ducked mix" if remuxed else "the ducked music mixed with the key"),
+            "duration_s": probe(dst)["duration_s"], "remuxed_video": remuxed,
             "settings": {"music_gain_db": g, "threshold": a.threshold, "ratio": a.ratio, "attack_ms": a.attack, "release_ms": a.release},
             "next": "run measure on the result and master it to the destination preset"}
+
+
+def per_file(spec, n, name, default=0.0):
+    if not spec:
+        return [default] * n
+    vals = [float(v) for v in spec.split(",")]
+    if len(vals) != n:
+        raise MwError(f"--{name} needs one value per file ({n}), got {len(vals)}")
+    return vals
+
+
+def decode_f32(path, rate, tmpd):
+    """Decode to interleaved stereo float32 at rate (ffmpeg decodes; the arithmetic stays in Python, L-001)."""
+    raw = Path(tmpd) / (uuid.uuid4().hex + ".f32")
+    ffmpeg(["-y", "-i", str(path), "-ac", "2", "-ar", str(rate), "-f", "f32le", "-c:a", "pcm_f32le", str(raw)])
+    buf = array("f")
+    buf.frombytes(raw.read_bytes())
+    if sys.byteorder == "big":
+        buf.byteswap()
+    raw.unlink()
+    return buf
+
+
+def encode_f32(buf, rate, dst, tmpd):
+    raw = Path(tmpd) / (uuid.uuid4().hex + ".f32")
+    b = array("f", buf)
+    if sys.byteorder == "big":
+        b.byteswap()
+    raw.write_bytes(b.tobytes())
+    ffmpeg(["-y", "-f", "f32le", "-ar", str(rate), "-ac", "2", "-i", str(raw)] + out_codec(dst) + [str(dst)])
+    raw.unlink()
+
+
+def cmd_mix(a):
+    files = [need_file(f) for f in a.files]
+    n = len(files)
+    gains = per_file(a.gains, n, "gains")
+    offsets = per_file(a.offsets, n, "offsets")
+    pans = per_file(a.pans, n, "pans")
+    if any(abs(p) > 1 for p in pans):
+        raise MwError("--pans values run from -1 (left) to 1 (right)")
+    rate = a.rate
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_mix_"))
+    try:
+        stems = []
+        for f, g, off, pan in zip(files, gains, offsets, pans):
+            buf = decode_f32(f, rate, tmpd)
+            lin = 10 ** (g / 20.0)
+            ang = (pan + 1) * math.pi / 4  # equal-power balance; centre leaves both channels at unity
+            gl, gr = lin * math.cos(ang) * math.sqrt(2), lin * math.sin(ang) * math.sqrt(2)
+            shift = int(round(off * rate))
+            if shift < 0:
+                buf = buf[-shift * 2:]
+            stems.append((buf, max(shift, 0), gl, gr))
+        ends = [s[1] + len(s[0]) // 2 for s in stems]
+        if a.length == "longest":
+            total = max(ends)
+        elif a.length == "first":
+            total = ends[0]
+        else:
+            total = int(round(float(a.length) * rate))
+        if total <= 0:
+            raise MwError("the mix would be empty; check --offsets and --length")
+        mix = array("f", bytes(4 * 2 * total))
+        aligned = []
+        for buf, start, gl, gr in stems:
+            one = array("f", bytes(4 * 2 * total)) if a.stems else None
+            frames = min(len(buf) // 2, total - start)
+            for i in range(max(frames, 0)):
+                j, k = 2 * (start + i), 2 * i
+                left, right = buf[k] * gl, buf[k + 1] * gr
+                mix[j] += left
+                mix[j + 1] += right
+                if one is not None:
+                    one[j], one[j + 1] = left, right
+            aligned.append(one)
+        peak = max(max(mix), -min(mix))
+        warn, scale = [], 1.0
+        ceiling = 10 ** (-1 / 20.0)
+        if peak > ceiling and not a.no_limit:
+            scale = ceiling / peak
+            mix = array("f", (v * scale for v in mix))
+            warn.append(f"the sum peaked at {20 * math.log10(peak):+.1f} dBFS; mix and stems scaled by {20 * math.log10(scale):.1f} dB to peak at -1 dBFS (master it afterwards)")
+        dst = out_file(a.out)
+        encode_f32(mix, rate, dst, tmpd)
+        stem_files = []
+        if a.stems:
+            sd = Path(a.stems)
+            sd.mkdir(parents=True, exist_ok=True)
+            for i, (f, one) in enumerate(zip(files, aligned), 1):
+                if scale != 1.0:
+                    one = array("f", (v * scale for v in one))
+                sf = sd / f"{i:02d}_{slug(f.stem)}.wav"
+                encode_f32(one, rate, sf, tmpd)
+                stem_files.append(str(sf.resolve()))
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
+    m = measure_file(dst)
+    return {"ok": True, "out": str(dst.resolve()), "duration_s": round(total / rate, 3),
+            "layers": [{"file": str(f), "gain_db": g, "offset_s": o, "pan": p} for f, g, o, p in zip(files, gains, offsets, pans)],
+            "scaled_db": round(20 * math.log10(scale), 2), "stems": stem_files,
+            "measure": {k: m[k] for k in ("lufs_i", "true_peak_dbtp", "lra")}, "warnings": warn,
+            "next": "sheet the mix beside its stems, then master it to the destination preset"}
 
 
 def cmd_analyze(a):
@@ -818,19 +955,50 @@ def gen_rest(a, r, seeds, caption, lyrics, outdir):
     except (urllib.error.URLError, OSError) as e:
         raise MwError(f"no ACE-Step REST server at {host} ({type(e).__name__}); start it (see musicwright-generate references/acestep-rest.md) or use a comfy recipe")
     p = dict(r["params"])
+    task = a.task or "text2music"
     takes, t0 = [], time.time()
     for s in seeds:
         payload = {"audio_duration": a.duration, "audio_format": p.get("format", "wav"), "batch_size": 1,
-                   "thinking": p.get("thinking", True), "prompt": caption, "lyrics": lyrics or "[instrumental]",
+                   "thinking": p.get("thinking", True), "prompt": caption or "", "lyrics": lyrics or "[instrumental]",
                    "use_random_seed": False, "seed": s}
         if a.bpm:
             payload["bpm"] = a.bpm
         if a.key:
             payload["key_scale"] = a.key
+        if task != "text2music":
+            payload["task_type"] = task
+            # With the planner on, servers before ACE-Step PR #1287 (2026-08-16) wrote audio codes from the
+            # text alone and ignored the source; source tasks run without it (R-005 in musicwright-generate).
+            payload.update({"thinking": False, "use_cot_caption": False, "use_cot_language": False})
+        if task in ("lego", "extract"):
+            payload["track_name"] = a.track
+        if task == "complete":
+            payload["track_classes"] = [t.strip() for t in a.track.split(",")]
+        if a.start is not None:
+            payload["repainting_start"] = a.start
+        if a.end is not None:
+            payload["repainting_end"] = a.end
+        if a.strength is not None:
+            payload["audio_cover_strength"] = a.strength
+        if a.model:
+            payload["model"] = a.model
+        if a.steps:
+            payload["inference_steps"] = a.steps
+        elif task in BASE_TASKS:
+            payload["inference_steps"] = 50  # base checkpoints are 50-step models; the server default is turbo's 8
+        if a.cfg is not None:
+            payload["guidance_scale"] = a.cfg
+        if a.shift is not None:
+            payload["shift"] = a.shift
+        if a.set:
+            payload.update(json.loads(a.set))
         if a.dry_run:
-            takes.append({"seed": s, "payload": payload})
+            takes.append({"seed": s, "payload": payload, **({"upload": {"src_audio": str(a.src)}} if a.src else {})})
             continue
-        resp = http(host + "/release_task", payload, timeout=900)
+        if a.src:
+            resp = http_multipart(host + "/release_task", {"param_obj": json.dumps(payload)}, {"src_audio": a.src}, timeout=900)
+        else:
+            resp = http(host + "/release_task", payload, timeout=900)
         tid = (resp.get("data") or {}).get("task_id")
         if not tid:
             raise MwError(f"no task_id from ACE-Step: {json.dumps(resp)[:400]}")
@@ -858,9 +1026,43 @@ def gen_rest(a, r, seeds, caption, lyrics, outdir):
             dst = outdir / f"{slug(a.name)}_s{s}.{payload['audio_format']}"
             dst.write_bytes(http_get_bytes(url))
             takes.append({"seed": s, "file": dst, "task_id": tid, "metas": item.get("metas")})
+    ignored = [o for o in ("sampler", "scheduler", "planner") if getattr(a, o, None)]
+    extra = {"ignored": ignored, "ignored_note": "the REST route has no sampler, scheduler or planner file choice"} if ignored else {}
     if a.dry_run:
-        return {"ok": True, "dry_run": True, "host": host, "jobs": takes}
-    return {"ok": True, "host": host, "params": p, "elapsed_s": round(time.time() - t0), "takes": takes}
+        return {"ok": True, "dry_run": True, "host": host, "task": task, "jobs": takes, **extra}
+    return {"ok": True, "host": host, "task": task, "params": {**p, **{k: v for k, v in payload.items() if k not in ("prompt", "lyrics", "seed")}},
+            "elapsed_s": round(time.time() - t0), "takes": takes, **extra}
+
+
+REST_TASKS = ("text2music", "cover", "repaint", "lego", "complete", "extract")
+BASE_TASKS = ("lego", "complete", "extract")
+TRACKS = ("woodwinds", "brass", "fx", "synth", "strings", "percussion",
+          "keyboard", "guitar", "bass", "drums", "backing_vocals", "vocals")
+
+
+def check_task(a, r):
+    """Validate --task and its options before anything is created or sent."""
+    task = a.task or "text2music"
+    if task == "text2music":
+        if a.src or a.track:
+            raise MwError("--src and --track need --task (cover, repaint, lego, complete or extract)")
+        return
+    if r["route"] != "rest":
+        raise MwError(f"--task {task} runs on the ACE-Step REST server; use --recipe acestep-rest (ComfyUI's native ACE-Step nodes have no source-audio tasks)")
+    if not a.src:
+        raise MwError(f"--task {task} needs --src, the audio to work from")
+    a.src = need_file(a.src)
+    if task in ("lego", "extract", "complete"):
+        if not a.track:
+            raise MwError(f"--task {task} needs --track, one of: {', '.join(TRACKS)}" + (" (comma separated for complete)" if task == "complete" else ""))
+        names = [t.strip() for t in a.track.split(",")] if task == "complete" else [a.track]
+        bad = [t for t in names if t not in TRACKS]
+        if bad:
+            raise MwError(f"unknown track {', '.join(bad)}; ACE-Step knows {', '.join(TRACKS)} (a flute is woodwinds)")
+    elif a.track:
+        raise MwError(f"--track is for lego, extract and complete, not {task}")
+    if a.duration is None:
+        a.duration = probe(a.src)["duration_s"]
 
 
 def cmd_gen(a):
@@ -868,10 +1070,13 @@ def cmd_gen(a):
     if a.recipe not in rs:
         raise MwError(f"unknown recipe {a.recipe}; choose from {', '.join(sorted(rs))}")
     r = rs[a.recipe]
+    check_task(a, r)
+    if a.duration is None:
+        a.duration = 120.0
     caption = a.caption
     if a.caption_file:
         caption = Path(a.caption_file).read_text(encoding="utf-8").strip()
-    if not caption:
+    if not caption and a.task != "extract":
         raise MwError("give --caption or --caption-file")
     lyrics = a.lyrics
     if a.lyrics_file:
@@ -883,7 +1088,8 @@ def cmd_gen(a):
         base = int(time.time()) % 90000 + 1000
         seeds = [base + i * 111 for i in range(a.takes)]
     outdir = Path(a.out)
-    outdir.mkdir(parents=True, exist_ok=True)
+    if not a.dry_run:
+        outdir.mkdir(parents=True, exist_ok=True)
     fn = gen_comfy if r["route"] == "comfy" else gen_rest
     res = fn(a, r, seeds, caption, lyrics, outdir)
     if res.get("dry_run") or res.get("queued"):
@@ -897,7 +1103,8 @@ def cmd_gen(a):
         append_jsonl(led, {"type": "take", "date": now(), "take": f.stem, "file": t["file"], "route": r["route"],
                            "recipe": a.recipe, "model": r.get("model"), "seed": t["seed"], "caption": caption,
                            "lyrics": lyrics, "duration_s": a.duration, "bpm": a.bpm, "key": a.key,
-                           "params": res.get("params"), "host": res.get("host"), "measure": t["measure"]})
+                           "params": res.get("params"), "host": res.get("host"), "measure": t["measure"],
+                           **({"task": a.task, "src": str(Path(a.src).resolve()), "track": a.track} if a.task else {})})
     res["ledger"] = str(led.resolve())
     res["next"] = "mw.py sheet <takes> --out sheets/<name>.png, look at it, then ask the listener and record mw.py verdict"
     return res
@@ -978,7 +1185,7 @@ def build_parser():
     s.add_argument("--lyrics", help="lyrics or section tags; default [Instrumental]")
     s.add_argument("--lyrics-file")
     s.add_argument("--sections", help="section tags joined by |, e.g. 'Intro - soft flute|Verse - melody|Outro - fade'")
-    s.add_argument("--duration", type=float, default=120)
+    s.add_argument("--duration", type=float, help="seconds; default 120, or the --src length for source tasks")
     s.add_argument("--bpm", type=int)
     s.add_argument("--key", help="e.g. 'A minor', 'D major'")
     s.add_argument("--seeds", help="comma separated; default random")
@@ -993,6 +1200,13 @@ def build_parser():
     s.add_argument("--shift", type=float)
     s.add_argument("--planner", help="ACE-Step planner LM file (clip_name2)")
     s.add_argument("--set", help="JSON object of recipe param overrides")
+    s.add_argument("--task", choices=REST_TASKS, help="REST route: work from --src (cover, repaint; lego, complete, extract need a base model)")
+    s.add_argument("--src", help="source audio for --task (uploaded to the server)")
+    s.add_argument("--track", help="lego/extract: the part, e.g. woodwinds or percussion; complete: comma list")
+    s.add_argument("--start", type=float, help="repaint/lego window start, seconds")
+    s.add_argument("--end", type=float, help="repaint/lego window end, seconds (-1 = end)")
+    s.add_argument("--strength", type=float, help="cover: how closely to follow the source, 0-1")
+    s.add_argument("--model", help="REST route: DiT the server should use, e.g. acestep-v15-base")
     s.add_argument("--timeout", type=int, default=3600)
     s.add_argument("--no-wait", action="store_true")
     s.add_argument("--dry-run", action="store_true", help="print the graph or payload, submit nothing")
@@ -1068,7 +1282,20 @@ def build_parser():
     s.add_argument("--ratio", type=float, default=4)
     s.add_argument("--attack", type=float, default=40)
     s.add_argument("--release", type=float, default=500)
+    s.add_argument("--stem", action="store_true", help="write the ducked music alone (its own length), not the mix")
     s.set_defaults(fn=cmd_duck)
+
+    s = sub.add_parser("mix", help="layer stems with gain, offset and pan into one file")
+    s.add_argument("files", nargs="+")
+    s.add_argument("--out", required=True)
+    s.add_argument("--gains", help="dB per file, comma separated (default 0)")
+    s.add_argument("--offsets", help="seconds per file; positive starts it later, negative trims its head")
+    s.add_argument("--pans", help="-1 left .. 0 centre .. 1 right, per file")
+    s.add_argument("--length", default="longest", help="longest, first, or seconds")
+    s.add_argument("--stems", help="also write each aligned, processed layer to this folder")
+    s.add_argument("--rate", type=int, default=48000)
+    s.add_argument("--no-limit", action="store_true", help="keep the sum even if it peaks above -1 dBFS")
+    s.set_defaults(fn=cmd_mix)
 
     s = sub.add_parser("analyze", help="tempo and key (librosa)")
     s.add_argument("files", nargs="+")

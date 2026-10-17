@@ -307,6 +307,61 @@ class GenDryRun(unittest.TestCase):
         p = d["jobs"][0]["payload"]
         self.assertEqual((p["bpm"], p["key_scale"], p["lyrics"]), (128, "A minor", "[Chorus]\nhey"))
 
+    def test_rest_sends_cfg_steps_and_set_and_names_ignored_options(self):
+        code, d = self.gen("acestep-rest", "--cfg", "5", "--steps", "32", "--shift", "2", "--set", '{"use_adg": true}', "--sampler", "euler")
+        p = d["jobs"][0]["payload"]
+        self.assertEqual((p["guidance_scale"], p["inference_steps"], p["shift"], p["use_adg"]), (5.0, 32, 2.0, True))
+        self.assertEqual(d["ignored"], ["sampler"])
+        self.assertNotIn("task_type", p)
+
+    def test_source_tasks_dry_run(self):
+        src = FX.get("tone220") or __file__  # existence is all the dry run checks without ffmpeg
+        if not HAVE_FFMPEG:
+            self.skipTest("the source length comes from ffprobe")
+        code, d = run("gen", "--recipe", "acestep-rest", "--task", "lego", "--src", src, "--track", "percussion",
+                      "--caption", "light tambourine", "--start", "2", "--end", "8", "--seeds", "1", "--out", TMP / "gen_out", "--dry-run")
+        self.assertEqual(code, 0, d)
+        p = d["jobs"][0]["payload"]
+        self.assertEqual((p["task_type"], p["track_name"], p["repainting_start"], p["repainting_end"]), ("lego", "percussion", 2.0, 8.0))
+        self.assertEqual((p["thinking"], p["use_cot_caption"], p["inference_steps"], p["audio_duration"]), (False, False, 50, 12.0))
+        self.assertEqual(d["jobs"][0]["upload"]["src_audio"], str(Path(src)))
+        code, d = run("gen", "--recipe", "acestep-rest", "--task", "complete", "--src", src, "--track", "drums, bass",
+                      "--caption", "x", "--duration", "20", "--seeds", "1", "--out", TMP / "gen_out", "--dry-run")
+        p = d["jobs"][0]["payload"]
+        self.assertEqual((p["track_classes"], p["audio_duration"]), (["drums", "bass"], 20.0))
+        code, d = run("gen", "--recipe", "acestep-rest", "--task", "cover", "--src", src, "--strength", "0.4",
+                      "--caption", "x", "--seeds", "1", "--out", TMP / "gen_out", "--dry-run")
+        p = d["jobs"][0]["payload"]
+        self.assertEqual((p["task_type"], p["audio_cover_strength"], p["inference_steps"] if "inference_steps" in p else None), ("cover", 0.4, None))
+        code, d = run("gen", "--recipe", "acestep-rest", "--task", "extract", "--src", src, "--track", "vocals",
+                      "--seeds", "1", "--out", TMP / "gen_out", "--dry-run")
+        self.assertEqual(code, 0, d)  # extract needs no caption
+
+    def test_source_task_errors(self):
+        src = __file__
+        cases = [
+            (("--task", "lego", "--track", "woodwinds"), "needs --src"),
+            (("--task", "lego", "--src", src), "needs --track"),
+            (("--task", "lego", "--src", src, "--track", "flute"), "a flute is woodwinds"),
+            (("--task", "complete", "--src", src, "--track", "drums,kazoo"), "unknown track kazoo"),
+            (("--task", "cover", "--src", src, "--track", "drums"), "--track is for"),
+            (("--src", src), "need --task"),
+            (("--task", "lego", "--src", TMP / "missing.wav", "--track", "drums"), "missing.wav"),
+        ]
+        for extra, msg in cases:
+            with self.subTest(extra=extra):
+                code, d = run("gen", "--recipe", "acestep-rest", "--caption", "x", "--seeds", "1", "--out", TMP / "gen_err", "--dry-run", *extra)
+                self.assertEqual(code, 1, d)
+                self.assertIn(msg, d["error"])
+        code, d = run("gen", "--task", "lego", "--src", src, "--track", "drums", "--caption", "x", "--out", TMP / "gen_err", "--dry-run")
+        self.assertIn("REST server", d["error"])  # the default comfy recipe cannot do source tasks
+        self.assertFalse((TMP / "gen_err").exists())
+
+    def test_dry_run_creates_no_folder(self):
+        code, d = run("gen", "--caption", "x", "--seeds", "1", "--out", TMP / "gen_dry_only", "--dry-run")
+        self.assertEqual(code, 0, d)
+        self.assertFalse((TMP / "gen_dry_only").exists())
+
     def test_takes_count_without_seeds(self):
         code, d = run("gen", "--caption", "x", "--takes", "4", "--out", TMP / "gen_out", "--dry-run")
         seeds = [j["seed"] for j in d["jobs"]]
@@ -618,6 +673,19 @@ class Duck(unittest.TestCase):
         self.assertLess(ducked, free - 3, (free, ducked))
         self.assertGreater(mean_volume(dst, 5, 7, "highpass=f=2000,highpass=f=2000"), -40)  # the key is still there
 
+    def test_short_key_keeps_the_music_length_and_stem_returns_music_alone(self):
+        short_key = TMP / "short_key.wav"
+        ff("-i", FX["key"], "-af", "atrim=end=6", short_key)  # loud from 4 s, ends at 6 s; the bed lasts 10 s
+        code, d = run("duck", FX["bed"], "--under", short_key, "--out", TMP / "duck_long.wav")
+        self.assertEqual(code, 0, d)
+        self.assertAlmostEqual(d["duration_s"], 10.0, delta=0.05)
+        stem = TMP / "duck_stem.wav"
+        code, d = run("duck", FX["bed"], "--under", FX["key"], "--out", stem, "--stem")
+        self.assertEqual(code, 0, d)
+        self.assertIn("alone", d["returns"])
+        self.assertLess(mean_volume(stem, 5, 7, "highpass=f=2000,highpass=f=2000"), -60)  # no key in the stem
+        self.assertLess(mean_volume(stem, 5, 7), mean_volume(stem, 1, 3) - 3)  # but the music still ducks
+
     def test_video_is_remuxed(self):
         dst = TMP / "ducked.mp4"
         code, d = run("duck", FX["bed"], "--under", FX["video"], "--out", dst, "--music-gain", "-6")
@@ -628,6 +696,66 @@ class Duck(unittest.TestCase):
                            capture_output=True, text=True)
         kinds = sorted(s["codec_type"] for s in json.loads(p.stdout)["streams"])
         self.assertEqual(kinds, ["audio", "video"])
+
+
+@NEEDS_FFMPEG
+class Mix(unittest.TestCase):
+    def test_layers_offsets_gains_and_stems(self):
+        dst, sd = TMP / "mix" / "a" / "mix.wav", TMP / "mix" / "stems"
+        code, d = run("mix", FX["tone330"], FX["tone550"], "--offsets", "0,4", "--gains", "0,-6", "--out", dst, "--stems", sd)
+        self.assertEqual(code, 0, d)
+        self.assertAlmostEqual(d["duration_s"], 10.0, delta=0.01)  # 550 Hz starts at 4 s and lasts 6 s
+        self.assertAlmostEqual(wav_seconds(dst), 10.0, delta=0.01)
+        self.assertEqual([Path(s).name for s in d["stems"]], ["01_tone330.wav", "02_tone550.wav"])
+        bp = "bandpass=f=550:width_type=q:w=8,bandpass=f=550:width_type=q:w=8"
+        self.assertLess(mean_volume(dst, 1, 3, bp), -45)  # the second layer is silent before its offset
+        self.assertGreater(mean_volume(dst, 5, 6, bp), -40)
+        a330 = mean_volume(d["stems"][0], 1, 3)
+        a550 = mean_volume(d["stems"][1], 5, 6)
+        self.assertAlmostEqual(a330 - a550, 6.0, delta=0.3)  # -6 dB gain
+        for s in d["stems"]:
+            self.assertAlmostEqual(wav_seconds(s), 10.0, delta=0.01)  # stems are aligned to the mix
+
+    def test_pan_length_and_negative_offset(self):
+        dst = TMP / "mix_pan.wav"
+        code, d = run("mix", FX["tone330"], "--pans", "-1", "--offsets", "-2", "--length", "3", "--out", dst)
+        self.assertEqual(code, 0, d)
+        self.assertAlmostEqual(d["duration_s"], 3.0, delta=0.01)
+        left = mean_volume(dst, 0.5, 2.5, "pan=mono|c0=c0")
+        right = mean_volume(dst, 0.5, 2.5, "pan=mono|c0=c1")
+        self.assertLess(right, left - 40)
+        code, d = run("mix", FX["tone330"], FX["tone"], "--length", "first", "--out", TMP / "mix_first.wav")
+        self.assertAlmostEqual(d["duration_s"], 6.0, delta=0.01)
+
+    def test_hot_sum_is_scaled_and_errors_fail_soft(self):
+        code, d = run("mix", FX["bed"], FX["bed"], FX["bed"], FX["bed"], "--gains", "6,6,6,6", "--out", TMP / "mix_hot.wav")
+        self.assertEqual(code, 0, d)
+        self.assertLess(d["scaled_db"], 0)
+        self.assertTrue(d["warnings"])
+        self.assertLessEqual(d["measure"]["true_peak_dbtp"], -0.5)
+        code, d = run("mix", FX["tone"], FX["tone330"], "--gains", "1", "--out", TMP / "x.wav")
+        self.assertIn("one value per file", d["error"])
+        code, d = run("mix", FX["tone"], "--pans", "2", "--out", TMP / "x.wav")
+        self.assertIn("-1 (left)", d["error"])
+
+
+@NEEDS_FFMPEG
+class OutFolders(unittest.TestCase):
+    def test_commands_create_missing_out_folders(self):
+        base = TMP / "deep"
+        cases = [
+            ("master", FX["tone"], "--out", base / "m" / "x.wav"),
+            ("edit", FX["tone"], "--end", "2", "--out", base / "e" / "x.wav"),
+            ("join", FX["tone330"], FX["tone550"], "--xfade", "1", "--out", base / "j" / "x.wav"),
+            ("loop", FX["tone"], "--bars", "2", "--bpm", "120", "--out", base / "l" / "x.wav"),
+            ("duck", FX["bed"], "--under", FX["key"], "--out", base / "d" / "x.wav"),
+            ("sheet", FX["tone"], "--out", base / "s" / "x.png"),
+        ]
+        for argv in cases:
+            with self.subTest(cmd=argv[0]):
+                code, d = run(*argv)
+                self.assertEqual(code, 0, d)
+                self.assertTrue(Path(argv[-1]).is_file())
 
 
 class FakeHost:
@@ -674,7 +802,21 @@ class FakeHost:
                     self.send_error(404)
 
             def do_POST(self):
-                body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
+                raw = self.rfile.read(int(self.headers.get("Content-Length") or 0))
+                ctype = self.headers.get("Content-Type", "")
+                if ctype.startswith("multipart/form-data"):
+                    import email
+                    msg = email.message_from_bytes(b"Content-Type: " + ctype.encode() + b"\r\n\r\n" + raw)
+                    body, host.uploads = {}, {}
+                    for part in msg.get_payload():
+                        name = part.get_param("name", header="content-disposition")
+                        if part.get_filename():
+                            host.uploads[name] = part.get_payload(decode=True)
+                        else:
+                            body[name] = part.get_payload(decode=True).decode("utf-8")
+                    body = json.loads(body.get("param_obj", "{}"))
+                else:
+                    body = json.loads(raw or b"{}")
                 if self.path == "/prompt":
                     host.prompts.append(body)
                     self.send({"prompt_id": f"p{len(host.prompts)}", "number": len(host.prompts), "node_errors": {}})
@@ -780,6 +922,23 @@ class GenAgainstFakeHost(unittest.TestCase):
         self.assertEqual((sent["prompt"], sent["seed"], sent["bpm"]), ("quick draft", 9, 100))
         rows = mw.read_jsonl(TMP / "gen_rest" / "ledger.jsonl")
         self.assertEqual(rows[-1]["route"], "rest")
+
+    def test_rest_lego_uploads_the_source(self):
+        old = os.environ["MUSICWRIGHT_ACESTEP"]
+        os.environ["MUSICWRIGHT_ACESTEP"] = self.fake.url
+        try:
+            code, r = run("gen", "--recipe", "acestep-rest", "--task", "lego", "--src", FX["tone220"], "--track", "woodwinds",
+                          "--caption", "second flute", "--seeds", "5", "--model", "acestep-v15-base", "--name", "layer",
+                          "--out", TMP / "gen_lego")
+        finally:
+            os.environ["MUSICWRIGHT_ACESTEP"] = old
+        self.assertEqual(code, 0, r)
+        self.assertEqual(self.fake.uploads["src_audio"], Path(FX["tone220"]).read_bytes())
+        sent = self.fake.tasks[-1]
+        self.assertEqual((sent["task_type"], sent["track_name"], sent["model"], sent["thinking"], sent["audio_duration"]),
+                         ("lego", "woodwinds", "acestep-v15-base", False, 12.0))
+        row = mw.read_jsonl(TMP / "gen_lego" / "ledger.jsonl")[-1]
+        self.assertEqual((row["task"], row["track"], Path(row["src"]).name), ("lego", "woodwinds", "tone220.wav"))
 
 
 @NEEDS_FFMPEG

@@ -10,7 +10,7 @@ pointing at ffmpeg). Hosts: `MUSICWRIGHT_COMFYUI` (comma list, default `http://1
 |---|---|---|
 | `doctor` | ffmpeg and filters, librosa, studio, each ComfyUI host (GPU, VRAM, music models, queue), ACE-Step REST, runnable recipes | `--host` |
 | `new <dir>` | scaffold `brief.md`, `music.json`, `takes/ out/ sheets/`, `ledger.jsonl` | `--name --use --duration --preset` |
-| `gen` | render takes, download them, measure each, append to the ledger | `--recipe --caption[-file] --lyrics[-file] --sections "A\|B" --duration --bpm --key --seeds 1,2 --takes 3 --name --out --host --cfg --steps --sampler --scheduler --shift --planner --set '{json}' --timeout --no-wait --dry-run` |
+| `gen` | render takes, download them, measure each, append to the ledger | `--recipe --caption[-file] --lyrics[-file] --sections "A\|B" --duration --bpm --key --seeds 1,2 --takes 3 --name --out --host --cfg --steps --sampler --scheduler --shift --planner --set '{json}' --timeout --no-wait --dry-run`; from a source (REST): `--task cover\|repaint\|lego\|complete\|extract --src F --track woodwinds --start --end --strength --model` |
 | `measure <files>` | duration, rate, LUFS, LRA, true peak, head/tail silence, interior gaps, clipping signs, warnings | `--silence-db --silence-min` |
 | `sheet <files>` | one PNG: per take a log-frequency spectrogram row and a waveform row | `--out --width --spec-height --max-hz --measure` |
 | `master <file>` | two-pass loudnorm (linear when possible) to a preset, 48 kHz; before and after numbers | `--preset --lufs --tp --lra --rate --out` |
@@ -18,7 +18,8 @@ pointing at ffmpeg). Hosts: `MUSICWRIGHT_COMFYUI` (comma list, default `http://1
 | `join <files>` | chain equal-power crossfades; with `--lengths` each part holds that long before its crossfade | `--xfade --lengths --fade-out --out` |
 | `loop <file>` | seamless loop: the tail crossfades into the head; `--bars N --bpm B` makes it exactly N bars; seam check; `--ogg` adds LOOPSTART/LOOPLENGTH | `--start --end --bars --bpm --beats-per-bar --xfade --ogg --out` |
 | `seam <files>` | seam jump against the file's own 99th-percentile step (about 1 or less is clean, over 5 clicks) plus the level jump | |
-| `duck <music>` | sidechain-duck music under dialogue or a video's sound; remuxes when the output is a video | `--under --music-gain --threshold --ratio --attack --release --out` |
+| `duck <music>` | sidechain-duck music under dialogue or a video's sound; keeps the music's length; remuxes when the output is a video; `--stem` writes the ducked music alone | `--under --music-gain --threshold --ratio --attack --release --stem --out` |
+| `mix <files>` | layer stems into one file: per-file gain (dB), offset (s; negative trims the head) and pan (-1..1, equal power); sums in Python; scales the sum to peak at -1 dBFS unless `--no-limit`; `--stems DIR` writes each processed layer aligned to the mix | `--gains --offsets --pans --length longest\|first\|S --stems --rate --no-limit --out` |
 | `analyze <files>` | tempo, beats, key estimate (librosa); prints the `uv run` line when librosa is missing | |
 | `verdict <take> keep\|reject\|maybe` | append the listener's verdict to the ledger and `<studio>/verdicts.jsonl` with the take's recipe | `--note --by` |
 | `ledger [dir]` | takes with recipes and verdicts; lists unjudged takes | |

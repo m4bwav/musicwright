@@ -2,12 +2,17 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-20261017-3 · 2026-10-17 · Ranking order for takes judged from sheets
+Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+
+### C-20261017-4 · 2026-10-17 · mw.py: mix, source tasks on the REST route, duck keeps the music length, --out folders
+- because: user request (add parts to a kept take); HANDOFF bugs (missing --out folders, duck cut the music to the key's length, REST ignored --cfg/--steps/--set, gen made --out on dry runs); R-20261017-4, R-20261017-5 in musicwright-generate
+- files: scripts/mw.py (mix, gen --task/--src/--track/--start/--end/--strength/--model, duck --stem, out_file), references/cli.md (gen, duck, mix rows)
+- `mix` layers stems with gain, offset and pan, sums in Python (L-001) and writes aligned stems; `gen` uploads a source for cover, repaint, lego, complete and extract with the planner off; `duck` pads the key so the music keeps its length and `--stem` returns the music alone; master, edit, join, loop, duck and sheet create their output folder; gen validates before creating anything.
+
+### C-20261017-3 · 2026-10-17 · Ranking order for takes judged from sheets
 - because: L-002
 - files: references/listening.md (Reading an mw.py sheet)
 - Rank on excluded parts first, then melody, then the ending; a silent tail is a trim.
-
-### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261017-2 · 2026-10-17 · mw.py loop and OGG output made portable across ffmpeg builds
 - because: L-001
