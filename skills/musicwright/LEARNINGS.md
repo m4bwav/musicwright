@@ -6,6 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-002 · 2026-10-17 · Rank takes on intruding parts first; a silent tail is a trim, not a defect
+- Trigger: three solo-flute takes. The sheet flagged a low drone in one (the listener rejected it: "bass a flute can't make"), and the agent ranked a clean take first and a take with a 19 s silent tail second. The listener preferred the second, and asked about faint percussion in it.
+- Hypothesis: listeners judge the melody and anything that breaks the brief (extra instruments); a quiet ending is fixed by trimming, so it should not cost a take its place.
+- Rule: when ranking from sheets, order by (1) parts the brief excluded, (2) melodic line and phrasing, (3) the ending; mention a silent tail as a trim, not a fault. Ask the listener about faint percussion or bass in a solo, since the sheet shows breaths and tonguing as small vertical marks.
+- Evidence: listener verdicts 2026-10-17 (keep, reject), sheet in the README
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
+
 ### L-001 · 2026-10-17 · ffmpeg filter graphs are not portable across versions: keep sample arithmetic in Python
 - Trigger: the first CI run (2026-10-17) failed on Ubuntu's ffmpeg 6.1 while ffmpeg 9 on Windows passed: positional `atrim=a:b` meant start:starti there (loops one crossfade too long); `amix` with `duration=shortest` ended early, and with `longest` the following `concat` refused the stream. Homebrew's ffmpeg had no libvorbis.
 - Hypothesis: filter option order and amix/concat buffering changed between ffmpeg releases; builds differ in encoders.

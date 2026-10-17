@@ -15,7 +15,7 @@ State on 2026-10-17, end of the first session.
 2. Not yet run on real hardware: the MiniMax Music 3 and REST recipes through `mw.py gen`, REST cover, repaint and extract, YuE2 and Stable Audio 3 (download, measure VRAM and time; add recipes only after a listener keeps a take).
 3. `mw.py gen --collect` for `--no-wait` jobs: needs the queued recipe saved (a ledger row with status queued) so collected takes are measured and logged.
 4. A loudness-curve fit for film cues and an optional learned quality score: open questions in the hub's RESEARCH.md.
-5. Wiki: 17 pages are written and verified against main 62231a9 (every command run on Linux and Windows), but GitHub creates the wiki repository only after the owner saves a first page at https://github.com/m4bwav/musicwright/wiki/_new. Then run the publish script kept in the owner's private notes (wiki-build/publish.sh: preflight, build, check, push, live check). Re-verify output sections after the bug fixes below.
+5. Wiki: live since 2026-10-17 (17 pages, sidebar, footer, every example verified on Windows and Linux against main 62231a9). After the bug fixes below, re-run the verification and republish with the publish script kept in the owner's private notes (wiki-build/publish.sh).
 7. Bugs found while verifying the wiki (fix with tests, one PR):
    - master, edit, join, loop and duck fail with a raw ffmpeg error when the --out folder does not exist (sheet, new and gen create it).
    - duck cuts the music to the length of --under and returns the mix, not a music stem; add a --stem or keep-length option and say which it returns.
@@ -25,7 +25,7 @@ State on 2026-10-17, end of the first session.
    - verdict accepts a missing file and, for a take gen never logged, records the name with its extension so ledger never matches it.
    - seam's level jump uses the first and last 50 ms, so a loop starting on a drum hit reads "check by ear" with a smooth seam.
    - Docs: cli.md and the game skill say a seam ratio of "about 1 or less" is clean while the code says up to 2; argument errors exit 2 with usage on stderr, not JSON; contract.md omits music.json's `created`.
-6. Release v0.1.0 when the owner says yes (tag `v0.1.0`; release.yml checks the tag against plugin.json).
+6. v0.1.0 released 2026-10-17. The next release (0.1.1) should carry the bug fixes in item 7; bump plugin.json, mw.py VERSION and CHANGELOG.md together.
 
 ## Next steps
 
