@@ -970,6 +970,9 @@ def gen_rest(a, r, seeds, caption, lyrics, outdir):
             # With the planner on, servers before ACE-Step PR #1287 (2026-08-16) wrote audio codes from the
             # text alone and ignored the source; source tasks run without it (R-005 in musicwright-generate).
             payload.update({"thinking": False, "use_cot_caption": False, "use_cot_language": False})
+        if task in BASE_TASKS:
+            # DCW forced on turns base-model output into noise (ACE-Step issue #1259; R-20261017-6)
+            payload["dcw_enabled"] = False
         if task in ("lego", "extract"):
             payload["track_name"] = a.track
         if task == "complete":

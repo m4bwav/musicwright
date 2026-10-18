@@ -324,6 +324,7 @@ class GenDryRun(unittest.TestCase):
         p = d["jobs"][0]["payload"]
         self.assertEqual((p["task_type"], p["track_name"], p["repainting_start"], p["repainting_end"]), ("lego", "percussion", 2.0, 8.0))
         self.assertEqual((p["thinking"], p["use_cot_caption"], p["inference_steps"], p["audio_duration"]), (False, False, 50, 12.0))
+        self.assertIs(p["dcw_enabled"], False)
         self.assertEqual(d["jobs"][0]["upload"]["src_audio"], str(Path(src)))
         code, d = run("gen", "--recipe", "acestep-rest", "--task", "complete", "--src", src, "--track", "drums, bass",
                       "--caption", "x", "--duration", "20", "--seeds", "1", "--out", TMP / "gen_out", "--dry-run")
