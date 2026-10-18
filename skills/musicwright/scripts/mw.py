@@ -20,7 +20,12 @@ Commands
   seam     score how audible a file's loop seam is
   duck     duck music under dialogue or a video's own sound, optionally remux the video
   mix      layer stems (gain, offset, pan) into one file and write the aligned stems
+  pulse    is there a beat: onsets, inter-onset spread, autocorrelation and grid fit (stdlib)
+  answer   does a layered part answer the lead: its level in the lead's rests against under its notes
   analyze  tempo and key estimate (needs librosa; prints the uv one-liner when missing)
+  render   notation to audio: ABC, ASCII tab, MusicXML or MIDI -> MIDI and audio (FluidSynth or a built-in synth)
+  notate   convert between ABC, MusicXML, MIDI and ASCII tab
+  transcribe audio to MIDI and notation (librosa pyin for one instrument, basic-pitch for several)
   verdict  record a listener's keep/reject/maybe with notes, copied to the studio
   ledger   list a project's takes with recipes and verdicts
   note     append a taste note, lesson or recipe to the studio
@@ -43,6 +48,9 @@ import uuid
 import wave
 from array import array
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import notation  # noqa: E402  (same folder; stdlib only)
 
 VERSION = "0.1.0"
 HERE = Path(__file__).resolve().parent
@@ -701,6 +709,379 @@ def cmd_analyze(a):
     return {"ok": True, "librosa": librosa.__version__, "files": rows}
 
 
+# ---------------------------------------------------------------- pulse and answer (stdlib measures)
+
+ENV_RATE, ENV_HOP = 8000, 0.01  # 8 kHz mono, 10 ms frames
+
+
+def envelope_db(path, tmpd):
+    """Frame levels in dB (20 ms windows every 10 ms) of a file decoded to 8 kHz mono."""
+    raw = Path(tmpd) / (uuid.uuid4().hex + ".f32")
+    ffmpeg(["-y", "-i", str(path), "-ac", "1", "-ar", str(ENV_RATE), "-f", "f32le", "-c:a", "pcm_f32le", str(raw)])
+    buf = array("f")
+    buf.frombytes(raw.read_bytes())
+    if sys.byteorder == "big":
+        buf.byteswap()
+    raw.unlink()
+    hop, win = int(ENV_RATE * ENV_HOP), int(ENV_RATE * 0.02)
+    env = []
+    for i in range(0, max(len(buf) - win, 0) + 1, hop):
+        s = sum(v * v for v in buf[i:i + win]) / win
+        env.append(10 * math.log10(s) if s > 1e-12 else -120.0)
+    return env
+
+
+def onsets_from_env(env, floor_db=-50.0):
+    """Onset frames: peaks of the rising level (dB per 10 ms) above an adaptive threshold."""
+    flux = [0.0] + [max(0.0, env[i] - env[i - 1]) if env[i] > floor_db else 0.0 for i in range(1, len(env))]
+    sm = [sum(flux[max(0, i - 1):i + 2]) / 3 for i in range(len(flux))]
+    mean = sum(sm) / max(len(sm), 1)
+    sd = math.sqrt(sum((v - mean) ** 2 for v in sm) / max(len(sm), 1))
+    thr, gap, last, hits = mean + 1.5 * sd, int(0.08 / ENV_HOP), -10 ** 9, []
+    for i in range(1, len(sm) - 1):
+        if sm[i] > thr and sm[i] >= sm[i - 1] and sm[i] >= sm[i + 1] and i - last >= gap:
+            hits.append(i)
+            last = i
+    return sm, hits
+
+
+def grid_deviation(times, period):
+    """Mean distance of onsets from the best-phased grid (the beat, or its halves or thirds), in grid steps.
+
+    0 is on the grid; random onsets score grid_chance, computed the same way."""
+    best = 1.0
+    for div in (1, 2, 3):
+        step = period / div
+        for k in range(40):
+            ph = period * k / 40
+            d = sum(abs(((t - ph) / step + 0.5) % 1 - 0.5) for t in times) / len(times)
+            best = min(best, d)
+    return best
+
+
+def pulse_of(path, tmpd):
+    import random
+    env = envelope_db(path, tmpd)
+    strength, hits = onsets_from_env(env)
+    times = [h * ENV_HOP for h in hits]
+    dur = len(env) * ENV_HOP
+    row = {"file": str(path), "duration_s": round(dur, 2), "onsets": len(times),
+           "onsets_per_min": round(60 * len(times) / dur, 1) if dur else 0}
+    if len(times) < 6:
+        row.update({"pulse": "none", "why": "fewer than 6 onsets"})
+        return row
+    iois = [b - a for a, b in zip(times, times[1:])]
+    m = sum(iois) / len(iois)
+    row["ioi_cv"] = round(math.sqrt(sum((v - m) ** 2 for v in iois) / len(iois)) / m, 2)
+    mu = sum(strength) / len(strength)
+    x = [v - mu for v in strength]
+    e0 = sum(v * v for v in x) or 1.0
+    lags = range(int(0.25 / ENV_HOP), min(int(2.0 / ENV_HOP), len(x) // 2) + 1)  # 240 to 30 bpm
+    ac = [(L, sum(x[i] * x[i + L] for i in range(len(x) - L)) / e0) for L in lags]
+    vals = sorted(v for _, v in ac)
+    med = vals[len(vals) // 2]
+    lag, peak = max(ac, key=lambda t: t[1])
+    period = lag * ENV_HOP
+    bpm = 60 / period
+    while bpm < 60:
+        bpm *= 2
+    while bpm > 180:
+        bpm /= 2
+    dev = grid_deviation(times, period)
+    rng = random.Random(1)
+    chance = sum(grid_deviation(sorted(rng.uniform(0, dur) for _ in times), period) for _ in range(20)) / 20
+    contrast = peak - med
+    votes = (contrast >= 0.2) * 2 + (contrast >= 0.15) + (dev <= 0.75 * chance) + (row["ioi_cv"] <= 0.5)
+    row.update({"autocorr_peak": round(peak, 2), "autocorr_median": round(med, 2), "autocorr_contrast": round(contrast, 2),
+                "tempo_bpm": round(bpm, 1), "grid_deviation": round(dev, 3), "grid_chance": round(chance, 3),
+                "pulse": "steady" if votes >= 3 else ("weak" if votes >= 1 else "none")})
+    return row
+
+
+def cmd_pulse(a):
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_pulse_"))
+    try:
+        rows = [pulse_of(need_file(f), tmpd) for f in a.files]
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
+    return {"ok": True, "files": rows,
+            "reading": "steady: a beat a percussion part can lock to (tempo_bpm may be doubled or halved); "
+                       "weak or none: free time, so place accents on phrases or re-render on a fixed tempo rather than adding a beat. "
+                       "grid_deviation near grid_chance means the onsets ignore the grid; ioi_cv above about 0.8 is rubato or phrase-led"}
+
+
+def power_mean_db(env, idx):
+    if not idx:
+        return None
+    p = sum(10 ** (env[i] / 10) for i in idx) / len(idx)
+    return round(10 * math.log10(p), 1) if p > 1e-12 else -120.0
+
+
+def cmd_answer(a):
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_answer_"))
+    try:
+        part = envelope_db(need_file(a.part), tmpd)
+        lead = envelope_db(need_file(a.lead), tmpd)
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
+    n = min(len(part), len(lead))
+    part, lead = part[:n], lead[:n]
+    ref = sorted(lead)[int(0.95 * (n - 1))] if n else -120.0
+    thr = max(ref - a.below, -60.0)
+    on = [lead[i] > thr for i in range(n)]
+    if not any(on):
+        raise MwError("the lead is silent throughout; check --lead")
+    first, last = on.index(True), n - 1 - on[::-1].index(True)
+    under = [i for i in range(n) if on[i]]
+    rests = [i for i in range(first, last + 1) if not on[i]]
+    tail = list(range(last + 1, n))
+    du, dr, dt = power_mean_db(part, under), power_mean_db(part, rests), power_mean_db(part, tail)
+    gap = round(dr - du, 1) if du is not None and dr is not None else None
+    pthr = max(sorted(part)[int(0.95 * (n - 1))] - a.below, -60.0)
+    fill = round(sum(part[i] > pthr for i in rests) / len(rests), 2) if rests else None
+    shape = None if gap is None else ("answers (louder in the lead's rests)" if gap >= 3 else
+                                      "doubles (quieter in the rests)" if gap <= -3 else "plays along (same level under and between)")
+    return {"ok": True, "part": str(a.part), "lead": str(a.lead), "lead_threshold_db": round(thr, 1),
+            "lead_active_share": round(len(under) / n, 2), "part_under_lead_db": du, "part_in_rests_db": dr,
+            "part_in_tail_db": dt, "rests_minus_under_db": gap, "part_active_in_rests": fill, "shape": shape,
+            "next": "to make a part answer, duck it under the lead: mw.py duck PART --under LEAD --stem --out answer.wav, then measure again"}
+
+
+# ---------------------------------------------------------------- notation: render, notate, transcribe
+
+SCORE_EXT = {".abc": "abc", ".mid": "midi", ".midi": "midi", ".musicxml": "musicxml", ".xml": "musicxml",
+             ".txt": "tab", ".tab": "tab"}
+
+
+def fluidsynth_bin():
+    env = os.environ.get("MUSICWRIGHT_FLUIDSYNTH")
+    if env:
+        return env if Path(env).exists() else None
+    return shutil.which("fluidsynth")
+
+
+def soundfont(arg=None):
+    for cand in (arg, os.environ.get("MUSICWRIGHT_SOUNDFONT"), studio_config().get("soundfont")):
+        if cand:
+            if not Path(cand).exists():
+                raise MwError(f"SoundFont not found: {cand}")
+            return Path(cand)
+    return None
+
+
+def load_score(a, path):
+    prog = notation.program_of(getattr(a, "program", None))
+    score, kind = notation.load(need_file(path), tuning=getattr(a, "tuning", None), tab_step=getattr(a, "tab_step", None),
+                                bpm=getattr(a, "bpm", None), program=prog, chords=getattr(a, "chords", False),
+                                tune=getattr(a, "tune", None))
+    if getattr(a, "transpose", 0):
+        notation.transpose(score, a.transpose)
+    return score, kind
+
+
+def cmd_render(a):
+    score, kind = load_score(a, a.score)
+    res = {"ok": True, "score": str(Path(a.score).resolve()), "read_as": kind, **score.summary(), "warnings": score.warnings}
+    if a.check:
+        res["next"] = "fix the warnings (a bar that is too long or short usually means a wrong note length), then render with --out"
+        return res
+    if not a.out:
+        raise MwError("give --out (an audio file), or --check to only read the score")
+    dst = out_file(a.out)
+    mid = Path(a.midi) if a.midi else dst.with_suffix(".mid")
+    if mid.resolve() == dst.resolve():
+        raise MwError("--out is the MIDI file; give an audio file (.wav, .flac, .mp3, .ogg) and --midi for the MIDI")
+    mid.parent.mkdir(parents=True, exist_ok=True)
+    notation.write_midi(score, mid)
+    fs, sf = fluidsynth_bin(), soundfont(a.sf2)
+    synth = a.synth
+    if synth == "auto":
+        synth = "fluidsynth" if fs and sf else "builtin"
+        if synth == "builtin":
+            res["warnings"].append("rendered with the built-in synth (a sketch: plucked strings, simple winds and organ). "
+                                   "For General MIDI instruments install FluidSynth and a SoundFont (references/notation.md)")
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_render_"))
+    try:
+        raw = tmpd / "render.wav"
+        if synth == "fluidsynth":
+            if not fs:
+                raise MwError("FluidSynth not found: put fluidsynth on PATH or set MUSICWRIGHT_FLUIDSYNTH")
+            if not sf:
+                raise MwError("no SoundFont: pass --sf2, set MUSICWRIGHT_SOUNDFONT, or add \"soundfont\" to the studio config.json")
+            run([fs, "-ni", "-q", "-g", str(a.gain), "-r", "48000", "-F", str(raw), str(sf), str(mid)])
+            res["soundfont"] = str(sf)
+        else:
+            notation.synth_wav(score, raw)
+        chain = ["-af", f"apad=pad_dur={a.tail}"] if synth == "fluidsynth" and a.tail else []
+        ffmpeg(["-y", "-i", str(raw)] + chain + ["-ar", "48000", "-ac", "2"] + out_codec(dst) + [str(dst)])
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
+    m = measure_file(dst)
+    res.update({"out": str(dst.resolve()), "midi": str(mid.resolve()), "synth": synth,
+                "measure": {k: m[k] for k in ("duration_s", "lufs_i", "true_peak_dbtp")},
+                "next": "listen, or make it sound performed with an AI cover of this render: mw.py gen --recipe acestep-rest "
+                        "--task cover --src OUT --strength 0.6 --caption \"<instruments, style>\" --seeds 1,2,3 (try 0.5-0.9)"})
+    return res
+
+
+def cmd_notate(a):
+    score, kind = load_score(a, a.score)
+    dst = out_file(a.out)
+    to = a.to or {".abc": "abc", ".mid": "midi", ".midi": "midi", ".musicxml": "musicxml", ".xml": "musicxml",
+                  ".txt": "tab", ".tab": "tab"}.get(dst.suffix.lower())
+    if not to:
+        raise MwError("say the format with --to abc|musicxml|midi|tab, or end --out in .abc, .musicxml, .mid or .txt")
+    warn = list(score.warnings)
+    if to == "midi":
+        notation.write_midi(score, dst)
+    elif to == "abc":
+        write_lf(dst, notation.write_abc(score, a.grid))
+    elif to == "musicxml":
+        write_lf(dst, notation.write_musicxml(score, a.grid))
+    else:
+        text, w = notation.write_tab(score, notation.tuning_from_spec(a.tuning), a.grid, max_fret=a.max_fret)
+        write_lf(dst, text + "\n")
+        warn += w
+    if to in ("abc", "musicxml", "tab") and kind in ("midi", "tab"):
+        warn.append(f"notes were snapped to a grid of {a.grid} steps a beat; triplets and free rhythm come out approximate")
+    return {"ok": True, "from": kind, "to": to, "out": str(dst.resolve()), **score.summary(), "warnings": warn,
+            "next": "open .musicxml in MuseScore (free) for a printable score; mw.py render plays any of these back"}
+
+
+def split_at_onsets(notes, onsets, min_note=0.06):
+    out = []
+    for n in notes:
+        cuts = [t for t in onsets if n.start + min_note < t < n.end() - min_note]
+        s = n.start
+        for c in cuts + [n.end()]:
+            out.append(notation.Note(s, c - s, n.pitch, n.vel))
+            s = c
+    return out
+
+
+def gate_notes(score, src, below_db, lowest, highest):
+    """Drop notes the recording barely sounds (hiss and hum in rests read as notes) or that fall outside the range."""
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_gate_"))
+    try:
+        env = envelope_db(src, tmpd)
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
+    ref = sorted(env)[int(0.95 * (len(env) - 1))] if env else 0.0
+    thr = ref - below_db
+    lo, hi = notation.parse_pitch_name(lowest), notation.parse_pitch_name(highest)
+    dropped = {"quiet": 0, "range": 0}
+    for tr in score.tracks:
+        keep = []
+        for n in tr.notes:
+            if not lo <= n.pitch <= hi:
+                dropped["range"] += 1
+                continue
+            i0 = int(score.seconds(n.start) / ENV_HOP)
+            i1 = max(int(score.seconds(n.end()) / ENV_HOP), i0 + 1)
+            seg = env[i0:i1] or [-120.0]
+            level = 10 * math.log10(sum(10 ** (v / 10) for v in seg) / len(seg))
+            if level < thr:
+                dropped["quiet"] += 1
+                continue
+            keep.append(n)
+        tr.notes = keep
+    return {"threshold_db": round(thr, 1), "dropped_quiet": dropped["quiet"], "dropped_out_of_range": dropped["range"]}
+
+
+def cmd_transcribe(a):
+    src = need_file(a.audio)
+    dst = out_file(a.out)
+    if dst.suffix.lower() not in (".mid", ".midi"):
+        raise MwError("--out is the MIDI file (.mid); add --to abc,musicxml,tab for notation beside it")
+    prog = notation.program_of(a.program) if a.program is not None else None
+    res = {"ok": True, "audio": str(src.resolve()), "engine": a.engine}
+    if a.engine == "basic-pitch":
+        exe = os.environ.get("MUSICWRIGHT_BASIC_PITCH") or shutil.which("basic-pitch")
+        if not exe:
+            return {"ok": False, "error": "basic-pitch is not installed",
+                    "fix": 'uv tool install --python 3.11 basic-pitch --with "numpy<2" --with "setuptools<81"   '
+                           "(Apache-2.0, a few hundred MB with TensorFlow; it does not install on Python 3.12+)"}
+        tmpd = Path(tempfile.mkdtemp(prefix="mw_bp_"))
+        try:
+            os.environ.setdefault("PYTHONIOENCODING", "utf-8")  # basic-pitch prints emoji; a Windows console codec would crash it
+            run([exe, str(tmpd), str(src)])
+            mids = list(tmpd.glob("*.mid"))
+            if not mids:
+                raise MwError("basic-pitch wrote no MIDI file")
+            score = notation.parse_midi(mids[0].read_bytes())
+        finally:
+            shutil.rmtree(tmpd, ignore_errors=True)
+        bp_bpm = score.tempos[0][1]
+        bpm = a.bpm or bp_bpm
+        if a.bpm and abs(a.bpm - bp_bpm) > 1e-6:  # basic-pitch writes its own tempo; rescale beats to the asked one
+            k = a.bpm / bp_bpm
+            for n in score.notes():
+                n.start *= k
+                n.dur *= k
+            score.tempos = [(0.0, float(a.bpm))]
+        for t in score.tracks:
+            if prog is not None:
+                t.program = prog
+    else:
+        try:
+            import librosa
+            import numpy as np  # noqa: F401
+        except ImportError:
+            script = Path(__file__).resolve()
+            args = " ".join(f'"{x}"' for x in [a.audio, "--out", a.out] + (["--to", a.to] if a.to else []) + (["--bpm", str(a.bpm)] if a.bpm else []))
+            return {"ok": False, "error": "librosa is not installed in this Python (transcribe uses its pyin pitch tracker)",
+                    "fix": f'uv run --no-project --python 3.12 --with librosa --with soundfile python "{script}" transcribe {args}'}
+        y, sr = librosa.load(str(src), sr=22050, mono=True)
+        hop = 256
+        fmin = librosa.note_to_hz(a.lowest)
+        fmax = librosa.note_to_hz(a.highest)
+        f0, voiced, _ = librosa.pyin(y, fmin=fmin, fmax=fmax, sr=sr, frame_length=2048, hop_length=hop)
+        rms = librosa.feature.rms(y=y, frame_length=2048, hop_length=hop)[0]
+        times = librosa.times_like(f0, sr=sr, hop_length=hop)
+        f0l = [None if (v != v) else float(v) for v in f0]
+        notes = notation.notes_from_f0([float(t) for t in times], f0l, [bool(v) for v in voiced],
+                                       [float(r) for r in rms], hop=hop / sr)
+        onsets = [float(t) for t in librosa.onset.onset_detect(y=y, sr=sr, hop_length=hop, units="time", backtrack=False)]
+        notes = split_at_onsets(notes, onsets)
+        bpm = a.bpm
+        if not bpm:
+            tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
+            bpm = round(float(np.atleast_1d(tempo)[0]), 1) or 120.0
+            res["bpm_estimated"] = True
+        score = notation.score_from_seconds(notes, bpm, 73 if prog is None else prog, src.stem)
+        if not score.notes():
+            raise MwError("no pitched notes found; is the audio silent, or outside --lowest/--highest?")
+        score.title = src.stem
+    res["gate"] = gate_notes(score, src, a.gate, a.lowest, a.highest)
+    if not score.notes():
+        raise MwError("every note fell under the level gate or outside --lowest/--highest; lower --gate or widen the range")
+    score.meter = tuple(int(x) for x in a.meter.split("/")) if a.meter else score.meter
+    score.key = score.key or notation.estimate_key(score.notes())
+    notation.write_midi(score, dst)
+    files = {"midi": str(dst.resolve())}
+    warn = []
+    for fmt in [f.strip() for f in (a.to or "").split(",") if f.strip()]:
+        ext = {"abc": ".abc", "musicxml": ".musicxml", "tab": ".tab.txt"}.get(fmt)
+        if not ext:
+            raise MwError(f"--to {fmt}: choose from abc, musicxml, tab")
+        f = dst.with_name(dst.stem + ext)
+        if fmt == "abc":
+            write_lf(f, notation.write_abc(score, a.grid))
+        elif fmt == "musicxml":
+            write_lf(f, notation.write_musicxml(score, a.grid))
+        else:
+            text, w = notation.write_tab(score, notation.tuning_from_spec(a.tuning), a.grid)
+            write_lf(f, text + "\n")
+            warn += w
+        files[fmt] = str(f.resolve())
+    if a.engine == "pyin":
+        warn.append("pyin follows one line: chords come back as one note, and a free-time take is notated against "
+                    f"{bpm:g} bpm, so the rhythm is approximate (check mw.py pulse; pass --bpm when you know it)")
+    res.update({"files": files, **score.summary(), "warnings": warn,
+                "next": "mw.py render the MIDI and compare it with the recording by ear; open the .musicxml in MuseScore to read or fix it"})
+    return res
+
+
 # ---------------------------------------------------------------- projects, ledger, studio
 
 BRIEF = """# {name}
@@ -1131,6 +1512,15 @@ def cmd_doctor(a):
     except ImportError:
         rep["librosa"] = None
         rep["librosa_hint"] = "optional, for analyze; uv run --no-project --python 3.12 --with librosa --with soundfile python mw.py analyze ..."
+    rep["fluidsynth"] = fluidsynth_bin()
+    try:
+        rep["soundfont"] = str(soundfont()) if soundfont() else None
+    except MwError as e:
+        rep["soundfont"] = None
+        rep["soundfont_error"] = str(e)
+    if not (rep["fluidsynth"] and rep["soundfont"]):
+        rep["render_hint"] = "optional, for render: FluidSynth (LGPL) and a General MIDI SoundFont; without them render uses its built-in sketch synth"
+    rep["basic_pitch"] = shutil.which("basic-pitch")
     rep["studio"] = str(studio_dir())
     rep["studio_exists"] = studio_dir().exists()
     hosts = []
@@ -1304,6 +1694,61 @@ def build_parser():
     s.add_argument("files", nargs="+")
     s.set_defaults(fn=cmd_analyze)
 
+    s = sub.add_parser("pulse", help="is there a beat? onsets, IOI spread, autocorrelation, grid fit (stdlib)")
+    s.add_argument("files", nargs="+")
+    s.set_defaults(fn=cmd_pulse)
+
+    s = sub.add_parser("answer", help="does a part answer the lead? its level in the lead's rests vs under its notes")
+    s.add_argument("part")
+    s.add_argument("--lead", required=True)
+    s.add_argument("--below", type=float, default=30.0, help="the lead counts as playing within this many dB of its loud frames")
+    s.set_defaults(fn=cmd_answer)
+
+    def score_opts(s):
+        s.add_argument("--bpm", type=float, help="tempo in quarter notes a minute (overrides the score's)")
+        s.add_argument("--program", help="General MIDI instrument for every part: a number 0-127 or a name (flute, guitar, piano)")
+        s.add_argument("--transpose", type=int, default=0, help="semitones up (negative for down)")
+        s.add_argument("--chords", action="store_true", help="play ABC chord symbols (\"Am\" \"G7\") as a block-chord part")
+        s.add_argument("--tuning", help="tab tuning: guitar, dropd, dadgad, openg, bass, bass5, guitar7, ukulele, or pitches low to high (E2,A2,D3,G3,B3,E4)")
+        s.add_argument("--tab-step", type=float, help="beats per tab column (default: the usual gap between notes is an eighth note)")
+        s.add_argument("--tune", help="which X: tune of a multi-tune ABC file (default the first)")
+
+    s = sub.add_parser("render", help="notation to audio: ABC, ASCII tab, MusicXML or MIDI -> MIDI + WAV/FLAC")
+    s.add_argument("score")
+    s.add_argument("--out", help="audio file to write (.wav, .flac, .mp3, .ogg)")
+    s.add_argument("--midi", help="where to write the MIDI (default beside --out)")
+    s.add_argument("--synth", choices=["auto", "fluidsynth", "builtin"], default="auto")
+    s.add_argument("--sf2", help="SoundFont for FluidSynth (or MUSICWRIGHT_SOUNDFONT, or soundfont in the studio config.json)")
+    s.add_argument("--gain", type=float, default=1.0, help="FluidSynth gain (its default 0.2 renders quietly)")
+    s.add_argument("--tail", type=float, default=1.0, help="seconds of silence added after a FluidSynth render for reverb to ring")
+    s.add_argument("--check", action="store_true", help="only read the score and report bars, notes and problems")
+    score_opts(s)
+    s.set_defaults(fn=cmd_render)
+
+    s = sub.add_parser("notate", help="convert between notations: ABC, MusicXML, MIDI, ASCII tab")
+    s.add_argument("score")
+    s.add_argument("--out", required=True, help=".abc, .musicxml, .mid or .txt (tab)")
+    s.add_argument("--to", choices=["abc", "musicxml", "midi", "tab"])
+    s.add_argument("--grid", type=int, choices=[2, 4], default=4, help="steps a beat when snapping MIDI or tab to notation (4 = sixteenths)")
+    s.add_argument("--max-fret", type=int, default=15)
+    score_opts(s)
+    s.set_defaults(fn=cmd_notate)
+
+    s = sub.add_parser("transcribe", help="audio to notation: one instrument (librosa pyin) or polyphonic (basic-pitch) -> MIDI, ABC, MusicXML, tab")
+    s.add_argument("audio")
+    s.add_argument("--out", required=True, help="the MIDI file to write")
+    s.add_argument("--to", help="also write these beside it, comma separated: abc,musicxml,tab")
+    s.add_argument("--engine", choices=["pyin", "basic-pitch"], default="pyin")
+    s.add_argument("--bpm", type=float, help="tempo to notate against (default: estimated)")
+    s.add_argument("--meter", help="time signature for the notation, such as 4/4 or 3/4")
+    s.add_argument("--lowest", default="C2", help="lowest note to keep, such as E2 for guitar or C4 for flute (narrower is better)")
+    s.add_argument("--highest", default="C7", help="highest note to keep, such as A5 for a wooden flute")
+    s.add_argument("--gate", type=float, default=35.0, help="drop notes more than this many dB under the recording's loud passages")
+    s.add_argument("--program", help="General MIDI instrument for the MIDI (default flute for pyin)")
+    s.add_argument("--tuning", help="tuning for --to tab (default guitar)")
+    s.add_argument("--grid", type=int, choices=[2, 4], default=4)
+    s.set_defaults(fn=cmd_transcribe)
+
     s = sub.add_parser("verdict", help="record a listener's verdict on a take")
     s.add_argument("take", help="take file or take name")
     s.add_argument("verdict", choices=["keep", "reject", "maybe"])
@@ -1334,8 +1779,8 @@ def main(argv=None):
         res = a.fn(a)
         out(res)
         return 0 if res.get("ok", True) else 1
-    except (MwError, OSError, ValueError, KeyError, urllib.error.URLError) as e:
-        out({"ok": False, "command": a.cmd, "error": f"{type(e).__name__}: {e}" if not isinstance(e, MwError) else str(e)})
+    except (MwError, notation.NotationError, OSError, ValueError, KeyError, urllib.error.URLError) as e:
+        out({"ok": False, "command": a.cmd, "error": f"{type(e).__name__}: {e}" if not isinstance(e, (MwError, notation.NotationError)) else str(e)})
         return 1
 
 

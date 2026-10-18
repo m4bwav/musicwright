@@ -1,7 +1,7 @@
 # Checks the skills' structure, manifests, links and public-safety guards, and tests mw.py on the three operating
 # systems on the oldest and newest Python supported, with ffmpeg from each system's own package manager (apt on
 # Ubuntu, Homebrew on macOS, Chocolatey on Windows; no third-party action). The analyze job adds librosa so
-# `mw.py analyze` runs for real; everywhere else it checks the soft failure and its fix line.
+# `mw.py analyze` and `mw.py transcribe` run for real; everywhere else it checks the soft failure and its fix line.
 name: tests
 on:
   push:

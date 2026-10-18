@@ -76,6 +76,45 @@
     "Bash"
    ],
    "max_turns": 12
+  },
+  {
+   "id": "trigger-3",
+   "kind": "trigger",
+   "prompt": "Here is a guitar tab I wrote, can you play it so I can hear it?\ne|-----------------|\nB|-----1-----1-----|\nG|---0---0-----0---|\nD|-2-----------2---|\nA|-----------------|\nE|-----------------|",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-compose skill is invoked"
+   ],
+   "baseline": "not yet run"
+  },
+  {
+   "id": "trigger-4",
+   "kind": "trigger",
+   "prompt": "Can you write down the melody of my recording flute.flac as sheet music?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-compose skill is invoked"
+   ],
+   "baseline": "not yet run"
+  },
+  {
+   "id": "action-2",
+   "kind": "action",
+   "prompt": "Render tests/fixtures/tune.abc to out/tune.wav so I can listen to it.",
+   "runs": 3,
+   "expectations": [
+    "the action happened, proven by the trace or the file, not by the reply"
+   ],
+   "evidence": {
+    "type": "file",
+    "path": "out/tune.wav",
+    "or": {
+     "type": "trace",
+     "tool": "Bash|PowerShell",
+     "input_match": "render.*tune\\.abc"
+    }
+   },
+   "baseline": "not yet run"
   }
  ]
 }

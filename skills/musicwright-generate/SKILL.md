@@ -73,7 +73,18 @@ than its slot), then join them on the hit points: `mw.py join a.flac b.flac c.fl
 24,10,12 --xfade 2` (musicwright-score has the full method). Ten-minute one-shots drift and
 repeat; three movements of about 3 min crossfaded hold up better.
 
-## Rules
+## Step 5: add a part to a kept take
+
+1. `mw.py pulse lead.flac`: a steady pulse can carry percussion; with none, offer a re-render at
+   a fixed bpm or phrase-placed accents instead of a beat.
+2. Start the REST server on `acestep-v15-base` (references/acestep-rest.md), then
+   `mw.py gen --recipe acestep-rest-lego --task lego --src lead.flac --track woodwinds --caption "..."
+   --seeds 8101,8202,8303`. Sheet each take: noise means DCW was on (an old server).
+3. Lego plays along rather than answering. For call and response,
+   `mw.py duck part.wav --under lead.flac --stem --out answer.wav`, then `mw.py answer answer.wav --lead lead.flac`.
+4. `mw.py mix lead.flac answer.wav --stems stems/ --out mix.wav`; let the listener judge the plain
+   and the ducked mix side by side.
+
 
 - Record every take in the ledger (mw.py does it). A take with no seed and caption is lost work.
 - A recipe goes into `recipes.json` only after a listener kept a take made with it.

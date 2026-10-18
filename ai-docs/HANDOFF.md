@@ -1,6 +1,6 @@
 # Handoff
 
-State on 2026-10-17, end of the first session.
+State on 2026-10-18, end of the layers-2 and notation session.
 
 ## Done
 
@@ -11,7 +11,7 @@ State on 2026-10-17, end of the first session.
 
 ## Owed
 
-1. Evals: baselines without the plugin, three runs per case, and a re-run of the generate action case with its new prompt (it no longer names the plugin).
+1. Evals: baselines without the plugin, three runs per case, and a re-run of the generate action case with its new prompt (it no longer names the plugin). The compose and generate suites changed on 2026-10-18 (compose trigger-3, trigger-4, action-2); see their TESTS.md for the run after the plugin was reinstalled.
 2. Not yet run on real hardware: the MiniMax Music 3 and REST recipes through `mw.py gen`, REST cover, repaint and extract, YuE2 and Stable Audio 3 (download, measure VRAM and time; add recipes only after a listener keeps a take).
 3. `mw.py gen --collect` for `--no-wait` jobs: needs the queued recipe saved (a ledger row with status queued) so collected takes are measured and logged.
 4. A loudness-curve fit for film cues and an optional learned quality score: open questions in the hub's RESEARCH.md.
@@ -27,11 +27,18 @@ State on 2026-10-17, end of the first session.
    - Docs: cli.md and the game skill say a seam ratio of "about 1 or less" is clean while the code says up to 2; argument errors exit 2 with usage on stderr, not JSON; contract.md omits music.json's `created`.
 6. v0.1.0 released 2026-10-17. The next release (0.1.1) should carry the bug fixes in item 7; bump plugin.json, mw.py VERSION and CHANGELOG.md together.
 
-## Layers session (2026-10-17, unfinished)
+## Layers (2026-10-17/18, done)
 
-- Branch `layers` / PR #5: `mw.py mix`, `gen --task lego|complete|extract|cover|repaint --src --track`, `duck --stem` and length fix, `--out` folders. Source tasks on base checkpoints send `dcw_enabled: false`: with DCW forced on (ACE-Step servers before PR #1273) base-model lego returns noise (issue #1259).
-- Verified on real hardware: lego on the 2B base through the REST route (the part alone, centred on the source's key; it plays along rather than answering, so the answer is shaped with `duck --stem` keyed by the lead); XL base with CPU offload peaks about 13.5 GB on 16 GB. Lego percussion over a free-time take invents its own grid.
-- Owed: research entry R-20261017-6, LEARNINGS, the generate SKILL.md step for adding a part (plus an eval re-run), a pulse/answer measure in mw.py, listener verdicts. Details are in the owner's private next-session prompt.
+- PR #5: `mw.py mix`, `gen --task lego|complete|extract|cover|repaint`, `duck --stem`, `--out` folders, `dcw_enabled: false` for base-only tasks.
+- Branch `layers-2`: R-20261017-6 written (DCW, base against XL, percussion invents its grid), L-001 in generate and produce, the REST reference names the server version and VRAM per model, generate Step 5 (add a part: pulse, lego, duck --stem, mix), recipe `acestep-rest-lego` (a listener kept the 2B base seed 8101 mix, the ducked one best), `mw.py pulse` and `mw.py answer` with tests.
+- Stage 3 (percussion over the kept stage-2 mix) is built and waits for the listener; the percussion takes had no pulse to follow, so a tempo-locked re-render of the lead is the better route if the listener wants a beat.
+
+## Notation (2026-10-18)
+
+- `mw.py render` (ABC, ASCII tab, MusicXML, MIDI to MIDI and audio; FluidSynth and a SoundFont when found, else a built-in sketch synth; `--check` lists bars that do not add up), `mw.py notate` (between ABC, MusicXML, MIDI and tab), `mw.py transcribe` (librosa pyin or basic-pitch; level gate and range filter). Readers and writers are stdlib in `scripts/notation.py`. musicwright-compose owns the route (Step 4, references/notation.md, R-20261018-1, L-001). Tests: 71, green on Python 3.9 and 3.14 locally.
+- Verified here: FluidSynth 2.6.1 Windows zip with GeneralUser GS renders ABC, tab and transcriptions; basic-pitch runs only through `uv tool run --python 3.11 --from basic-pitch --with "numpy<2" --with "setuptools<81"` and needs PYTHONIOENCODING=utf-8 on Windows (mw.py sets it); pyin and basic-pitch agreed on 72% of frames on a solo flute take.
+- Not yet done: the cover-for-realism route (render, then ACE-Step cover at 0.5-0.9) has not been run on hardware; Guitar Pro files are not read (export MusicXML from MuseScore or TuxGuitar); MuseScore CLI export is unverified here.
+- Size: tracked repository 2082 KB, over the 2048 KB green line (yellow); installed skills 390 KB of a 400 KB green line. The next addition that grows the installed size should trim something first.
 
 ## Next steps
 

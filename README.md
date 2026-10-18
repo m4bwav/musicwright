@@ -22,6 +22,8 @@ Ask for music and the hub skill writes a brief, picks a route, and runs the take
    starts from your taste.
 4. **Finish**: master to a destination (streaming, game, web video, broadcast), cut a bar-exact loop with a
    checked seam, or join movements on a film's hit points and duck them under dialogue.
+5. **Notes in, notes out**: play ABC, guitar or bass tab, MusicXML or MIDI as audio, convert between them, and
+   transcribe a recording into MIDI, ABC, MusicXML or tab (`mw.py render`, `notate`, `transcribe`).
 
 A real example, "a 1 minute flute solo, no other instruments", three takes of ACE-Step 1.5 XL on a 16 GB GPU:
 
@@ -37,7 +39,7 @@ went silent for its last 19 seconds, the third is one clean melodic line. The th
 |---|---|---|
 | [`musicwright`](skills/musicwright/SKILL.md) | The hub: brief, route, the take loop, the project folder and ledger, and `mw.py` | fast |
 | [`musicwright-generate`](skills/musicwright-generate/SKILL.md) | Which model for which job and licence, captions and section tags, fishing with seeds, fixing harsh or off-brief takes, long pieces from movements | fast |
-| [`musicwright-compose`](skills/musicwright-compose/SKILL.md) | Theory for prompting and judging: modes, world scales, progressions, tempo, form, motifs, ranges; caption vocabulary; MIDI, ABC, MusicXML, code music and DAW bridges | moderate |
+| [`musicwright-compose`](skills/musicwright-compose/SKILL.md) | Theory for prompting and judging: modes, world scales, progressions, tempo, form, motifs, ranges; caption vocabulary; MIDI, ABC, MusicXML, code music and DAW bridges; notation and tabs played as audio, recordings transcribed to notes | moderate |
 | [`musicwright-produce`](skills/musicwright-produce/SKILL.md) | Loudness targets with sources, two-pass mastering, formats, clipping and silence checks, mixing rules, stems | moderate |
 | [`musicwright-game`](skills/musicwright-game/SKILL.md) | Seamless loops, intro then loop, layers, stingers, Unity import and scheduling, FMOD and Wwise, Steam disclosure | moderate |
 | [`musicwright-score`](skills/musicwright-score/SKILL.md) | Scoring to picture: spotting, tempo for hits, movements joined on hit points, ducking, temp tracks | moderate |
@@ -63,6 +65,9 @@ python mw.py loop music/menu/takes/menu_s4021.flac --start 8 --bars 32 --bpm 96 
 python mw.py master music/menu/out/menu_loop.wav --preset game-music --out music/menu/out/menu_loop_master.wav
 python mw.py join m1.flac m2.flac m3.flac --lengths 24,10,12 --xfade 2 --out score.wav
 python mw.py duck score.wav --under cut.mp4 --out cut_scored.mp4
+python mw.py render riff.txt --bpm 100 --out riff.wav        # ASCII tab, ABC, MusicXML or MIDI to audio
+python mw.py transcribe solo.flac --out solo.mid --to abc,musicxml --lowest C4 --highest A5
+python mw.py pulse solo.flac                                 # is there a beat to put percussion on?
 ```
 
 Full list: [skills/musicwright/references/cli.md](skills/musicwright/references/cli.md). The contract other
@@ -71,7 +76,7 @@ plugins use (folder layout, `music.json`, ledger): [contract.md](skills/musicwri
 ## Install
 
 The skills install nothing and spend nothing on their own. ffmpeg, ComfyUI and its model weights, the ACE-Step
-server, hosted APIs and DAW bridges are yours to install or pay for; `mw.py doctor` says what is missing.
+server, FluidSynth and a SoundFont, librosa or basic-pitch for transcription, hosted APIs and DAW bridges are yours to install or pay for; `mw.py doctor` says what is missing.
 
 As a Claude Code plugin:
 

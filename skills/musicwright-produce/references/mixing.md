@@ -28,12 +28,16 @@ sensitive; harshness 2-5k) · sibilance 5-8k · air 10-16k.
 - Two instruments in one register (two flutes) mask each other: set the new part 3-6 dB under the
   lead, pan them apart (about -0.2 and +0.3) and let the answer sit in the lead's rests.
 - Before adding anything on a beat (tambourine, shaker, drums), check the base has a pulse:
-  `mw.py analyze` and a beat tracker. A free-time (rubato) take gives tempos that disagree from
+  `mw.py pulse base.flac` (steady, weak or none, with a tempo and a grid fit). A free-time (rubato) take gives tempos that disagree from
   window to window and onsets that land on a beat grid barely better than chance. Percussion on
   a grid will drift against it; use phrase-placed accents (a hit or swell at phrase starts) or
   re-render a tempo-locked base.
 - A layer generated separately (its own seed, same bpm and key) does not know where the lead
   breathes; expect to slide it with `--offsets` and still hear two players ignoring each other.
+- To make an added part answer the lead, duck it under the lead (`mw.py duck part.wav --under
+  base.flac --stem --out answer.wav`, ratio 3, attack 80 ms, release 700 ms as a start) and check
+  with `mw.py answer answer.wav --lead base.flac`: `rests_minus_under_db` above 0 means it now sits
+  in the rests. A listener preferred the ducked mix of a lego part over the plain one.
 
 ## Arrangement density
 

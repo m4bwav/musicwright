@@ -4,6 +4,10 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 
 ## Unreleased
 
+- Notation: `mw.py render` plays ABC, ASCII guitar and bass tab, MusicXML and MIDI (FluidSynth and a SoundFont when installed, otherwise a built-in sketch synth) and checks bar lengths; `mw.py notate` converts between ABC, MusicXML, MIDI and tab; `mw.py transcribe` turns a recording into MIDI, ABC, MusicXML or tab (librosa pyin for one instrument, basic-pitch for several), with a level gate and a range filter. The readers and writers are standard-library Python in `scripts/notation.py`. musicwright-compose owns the route (Step 4, references/notation.md).
+- `mw.py pulse` (is there a beat: onsets, inter-onset spread, autocorrelation, grid fit) and `mw.py answer` (does a layered part sit in the lead's rests), both standard library.
+- Recipe `acestep-rest-lego`: one part added to a kept take on the 2B base checkpoint, kept by a listener with the part ducked under the lead.
+- Adding a part is a step in musicwright-generate; the REST reference names the server version that fixes base-model noise (DCW) and the measured VRAM per model.
 - `mw.py mix`: layer stems with per-file gain, offset and pan into one file, with aligned stems.
 - `mw.py gen --task cover|repaint|lego|complete|extract --src F --track T`: work from existing audio on the ACE-Step REST server (lego, complete and extract need a base checkpoint); the source is uploaded and the planner is turned off so the new part hears it.
 - `mw.py duck` keeps the music's length when the key is shorter, and `--stem` writes the ducked music alone.
