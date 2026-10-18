@@ -706,7 +706,7 @@ class Mix(unittest.TestCase):
         code, d = run("mix", FX["tone330"], FX["tone550"], "--offsets", "0,4", "--gains", "0,-6", "--out", dst, "--stems", sd)
         self.assertEqual(code, 0, d)
         self.assertAlmostEqual(d["duration_s"], 10.0, delta=0.01)  # 550 Hz starts at 4 s and lasts 6 s
-        self.assertAlmostEqual(wav_seconds(dst), 10.0, delta=0.01)
+        self.assertAlmostEqual(mw.probe(dst)["duration_s"], 10.0, delta=0.01)
         self.assertEqual([Path(s).name for s in d["stems"]], ["01_tone330.wav", "02_tone550.wav"])
         bp = "bandpass=f=550:width_type=q:w=8,bandpass=f=550:width_type=q:w=8"
         self.assertLess(mean_volume(dst, 1, 3, bp), -45)  # the second layer is silent before its offset
@@ -715,7 +715,7 @@ class Mix(unittest.TestCase):
         a550 = mean_volume(d["stems"][1], 5, 6)
         self.assertAlmostEqual(a330 - a550, 6.0, delta=0.3)  # -6 dB gain
         for s in d["stems"]:
-            self.assertAlmostEqual(wav_seconds(s), 10.0, delta=0.01)  # stems are aligned to the mix
+            self.assertAlmostEqual(mw.probe(s)["duration_s"], 10.0, delta=0.01)  # stems are aligned to the mix
 
     def test_pan_length_and_negative_offset(self):
         dst = TMP / "mix_pan.wav"
