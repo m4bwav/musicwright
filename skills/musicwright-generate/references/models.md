@@ -8,7 +8,7 @@ ai-docs/research/01-models-landscape.md.
 
 | Model | Open | Licence (outputs) | 16 GB | ComfyUI | Notes |
 |---|---|---|---|---|---|
-| ACE-Step 1.5 2B / XL 4B (base, sft, turbo) | yes | MIT; model card allows commercial use of outputs | yes, measured: 2B 10.4 GB, XL 12.9 GB peak | native | 10 s-10 min; cover, repaint; extract/lego/complete on base; LoRA; v0.1.8 (2026-05-18) |
+| ACE-Step 1.5 2B / XL 4B (base, sft, turbo) | yes | MIT; model card allows commercial use of outputs | yes, measured: 2B 10.4 GB, XL 12.9 GB peak | native | 10 s-10 min; cover, repaint; extract/lego/complete on base only (REST server; native ComfyUI has none of the source tasks); LoRA; v0.1.8 (2026-05-18) |
 | MiniMax Music 3 | open weights | MiniMax-Music3 Community Licence: free under USD 20M revenue, show "MiniMax-Music3" in the product UI, disclose AI output | yes (int8 text encoder, dynamic loading) | native | up to 5 min, 32 kHz; text-to-music only; takes often come back shorter than asked |
 | YuE2-3B | open weights | CC BY-NC 4.0 plus creator permission: individuals may sell outputs, companies need a licence | unmeasured (24 GB stated) | native | lyrics + style through an editable ABC score; covers via SheetSage2 |
 | Stable Audio 3 Small / Small-SFX / Medium | open weights (Large API-only) | Stability Community Licence: free under USD 1M revenue, you own outputs | likely (0.46B / 1.4B) | native | licensed training data; instrumental and SFX up to 6:20; no vocals |

@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261017-2 · 2026-10-17 · Layering a new part over a kept take
+- because: user request; pulse analysis of a free-time flute take (2026-10-17)
+- files: references/mixing.md (Layering a new part over a kept take)
+- How to build stage mixes with `mw.py mix`, keep two same-register parts apart, and check for a pulse before adding percussion.
+
 ### C-20261017-1 · 2026-10-17 · Created as an evergreen unit
 - because: user request
 - files: SKILL.md, RESEARCH.md, LEARNINGS.md, evergreen.json (skills: also TESTS.md and evals/evals.json)

@@ -10,6 +10,7 @@ Topic: AI music generation: models, licences, hosted APIs, ACE-Step and MiniMax 
 - MiniMax Music 3 open weights (2026-08) run natively in ComfyUI; licence needs on-product attribution and AI disclosure, free under USD 20M revenue (R-011, R-012).
 - YuE2 (native nodes, ABC score layer) and Stable Audio 3 (licensed data, loops and SFX) are the next local engines to measure; neither is measured on 16 GB yet (R-015, R-021).
 - Hosted: Lyria 3.5 USD 0.08 a song with SynthID; ElevenLabs Music USD 0.15 a minute, Enterprise needed for film, TV and studio games; Suno has no public API and caps downloads; Udio downloads are off (R-001 to R-009).
+- Adding a part to an existing track: ACE-Step `lego` on a base checkpoint through the REST server (`mw.py gen --task lego --src --track`); native ComfyUI cannot. Source tasks must run with the planner off (R-20261017-4, R-20261017-5).
 - Prompting: caption = sound, lyrics/sections = time; tempo and key in their fields; one caption holds one colour, so mood arcs are rendered as movements; cfg 4.5 er_sde linear_quadratic was preferred over cfg 7 euler by a listener (ACE-Step tutorial; local verdicts).
 - Ownership: purely AI output is not copyrightable in the US; vendor 'you own it' clauses are contract terms (R-085, R-086).
 
@@ -17,7 +18,7 @@ Topic: AI music generation: models, licences, hosted APIs, ACE-Step and MiniMax 
 
 - YuE2 and Stable Audio 3 Medium VRAM and time on 16 GB.
 - MiniMax Music 3 against ACE-Step XL in a listening test.
-- Current field names for REST cover, repaint and extract (API.md moves).
+- Lego on free-time solo material: does the new part follow rubato? (first local run 2026-10-17, see R-20261017-6 when written).
 - Tencent SongGeneration and SongBloom licences and homes.
 
 ## Search plan
@@ -52,6 +53,18 @@ Best sources: model cards and repos, vendor pricing and terms pages, court and r
 ## Findings log
 
 Newest first. `Track` is subject, tooling, practice, or testing.
+
+### R-20261017-5 · 2026-10-17 · Adding a part to an existing track: routes
+- Summary: ACE-Step 1.5 `lego` on a base checkpoint is the only open route found that generates a new stem conditioned on the user's own audio. Tasks by checkpoint: turbo and sft do text2music, cover and repaint; only `acestep-v15-base` (2B, 4.79 GB on Hugging Face) and `acestep-v15-xl-base` (4B, 19.95 GB as fp32 shards; about 10 GB as Comfy-Org's bf16 file) do `extract`, `lego` and `complete`. The docs put XL base at 24 GB or more; on 16 GB it needs CPU offload. REST fields: `task_type`, `track_name` (one of woodwinds, brass, fx, synth, strings, percussion, keyboard, guitar, bass, drums, backing_vocals, vocals; a flute is `woodwinds`), `track_classes` for complete, `repainting_start`/`repainting_end` as the window, `audio_cover_strength` for cover, `model`, `inference_steps` (server default 8, base wants 50), `guidance_scale` (default 7.0). The server refuses absolute `src_audio_path` values outside its temp folder, so the source is uploaded as multipart field `src_audio`; the other fields can travel as one JSON `param_obj` form field. Native ComfyUI has no source tasks: `ReferenceTimbreAudio` only attaches timbre latents, and the Comfy tutorial says cover and repaint are not supported. ComfyUI_RyanOnTheInside has `ACEStep15NativeLegoGuider` (needs a restart and a base file in ComfyUI's format); ComfyUI-AceMusic wraps ACE-Step v1 and has no lego. YuE2 edits regenerate the whole recording (CC BY-NC weights); Stable Audio 3 inpaints and continues but has no stem conditioning; MiniMax Music 3 takes no audio. Hosted: Suno Studio (Premier) adds parts to imported audio; ElevenLabs inpainting replaces sections and does not layer; Lyria takes no audio; Udio downloads are off. Lego history: noise and unsynced output in issues #311, #369, #1048, #1255; fixes #810 (2026-03) and #1287 (2026-08-16).
+- Track: subject
+- Sources: github.com/ace-step/ACE-Step-1.5 docs/en/INFERENCE.md (Lego, Complete), docs/en/API.md, docs/en/Tutorial.md (DiT selection), acestep/constants.py (TRACK_NAMES, TASK_INSTRUCTIONS), acestep/api/http/release_task_audio_paths.py; huggingface.co/api/models/ACE-Step/acestep-v15-base and -xl-base; docs.comfy.org/tutorials/audio/ace-step/ace-step-v1-5; github.com/ryanontheinside/ComfyUI_RyanOnTheInside; github.com/hiroki-abe-58/ComfyUI-AceMusic; help.suno.com/en/articles/7940161; elevenlabs.io/docs/eleven-api/guides/how-to/music/inpainting (all checked 2026-10-17)
+- Magnitude: moderate (new capability: mw.py gen --task)
+
+### R-20261017-4 · 2026-10-17 · Lego ignores the source when the planner runs (before #1287)
+- Summary: with `thinking` true, servers older than ACE-Step PR #1287 (merged 2026-08-16) let the 5Hz LM write audio codes from the text alone for `lego` and `complete`; those codes pre-empt the source ("Audio codes provided, ignoring src_audio"), so the new part never hears the track. #1287 skips the LM for both tasks as an interim default. A client can get the same effect on any server version by sending `thinking: false` with `use_cot_caption` and `use_cot_language` false; mw.py does this for every source task.
+- Track: subject
+- Sources: github.com/ace-step/ACE-Step-1.5 commit 14c0211 (PR #1287) message and tests (checked 2026-10-17)
+- Magnitude: moderate
 
 ### R-20261017-3 · 2026-10-17 · Recipe check on a solo-instrument brief
 - Summary: Three seeds of the default XL recipe for an unaccompanied flute: two came out solo, one added a low drone. Seed variance, not the caption, decided it; keep the fish-then-lock workflow.

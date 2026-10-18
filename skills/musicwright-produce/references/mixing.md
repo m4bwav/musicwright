@@ -20,6 +20,21 @@ sensitive; harshness 2-5k) · sibilance 5-8k · air 10-16k.
 - AI output: gentle EQ, a limiter, loudness normalisation. It is usually dense already: add no
   compression.
 
+## Layering a new part over a kept take
+
+- Keep every layer as its own file and build each stage as a mix: `mw.py mix base.flac part.wav
+  --gains 0,-4 --pans -0.2,0.25 --stems stems/ --out stage2.wav`. The aligned stems let the
+  listener judge a part alone and re-balance it in a DAW.
+- Two instruments in one register (two flutes) mask each other: set the new part 3-6 dB under the
+  lead, pan them apart (about -0.2 and +0.3) and let the answer sit in the lead's rests.
+- Before adding anything on a beat (tambourine, shaker, drums), check the base has a pulse:
+  `mw.py analyze` and a beat tracker. A free-time (rubato) take gives tempos that disagree from
+  window to window and onsets that land on a beat grid barely better than chance. Percussion on
+  a grid will drift against it; use phrase-placed accents (a hit or swell at phrase starts) or
+  re-render a tempo-locked base.
+- A layer generated separately (its own seed, same bpm and key) does not know where the lead
+  breathes; expect to slide it with `--offsets` and still hear two players ignoring each other.
+
 ## Arrangement density
 
 3-5 focal elements at once, each in its own register. A good track has at least two density

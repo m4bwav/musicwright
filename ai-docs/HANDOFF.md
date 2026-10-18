@@ -27,6 +27,12 @@ State on 2026-10-17, end of the first session.
    - Docs: cli.md and the game skill say a seam ratio of "about 1 or less" is clean while the code says up to 2; argument errors exit 2 with usage on stderr, not JSON; contract.md omits music.json's `created`.
 6. v0.1.0 released 2026-10-17. The next release (0.1.1) should carry the bug fixes in item 7; bump plugin.json, mw.py VERSION and CHANGELOG.md together.
 
+## Layers session (2026-10-17, unfinished)
+
+- Branch `layers` / PR #5: `mw.py mix`, `gen --task lego|complete|extract|cover|repaint --src --track`, `duck --stem` and length fix, `--out` folders. Source tasks on base checkpoints send `dcw_enabled: false`: with DCW forced on (ACE-Step servers before PR #1273) base-model lego returns noise (issue #1259).
+- Verified on real hardware: lego on the 2B base through the REST route (the part alone, centred on the source's key; it plays along rather than answering, so the answer is shaped with `duck --stem` keyed by the lead); XL base with CPU offload peaks about 13.5 GB on 16 GB. Lego percussion over a free-time take invents its own grid.
+- Owed: research entry R-20261017-6, LEARNINGS, the generate SKILL.md step for adding a part (plus an eval re-run), a pulse/answer measure in mw.py, listener verdicts. Details are in the owner's private next-session prompt.
+
 ## Next steps
 
 Start from INDEX.md, or paste [next-session-prompt.md](next-session-prompt.md). Run `python tests/check_skills.py`, `python tests/test_mw.py`, `python scripts/budget.py` before every commit; work through pull requests on main and merge your own once CI is green.

@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261017-2 · 2026-10-17 · Source tasks (lego, complete, extract, cover, repaint) documented as run by mw.py
+- because: R-20261017-4, R-20261017-5, user request
+- files: references/acestep-rest.md (Working from existing audio), references/models.md (ACE-Step row), RESEARCH.md (Current understanding, Open questions)
+- The REST reference now names the part list, the base checkpoints and their sizes, the upload and the planner-off rule; the tasks table replaced the "not yet run here" one.
+
 ### C-20261017-1 · 2026-10-17 · Created as an evergreen unit
 - because: user request
 - files: SKILL.md, RESEARCH.md, LEARNINGS.md, evergreen.json (skills: also TESTS.md and evals/evals.json)
