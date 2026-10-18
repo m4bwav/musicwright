@@ -4,7 +4,7 @@
 
 | Format | Write with | Check by | Good for |
 |---|---|---|---|
-| ABC | plain text | abcjs (browser link), `abc2midi`; parse back | short melodies, sharing a tune in chat |
+| ABC | plain text | `mw.py render --check` (stdlib), abcjs (browser link), `abc2midi` | short melodies, sharing a tune in chat |
 | MIDI | `mido`, `pretty_midi` (Python) | re-read, print notes per bar; FluidSynth + a General MIDI SoundFont to render | DAWs, game engines, sketches |
 | MusicXML | `music21` | MuseScore's command line (`<MuseScore executable> -o out.pdf in.musicxml`; the executable is `mscore` on Linux, `MuseScore4` on Windows and macOS; unverified here) or verovio to PNG, then look | scores to print or edit |
 | LilyPond | `.ly` text | `lilypond` to PDF/PNG | engraved scores |
@@ -23,8 +23,8 @@ converts to MIDI, MusicXML, ABC and Strudel.
   native `YuE2GenerateABC`, `YuE2GenerateMusic`).
 - Anticipatory Music Transformer (Apache 2.0): infilling and accompaniment over MIDI. MIDI-LLM:
   text to multitrack MIDI (Llama 3.2 licence). Text2midi (MIT) is the common baseline.
-- Transcription back to notes: MT3, basic-pitch (Apache 2.0); MuScriptor (2026-07, weights
-  licence unstated).
+- Transcription back to notes: `mw.py transcribe` (pyin or basic-pitch, Apache 2.0; see notation.md);
+  YourMT3+ (GPL-3.0) for multi-instrument; MuScriptor (2026-07, weights licence unstated).
 - Often no model is needed: write the MIDI or ABC directly, then render and look.
 
 ## DAW and notation bridges (MCP servers)

@@ -1,6 +1,6 @@
 ---
 name: musicwright-compose
-description: "Use for the musical thinking behind a piece: keys, modes and scales by mood (pentatonic, Japanese in and yo, maqam), chord progressions, tempo by genre, song form, motifs and how to develop them, instrument ranges and timbre words, the genre and mood vocabulary music models respond to, describing a reference without naming the artist, and notes-first routes (MIDI, ABC, MusicXML, LilyPond, Strudel, DAW and MuseScore MCP servers). Use on 'what key sounds heroic', 'chords for a sad cue', 'write a motif', 'make a MIDI', 'describe this style for a prompt', 'teach me music theory'. Rendering audio from a caption is musicwright-generate. Also 'refresh musicwright-compose'."
+description: "Use for the notes and the musical thinking behind a piece: keys, modes and scales by mood, chord progressions, tempo by genre, song form, motifs, instrument ranges, the vocabulary music models respond to, describing a reference without naming the artist; and notation: write MIDI, ABC, MusicXML or tabs, play notation or a guitar tab as audio (mw.py render), convert between them (notate), transcribe a recording into notes, sheet music or tab (transcribe). Use on 'what key sounds heroic', 'chords for a sad cue', 'play this tab', 'turn this ABC into audio', 'write down the melody in this recording'. Captions to audio are musicwright-generate. Also 'refresh musicwright-compose'."
 ---
 
 # musicwright-compose
@@ -14,6 +14,7 @@ number, an example they can hear.
 - **A prompt or brief** (most often): turn the user's words or a reference into caption
   vocabulary, a key, a tempo and a section plan, then hand to musicwright-generate.
 - **Notes**: a motif, chord chart, MIDI file, score or live-code pattern. Go to Step 3.
+- **Notation or tabs to hear, or a recording to write down**: Step 4.
 - **A question about music**: answer with the tables in the references, and point to one thing
   to listen for. Offer the learning path when they want more.
 
@@ -39,9 +40,9 @@ Choose the lightest format that does the job ([references/symbolic.md](reference
 
 | Want | Format | Render or check with |
 |---|---|---|
-| a melody to show or hum | ABC notation | abcjs link or abc2midi; parse it back |
-| a MIDI file for a DAW or game | MIDI via mido or pretty_midi | re-read and print bars and notes; FluidSynth + a SoundFont to hear it |
-| a printable score | MusicXML (music21) or LilyPond | MuseScore CLI or LilyPond to PDF/PNG, then look at the page |
+| a melody to show or hum | ABC notation | `mw.py render tune.abc --check`, then `--out tune.wav` |
+| a MIDI file for a DAW or game | ABC rendered to MIDI by mw.py, or mido | `mw.py render` writes the .mid beside the audio |
+| a printable score | MusicXML (`mw.py notate tune.abc --out tune.musicxml`) or LilyPond | MuseScore or LilyPond to PDF/PNG, then look at the page |
 | a looping pattern | Strudel or Sonic Pi code | a strudel.cc share link; the user presses play |
 | the user's own DAW | a DAW MCP server (Ableton, REAPER, Logic) | read back the project after every write |
 
@@ -49,6 +50,22 @@ Always validate what you wrote by parsing it back and, when possible, rendering 
 image you can look at. Motif continuity across separate AI renders is weak: when a theme must
 return in other cues, keep its notes here and use cover or repaint from one render rather than
 hoping a caption reproduces it.
+
+## Step 4: notation to audio and back
+
+([references/notation.md](references/notation.md) has the formats, tools and limits.)
+
+1. **Play it**: `mw.py render <file> --check` reads ABC, ASCII tab, MusicXML or MIDI and lists
+   bars that do not add up; fix those (usually a wrong note length), then
+   `mw.py render <file> --out out/x.wav` (FluidSynth with a SoundFont when installed, otherwise a
+   built-in sketch synth). Tabs carry no rhythm: say the tempo (`--bpm`) and check the step it chose.
+2. **Make it sound performed**: the render is a fine source for an ACE-Step cover (strength
+   0.5-0.9, a caption naming the real instrument). That route is experimental, so the listener picks.
+3. **Write it down**: `mw.py transcribe take.flac --out notes/take.mid --to abc,musicxml,tab`
+   with `--lowest`/`--highest` set to the instrument's range. One line: pyin. Several notes at once:
+   `--engine basic-pitch`, on stems for a full mix. Free time: run `mw.py pulse` and pass `--bpm`.
+4. Render the transcription back and let the listener compare it with the recording; open the
+   MusicXML in MuseScore to read or correct it. Say that a transcription is a draft.
 
 ## Rules
 
@@ -65,6 +82,7 @@ hoping a caption reproduces it.
 - [references/theory.md](references/theory.md): modes, world scales, progressions, tempo, meter, form, motif development, ranges.
 - [references/vocabulary.md](references/vocabulary.md): caption vocabulary, describing a reference, failure modes.
 - [references/symbolic.md](references/symbolic.md): MIDI, ABC, MusicXML, LilyPond, Strudel, DAW and notation MCP servers, learning path.
+- [references/notation.md](references/notation.md): render, notate and transcribe: what each format reads, FluidSynth and SoundFonts, pyin and basic-pitch, limits.
 
 ## Maintenance
 

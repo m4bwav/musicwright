@@ -15,3 +15,11 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill | repo:<slug> | env:<name> | global
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
 -->
+
+### L-001 · 2026-10-18 · Gate a transcription by level and range before reading it
+- Trigger: 2026-10-18, both pyin and basic-pitch wrote 15-20 s of notes into a solo flute take's silent tail (hiss and hum), basic-pitch added D1 rumble notes, and pyin read part of a breathy phrase an octave up
+- Hypothesis: pitch trackers report a pitch for any periodic noise; a wide search range lets breath noise lock onto harmonics
+- Rule: set `--lowest`/`--highest` to the instrument's range and keep the level gate on (mw.py drops notes 35 dB under the loud passages); sheet the render of the transcription beside the recording before handing it over
+- Evidence: R-20261018-1, confirmed 2026-10-18 (after the gate both transcriptions ended at 41 s with the take)
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-18

@@ -11,10 +11,20 @@ cd <ACE-Step-1.5 checkout> && uv run acestep-api --host 127.0.0.1 --port 8001
 curl http://127.0.0.1:8001/health        # models_initialized false until the first job loads them
 ```
 
+- Choose the model at start: `ACESTEP_CONFIG_PATH=acestep-v15-base ACESTEP_INIT_LLM=false acestep-api --host
+  127.0.0.1 --port 8001` for lego, complete and extract (the planner is off for source tasks, so skip
+  loading it); add `ACESTEP_OFFLOAD_TO_CPU=true` for `acestep-v15-xl-base` on 16 GB.
+- Source tasks on base checkpoints need a server at or after commit ca1e85f (PRs #1273 and #1282):
+  older servers force DCW on and base models then return noise (issue #1259). mw.py sends
+  `dcw_enabled: false` for these tasks; an older server ignores the field, so update the checkout.
 - The Gradio UI (port 7860) is a separate process and does not serve this API.
 - The first `/release_task` loads the models inside the request (about 2.5 min on a 16 GB card):
   use a 900 s submit timeout (mw.py does).
-- It peaks about 10.4 GB. Do not run it beside ComfyUI's ACE-Step XL or a video model on 16 GB.
+- It peaks about 10.4 GB with the 2B turbo and planner, 7.5 GB with the 2B base (16-25 s per 60 s
+  take) and 13.5 GB with XL base on CPU offload (about 530 s for three 60 s takes, load included).
+  Do not run it beside ComfyUI's ACE-Step XL or a video model on 16 GB: free ComfyUI's models first
+  (`POST /free` with `{"unload_models": true, "free_memory": true}` cancels nothing) once its queue
+  has been idle a few minutes, and stop the server by its process id afterwards.
 - If the venv breaks after a Python update: `uv python install 3.12`, move `.venv` aside, `uv sync`,
   check `torch.cuda.is_available()`. Ask before rebuilding someone's environment.
 - On Windows with Smart App Control on, the venv launcher can be blocked ("An Application Control
@@ -57,5 +67,10 @@ description the LM turns into caption and lyrics.
   and `--planner` do not exist on this route and are listed under `ignored`.
 - Sheet the result beside the source: check whether it is the new part alone or a mix, and whether
   its notes start in the source's rests (an answer) or on top of its notes (a double).
+  `mw.py answer PART --lead SRC` measures it. Lego plays along (about the same level in the rests as
+  under the lead) and carries on into the lead's silent tail; `mw.py duck PART --under SRC --stem`
+  shapes it into an answer (R-20261017-6).
+- Percussion lego over a free-time source invents its own tempo. Run `mw.py pulse SRC` first; with no
+  steady pulse, re-render the source at a fixed bpm or place accents on its phrases.
 
 Use only source audio the user owns or has licensed.

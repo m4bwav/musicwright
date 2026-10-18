@@ -21,3 +21,11 @@ Append-only. Newest last.
 - The owner retired the earlier private acestep-music and comfyui-music skills in favour of musicwright; pointers now send music work here from the image-generation plugin and the owner's game project.
 - First listener verdicts on the flute takes: the take the sheet flagged for a low drone was rejected ("bass a flute can't make"); the preferred take was one the sheet had ranked second for its silent tail. Recorded as L-002.
 - Released v0.1.0 on the owner's go-ahead.
+
+## 2026-10-18
+
+- Listener verdicts on the stage-2 layering mixes: the 2B base lego seed 8101 kept, the ducked mix best overall and the plain one liked; seed 8303 ducked slightly over plain, both below 8101. Recorded with `mw.py verdict --by`; recipe `acestep-rest-lego` added from the kept take.
+- Stage 3 built: the kept mix plus a percussion lego take at -8 and -12 dB, and the plain mix at -8 dB. Sheets show no clipping or dropouts. Not yet heard.
+- Wrote up the layers findings (R-20261017-6, L-001 in generate and produce, REST server version and VRAM, generate Step 5) and added `mw.py pulse` and `mw.py answer`, which reproduced last session's hand measurements on the real takes (the solo reads no pulse; the 66 bpm percussion take reads steady at 66.3; ducking moved the kept part 4.4 dB toward the lead's rests).
+- Owner's request: feed musicwright notation or tabs and get music, and the reverse. A research pass (R-20261018-1 in compose) found no maintained Python tab parser and no MIDI input on ACE-Step, so the readers and writers were written in stdlib Python (`scripts/notation.py`) behind `render`, `notate` and `transcribe`, with FluidSynth, SoundFonts, librosa and basic-pitch as the user's optional tools. Kept in musicwright-compose instead of an eighth skill to hold the always-loaded description budget.
+- Bugs caught on real files before commit: ABC octaves one low (C is middle C), a one-line transcription writing chords when two notes snapped to one slot, pyin and basic-pitch writing notes into a take's silent tail (fixed with a level gate and range filter), and the note splitter missing a semitone step reached by a smooth slide (the anchor is now the note's median).

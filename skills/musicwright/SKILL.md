@@ -34,7 +34,7 @@ Scaffold: `mw.py new <dir> --name <Name> --use <use> --duration <s>`. Folder: `b
 | Route | When | Owner |
 |---|---|---|
 | **generate** | audio from a text brief: beds, themes, solos, songs | musicwright-generate |
-| **compose** | notes first: motifs, MIDI, ABC or MusicXML, code music, DAW control, theory questions | musicwright-compose |
+| **compose** | notes first: motifs, MIDI, ABC or MusicXML, code music, DAW control, theory questions; play notation or tabs, transcribe a recording | musicwright-compose |
 | **produce** | the audio exists: master, fix loudness, stems, format, QC | musicwright-produce |
 | **game** | loops, intro plus loop, layers, stingers, Unity, FMOD or Wwise | musicwright-game |
 | **score** | music fitted to a cut: hit points, movements, ducking | musicwright-score |

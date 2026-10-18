@@ -15,3 +15,11 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill | repo:<slug> | env:<name> | global
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
 -->
+
+### L-001 · 2026-10-18 · Base-checkpoint source tasks need DCW off; check a lego take is not noise before judging it
+- Trigger: 2026-10-17, the first three lego takes on the 2B base came back as broadband noise; sheets showed no partials at all
+- Hypothesis: the server forced DCW on for every model (ACE-Step issue #1259); base checkpoints were not trained for it
+- Rule: send `dcw_enabled: false` for lego, complete and extract on base checkpoints (mw.py does), run a server at or after ca1e85f, and sheet every source-task take before anyone listens: noise has no harmonic lines
+- Evidence: R-20261017-6, confirmed 2026-10-17 (three noise takes, then clean takes with the same seeds after the fix)
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17

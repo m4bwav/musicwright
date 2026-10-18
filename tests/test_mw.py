@@ -741,6 +741,217 @@ class Mix(unittest.TestCase):
 
 
 @NEEDS_FFMPEG
+class PulseAndAnswer(unittest.TestCase):
+    def test_click_track_is_steady_and_scattered_clicks_are_not(self):
+        free = TMP / "audio" / "free_clicks.wav"
+        times = [0.3, 0.9, 2.4, 2.7, 4.6, 5.1, 7.3, 7.6, 8.0, 10.2, 11.5, 13.9, 14.3, 16.8, 17.0, 19.4]
+        with wave.open(str(free), "wb") as w:  # clicks at irregular times, as a free-time solo would leave them
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(RATE)
+            frames = bytearray(2 * RATE * 20)
+            for t in times:
+                for i in range(int(0.01 * RATE)):
+                    v = int(26000 * mw.math.sin(2 * mw.math.pi * 1000 * i / RATE))
+                    j = 2 * (int(t * RATE) + i)
+                    frames[j:j + 2] = v.to_bytes(2, "little", signed=True)
+            w.writeframes(bytes(frames))
+        code, d = run("pulse", FX["clicks"], free)
+        self.assertEqual(code, 0, d)
+        steady, loose = d["files"]
+        self.assertEqual(steady["pulse"], "steady", steady)
+        self.assertAlmostEqual(steady["tempo_bpm"], 120, delta=2)
+        self.assertLess(steady["grid_deviation"], 0.05)
+        self.assertLess(steady["ioi_cv"], 0.1)
+        self.assertNotEqual(loose["pulse"], "steady", loose)
+        self.assertGreater(loose["ioi_cv"], 0.5)
+
+    def test_answer_tells_a_reply_from_a_double(self):
+        a = TMP / "audio"
+        lead = lavfi(f"aevalsrc='if(lt(mod(t,2),1),0.5*sin(2*PI*440*t),0)':s={RATE}:d=10", a / "lead.wav")
+        reply = lavfi(f"aevalsrc='if(gte(mod(t,2),1),0.5*sin(2*PI*660*t),0)':s={RATE}:d=10", a / "reply.wav")
+        double = lavfi(f"aevalsrc='if(lt(mod(t,2),1),0.5*sin(2*PI*660*t),0)':s={RATE}:d=10", a / "double.wav")
+        code, d = run("answer", reply, "--lead", lead)
+        self.assertEqual(code, 0, d)
+        self.assertGreater(d["rests_minus_under_db"], 20)
+        self.assertTrue(d["shape"].startswith("answers"), d)
+        self.assertAlmostEqual(d["lead_active_share"], 0.5, delta=0.05)
+        code, d = run("answer", double, "--lead", lead)
+        self.assertLess(d["rests_minus_under_db"], -20)
+        self.assertTrue(d["shape"].startswith("doubles"), d)
+        code, d = run("answer", FX["tone"], "--lead", TMP / "audio" / "missing.wav")
+        self.assertFalse(d["ok"])
+
+
+FIXTURES = Path(__file__).resolve().parent / "fixtures"
+
+
+def pitches(track):
+    return [mw.notation.midi_name(n.pitch) for n in track.notes]
+
+
+class NotationReaders(unittest.TestCase):
+    """notation.py readers and writers: standard library only, no ffmpeg."""
+
+    def test_abc_keys_lengths_repeats_and_chords(self):
+        s, kind = mw.notation.load(FIXTURES / "tune.abc", chords=True)
+        self.assertEqual(kind, "abc")
+        self.assertEqual(s.title, "Fixture tune")
+        self.assertEqual(s.tempos, [(0.0, 120.0)])
+        self.assertAlmostEqual(s.length_beats(), 24.0)  # A B ending-1, A B ending-2
+        mel = s.tracks[0]
+        self.assertEqual(pitches(mel)[:4], ["G4", "B4", "D5", "B4"])  # C is middle C; d is an octave up
+        self.assertEqual(pitches(mel)[7], "C#5")
+        self.assertEqual(pitches(mel)[-2:], ["F#4", "G4"])  # K:G sharpens F
+        starts = [round(n.start, 3) for n in mel.notes]
+        self.assertEqual(starts[8:10], [8.0, 8.75])  # B>A: dotted then short
+        self.assertEqual(starts[20:23], [20.0, 20.333, 20.667])  # (3ABA in one beat
+        self.assertEqual(len(s.tracks), 2)  # --chords adds the chord part
+        self.assertEqual(s.key, (1, "major"))
+        self.assertEqual(s.warnings, [])
+
+    def test_abc_bar_check_accidentals_and_voices(self):
+        abc = "X:1\nT:t\nM:3/4\nL:1/4\nK:F\nB ^F F | B2 | F3 |\nV:2\nC, D, E, | F,3 | G,3 |\n"
+        s = mw.notation.parse_abc(abc)
+        top = pitches(s.tracks[0])
+        self.assertEqual(top[:3], ["A#4", "F#4", "F#4"])  # B is flat in F (Bb = A#), ^F lasts to the bar line
+        self.assertEqual(top[4], "F4")  # the bar line cancels ^F
+        self.assertTrue(any("bar 2 lasts 2" in w for w in s.warnings), s.warnings)  # the 2-beat bar in 3/4
+        self.assertEqual(pitches(s.tracks[1])[0], "C3")
+        self.assertIn("no Q: tempo", " ".join(s.warnings))
+        with self.assertRaises(mw.notation.NotationError):
+            mw.notation.parse_abc("just some words")
+
+    def test_tab_tuning_frets_and_step(self):
+        s, kind = mw.notation.load(FIXTURES / "riff.txt", bpm=100)
+        self.assertEqual(kind, "tab")
+        self.assertEqual(s.tuning[-1], 38)  # the low string is labelled D: drop D
+        ps = pitches(s.tracks[0])
+        self.assertIn("C4", ps)  # D3 string, fret 10 (two digits)
+        self.assertEqual(sorted(set(ps)), sorted({"D2", "D3", "G3", "A3", "F3", "C4"}))
+        self.assertTrue(any("no rhythm" in w for w in s.warnings))
+        s2, _ = mw.notation.load(FIXTURES / "riff.txt", tab_step=0.25)
+        self.assertAlmostEqual(s2.tracks[0].notes[2].start - s2.tracks[0].notes[0].start, 4 * 0.25)
+        with self.assertRaises(mw.notation.NotationError):
+            mw.notation.parse_tuning("E2,A2", 6)
+
+    def test_midi_round_trip(self):
+        s, _ = mw.notation.load(FIXTURES / "tune.abc")
+        f = Path(tempfile.mkdtemp(prefix="mw_nt_")) / "t.mid"
+        mw.notation.write_midi(s, f)
+        back = mw.notation.parse_midi(f.read_bytes())
+        self.assertEqual(pitches(back.tracks[0]), pitches(s.tracks[0]))
+        self.assertAlmostEqual(back.tempos[0][1], 120.0, places=3)
+        self.assertEqual(back.meter, (4, 4))
+        self.assertEqual(back.key, (1, "major"))
+        for a, b in zip(s.tracks[0].notes, back.tracks[0].notes):
+            self.assertAlmostEqual(a.start, b.start, places=2)
+        shutil.rmtree(f.parent, ignore_errors=True)
+
+    def test_musicxml_and_abc_writers_read_back(self):
+        abc = "X:1\nT:w\nM:4/4\nL:1/8\nQ:1/4=90\nK:Bb\nB2 d2 f4 | e2 c2 B4- | B8 |]\n"
+        s = mw.notation.parse_abc(abc)
+        xml = mw.notation.write_musicxml(s)
+        back = mw.notation.parse_musicxml(xml.encode())
+        self.assertEqual(pitches(back.tracks[0]), pitches(s.tracks[0]))
+        self.assertAlmostEqual(back.tracks[0].notes[-1].dur, 6.0)  # tied across the bar line
+        self.assertEqual(back.tempos[0][1], 90.0)
+        again = mw.notation.parse_abc(mw.notation.write_abc(s))
+        self.assertEqual(pitches(again.tracks[0]), pitches(s.tracks[0]))
+        self.assertEqual([n.start for n in again.tracks[0].notes], [n.start for n in s.tracks[0].notes])
+        tab, warn = mw.notation.write_tab(s)
+        self.assertIn("e|", tab)
+        self.assertEqual(warn, [])
+
+    def test_mono_slot_keeps_the_longer_note_and_key_estimate(self):
+        sc = mw.notation.score_from_seconds([mw.notation.Note(0.0, 0.05, 62), mw.notation.Note(0.06, 0.6, 64)], 60)
+        bars = mw.notation.quantised_stream(sc.tracks[0], 4, 16)
+        self.assertEqual(bars[0][0][1], [64])
+        notes = [mw.notation.Note(i, 1, p) for i, p in enumerate([57, 60, 64, 57, 62, 65, 57, 64, 69])]
+        self.assertEqual(mw.notation.estimate_key(notes), (0, "minor"))  # A minor
+        self.assertEqual(mw.notation.program_of("flute"), 73)
+        with self.assertRaises(mw.notation.NotationError):
+            mw.notation.program_of("kazoo")
+
+
+@NEEDS_FFMPEG
+class NotationCommands(unittest.TestCase):
+    def test_render_check_and_builtin_render(self):
+        code, d = run("render", FIXTURES / "tune.abc", "--check")
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["read_as"], "abc")
+        self.assertEqual(d["beats"], 24.0)
+        self.assertIn("chord symbols were not played", " ".join(d["warnings"]))
+        dst = TMP / "nt" / "tune.wav"
+        code, d = run("render", FIXTURES / "tune.abc", "--chords", "--synth", "builtin", "--out", dst)
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["synth"], "builtin")
+        self.assertTrue(Path(d["midi"]).exists())
+        self.assertAlmostEqual(d["measure"]["duration_s"], 12.0 + 1.5, delta=0.1)  # 24 beats at 120 + the release tail
+        self.assertGreater(mean_volume(dst, 0.5, 11), -40)
+
+    def test_render_tab_transposed_flac_and_errors(self):
+        dst = TMP / "nt" / "riff.flac"
+        code, d = run("render", FIXTURES / "riff.txt", "--bpm", "90", "--transpose", "-2", "--synth", "builtin", "--out", dst)
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["tracks"][0]["range"][0], "C2")  # D2 down a tone
+        self.assertEqual(mw.probe(dst)["codec"], "flac")
+        code, d = run("render", FIXTURES / "tune.abc", "--synth", "fluidsynth", "--out", TMP / "nt" / "x.wav")
+        if not mw.fluidsynth_bin():
+            self.assertFalse(d["ok"])
+            self.assertIn("FluidSynth not found", d["error"])
+        code, d = run("render", FIXTURES / "tune.abc")
+        self.assertIn("--out", d["error"])
+        code, d = run("render", FIXTURES / "tune.abc", "--program", "kazoo", "--check")
+        self.assertIn("unknown instrument", d["error"])
+
+    def test_notate_formats(self):
+        for to, ext, marker in (("abc", ".abc", "K:G"), ("musicxml", ".musicxml", "<score-partwise"), ("tab", ".txt", "e|")):
+            dst = TMP / "nt" / ("tune" + ext)
+            code, d = run("notate", FIXTURES / "tune.abc", "--out", dst)
+            self.assertEqual(code, 0, d)
+            self.assertEqual(d["to"], to)
+            self.assertIn(marker, Path(dst).read_text(encoding="utf-8"))
+        mid = TMP / "nt" / "tune.mid"
+        code, d = run("notate", FIXTURES / "tune.abc", "--out", mid)
+        self.assertEqual(d["to"], "midi")
+        code, d = run("notate", mid, "--bpm", "60", "--out", TMP / "nt" / "slow.abc")
+        self.assertEqual(code, 0, d)
+        self.assertAlmostEqual(d["beats"], 12.0)  # MIDI keeps its timing: 12 s at 60 bpm is 12 beats
+        self.assertIn("snapped to a grid", " ".join(d["warnings"]))
+        code, d = run("notate", FIXTURES / "tune.abc", "--out", TMP / "nt" / "x.pdf")
+        self.assertFalse(d["ok"])
+
+    def test_transcribe(self):
+        a = TMP / "audio"
+        seq = lavfi(f"aevalsrc='0.4*sin(2*PI*if(lt(t,0.5),440,if(lt(t,1),493.88,if(lt(t,1.5),523.25,0)))*t)*lt(t,1.5)':s={RATE}:d=2.5",
+                    a / "abc_seq.wav")
+        try:
+            import librosa  # noqa: F401
+            have = True
+        except ImportError:
+            have = False
+        code, d = run("transcribe", seq, "--out", TMP / "nt" / "seq.mid", "--to", "abc,musicxml,tab", "--bpm", "120",
+                      "--lowest", "C4", "--highest", "C6")
+        if not have:
+            if REQUIRE_LIBROSA:
+                self.fail("MUSICWRIGHT_REQUIRE_LIBROSA=1 but librosa is not installed")
+            self.assertFalse(d["ok"])
+            self.assertIn("uv run", d["fix"])
+            self.assertIn("transcribe", d["fix"])
+            return
+        self.assertEqual(code, 0, d)
+        names = d["tracks"][0]
+        self.assertEqual(names["range"], ["A4", "C5"])
+        self.assertTrue(all(Path(f).exists() for f in d["files"].values()))
+        back = mw.notation.parse_midi(Path(d["files"]["midi"]).read_bytes())
+        self.assertEqual([mw.notation.midi_name(n.pitch) for n in back.notes()], ["A4", "B4", "C5"])
+        self.assertLess(d["duration_s"], 1.7)  # nothing in the silent tail
+        code, d = run("transcribe", seq, "--out", TMP / "nt" / "seq.abc")
+        self.assertIn(".mid", d["error"])
+
+
+@NEEDS_FFMPEG
 class OutFolders(unittest.TestCase):
     def test_commands_create_missing_out_folders(self):
         base = TMP / "deep"
