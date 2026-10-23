@@ -58,3 +58,4 @@ Append-only. Newest last.
 ## [2026-10-23] index | rebuilt (6 entries)
 ## [2026-10-23] ci | ffmpeg on Ubuntu from a static build
 - `apt-get install ffmpeg` stalled 20-40 minutes on several runs (the analyze job of #10 took 40 min, books-9 hung twice). Ubuntu jobs and release.yml now download BtbN's static ffmpeg 9.0 build (GitHub release, 3-minute limit) and fall back to apt; macOS and Windows unchanged. Owner's go-ahead 2026-10-23.
+## [2026-10-23] wiki | republished for 0.1.1 (wiki e35cc91): ten new commands, the 0.1.1 changes and four findings (HANDOFF item 5); examples rerun against v0.1.1 on Windows and Linux
