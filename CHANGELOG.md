@@ -17,6 +17,8 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 - `mw.py gen --task cover|repaint|lego|complete|extract --src F --track T`: work from existing audio on the ACE-Step REST server (lego, complete and extract need a base checkpoint); the source is uploaded and the planner is turned off so the new part hears it.
 - `mw.py duck` keeps the music's length when the key is shorter, and `--stem` writes the ducked music alone.
 - master, edit, join, loop, duck and sheet create a missing `--out` folder; gen validates before creating one and no longer creates it on dry runs; the REST route sends `--cfg`, `--steps`, `--shift` and `--set`, and lists options it cannot use.
+- Game cues from the level plan (musicwright-game, after Rogers, *Level Up!*): the cue list comes from a beat chart or `LEVEL-PLAN.md` when there is one; new cue types mystery, warning, chase and a villain motif; rules on rotating two tracks per area, energy for action cues, the title piece, silence as an event, stinger direction and a visual twin for cues that carry information.
+- Six skills' `MAINTENANCE.md` files point at the hub's identical copy, which takes the installed skills from 446 KB to 420 KB.
 
 ## 0.1.0 (2026-10-17)
 

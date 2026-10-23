@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-2 · 2026-10-23 · One MAINTENANCE.md for the plugin
+- because: size budget (installed skills 446 KB, green line 400); decisions 2026-10-23-books-track9 M1
+- files: MAINTENANCE.md of compose, curate, game, generate, produce and score
+- The six sibling copies were the same pointer template as this one; they now point here and list their own files. This file is unchanged.
+
 ### C-20261023-1 · 2026-10-23 · Hand over loudness-matched copies; mixcheck in the look step; new mw.py commands
 - because: R-20261023-1 (musicwright-produce), L-003, L-004, T-20261023-1
 - files: SKILL.md (Step 3), references/listening.md (Numbers that point at the mix; questions 8-9; Checks a script can add), references/cli.md, references/loudness.json (lra_hint per preset), scripts/mw.py (mixcheck, compare, preview, monobass; mix --shelves, --shelf-hz, --automate; master --peak; doctor checks the new filters), scripts/notation.py (melody_hints), evals/evals.json (action-2)

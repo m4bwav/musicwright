@@ -1,6 +1,6 @@
 ---
 name: musicwright-game
-description: "Use for the game side of music: seamless loops (bar-exact length, tail crossfaded into the head, seam check), intro-then-loop, vertical layers and stems, stingers, menu, map, combat and boss conventions and lengths, fatigue in long sessions, Unity AudioClip import (Streaming, Vorbis, PlayScheduled), OGG loop tags, FMOD and Wwise basics, Steam's AI disclosure. Runs mw.py loop and seam. Use on 'make this loop seamless', 'combat music with layers', 'import music into Unity', 'why does my loop click', 'intro then loop'. A new piece of game music from a brief starts at musicwright; generating audio is musicwright-generate. Also 'refresh musicwright-game'."
+description: "Use for the game side of music: seamless loops (bar-exact length, tail crossfaded into the head, seam check), intro-then-loop, vertical layers and stems, stingers, cue lists (from a level plan or beat chart), menu, map, combat and boss conventions, fatigue in long sessions, Unity AudioClip import (Streaming, Vorbis, PlayScheduled), OGG loop tags, FMOD and Wwise basics, Steam's AI disclosure. Runs mw.py loop and seam. Use on 'make this loop seamless', 'combat music with layers', 'import music into Unity', 'why does my loop click', 'intro then loop'. A new piece of game music from a brief starts at musicwright; generating audio is musicwright-generate. Also 'refresh musicwright-game'."
 ---
 
 # musicwright-game
@@ -10,8 +10,14 @@ effects, not tire the player, and import cleanly. Script: `mw.py` in the musicwr
 
 ## Step 1: plan the set
 
-- List the cues by game state: menu, map or deck building, combat, boss, shop or rest, victory,
-  defeat, stingers. Lengths and conventions: [references/adaptive.md](references/adaptive.md).
+- When the game has a level plan (a beat chart with one column per level, a `LEVEL-PLAN.md` from
+  madnesswright-scenes, a design one-pager), build the cue list from it, not from genre defaults.
+  Its music row gives the track per area in play order, its big and small moments set the
+  intensity, a new enemy's first room gets a warning cue, a rest room gets silence or a rest cue.
+  Read across the row and flag the same track in two neighbouring areas, and any area long enough
+  to tire of that has one track only. Rules: adaptive.md "Cues from the level plan".
+- With no plan, list the cues by game state: menu, map or deck building, combat, boss, shop or
+  rest, victory, defeat, stingers. Lengths and conventions: [references/adaptive.md](references/adaptive.md).
 - A turn-based or card game runs for hours: fatigue is the enemy. Prefer 2-4 min loops with A/B
   variation, several tracks per area, no hook every 20 s, a sparse 1-4 kHz range for SFX, and
   silence between fights.
@@ -69,7 +75,7 @@ musicwright-generate's references/licences.md on the store page.
 
 - [references/loops.md](references/loops.md): loop math, crossfade method, seam check, intro plus loop, layers from stems.
 - [references/unity.md](references/unity.md): import settings, looping, PlayScheduled stitching, mixer snapshots.
-- [references/adaptive.md](references/adaptive.md): cue list and lengths, horizontal and vertical techniques, FMOD and Wwise terms.
+- [references/adaptive.md](references/adaptive.md): cue list and lengths, cues from a level plan, horizontal and vertical techniques, FMOD and Wwise terms.
 
 ## Maintenance
 

@@ -35,21 +35,21 @@
     }
   ],
   "counts": {
-    "learnings": 0,
-    "changes": 0,
+    "learnings": 1,
+    "changes": 3,
     "research": 0,
-    "tests": 2
+    "tests": 3
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-10-17T11:42",
-    "harness": "headless claude -p, one run per case, fresh session",
+    "last_run": "2026-10-23T08:50",
+    "harness": "headless claude -p --model sonnet, --plugin-dir branch clone, fixtures-only folders",
     "env": "dev-machine",
-    "cases": 6,
-    "passed": 6,
+    "cases": 8,
+    "passed": 8,
     "failed": 0,
     "failing": [],
-    "last_failure": null,
+    "last_failure": "2026-10-23 trigger-2 2/3, classed harness: the run asked for a real track before loading the skill (L-001)",
     "research_after_days": null
   }
 }

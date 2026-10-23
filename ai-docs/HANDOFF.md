@@ -1,13 +1,17 @@
 # Handoff
 
-State on 2026-10-23, end of the books track 8 session (mix checks and craft from two music books). Earlier state from 2026-10-18 follows below it.
+State on 2026-10-23, end of the books track 9 session (game cues from a level plan), after track 8 (mix checks and craft from two music books). Earlier state from 2026-10-18 follows below.
+
+## Books track 9 (2026-10-23)
+
+- musicwright-game builds its cue list from a beat chart or LEVEL-PLAN.md and adaptive.md has four new cue types and rules after Rogers, *Level Up!*; six MAINTENANCE.md files point at the hub's. Rulings M1-M6 and what was not built (`mw.py cues`): [decisions/2026-10-23-books-track9.md](decisions/2026-10-23-books-track9.md). Evals T-20261023-1 in the game TESTS.md (outcome-2 3/3, baseline 0/3).
+- Size: installed skills 422 KB, still over the 400 KB green line (yellow to 800); scripts are 168 KB of it. Trim before the next addition grows it.
 
 ## Books track 8 (2026-10-23)
 
 - Built on branch books-8: `mw.py mixcheck`, `compare`, `preview` (matched, `--blind`, `--as phone|quiet`), `monobass`; `mix --shelves --shelf-hz --automate`; `master --peak`; `lra_hint` per preset; melody hints in `render --check`; prose in produce, hub, compose, generate, curate, game and score. Rulings K1-K11 and what was not built: [decisions/2026-10-23-books-track8.md](decisions/2026-10-23-books-track8.md).
 - Calibration: 78 real AI renders on the owner's machine (mix flags fire on 1% to 18%; 43 raise none), the three judged flute takes (BELOW-RANGE separates the rejected one by 21 dB), 18 public-domain tunes against six random walks (melody flags 0/18 and 6/6). Rates are in musicwright-produce references/mixing.md and compose references/theory.md.
 - Not built: tuning drift, repetition and `analyze --sections` (librosa), a dynamic-EQ harshness repair, sibilance spikes, kick-bass onset coincidence, a codec-ceiling flag. Each needs material or labels this machine does not have yet.
-- Size: installed skills 446 KB, over the 400 KB green line (yellow to 800); trim before the next addition grows it.
 - Evals: T-20261023-1 in the produce, hub, compose and generate TESTS.md. The private harness ran with `--plugin-dir` pointing at the branch and the installed copy disabled in a session `--settings`; clones across drives need `--no-hardlinks`; a baseline in a repository clone finds mw.py itself, so action baselines run in a folder holding only the fixtures.
 - Owed: a listener's comparison of density section tags against mood-only tags; the BRIGHT flag needs a harsh-labelled render.
 - Research (models, licences, tools, fundamentals): [research/index.md](research/index.md).
@@ -27,8 +31,6 @@ State on 2026-10-23, end of the books track 8 session (mix checks and craft from
 4. A loudness-curve fit for film cues and an optional learned quality score: open questions in the hub's RESEARCH.md.
 5. Wiki: live since 2026-10-17 (17 pages, sidebar, footer, every example verified on Windows and Linux against main 62231a9). After the bug fixes below, re-run the verification and republish with the publish script kept in the owner's private notes (wiki-build/publish.sh).
 7. Bugs found while verifying the wiki (fix with tests, one PR):
-   - master, edit, join, loop and duck fail with a raw ffmpeg error when the --out folder does not exist (sheet, new and gen create it).
-   - duck cuts the music to the length of --under and returns the mix, not a music stem; add a --stem or keep-length option and say which it returns.
    - master's "dynamic" warning blames peaks even when loudnorm went dynamic because the measured LRA was 0 (steady tones and drones).
    - gen sends 90 bpm and C major when --bpm/--key are omitted, against the brief's "leave to the model"; minimax-music3 ignores --bpm/--key and acestep-rest ignores --cfg/--steps/--sampler/--scheduler/--shift/--planner/--set without saying so.
    - new accepts an unknown --preset; master --lufs/--tp without --preset reports "streaming"; gen creates --out before validating, leaving empty folders on dry or failed runs.
@@ -42,7 +44,6 @@ State on 2026-10-23, end of the books track 8 session (mix checks and craft from
 - `mw.py render` (ABC, ASCII tab, MusicXML, MIDI to MIDI and audio; FluidSynth and a SoundFont when found, else a built-in sketch synth; `--check` lists bars that do not add up), `mw.py notate` (between ABC, MusicXML, MIDI and tab), `mw.py transcribe` (librosa pyin or basic-pitch; level gate and range filter). Readers and writers are stdlib in `scripts/notation.py`. musicwright-compose owns the route (Step 4, references/notation.md, R-20261018-1, L-001). Tests: 71, green on Python 3.9 and 3.14 locally.
 - Verified here: FluidSynth 2.6.1 Windows zip with GeneralUser GS renders ABC, tab and transcriptions; basic-pitch runs only through `uv tool run --python 3.11 --from basic-pitch --with "numpy<2" --with "setuptools<81"` and needs PYTHONIOENCODING=utf-8 on Windows (mw.py sets it); pyin and basic-pitch agreed on 72% of frames on a solo flute take.
 - Not yet done: the cover-for-realism route (render, then ACE-Step cover at 0.5-0.9) has not been run on hardware; Guitar Pro files are not read (export MusicXML from MuseScore or TuxGuitar); MuseScore CLI export is unverified here.
-- Size: tracked repository 2082 KB, over the 2048 KB green line (yellow); installed skills 390 KB of a 400 KB green line. The next addition that grows the installed size should trim something first.
 
 ## Next steps
 

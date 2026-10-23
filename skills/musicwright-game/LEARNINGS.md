@@ -6,12 +6,11 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
-<!-- Example (delete once you have a real entry):
-### L-001 · 2026-10-17 · One-line lesson in plain words
-- Trigger: what happened, with dates or counts
-- Hypothesis: why
-- Rule: the shortest instruction that prevents the trigger
-- Evidence: C-20261017-1, T-20261017-1, confirmed 2026-10-17
-- Scope: skill | repo:<slug> | env:<name> | global
-- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
--->
+### L-001 · 2026-10-23 · A trigger prompt that points at "this track" needs a believable track beside it
+- Trigger: T-20261023-1, trigger-2 ("an 8 bar seamless loop ... from this track") went 0/3 in an empty folder and 2/3 with a test tone: the model asked which file before it loaded any skill, though its reply named musicwright-game as the plan.
+- Hypothesis: the model resolves the missing input before routing; a run folder without the file, or with an obvious test signal, reads as a question, not a task.
+- Rule: a trigger case whose prompt refers to a file ships that file as a fixture that looks like real material, or is worded so it needs none; read the reply before calling an undertrigger.
+- Evidence: T-20261023-1, confirmed 2026-10-23
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
