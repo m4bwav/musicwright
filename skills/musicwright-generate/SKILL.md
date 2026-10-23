@@ -38,6 +38,11 @@ Model details, VRAM and licences: [references/models.md](references/models.md) a
 - **Sections = what happens over time.** `--sections "Intro - breathy flute|Verse - melody|Bridge -
   ornamented|Outro - fading flute"`: one modifier per bracket, 4-6 sections for 3 min, 7-9 for 10
   min, and they must agree with the caption. Without sections use `[Instrumental]`.
+- **Sections carry density**: say who plays, not only the mood: `Intro - pad and kick only|Build -
+  bass and arpeggios enter|Breakdown - drums drop out|Outro - parts leave in reverse order`. Name
+  the near and the far parts in the caption (close, dry lead; distant, dark pad).
+- **Read the listener's taste first**: the studio's `taste.md`, including its "Tired of" list
+  (musicwright-curate), so a new caption does not repeat what they have worn out.
 - **Say what to leave out by saying what is there**: "solo flute, unaccompanied" works better than
   "no drums", because naming an instrument can summon it.
 - **Noise textures** (static, hiss, beeps, sonar) come out loud and harsh. Qualify them ("faint,
@@ -50,7 +55,11 @@ Model details, VRAM and licences: [references/models.md](references/models.md) a
 
 1. Fish: 3-6 seeds at the target length (or 120-180 s for long pieces), same caption.
 2. Look and report (hub Step 3), get a verdict, lock the best seed.
-3. Change **one** knob, re-render the locked seed, compare. Then scale up.
+3. Change **one** knob, re-render the locked seed, compare on matched copies (`mw.py preview`).
+   Then scale up.
+4. Stop: three or four one-knob changes after the lock is usually the end of real gains. When the
+   last two did not help, say so and finish with the best take; further changes are a coin toss
+   (after DeSantis, *Making Music* ch. 76, 78).
 
 Cheat-sheet (ACE-Step XL):
 

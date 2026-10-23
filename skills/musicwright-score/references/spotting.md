@@ -37,6 +37,10 @@ each hit point. A 2 s equal-power crossfade suits a mood change; use 0.5-1 s for
 - `mw.py duck` defaults: threshold 0.03, ratio 4, attack 40 ms, release 500 ms. Raise the ratio
   for a deeper duck.
 - Music under a line ruins pitch tracking of that line: measure or tune voices alone.
+- Keep the foreground steady under dialogue: a sudden burst at 2-5 kHz pushes the voice back and
+  the ear is slow to settle again (after Oltheten, *Mixing With Impact* 5.4). Check every cue that
+  plays under speech with `mw.py mixcheck`: BRIGHT or a high `presence_db` means it competes with
+  the voice; pick another take or duck it.
 
 ## Temp tracks
 
