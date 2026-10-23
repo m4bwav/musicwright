@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-5 · 2026-10-23 · mixcheck retries on the ffmpeg 7.0.2 abort; seam level jump at the seam; pulse onset rise
+- because: L-005; wiki verification of 0.1.1 (ai-docs/HANDOFF.md item 5)
+- files: scripts/mw.py (mix_series, seam_score, pulse_of), references/cli.md (seam; pulse)
+- mixcheck pads a copy to whole seconds and measures again when ffmpeg aborts with best_input; seam fits a Theil-Sen line to the 50 ms levels each side and reads it at the seam; pulse reports onset_rise_db and says none under 1 dB.
+
 ### C-20261023-4 · 2026-10-23 · 0.1.1: listening-check flags and bug fixes in mw.py; cli and contract corrections
 - because: decisions 2026-10-23-listening-checks
 - files: scripts/mw.py (hosts, seam, master, new, verdict, gen, analyze), references/cli.md (errors; seam; analyze), references/contract.md (music.json)

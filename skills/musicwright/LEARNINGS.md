@@ -6,6 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-005 · 2026-10-23 · Read a seam's level at the seam, and check onsets are hits before calling a beat
+- Trigger: the 0.1.1 wiki verification found `seam` reading a loop cut on a kick as "check by ear" (3.5 dB) and `pulse` calling a swelling tone with no beat "steady" at 120 bpm, though the 0.1.1 tests passed; the test kick was too short to show either.
+- Hypothesis: a median over half a second measures a swell's slope times a quarter second, not a jump; the level envelope of a steady tone ripples, so a rising tone yields evenly spaced onsets of a few tenths of a dB that autocorrelate like a beat.
+- Rule: fit a robust line (Theil-Sen) to the 50 ms levels each side and compare the two lines at the seam; in `pulse`, take the median rise over an onset and call it no pulse under 1 dB. Build test fixtures from the case that failed in use, not a simplified one.
+- Evidence: the kit's loop read 1.29 dB (clean); a 2:1 level step still reads -12 dB; onset rise 0.41 dB on the swelling tone against 2.4 to 27.6 dB on 52 real renders and 6.5 on the kick take; tests test_loop_cut_on_a_kick_over_a_swelling_bed_is_clean, test_a_real_level_step_is_still_caught, test_swelling_tone_has_no_pulse; five mutations caught
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
 ### L-004 · 2026-10-23 · A blind key must not sit in the folder the listener opens
 - Trigger: in an eval run, the agent asked for blind copies saw `preview --blind` write the key into the listening folder, moved it out by hand and said the tool should not put it there.
 - Hypothesis: a key beside the copies is one click from the listener, which undoes the blind test.

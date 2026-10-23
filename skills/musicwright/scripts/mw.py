@@ -499,15 +499,23 @@ def seam_score(path):
     steps = sorted(abs(L[i + 1] - L[i]) for i in range(0, len(L) - 1, max(1, len(L) // 200000)))
     p99 = steps[int(len(steps) * 0.99)] or 1
     jump = abs(L[0] - L[-1])
-    # median of 50 ms windows over the half second each side: a hit on the first beat is music, not a seam
+    # 50 ms window levels over the half second each side, a robust line through each (Theil-Sen) read at the seam:
+    # a hit on the first beat is one outlier, and a swell running through the seam is music, not a jump
     win = min(len(L) // 40, rate // 20) or 1
     span = min(len(L) // 4, rate // 2)
 
-    def level(seg):
-        rms = sorted(math.sqrt(sum(v * v for v in seg[i:i + win]) / win) for i in range(0, max(1, len(seg) - win + 1), win))
-        return rms[len(rms) // 2] or 1.0
-    rms_end, rms_start = level(L[-span:]), level(L[:span])
-    level_jump_db = round(20 * math.log10(max(rms_start, 1.0) / max(rms_end, 1.0)), 2)
+    def levels(seg):
+        return [20 * math.log10(max(1.0, math.sqrt(sum(v * v for v in seg[i:i + win]) / win)))
+                for i in range(0, max(1, len(seg) - win + 1), win)]
+
+    def at(db, x):
+        n = len(db)
+        slopes = sorted((db[j] - db[i]) / (j - i) for i in range(n) for j in range(i + 1, n)) or [0.0]
+        b = slopes[len(slopes) // 2]
+        a = sorted(db[i] - b * i for i in range(n))[n // 2]
+        return min(max(a + b * x, min(db)), max(db))
+    head, tail = levels(L[:span]), levels(L[-span:])
+    level_jump_db = round(at(head, -0.5) - at(tail, len(tail) - 0.5), 2)
     ratio = round(jump / p99, 2)
     if tmp:
         shutil.rmtree(tmp.parent, ignore_errors=True)
@@ -941,6 +949,8 @@ def pulse_of(path, tmpd):
     if len(times) < 6:
         row.update({"pulse": "none", "why": "fewer than 6 onsets"})
         return row
+    rise = sorted(max(env[h:h + 4]) - min(env[max(0, h - 6):h + 1]) for h in hits)
+    row["onset_rise_db"] = round(rise[len(rise) // 2], 2)  # median level rise over an onset; a hit rises several dB
     iois = [b - a for a, b in zip(times, times[1:])]
     m = sum(iois) / len(iois)
     row["ioi_cv"] = round(math.sqrt(sum((v - m) ** 2 for v in iois) / len(iois)) / m, 2)
@@ -966,6 +976,8 @@ def pulse_of(path, tmpd):
     row.update({"autocorr_peak": round(peak, 2), "autocorr_median": round(med, 2), "autocorr_contrast": round(contrast, 2),
                 "tempo_bpm": round(bpm, 1), "grid_deviation": round(dev, 3), "grid_chance": round(chance, 3),
                 "pulse": "steady" if votes >= 3 else ("weak" if votes >= 1 else "none")})
+    if row["onset_rise_db"] < 1.0:  # real renders measured 2.4 dB or more; a swelling tone's ripple 0.4
+        row.update({"pulse": "none", "why": "onsets rise under 1 dB: a swell or level ripple, not hits"})
     return row
 
 
@@ -978,7 +990,7 @@ def cmd_pulse(a):
     return {"ok": True, "files": rows,
             "reading": "steady: a beat a percussion part can lock to (tempo_bpm may be doubled or halved); "
                        "weak or none: free time, so place accents on phrases or re-render on a fixed tempo rather than adding a beat. "
-                       "grid_deviation near grid_chance means the onsets ignore the grid; ioi_cv above about 0.8 is rubato or phrase-led"}
+                       "grid_deviation near grid_chance means the onsets ignore the grid; ioi_cv above about 0.8 is rubato or phrase-led; onset_rise_db under 1 means no hits at all"}
 
 
 def power_mean_db(env, idx):
@@ -1046,7 +1058,24 @@ def mix_series(path, below_hz=None):
         fc += (f";[s{i}]{pre}asetnsamples=n={MIX_RATE},astats=metadata=1:reset=1:measure_perchannel=none:"
                f"measure_overall=RMS_level,ametadata@{name}=print:key=lavfi.astats.Overall.RMS_level,anullsink")
     fc += f";[s{n - 1}]ebur128=metadata=1:peak=true,ametadata@st=print:key=lavfi.r128.S"
-    err = ffmpeg(["-nostdin", "-i", str(need_file(path)), "-filter_complex", fc, "-f", "null", "-"]).stderr
+    src = need_file(path)
+    p = ffmpeg(["-nostdin", "-i", str(src), "-filter_complex", fc, "-f", "null", "-"], check=False)
+    if p.returncode and "best_input" in p.stderr:
+        # some builds (static 7.0.2) abort when the 48 kHz stream does not end on a whole second: pad a copy and retry
+        tmpd = Path(tempfile.mkdtemp(prefix="mw_mix_"))
+        try:
+            info = probe(src)
+            whole = max(1, math.ceil(info["duration_s"] - 0.001)) * MIX_RATE
+            pad = tmpd / "padded.wav"
+            codec = "pcm_s16le" if info["codec"] == "pcm_s16le" else "pcm_f32le"  # the filters run in the input's format
+            ffmpeg(["-y", "-i", str(src), "-af", f"aresample={MIX_RATE},apad=whole_len={whole},atrim=end_sample={whole}",
+                    "-c:a", codec, str(pad)])
+            p = ffmpeg(["-nostdin", "-i", str(pad), "-filter_complex", fc, "-f", "null", "-"])
+        finally:
+            shutil.rmtree(tmpd, ignore_errors=True)
+    elif p.returncode:
+        raise MwError(f"ffmpeg failed ({p.returncode}): " + "\n".join(p.stderr.strip().splitlines()[-6:]))
+    err = p.stderr
     s = {}
     for m in re.finditer(r"\[ametadata@(\w+) @ [^\]]+\] lavfi\.[\w.]+=(\S+)", err):
         try:
