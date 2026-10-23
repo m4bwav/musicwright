@@ -38,7 +38,8 @@ Model details, VRAM and licences: [references/models.md](references/models.md) a
 - **Sections = what happens over time.** `--sections "Intro - breathy flute|Verse - melody|Bridge -
   ornamented|Outro - fading flute"`: one modifier per bracket, 4-6 sections for 3 min, 7-9 for 10
   min, and they must agree with the caption. Without sections use `[Instrumental]`.
-- **Sections carry density**: say who plays, not only the mood: `Intro - pad and kick only|Build -
+- **Sections carry density** (book craft; in one blind pair of orchestral XL takes the density tags did
+  no better than mood words, and neither take reached the full tutti asked for): say who plays, not only the mood: `Intro - pad and kick only|Build -
   bass and arpeggios enter|Breakdown - drums drop out|Outro - parts leave in reverse order`. Name
   the near and the far parts in the caption (close, dry lead; distant, dark pad).
 - **Read the listener's taste first**: the studio's `taste.md`, including its "Tired of" list

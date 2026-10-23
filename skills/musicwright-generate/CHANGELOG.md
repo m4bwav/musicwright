@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-3 · 2026-10-23 · Density section tags marked as not shown to help; TUNING-GAP over 30 cents
+- because: L-002, decisions 2026-10-23-listening-checks
+- files: SKILL.md (Step 2, sections carry density), references/acestep-rest.md (Working from existing audio)
+- In one blind pair the density tags did no better than mood words and neither take reached the tutti asked for; the bullet now says so. The lego tuning check fires over 30 cents.
+
 ### C-20261023-2 · 2026-10-23 · Tuning gap of an added part
 - because: decisions 2026-10-23-books-track11 (N5)
 - files: references/acestep-rest.md (Adding a part)

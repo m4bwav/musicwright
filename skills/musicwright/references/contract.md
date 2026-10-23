@@ -22,6 +22,7 @@ Keep the field names stable; add fields, never rename them.
 | `musicwright` | version that made the folder |
 | `name`, `use`, `duration_s` | from the brief; `use` is game-loop, game-cue, film-cue, listening or song |
 | `loudness_preset` | name from loudness.json |
+| `created` | when `mw.py new` made the folder (ISO time) |
 | `ai_generated` | true when any deliverable came from a generator |
 | `deliverables` | list of `{file, take, model, licence, seed, lufs_i, true_peak_dbtp, loop: {bars, bpm, length_s} or null}` |
 | `disclosure` | the line to paste into a store page, video description or credits |

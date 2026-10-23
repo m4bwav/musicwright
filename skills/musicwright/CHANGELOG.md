@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-4 · 2026-10-23 · 0.1.1: listening-check flags and bug fixes in mw.py; cli and contract corrections
+- because: decisions 2026-10-23-listening-checks
+- files: scripts/mw.py (hosts, seam, master, new, verdict, gen, analyze), references/cli.md (errors; seam; analyze), references/contract.md (music.json)
+- Hosts without a scheme work; seam's level jump uses a median over half a second; master names a custom target and words dynamic mode on a flat source correctly; new checks the preset; verdict refuses a missing file; gen reports filled-in or ignored bpm and key; analyze drops REPEATS and moves TUNING-GAP to 30 cents.
+
 ### C-20261023-3 · 2026-10-23 · analyze reports tuning, repetition and sections
 - because: decisions 2026-10-23-books-track11; T-20261023-2 (produce, compose)
 - files: scripts/mw.py (analyze), references/cli.md (analyze row), references/listening.md (what analyze's numbers mean)

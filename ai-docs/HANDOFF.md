@@ -1,10 +1,15 @@
 # Handoff
 
-State on 2026-10-23, end of the books track 11 session (tuning, repetition and sections in `analyze`), after tracks 8 and 9. Earlier state from 2026-10-18 follows below.
+State on 2026-10-23: 0.1.1 prepared (listening checks and the bug list). Earlier state follows below.
+
+## Listening checks and 0.1.1 (2026-10-23)
+
+- Four blind pairs judged by the owner: REPEATS dropped as a flag (share still reported), TUNING-GAP over 30 cents, BRIGHT is a fatigue pointer, density section tags not shown to help. Rulings P1-P5 and the bug fixes: [decisions/2026-10-23-listening-checks.md](decisions/2026-10-23-listening-checks.md). The old item 7 bug list is fixed (92 tests, ten mutations caught).
+- Release: tag `v0.1.1` runs release.yml. Then republish the wiki (item 5) and reinstall the plugin.
 
 ## Books track 11 (2026-10-23)
 
-- `mw.py analyze`: tuning (offset, spread, trend, gap from the first file), repetition share, `--sections`; flags OFF-A440, DRIFT, REPEATS, TUNING-GAP. librosa stays optional and CI skips these tests. Rulings N1-N9: [decisions/2026-10-23-books-track11.md](decisions/2026-10-23-books-track11.md). Owed: a listener's verdict on a REPEATS bed and on a tuning gap. Installed skills 433 KB (yellow).
+- `mw.py analyze`: tuning (offset, spread, trend, gap from the first file), repetition share, `--sections`; flags OFF-A440, DRIFT, REPEATS, TUNING-GAP. librosa stays optional and CI skips these tests. Rulings N1-N9: [decisions/2026-10-23-books-track11.md](decisions/2026-10-23-books-track11.md). Listener verdicts: see the section above. Installed skills 433 KB (yellow).
 
 ## Books track 9 (2026-10-23)
 
@@ -15,7 +20,7 @@ State on 2026-10-23, end of the books track 11 session (tuning, repetition and s
 - Built on branch books-8: `mw.py mixcheck`, `compare`, `preview` (matched, `--blind`, `--as phone|quiet`), `monobass`; `mix --shelves --shelf-hz --automate`; `master --peak`; `lra_hint` per preset; melody hints in `render --check`; prose in produce, hub, compose, generate, curate, game and score. Rulings K1-K11 and what was not built: [decisions/2026-10-23-books-track8.md](decisions/2026-10-23-books-track8.md).
 - Calibration: 78 real AI renders on the owner's machine (mix flags fire on 1% to 18%; 43 raise none), the three judged flute takes (BELOW-RANGE separates the rejected one by 21 dB), 18 public-domain tunes against six random walks (melody flags 0/18 and 6/6). Rates are in musicwright-produce references/mixing.md and compose references/theory.md.
 - Not built: a dynamic-EQ harshness repair, sibilance spikes, kick-bass onset coincidence, a codec-ceiling flag. Each needs material or labels this machine does not have yet.
-- Evals T-20261023-1 (produce, hub, compose, generate TESTS.md): run action baselines in a folder holding only the fixtures, since a baseline in a clone finds mw.py. Owed: density tags against mood-only tags by ear; a harsh-labelled render for BRIGHT. Research: [research/index.md](research/index.md).
+- Evals T-20261023-1 (produce, hub, compose, generate TESTS.md): run action baselines in a folder holding only the fixtures, since a baseline in a clone finds mw.py. Density tags and BRIGHT were judged by ear on 2026-10-23 (above). Research: [research/index.md](research/index.md).
 
 ## Done
 
@@ -30,14 +35,7 @@ State on 2026-10-23, end of the books track 11 session (tuning, repetition and s
 3. `mw.py gen --collect` for `--no-wait` jobs: needs the queued recipe saved (a ledger row with status queued) so collected takes are measured and logged.
 4. A loudness-curve fit for film cues and an optional learned quality score: open questions in the hub's RESEARCH.md.
 5. Wiki: live since 2026-10-17 (17 pages, sidebar, footer, every example verified on Windows and Linux against main 62231a9). After the bug fixes below, re-run the verification and republish with the publish script kept in the owner's private notes (wiki-build/publish.sh).
-7. Bugs found while verifying the wiki (fix with tests, one PR):
-   - master's "dynamic" warning blames peaks even when loudnorm went dynamic because the measured LRA was 0 (steady tones and drones).
-   - gen sends 90 bpm and C major when --bpm/--key are omitted, against the brief's "leave to the model"; minimax-music3 ignores --bpm/--key and acestep-rest ignores --cfg/--steps/--sampler/--scheduler/--shift/--planner/--set without saying so.
-   - new accepts an unknown --preset; master --lufs/--tp without --preset reports "streaming"; gen creates --out before validating, leaving empty folders on dry or failed runs.
-   - verdict accepts a missing file and, for a take gen never logged, records the name with its extension so ledger never matches it.
-   - seam's level jump uses the first and last 50 ms, so a loop starting on a drum hit reads "check by ear" with a smooth seam.
-   - Docs: cli.md and the game skill say a seam ratio of "about 1 or less" is clean while the code says up to 2; argument errors exit 2 with usage on stderr, not JSON; contract.md omits music.json's `created`.
-6. v0.1.0 released 2026-10-17. The next release (0.1.1) should carry the bug fixes in item 7; bump plugin.json, mw.py VERSION and CHANGELOG.md together.
+6. v0.1.0 released 2026-10-17; 0.1.1 carries tracks 8, 9, 11, the listening checks and the old item 7 bug list. Bump plugin.json, mw.py VERSION and CHANGELOG.md together.
 
 ## Notation (2026-10-18)
 

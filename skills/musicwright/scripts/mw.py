@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 DEFAULT_COMFY = "http://127.0.0.1:8188,http://127.0.0.1:8000"
@@ -97,15 +97,21 @@ def studio_config():
     return {}
 
 
+def with_scheme(h):
+    """'127.0.0.1:8199' -> 'http://127.0.0.1:8199'; urllib reads a bare host:port as an unknown scheme."""
+    h = h.strip().rstrip("/")
+    return h if "://" in h else "http://" + h
+
+
 def comfy_hosts(arg=None):
     raw = arg or os.environ.get("MUSICWRIGHT_COMFYUI") or studio_config().get("comfyui") or DEFAULT_COMFY
     if isinstance(raw, list):
         raw = ",".join(raw)
-    return [h.strip().rstrip("/") for h in raw.split(",") if h.strip()]
+    return [with_scheme(h) for h in raw.split(",") if h.strip()]
 
 
 def rest_host(arg=None):
-    return (arg or os.environ.get("MUSICWRIGHT_ACESTEP") or studio_config().get("acestep_rest") or DEFAULT_REST).rstrip("/")
+    return with_scheme(arg or os.environ.get("MUSICWRIGHT_ACESTEP") or studio_config().get("acestep_rest") or DEFAULT_REST)
 
 
 def ffmpeg_bin(name="ffmpeg"):
@@ -376,24 +382,29 @@ def master_peak(src, a):
 def cmd_master(a):
     src = need_file(a.input)
     pr = presets()
-    if a.preset not in pr:
+    if a.preset is not None and a.preset not in pr:
         raise MwError(f"unknown preset {a.preset}; choose from {', '.join(sorted(pr))}")
-    p = pr[a.preset]
+    custom = a.preset is None and (a.lufs is not None or a.tp is not None)
+    name = a.preset or ("custom" if custom else "streaming")
+    p = pr[a.preset or "streaming"]
     if a.peak is not None:
         return master_peak(src, a)
     ti = a.lufs if a.lufs is not None else p["lufs"]
     tp = a.tp if a.tp is not None else p["true_peak"]
-    dst = out_file(a.out) if a.out else src.with_name(f"{src.stem}_{a.preset}.wav")
+    dst = out_file(a.out) if a.out else src.with_name(f"{src.stem}_{name}.wav")
     before = measure_file(src)
     first, mode = loudnorm_two_pass(src, dst, ti, tp, a.lra, a.rate)
     after = measure_file(dst)
     warn = []
     if mode and mode != "linear":
-        warn.append("loudnorm fell back to dynamic mode (the target needs more gain than the peaks allow); dynamics were changed. Lower the target or accept it.")
+        if before.get("lra") is not None and before["lra"] < 1:
+            warn.append(f"loudnorm used dynamic mode on a source with almost no loudness range (LRA {before['lra']}), as it does on steady tones and drones; peaks were not the cause. Check the result's level; the sound is usually unchanged.")
+        else:
+            warn.append("loudnorm fell back to dynamic mode (the target needs more gain than the peaks allow); dynamics were changed. Lower the target or accept it.")
     if after["lufs_i"] is not None and abs(after["lufs_i"] - ti) > 1.0:
         warn.append(f"result {after['lufs_i']} LUFS is more than 1 LU from the target {ti}")
-    return {"ok": True, "out": str(dst.resolve()), "preset": a.preset, "target": {"lufs": ti, "true_peak": tp},
-            "preset_note": p.get("note"), "lra_hint": p.get("lra_hint"), "normalization": mode,
+    return {"ok": True, "out": str(dst.resolve()), "preset": name, "target": {"lufs": ti, "true_peak": tp},
+            "preset_note": None if custom else p.get("note"), "lra_hint": None if custom else p.get("lra_hint"), "normalization": mode,
             "before": {k: before[k] for k in ("lufs_i", "true_peak_dbtp", "lra")},
             "after": {k: after[k] for k in ("lufs_i", "true_peak_dbtp", "lra", "duration_s", "sample_rate")},
             "warnings": warn}
@@ -488,9 +499,14 @@ def seam_score(path):
     steps = sorted(abs(L[i + 1] - L[i]) for i in range(0, len(L) - 1, max(1, len(L) // 200000)))
     p99 = steps[int(len(steps) * 0.99)] or 1
     jump = abs(L[0] - L[-1])
-    win = min(len(L) // 4, rate // 20)
-    rms_end = math.sqrt(sum(v * v for v in L[-win:]) / win) or 1.0
-    rms_start = math.sqrt(sum(v * v for v in L[:win]) / win) or 1.0
+    # median of 50 ms windows over the half second each side: a hit on the first beat is music, not a seam
+    win = min(len(L) // 40, rate // 20) or 1
+    span = min(len(L) // 4, rate // 2)
+
+    def level(seg):
+        rms = sorted(math.sqrt(sum(v * v for v in seg[i:i + win]) / win) for i in range(0, max(1, len(seg) - win + 1), win))
+        return rms[len(rms) // 2] or 1.0
+    rms_end, rms_start = level(L[-span:]), level(L[:span])
     level_jump_db = round(20 * math.log10(max(rms_start, 1.0) / max(rms_end, 1.0)), 2)
     ratio = round(jump / p99, 2)
     if tmp:
@@ -741,7 +757,7 @@ def cmd_mix(a):
 ANALYZE_READING = ("pointers for what to listen to, not verdicts. tuning cents are against A440, one value per 10 s window; "
                    "spread_cents is the 10th-90th percentile range (bends, vibrato and pitch effects raise it), trend_cents the "
                    "last third against the first; repetition.share is the part of the track that repeats an 8 s block heard "
-                   "earlier; sections come from timbre and harmony changes (4/4 assumed for bars; tempo can be doubled or halved)")
+                   "earlier (reported, not flagged: a listener heard a bed at 0.98 as less stuck than one at 0.13); sections come from timbre and harmony changes (4/4 assumed for bars; tempo can be doubled or halved)")
 
 
 def tuning_of(y, sr, np, librosa):
@@ -851,10 +867,6 @@ def cmd_analyze(a):
         if t.get("trend_cents") is not None and abs(t["trend_cents"]) >= 15:
             flags.append({"code": "DRIFT", "says": f"pitch moves {t['trend_cents']:+} cents from the first third to the last",
                           "try": "listen for a slow sag or rise; re-roll, or layer nothing sustained over it"})
-        if row["repetition"]["share"] >= 0.9 and len(y) / sr >= 60:
-            flags.append({"code": "REPEATS", "says": f"{round(row['repetition']['share'] * 100)}% of the track repeats a block heard earlier"
-                          + (f" (every {row['repetition']['block_period_s']} s)" if row['repetition']['block_period_s'] else ""),
-                          "try": "listen for whether it feels stuck; repaint one short range as a unique event, or give movements their own captions"})
         row["flags"] = flags
         rows.append(row)
     base = (rows[0].get("tuning") or {}).get("cents") if rows else None
@@ -862,8 +874,8 @@ def cmd_analyze(a):
         c = (r.get("tuning") or {}).get("cents")
         if base is not None and c is not None:
             r["cents_from_first"] = gap = round((c - base + 50) % 100 - 50, 1)
-            if abs(gap) >= 15:
-                r["flags"].append({"code": "TUNING-GAP", "says": f"{gap:+} cents from {Path(rows[0]['file']).name}: layered together they beat",
+            if abs(gap) > 30:  # a listener heard two flutes 28 cents apart as in tune (2026-10-23)
+                r["flags"].append({"code": "TUNING-GAP", "says": f"{gap:+} cents from {Path(rows[0]['file']).name}: held notes together will beat",
                                    "try": "pick takes that agree, or pitch-shift one by the gap before mixing"})
     return {"ok": True, "librosa": librosa.__version__, "files": rows, "reading": ANALYZE_READING}
 
@@ -1106,7 +1118,7 @@ def mixcheck_of(path, lowest=None):
         flag("MUDDY", f"250-500 Hz sits {mud} dB above the bass and mid bands' average",
              "with stems, cut 250-500 Hz on the pad or keys (not the bass); in a prompt, ask for fewer sustained low-mid parts")
     if presence > -10:
-        flag("BRIGHT", f"2-5 kHz is {presence} dB against 200 Hz-2 kHz for half the playing time (heuristic, uncalibrated)",
+        flag("BRIGHT", f"2-5 kHz is {presence} dB against 200 Hz-2 kHz for half the playing time (one blind pair: a take at -7.6 was heard as slightly tiring, not harsh)",
              "listen for fatigue at a moderate level; under dialogue keep this band low; darken background stems (mix --shelves)")
     if c_full < 0:
         flag("MONO-LOSS", f"more side than mid (correlation {round(c_full, 2)}): a mono speaker plays it {round(-fold, 1)} dB quieter and thinner",
@@ -1473,6 +1485,8 @@ def cmd_new(a):
     d = Path(a.dir)
     if (d / "music.json").exists():
         raise MwError(f"{d} already has music.json")
+    if a.preset and a.preset not in presets():
+        raise MwError(f"unknown preset {a.preset}; choose from {', '.join(sorted(presets()))}")
     for sub in ("takes", "out", "sheets"):
         (d / sub).mkdir(parents=True, exist_ok=True)
     pr = a.preset or {"game-loop": "game-music", "game-cue": "game-music", "film-cue": "web-video",
@@ -1500,8 +1514,10 @@ def cmd_verdict(a):
     target = Path(a.take)
     led = find_ledger(target.parent if target.suffix else target) or (target.parent / "ledger.jsonl")
     rows = read_jsonl(led)
-    match = next((r for r in reversed(rows) if r.get("type") == "take" and (r.get("file") == str(target.resolve()) or Path(r.get("file", "")).name == target.name or r.get("take") == a.take)), None)
-    v = {"type": "verdict", "date": now(), "take": match.get("take") if match else target.name,
+    match = next((r for r in reversed(rows) if r.get("type") == "take" and (r.get("file") == str(target.resolve()) or Path(r.get("file", "")).name == target.name or r.get("take") in (a.take, target.stem))), None)
+    if not match and not target.is_file():
+        raise MwError(f"no such file and no logged take named {a.take}")
+    v = {"type": "verdict", "date": now(), "take": match.get("take") if match else target.stem,
          "file": match.get("file") if match else str(target), "verdict": a.verdict, "note": a.note or "",
          "by": a.by}
     append_jsonl(led, v)
@@ -1675,9 +1691,21 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
         if resp.get("node_errors"):
             raise MwError(f"ComfyUI rejected the graph: {json.dumps(resp['node_errors'])[:600]}")
         jobs.append({"seed": s, "prompt_id": resp["prompt_id"]})
+    notes = {}
+    if r["graph"] == "acestep15":
+        filled = [f"{k} {v}" for k, given, v in (("bpm", a.bpm, recipe_used.get("bpm", 90)),
+                                                  ("key", a.key, recipe_used.get("keyscale", "C major"))) if not given]
+        if filled:
+            notes["filled_in"] = filled
+            notes["filled_note"] = "the ACE-Step text encoder needs a tempo and a key, so the recipe's values were sent; pass --bpm and --key to choose them"
+    elif r["graph"] == "minimax3":
+        ignored = [o for o in ("bpm", "key") if getattr(a, o, None)]
+        if ignored:
+            notes["ignored"] = ignored
+            notes["ignored_note"] = "MiniMax Music 3 has no tempo or key input; put them in the caption"
     if a.dry_run:
-        return {"ok": True, "dry_run": True, "host": host, "jobs": jobs, "params": recipe_used}
-    base = {"host": host, "queue_before": q, "jobs": jobs, "params": recipe_used}
+        return {"ok": True, "dry_run": True, "host": host, "jobs": jobs, "params": recipe_used, **notes}
+    base = {"host": host, "queue_before": q, "jobs": jobs, "params": recipe_used, **notes}
     if a.no_wait:
         return {"ok": True, "queued": True, **base,
                 "next": f"watch {host}/queue; finished audio is listed at {host}/history/<prompt_id> and saved in ComfyUI's output/musicwright folder. Queued takes are not downloaded, measured or logged; run gen without --no-wait for that."}
@@ -1994,7 +2022,7 @@ def build_parser():
 
     s = sub.add_parser("master", help="two-pass loudness normalisation to a preset")
     s.add_argument("input")
-    s.add_argument("--preset", default="streaming")
+    s.add_argument("--preset", help="loudness preset (default streaming; with only --lufs/--tp the result is named custom)")
     s.add_argument("--lufs", type=float)
     s.add_argument("--tp", type=float)
     s.add_argument("--lra", type=float, default=11.0)

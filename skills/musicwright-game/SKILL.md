@@ -40,7 +40,7 @@ ending", never "epic finale"), WAV or FLAC only.
   spacing of drum stripes gives the beat).
 - The tail after the loop end is crossfaded into the head, so reverb tails carry over instead
   of cutting off. The result is exactly N bars.
-- Read `seam`: ratio about 1 or less and level jump under 3 dB is "clean"; "audible seam likely"
+- Read `seam`: ratio 2 or less and level jump under 3 dB is "clean"; "audible seam likely"
   means another start point, a longer crossfade, or another take.
 - The loop must also flow musically (the last bar leads back to the first chord). Only a person
   can judge that: ask them to play it three times through and listen at the seams.
