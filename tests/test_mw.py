@@ -1373,6 +1373,91 @@ class Analyze(unittest.TestCase):
         bpm = d["files"][0]["tempo_bpm"]
         self.assertTrue(any(abs(bpm - t) / t < 0.05 for t in (60, 120, 240)), bpm)
         self.assertIn(d["files"][0]["key"].split()[1], ("major", "minor"))
+        self.assertIn("tuning", d["files"][0])
+        self.assertIn("share", d["files"][0]["repetition"])
+
+
+def have_librosa():
+    try:
+        import librosa  # noqa: F401
+        return True
+    except ImportError:
+        if REQUIRE_LIBROSA:
+            raise
+        return False
+
+
+@NEEDS_FFMPEG
+@unittest.skipUnless(have_librosa(), "librosa not installed (analyze's soft failure is tested above)")
+class AnalyzeMusic(unittest.TestCase):
+    """Tuning, repetition and sections on synthetic tones with a known answer (books track 11)."""
+
+    @classmethod
+    def setUpClass(cls):
+        a = str(TMP / "audio")
+        sharp = 440 * 2 ** (30 / 1200)  # 30 cents above A440
+        cls.sharp = lavfi(f"sine=frequency={sharp:.3f}:sample_rate=22050:duration=20", f"{a}/sharp.wav")
+        cls.drift = lavfi(f"aevalsrc='0.3*sin(2*PI*if(lt(t,50),440,{sharp:.3f})*t)':s=22050:d=100", f"{a}/drift.wav")
+        cls.steady = lavfi("aevalsrc='0.3*sin(2*PI*440*t)':s=22050:d=100", f"{a}/steady.wav")
+        arp = "0.3*sin(2*PI*220*pow(2,{}/12)*t)"
+        # a four-note figure that repeats every 4 s for four minutes, and three minutes that never repeat
+        cls.loop = lavfi("aevalsrc='" + arp.format("mod(floor(t),4)*3") + "':s=22050:d=240", f"{a}/loop.wav")
+        cls.through = lavfi("aevalsrc='" + arp.format("floor(12*mod(abs(sin(floor(t)*12.9898)*43758.5453),1))") + "':s=22050:d=180",
+                            f"{a}/through.wav")
+        # A (an arpeggio) 0-15 s, B (a held two-note chord) 15-40 s, A again 40-60 s, over a click every 0.6 s
+        cls.aba = lavfi("aevalsrc='if(lt(t,15)+gte(t,40)," + arp.format("mod(floor(t*2),3)*4")
+                        + ",0.2*sin(2*PI*370*t)+0.2*sin(2*PI*554*t))+if(lt(mod(t,0.6),0.01),0.6*sin(2*PI*2000*t),0)'"
+                        ":s=22050:d=60", f"{a}/aba.wav")
+
+    def codes(self, row):
+        return [f["code"] for f in row["flags"]]
+
+    def test_offset_and_gap(self):
+        code, d = run("analyze", FX["tone"], self.sharp)
+        self.assertEqual(code, 0, d)
+        plain, sharp = d["files"]
+        self.assertLess(abs(plain["tuning"]["cents"]), 5)
+        self.assertAlmostEqual(sharp["tuning"]["cents"], 30, delta=5)
+        self.assertNotIn("OFF-A440", self.codes(plain))
+        self.assertIn("OFF-A440", self.codes(sharp))
+        self.assertAlmostEqual(sharp["cents_from_first"], 30, delta=5)
+        self.assertIn("TUNING-GAP", self.codes(sharp))
+
+    def test_drift(self):
+        code, d = run("analyze", self.drift, self.steady)
+        self.assertEqual(code, 0, d)
+        moving, steady = d["files"]
+        self.assertAlmostEqual(moving["tuning"]["trend_cents"], 30, delta=6)
+        self.assertIn("DRIFT", self.codes(moving))
+        self.assertLess(abs(steady["tuning"]["trend_cents"]), 3)
+        self.assertNotIn("DRIFT", self.codes(steady))
+
+    def test_repeats(self):
+        code, d = run("analyze", self.loop, self.through)
+        self.assertEqual(code, 0, d)
+        loop, through = d["files"]
+        self.assertGreaterEqual(loop["repetition"]["share"], 0.9)
+        self.assertIn("REPEATS", self.codes(loop))
+        self.assertLess(through["repetition"]["share"], 0.5)
+        self.assertNotIn("REPEATS", self.codes(through))
+
+    def test_sections(self):
+        for arg in ("3", "A|B|A return", None):
+            code, d = run("analyze", self.aba, "--sections", *([arg] if arg else []))
+            self.assertEqual(code, 0, d)
+            secs = d["files"][0]["sections"]
+            self.assertEqual(len(secs), 3, (arg, secs))
+            self.assertAlmostEqual(secs[1]["start_s"], 15, delta=3)
+            self.assertAlmostEqual(secs[2]["start_s"], 40, delta=3)
+            self.assertAlmostEqual(secs[-1]["end_s"], 60, delta=0.5)
+            self.assertEqual(secs[0]["start_bar"], 1)
+            for s in secs[1:]:  # boundaries move to the nearest beat (the clicks)
+                self.assertLess(abs(s["start_s"] - round(s["start_s"] / 0.6) * 0.6), 0.07, s)
+        self.assertEqual([s["name"] for s in secs], [None, None, None])
+        code, d = run("analyze", self.aba, "--sections", "A|B|A return")
+        self.assertEqual(d["files"][0]["sections"][2]["name"], "A return")
+        code, d = run("analyze", self.aba)
+        self.assertNotIn("sections", d["files"][0])
 
 
 if __name__ == "__main__":

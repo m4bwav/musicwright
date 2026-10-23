@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-2 · 2026-10-23 · Tuning and layering checks from mw.py analyze
+- because: L-004, T-20261023-2, decisions 2026-10-23-books-track11
+- files: SKILL.md (Step 1), references/mixing.md (Scripted checks; analyze flags and how often they fire), evals/evals.json (action-4, hold-out)
+- Step 1 says `analyze` gives tuning and repetition and that a layer's `cents_from_first` against the lead tells whether they beat. mixing.md lists the four analyze flags with their rates on real AI and human recordings.
+
 ### C-20261023-1 · 2026-10-23 · mixcheck, fair comparisons and fixes the agent can run
 - because: R-20261023-1, L-002, L-003, T-20261023-1
 - files: SKILL.md (description; Step 1; Step 1b; Step 3; Rules), references/mixing.md (AI renders: what goes wrong and what to run; Scripted checks; mixcheck flags and how often they fire), evals/evals.json (trigger-3, trigger-4, action-2, action-3)

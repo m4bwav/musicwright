@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-3 · 2026-10-23 · analyze reports tuning, repetition and sections
+- because: decisions 2026-10-23-books-track11; T-20261023-2 (produce, compose)
+- files: scripts/mw.py (analyze), references/cli.md (analyze row), references/listening.md (what analyze's numbers mean)
+- `analyze` gains tuning against A440 (offset, spread, trend), a gap from the first file, a repetition share, `--sections` (automatic, a count, or tags) and the flags OFF-A440, DRIFT, REPEATS and TUNING-GAP. librosa stays optional.
+
 ### C-20261023-2 · 2026-10-23 · One MAINTENANCE.md for the plugin
 - because: size budget (installed skills 446 KB, green line 400); decisions 2026-10-23-books-track9 M1
 - files: MAINTENANCE.md of compose, curate, game, generate, produce and score

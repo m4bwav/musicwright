@@ -34,7 +34,10 @@ sounds like a known song.
 - `warnings`: clipping signs, a true peak too high, silence.
 - `lra` (loudness range): high for a dynamic solo or film cue, low for a steady game bed.
 - Optional `mw.py analyze`: tempo (may read double or half) and key (pentatonic and modal music
-  often reads as its relative major or minor).
+  often reads as its relative major or minor). `tuning.cents` is the offset from A440; it matters
+  only when something else will play with the take. A high `spread_cents` with no `trend_cents`
+  is bends, vibrato or a pitch effect, not drift. `repetition.share` near 1 on a long track means
+  one block keeps coming back: ask the listener whether it feels stuck.
 
 ## Numbers that point at the mix (`mw.py mixcheck`)
 

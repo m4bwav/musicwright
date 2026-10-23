@@ -139,6 +139,29 @@
     "Bash"
    ],
    "max_turns": 12
-  }
+  },
+ {
+  "id": "action-4",
+  "kind": "action",
+  "holdout": true,
+  "prompt": "lead.flac is my flute take and part.flac is a second flute part I generated to play over it. Before I mix them, will the two be out of tune with each other? Give me a number.",
+  "runs": 3,
+  "expectations": [
+   "the tuning gap comes from the plugin's analyze command run on both files, which reports cents_from_first"
+  ],
+  "evidence": {
+   "type": "trace",
+   "tool": "Bash|PowerShell",
+   "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+analyze\\b(?:[^\\n]|\\\\\\n)*(?:lead|part)\\.flac(?:[^\\n]|\\\\\\n)*(?:part|lead)\\.flac"
+  },
+  "baseline": "not yet run",
+  "tools": [
+   "Read",
+   "Glob",
+   "Grep",
+   "Bash"
+  ],
+  "max_turns": 15
+ }
  ]
 }

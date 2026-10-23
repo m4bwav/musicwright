@@ -38,15 +38,15 @@
     "learnings": 0,
     "changes": 0,
     "research": 0,
-    "tests": 1
+    "tests": 2
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-10-23T09:30",
-    "harness": "headless claude -p with --plugin-dir on branch books-8 (installed copy disabled), three runs per case, in a repository clone and again in a folder holding only the fixtures",
+    "last_run": "2026-10-23T11:35",
+    "harness": "headless claude -p (sonnet) with --plugin-dir on branch books-11, fixtures-only folders, three runs",
     "env": "dev-machine",
-    "cases": 8,
-    "passed": 8,
+    "cases": 1,
+    "passed": 1,
     "failed": 0,
     "failing": [],
     "last_failure": null,

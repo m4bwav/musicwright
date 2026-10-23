@@ -1,25 +1,25 @@
 # Handoff
 
-State on 2026-10-23, end of the books track 9 session (game cues from a level plan), after track 8 (mix checks and craft from two music books). Earlier state from 2026-10-18 follows below.
+State on 2026-10-23, end of the books track 11 session (tuning, repetition and sections in `analyze`), after tracks 8 and 9. Earlier state from 2026-10-18 follows below.
+
+## Books track 11 (2026-10-23)
+
+- `mw.py analyze`: tuning (offset, spread, trend, gap from the first file), repetition share, `--sections`; flags OFF-A440, DRIFT, REPEATS, TUNING-GAP. librosa stays optional and CI skips these tests. Rulings N1-N9: [decisions/2026-10-23-books-track11.md](decisions/2026-10-23-books-track11.md). Owed: a listener's verdict on a REPEATS bed and on a tuning gap. Installed skills 433 KB (yellow).
 
 ## Books track 9 (2026-10-23)
 
 - musicwright-game builds its cue list from a beat chart or LEVEL-PLAN.md and adaptive.md has four new cue types and rules after Rogers, *Level Up!*; six MAINTENANCE.md files point at the hub's. Rulings M1-M6 and what was not built (`mw.py cues`): [decisions/2026-10-23-books-track9.md](decisions/2026-10-23-books-track9.md). Evals T-20261023-1 in the game TESTS.md (outcome-2 3/3, baseline 0/3).
-- Size: installed skills 422 KB, still over the 400 KB green line (yellow to 800); scripts are 168 KB of it. Trim before the next addition grows it.
 
 ## Books track 8 (2026-10-23)
 
 - Built on branch books-8: `mw.py mixcheck`, `compare`, `preview` (matched, `--blind`, `--as phone|quiet`), `monobass`; `mix --shelves --shelf-hz --automate`; `master --peak`; `lra_hint` per preset; melody hints in `render --check`; prose in produce, hub, compose, generate, curate, game and score. Rulings K1-K11 and what was not built: [decisions/2026-10-23-books-track8.md](decisions/2026-10-23-books-track8.md).
 - Calibration: 78 real AI renders on the owner's machine (mix flags fire on 1% to 18%; 43 raise none), the three judged flute takes (BELOW-RANGE separates the rejected one by 21 dB), 18 public-domain tunes against six random walks (melody flags 0/18 and 6/6). Rates are in musicwright-produce references/mixing.md and compose references/theory.md.
-- Not built: tuning drift, repetition and `analyze --sections` (librosa), a dynamic-EQ harshness repair, sibilance spikes, kick-bass onset coincidence, a codec-ceiling flag. Each needs material or labels this machine does not have yet.
-- Evals: T-20261023-1 in the produce, hub, compose and generate TESTS.md. The private harness ran with `--plugin-dir` pointing at the branch and the installed copy disabled in a session `--settings`; clones across drives need `--no-hardlinks`; a baseline in a repository clone finds mw.py itself, so action baselines run in a folder holding only the fixtures.
-- Owed: a listener's comparison of density section tags against mood-only tags; the BRIGHT flag needs a harsh-labelled render.
-- Research (models, licences, tools, fundamentals): [research/index.md](research/index.md).
+- Not built: a dynamic-EQ harshness repair, sibilance spikes, kick-bass onset coincidence, a codec-ceiling flag. Each needs material or labels this machine does not have yet.
+- Evals T-20261023-1 (produce, hub, compose, generate TESTS.md): run action baselines in a folder holding only the fixtures, since a baseline in a clone finds mw.py. Owed: density tags against mood-only tags by ear; a harsh-labelled render for BRIGHT. Research: [research/index.md](research/index.md).
 
 ## Done
 
 - Public repository m4bwav/musicwright: seven skills with references, evergreen companions and eval suites; mw.py with 15 commands; 49 unit tests on synthetic audio and a fake ComfyUI and ACE-Step server; check_skills.py and budget.py green; CI green on Linux, macOS and Windows (Python 3.9 and 3.14); release workflow; dependabot; secret scanning and push protection.
-- Research pass in ai-docs/research (models and licences, agent tools, fundamentals).
 - Real runs: three ACE-Step XL flute takes sheeted and measured; master, loop with OGG tags and seam on real audio.
 - Agent evals: T-20261017-1 40/42 over all seven skills, T-20261017-2 24/24 on hub, generate, game and compose after the routing fix.
 

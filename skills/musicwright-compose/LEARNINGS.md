@@ -6,7 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
-<!-- Example (delete once you have a real entry):
+### L-003 · 2026-10-23 · Give the section count when you know it
+- Trigger: on 24 composites spliced from real renders, novelty peaks alone found 65% to 72% of the splices within 3 s; clustering with the count given found 85%. The automatic count came out about 0.7 sections high.
+- Hypothesis: a novelty threshold picks the count badly on renders whose texture changes inside a section; clustering places boundaries well once the count is right.
+- Rule: when the brief or the reference's tags give the number of sections, pass it (`analyze --sections 5` or the tags joined by `|`); use the automatic count only for an unknown reference, and listen at the boundaries before copying the form.
+- Evidence: calibration 2026-10-23; decisions 2026-10-23-books-track11 N7
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
 ### L-002 · 2026-10-23 · Check a melody by returning rhythm and leaps, not by a single top note
 - Trigger: the melody rules of thumb from Making Music, tried as checks on 18 public-domain tunes and six random walks: "one highest note" fired on 12 of the 18 tunes and did not separate the two sets; long step runs did not either.
 - Hypothesis: folk and children's tunes return to their peak; what marks a tune is a rhythm that comes back and mostly stepwise motion.
@@ -15,6 +22,7 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
 
+<!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts
 - Hypothesis: why

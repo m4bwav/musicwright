@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261023-2 · 2026-10-23 · headless claude -p (sonnet) with --plugin-dir on branch books-11 (installed copy disabled), three runs per case in a folder holding only the fixtures · Windows 11 dev machine · 3/3
+- action-4 (will part.flac and lead.flac beat; real kept flute take and a rendered jazz flute): 3/3; every run called `mw.py analyze lead.flac part.flac` and reported +27.6 cents. One run spent 180 s looking for mw.py before it found it.
+- Baseline (no plugin, one run): 0/1. It wrote its own pitch script and estimated 15 to 20 cents.
+- led to: L-004
+
 ### T-20261023-1 · 2026-10-23 · headless claude -p with --plugin-dir on branch books-8 (installed copy disabled), three runs per case, in a repository clone and again in a folder holding only the fixtures · Windows 11 dev machine · 30/30
 - trigger-1 to trigger-4, decoy-1, decoy-2 (after the description change): 18/18 in a clone; decoy-2 went to musicwright-game every time.
 - action-2 (mixcheck --lowest on a "solo"): 3/3 clone, 3/3 fixtures-only. action-3 (blind matched copies): 3/3 clone, 3/3 fixtures-only, the key beside the folder after the fix.

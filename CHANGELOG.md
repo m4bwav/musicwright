@@ -4,6 +4,7 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 
 ## Unreleased
 
+- `mw.py analyze` (librosa, still optional) reports tuning against A440 (offset, spread and trend over 10 s windows), each later file's tuning gap from the first, the share of the track that repeats an earlier 8 s block, and with `--sections` the section boundaries in seconds and bars (an automatic count, a number, or tag names). Flags OFF-A440, DRIFT, REPEATS and TUNING-GAP, set on 111 AI renders and 11 human recordings; rates in musicwright-produce's references/mixing.md. Tempo and key are unchanged.
 - `mw.py mixcheck`: one ffmpeg pass gives each band's level against the whole, peak-to-loudness ratio, a short-term loudness contour, stereo correlation, mono-fold loss and low-end width, with flags (OVER-LIMITED, FLAT, MUDDY, BRIGHT, MONO-LOSS, LOW-WIDE, and BELOW-RANGE with `--lowest NOTE`). Thresholds set on 78 real AI renders, rates in musicwright-produce's references/mixing.md. `mw.py compare take ref` sets two files side by side.
 - `mw.py preview`: loudness-matched copies for listening, `--blind` (shuffled take_A, take_B and a key file), `--as phone` and `--as quiet`. The hub's take loop hands these over instead of the raw takes.
 - `mw.py monobass` (Linkwitz-Riley crossover, lows to mono); `mw.py mix --shelves` and `--automate` (per-file high shelf and gain envelopes); `mw.py master --peak` (gain-only pre-master, no limiter) and an `lra_hint` per loudness preset.

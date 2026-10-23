@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-2 · 2026-10-23 · Tuning gap of an added part
+- because: decisions 2026-10-23-books-track11 (N5)
+- files: references/acestep-rest.md (Adding a part)
+- After a lego render, `mw.py analyze SRC PART` gives the part's tuning gap from the source.
+
 ### C-20261023-1 · 2026-10-23 · Sections that say who plays, the listener's tired-of list, a stop rule
 - because: R-20261023-1 (musicwright-compose), T-20261023-1
 - files: SKILL.md (Step 2; Step 3), references/acestep.md (Lyrics field), references/minimax3.md (lyrics), evals/evals.json (action-2)
