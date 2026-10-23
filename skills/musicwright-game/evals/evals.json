@@ -21,6 +21,15 @@
    ]
   },
   {
+   "id": "trigger-3",
+   "kind": "trigger",
+   "prompt": "My platformer has a beat chart with a music row for each level. Which music cues do I need, and is one track per world enough?",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-game skill is invoked"
+   ]
+  },
+  {
    "id": "decoy-1",
    "kind": "trigger",
    "decoy": true,
@@ -72,6 +81,27 @@
     "Bash"
    ],
    "max_turns": 12
+  },
+  {
+   "id": "outcome-2",
+   "kind": "outcome",
+   "prompt": "Here is my game's level plan: LEVEL-PLAN.md. Write the music cue list for the game into cues.md: which cues I need, where each plays, and anything in the plan's music column I should change.",
+   "runs": 3,
+   "expectations": [
+    "cues.md exists and flags that stages 2 and 3 play the same woods theme back to back (regex on cues.md: (?is)(stage 2|woods).{0,400}(stage 3|deep woods).{0,400}(same|repeat|twice|back to back|rotat|alternat|second track|variant)|(?is)(same|repeat|twice|back to back|rotat|alternat).{0,300}(stage 2|woods).{0,200}(stage 3|deep woods))",
+    "cues.md gives a warning cue to a new enemy's first appearance (regex on cues.md: (?i)warning)",
+    "cues.md gives the Warden a motif reused before the boss (regex on cues.md: (?i)(motif|leitmotif))",
+    "cues.md asks for a visual twin for a cue that carries information (regex on cues.md: (?i)(visual|on.screen|on screen|deaf|hard of hearing|can.t hear|cannot hear))"
+   ],
+   "evidence": {
+    "type": "file",
+    "path": "cues.md"
+   },
+   "fixtures": [
+    "tests/fixtures/LEVEL-PLAN.md"
+   ],
+   "baseline": "not yet run",
+   "max_turns": 15
   }
  ]
 }
