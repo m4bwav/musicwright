@@ -37,5 +37,10 @@ Append-only. Newest last.
 - Corrections on real data: MUDDY needed a bass part (produce L-002); the first monobass (subtract a low-passed side) widened the lows, a Linkwitz-Riley crossover fixed it (hub L-003); one ACE-Step render loses 10 LU in mono (produce L-003).
 - Evals T-20261023-1: 33/33 in a repository clone and 15/15 in a fixtures-only folder; baselines 5/5 in a clone (they read the repository) and 1/5 fixtures-only. Three apparent failures were evidence regexes that missed a script called through a shell variable or options split over lines. One passing run found that `preview --blind` wrote its key into the listening folder; it now goes beside it (hub L-004).
 - 82 unit tests; 19 mutations, each caught by its test. Installed skills 446 KB (yellow; green line 400).
+- Books track 9 (Rogers, *Level Up!*), branch books-9: musicwright-game Step 1 takes the cue list from a beat chart or LEVEL-PLAN.md; adaptive.md gains mystery, warning, chase and villain-motif cues and rules on rotation, energy, the title piece, silence, stinger direction and a visual twin. Rulings M1-M6 in [decisions/2026-10-23-books-track9.md](decisions/2026-10-23-books-track9.md).
+- Size: six sibling MAINTENANCE.md files were identical copies of the hub's; they now point at it. Installed skills 446 KB to 422 KB (still yellow: scripts are 168 KB).
+- Not built: a `mw.py cues` neighbour-repeat check (no real beat chart to calibrate on, and games repeat a level theme on purpose; M2).
+- Evals T-20261023-1 (game): outcome-2 3/3 against a baseline 0/3 (no warning cue, no visual twin); triggers and decoys 3/3 except trigger-2, 2/3 once it had a fixture, classed harness (game L-001).
 ## [2026-10-23] index | rebuilt (3 entries)
 ## [2026-10-23] index | rebuilt (3 entries)
+## [2026-10-23] index | rebuilt (4 entries)

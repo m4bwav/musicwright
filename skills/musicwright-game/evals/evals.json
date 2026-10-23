@@ -18,6 +18,9 @@
    "runs": 3,
    "expectations": [
     "the musicwright-game skill is invoked"
+   ],
+   "fixtures": [
+    "tests/fixtures/tone.wav"
    ]
   },
   {

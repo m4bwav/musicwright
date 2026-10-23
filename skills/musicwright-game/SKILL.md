@@ -11,8 +11,8 @@ effects, not tire the player, and import cleanly. Script: `mw.py` in the musicwr
 ## Step 1: plan the set
 
 - When the game has a level plan (a beat chart with one column per level, a `LEVEL-PLAN.md` from
-  madnesswright-scenes, a design one-pager), build the cue list from it, not from genre defaults:
-  its music row gives the track per area in play order, its big and small moments set the
+  madnesswright-scenes, a design one-pager), build the cue list from it, not from genre defaults.
+  Its music row gives the track per area in play order, its big and small moments set the
   intensity, a new enemy's first room gets a warning cue, a rest room gets silence or a rest cue.
   Read across the row and flag the same track in two neighbouring areas, and any area long enough
   to tire of that has one track only. Rules: adaptive.md "Cues from the level plan".

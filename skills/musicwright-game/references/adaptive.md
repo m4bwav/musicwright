@@ -21,9 +21,9 @@
 After Rogers, *Level Up!* (Levels 4, 10, 13 and 17).
 
 - **Take the cues from the plan.** A beat chart has one column per level and a music row; a
-  room table has big and small moments. Map each area to its track, each big moment to an
-  intensity step or a boss cue, each first appearance of an enemy to a warning, and each rest
-  room to silence or a rest cue.
+  room table has big and small moments. Map each area to its track and each big moment to an
+  intensity step or a boss cue. A new enemy's first appearance gets a warning; a rest room gets
+  silence or a rest cue.
 - **Rotate.** Give an area or world at least two tracks and alternate them, so one never plays
   twice running, and do not put the same track in two neighbouring columns of the plan. Classic
   games do reuse one level theme on purpose; when a repeat is meant, the plan says so.
