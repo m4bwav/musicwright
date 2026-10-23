@@ -72,6 +72,73 @@
     "Bash"
    ],
    "max_turns": 12
+  },
+  {
+   "id": "trigger-3",
+   "kind": "trigger",
+   "prompt": "Why does my track sound smaller and duller than the song I'm using as a reference? Both are WAVs I made or own.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-produce skill is invoked"
+   ]
+  },
+  {
+   "id": "trigger-4",
+   "kind": "trigger",
+   "prompt": "Will this mix fall apart on a phone speaker? I'm worried the bass disappears in mono.",
+   "runs": 3,
+   "expectations": [
+    "the musicwright-produce skill is invoked"
+   ]
+  },
+  {
+   "id": "action-2",
+   "kind": "action",
+   "prompt": "tests/fixtures/take_s1.flac was meant to be an unaccompanied flute solo. Is anything in it sounding lower than a flute can play?",
+   "runs": 3,
+   "expectations": [
+    "the take is checked against the flute's lowest note with the plugin's mix check, proven by the trace",
+    "the answer says there is energy below the flute's range"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "mw\\.py\"?\\s+mixcheck\\b[^\\n]*--lowest"
+   },
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
+  },
+  {
+   "id": "action-3",
+   "kind": "action",
+   "prompt": "My friend will pick between tests/fixtures/a.wav and tests/fixtures/b.wav. Put copies in listen/ so neither one wins by being louder and my friend can't tell which file is which.",
+   "runs": 3,
+   "expectations": [
+    "matched, blind copies are written by the plugin's preview command, proven by its key file"
+   ],
+   "evidence": {
+    "type": "file",
+    "path": "listen/blind_key.json",
+    "or": {
+     "type": "trace",
+     "tool": "Bash|PowerShell",
+     "input_match": "mw\\.py\"?\\s+preview\\b[^\\n]*--blind"
+    }
+   },
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
   }
  ]
 }

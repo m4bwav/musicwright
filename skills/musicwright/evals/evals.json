@@ -72,6 +72,28 @@
     "Bash"
    ],
    "max_turns": 12
+  },
+  {
+   "id": "action-2",
+   "kind": "action",
+   "prompt": "tests/fixtures/a.wav and tests/fixtures/b.wav are two takes of the same cue. Get them ready for me to listen to, and tell me which one you would pick and why.",
+   "runs": 3,
+   "expectations": [
+    "the takes are handed over as loudness-matched copies, proven by the trace"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "mw\\.py\"?\\s+preview\\b"
+   },
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 14
   }
  ]
 }

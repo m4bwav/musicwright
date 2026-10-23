@@ -72,6 +72,28 @@
     "Bash"
    ],
    "max_turns": 12
+  },
+  {
+   "id": "action-2",
+   "kind": "action",
+   "prompt": "Prepare (dry run only, render nothing) a 3-minute downtempo instrumental that starts sparse, gets full in the middle and thins out to the end. Show me the command you would run.",
+   "runs": 3,
+   "expectations": [
+    "a gen dry run whose sections say which parts play, not only moods, proven by the trace"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "mw\\.py\"?\\s+gen\\b(?=[^\\n]*--dry-run)(?=[^\\n]*--sections\\s+[\"'][^\"']*\\b(only|enters?|drops? out|leaves?|join|joins|alone|add|adds|fall away|falls away|thins?)\\b)"
+   },
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 14
   }
  ]
 }
