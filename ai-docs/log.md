@@ -59,3 +59,7 @@ Append-only. Newest last.
 ## [2026-10-23] ci | ffmpeg on Ubuntu from a static build
 - `apt-get install ffmpeg` stalled 20-40 minutes on several runs (the analyze job of #10 took 40 min, books-9 hung twice). Ubuntu jobs and release.yml now download BtbN's static ffmpeg 9.0 build (GitHub release, 3-minute limit) and fall back to apt; macOS and Windows unchanged. Owner's go-ahead 2026-10-23.
 ## [2026-10-23] wiki | republished for 0.1.1 (wiki e35cc91): ten new commands, the 0.1.1 changes and four findings (HANDOFF item 5); examples rerun against v0.1.1 on Windows and Linux
+## [2026-10-23] fix | three wiki-verification bugs for 0.1.2 (Unreleased, not tagged)
+- mixcheck/compare: reproduced the `best_input >= 0` abort with the static 7.0.2 build in WSL; it fires whenever the 48 kHz stream does not end on a whole second (a native 48 kHz file of 20.37 s too), and padding inside the filter graph does not help. mw.py now pads a copy (s16 for s16 sources, else f32, since the filters run in the input's format and f32 moved quiet bands by up to 3 dB) and measures again; the full suite passes on 7.0.2 and 9.0.1.
+- seam: Theil-Sen line through the 50 ms levels each side, read at the seam (L-005). pulse: `onset_rise_db`, none under 1 dB (52 real renders measured 2.4 dB or more). CHANGELOG's 446-to-420 KB line corrected (422 then, 446 at 0.1.1, 450 with these fixes, yellow). 97 tests; five mutations caught.
+## [2026-10-23] index | rebuilt (6 entries)

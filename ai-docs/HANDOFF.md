@@ -1,6 +1,6 @@
 # Handoff
 
-State on 2026-10-23: 0.1.1 prepared (listening checks and the bug list). Earlier state follows below.
+State on 2026-10-23: 0.1.1 released; the four wiki-verification bugs are fixed under Unreleased (0.1.2 not bumped or tagged: needs the owner's go-ahead). Earlier state follows below.
 
 ## Listening checks and 0.1.1 (2026-10-23)
 
@@ -34,7 +34,7 @@ State on 2026-10-23: 0.1.1 prepared (listening checks and the bug list). Earlier
 2. Not yet run on real hardware: the MiniMax Music 3 and REST recipes through `mw.py gen`, REST cover, repaint and extract, YuE2 and Stable Audio 3 (download, measure VRAM and time; add recipes only after a listener keeps a take).
 3. `mw.py gen --collect` for `--no-wait` jobs: needs the queued recipe saved (a ledger row with status queued) so collected takes are measured and logged.
 4. A loudness-curve fit for film cues and an optional learned quality score: open questions in the hub's RESEARCH.md.
-5. Wiki: republished for 0.1.1 on 2026-10-23 (wiki commit e35cc91, 17 pages, live check clean; every example rerun on Windows and on Linux under WSL 2 against tag v0.1.1). Found by that run and written into the wiki's Errors page, not yet fixed here: `mixcheck` and `compare` abort on 44.1 and 8 kHz input with the static ffmpeg 7.0.2 Linux build (assertion in ffmpeg_filter.c:1923; 48 kHz passes, ffmpeg 9.0.1 fine, test_mw.py does not cover it); `seam` still reads the downbeat stand-in loop "check by ear" (3.5 dB), though the CHANGELOG says such loops now read clean; `pulse` called a swelling tone with no beat "steady"; the CHANGELOG's 420 KB installed size is 446 KB in budget.py. Next release: rerun the verification and republish with the publish script in the owner's private notes (wiki-build/publish.sh).
+5. Wiki: republished for 0.1.1 on 2026-10-23 (wiki commit e35cc91, 17 pages, live check clean; every example rerun on Windows and on Linux under WSL 2 against tag v0.1.1). The four bugs that run found (mixcheck/compare abort on static ffmpeg 7.0.2, seam on a downbeat loop, pulse on a swelling tone, the 420 KB claim) are fixed under Unreleased (log 2026-10-23, L-005); the wiki's Errors page still describes them until 0.1.2 ships. Next release: rerun the verification and republish with the publish script in the owner's private notes (wiki-build/publish.sh).
 6. v0.1.0 released 2026-10-17; 0.1.1 carries tracks 8, 9, 11, the listening checks and the old item 7 bug list. Bump plugin.json, mw.py VERSION and CHANGELOG.md together.
 
 ## Notation (2026-10-18)

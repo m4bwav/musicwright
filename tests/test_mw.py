@@ -700,6 +700,22 @@ class Seam(unittest.TestCase):
         self.assertLess(abs(d["files"][0]["level_jump_db"]), 3, d)
         self.assertEqual(d["files"][0]["verdict"], "clean")
 
+    def test_loop_cut_on_a_kick_over_a_swelling_bed_is_clean(self):
+        # 0.1.1 still read this one as "check by ear" at 3.5 dB: the bed swells through the seam
+        src = lavfi("aevalsrc='0.25*sin(2*PI*220*t)*(0.7+0.3*sin(2*PI*0.2*t))+0.15*sin(2*PI*329.63*t)"
+                    "+0.5*exp(-25*mod(t,0.625))*sin(2*PI*70*t)':s=44100:d=40", TMP / "audio" / "kick_swell.wav", extra=("-ac", "2"))
+        code, d = run("loop", src, "--start", "5", "--bars", "12", "--bpm", "96", "--xfade", "1.5", "--out", TMP / "kick_swell_loop.wav")
+        self.assertEqual(code, 0, d)
+        self.assertLess(abs(d["seam"]["level_jump_db"]), 2, d["seam"])
+        self.assertEqual(d["seam"]["verdict"], "clean")
+
+    def test_a_real_level_step_is_still_caught(self):
+        step = lavfi(f"aevalsrc='if(lt(t,2),0.1,0.4)*sin(2*PI*220*t)':s={RATE}:d=4", TMP / "audio" / "step.wav")
+        code, d = run("seam", step)
+        self.assertEqual(code, 0, d)
+        self.assertLess(d["files"][0]["level_jump_db"], -10, d)  # quiet head after a loud tail
+        self.assertEqual(d["files"][0]["verdict"], "audible seam likely")
+
     def test_seam_converts_other_formats(self):
         fl = TMP / "seam_hard.flac"
         ff("-i", FX["hardcut"], "-c:a", "flac", fl)
@@ -813,6 +829,16 @@ class PulseAndAnswer(unittest.TestCase):
         self.assertLess(steady["ioi_cv"], 0.1)
         self.assertNotEqual(loose["pulse"], "steady", loose)
         self.assertGreater(loose["ioi_cv"], 0.5)
+        self.assertGreater(steady["onset_rise_db"], 10)
+
+    def test_swelling_tone_has_no_pulse(self):
+        # 0.1.1 called this "steady" at 120 bpm: the envelope's ripple on the rise read as onsets
+        swell = lavfi(f"aevalsrc='0.3*sin(2*PI*196*t)*(0.6+0.4*sin(2*PI*0.1*t))':s={RATE}:d=27", TMP / "audio" / "swell.wav")
+        code, d = run("pulse", swell)
+        self.assertEqual(code, 0, d)
+        row = d["files"][0]
+        self.assertLess(row["onset_rise_db"], 1, row)
+        self.assertEqual(row["pulse"], "none", row)
 
     def test_answer_tells_a_reply_from_a_double(self):
         a = TMP / "audio"
@@ -906,6 +932,33 @@ class MixCheck(unittest.TestCase):
         self.assertGreater(swell["contour"]["loudest_10s_at_s"], 80)
         self.assertEqual(len(swell["contour"]["by_tenth_lufs"]), 10)
         self.assertEqual(swell["contour"]["by_tenth_lufs"], sorted(swell["contour"]["by_tenth_lufs"]))
+
+    def test_other_rates_and_part_second_lengths(self):
+        a = TMP / "audio"
+        r44 = lavfi("sine=frequency=440:sample_rate=44100:duration=6.3", a / "r44.wav", extra=("-ac", "2"))
+        r8 = str(a / "r8.flac")
+        ff("-f", "lavfi", "-i", "sine=frequency=440:sample_rate=8000:duration=5", "-c:a", "flac", r8)
+        for row in self.check(r44, r8):
+            self.assertAlmostEqual(row["lufs_i"], -21.0, delta=1.5, msg=row)
+
+    def test_retries_on_the_best_input_abort(self):
+        # static ffmpeg 7.0.2 aborts on a part-second 48 kHz stream; simulate it and check the padded retry
+        real, calls = mw.ffmpeg, []
+
+        def flaky(args, check=True):
+            calls.append(args)
+            if "-filter_complex" in args and len(calls) == 1:
+                return subprocess.CompletedProcess(args, -6, "", "Assertion best_input >= 0 failed at src/fftools/ffmpeg_filter.c:1923")
+            return real(args, check)
+        want = self.check(FX["tone"])[0]
+        mw.ffmpeg = flaky
+        try:
+            got = self.check(FX["tone"])[0]
+        finally:
+            mw.ffmpeg = real
+        self.assertEqual(len(calls), 3)  # failed pass, padded copy, measured pass
+        self.assertTrue(any("apad" in " ".join(c) for c in calls))
+        self.assertEqual(got, want)
 
     def test_compare_reports_both_and_the_gap(self):
         code, d = run("compare", FX["tone"], FX["bed"])
