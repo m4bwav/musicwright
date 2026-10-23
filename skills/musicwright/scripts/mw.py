@@ -1086,11 +1086,11 @@ def cmd_preview(a):
     res = {"ok": True, "as": a.as_, "matched_lufs": round(target + shift, 1), "previews": rows,
            "reading": "every copy plays at one loudness, so the louder take no longer wins by being louder; rank on these, never on the raw takes"}
     if a.blind:
-        kf = od / "blind_key.json"
+        kf = od.resolve().parent / f"{od.resolve().name}_blind_key.json"  # beside the folder, not in it: the listener opens the folder
         write_lf(kf, json.dumps(key, indent=1) + "\n")
         res["key_file"] = str(kf.resolve())
         res["previews"] = [{k: v for k, v in r.items() if k != "source_lufs"} for r in rows]
-        res["reading"] += "; the key file maps letters to takes: do not open it until the listener has ranked them"
+        res["reading"] += "; the key file (beside the folder, not in it) maps letters to takes: do not open it until the listener has ranked them"
     if target < a.lufs:
         res["note"] = f"matched at {target} LUFS, under the asked {a.lufs}, so no copy peaks over -1 dBTP without a limiter"
     return res

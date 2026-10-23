@@ -128,7 +128,7 @@
    "evidence": {
     "type": "trace",
     "tool": "Bash|PowerShell",
-    "input_match": "mw\\.py\"?\\s+render\\b[^\\n]*--check"
+    "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+render\\b(?:[^\\n]|\\\\\\n)*--check"
    },
    "baseline": "not yet run",
    "tools": [

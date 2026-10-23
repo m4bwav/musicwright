@@ -8,6 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261023-1 · 2026-10-23 · headless claude -p with --plugin-dir on branch books-8 (installed copy disabled), three runs per case, in a repository clone and again in a folder holding only the fixtures · Windows 11 dev machine · 6/6
+- action-2 (two takes to hear): 3/3 clone, 3/3 fixtures-only; every run handed over `mw.py preview` copies, and every run loaded musicwright-produce rather than the hub (the evidence is the call, so it passes).
+- Read before grading: all three fixtures-only runs called the script through a shell variable; the regex was widened and retested.
+- Baselines: 1/1 in a clone, 0/1 fixtures-only.
+- led to: none
+
 ### T-20261017-2 · 2026-10-17 · headless claude -p, one run per case, fresh session, plugin installed from mark-local at eval-fixes 72be5c3 · Windows 11 dev machine · 6/6
 - All six passed. trigger-1 (flute solo) and trigger-2 (card game menu music) now invoke the hub (both failed in T-20261017-1); each set up the project and dry-ran gen.
 - action-1 (rank a.wav and b.wav) invoked the hub, ran `mw.py sheet` and read the picture; it said the fixtures are synthetic tones it had not heard.

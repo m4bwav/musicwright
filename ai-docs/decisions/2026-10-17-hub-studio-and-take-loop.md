@@ -1,3 +1,11 @@
+---
+kind: decision
+status: active
+date: 2026-10-17
+title: Hub, six siblings, one CLI, the take loop and a private studio (read before adding a skill, an mw.py command, a recipe or an MCP server)
+tags: architecture,hub,mw.py,studio,take-loop
+---
+
 # Decision: a hub, six siblings, one CLI, a take loop and a private studio
 
 Date: 2026-10-17. Status: adopted for v0.1.0.

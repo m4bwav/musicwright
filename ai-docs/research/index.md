@@ -1,3 +1,11 @@
+---
+kind: research
+status: active
+date: 2026-10-17
+title: First research pass: models and licences, agent tools, music fundamentals (read before a refresh or changing a model, licence, price, loudness target or tool)
+tags: research,models,licences,tools,fundamentals
+---
+
 # Research notes
 
 The first research pass for musicwright, 2026-10-17: three notes written by research agents from web sources, GitHub and registry queries, and test runs on a Windows 11 PC with ffmpeg 9.0.1, librosa 1.0.0 and ComfyUI 0.38.2. Each finding is numbered, dated and sourced; machine and personal details were generalised before publishing.

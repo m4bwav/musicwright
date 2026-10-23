@@ -881,6 +881,8 @@ class FixesAndPreviews(unittest.TestCase):
         code, d = run("preview", FX["tone"], FX["bed"], "--out", out / "blind", "--blind", "--seed", "1")
         names = sorted(Path(p["preview"]).name for p in d["previews"])
         self.assertEqual(names, ["take_A.wav", "take_B.wav"])
+        self.assertEqual(Path(d["key_file"]).resolve(), (out / "blind_blind_key.json").resolve())  # not in the folder the listener opens
+        self.assertEqual(sorted(p.name for p in (out / "blind").iterdir()), ["take_A.wav", "take_B.wav"])
         key = json.loads(Path(d["key_file"]).read_text(encoding="utf-8"))
         self.assertEqual(sorted(Path(v).name for v in key.values()), ["bed.wav", "tone.wav"])
         self.assertNotIn("source_lufs", d["previews"][0])  # nothing in the reply gives the order away

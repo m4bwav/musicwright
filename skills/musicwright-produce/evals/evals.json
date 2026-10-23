@@ -103,7 +103,7 @@
    "evidence": {
     "type": "trace",
     "tool": "Bash|PowerShell",
-    "input_match": "mw\\.py\"?\\s+mixcheck\\b[^\\n]*--lowest"
+    "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+mixcheck\\b(?:[^\\n]|\\\\\\n)*--lowest"
    },
    "baseline": "not yet run",
    "tools": [
@@ -124,11 +124,11 @@
    ],
    "evidence": {
     "type": "file",
-    "path": "listen/blind_key.json",
+    "path": "listen_blind_key.json",
     "or": {
      "type": "trace",
      "tool": "Bash|PowerShell",
-     "input_match": "mw\\.py\"?\\s+preview\\b[^\\n]*--blind"
+     "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+preview\\b(?:[^\\n]|\\\\\\n)*--blind"
     }
    },
    "baseline": "not yet run",

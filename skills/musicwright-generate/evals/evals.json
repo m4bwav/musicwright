@@ -84,7 +84,7 @@
    "evidence": {
     "type": "trace",
     "tool": "Bash|PowerShell",
-    "input_match": "mw\\.py\"?\\s+gen\\b(?=[^\\n]*--dry-run)(?=[^\\n]*--sections\\s+[\"'][^\"']*\\b(only|enters?|drops? out|leaves?|join|joins|alone|add|adds|fall away|falls away|thins?)\\b)"
+    "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+gen\\b(?=(?:[^\\n]|\\\\\\n)*--dry-run)(?=(?:[^\\n]|\\\\\\n)*--sections\\s+[\"'][^\"']*\\b(only|enters?|drops? out|leaves?|join|joins|alone|add|adds|fall away|falls away|thins?)\\b)"
    },
    "baseline": "not yet run",
    "tools": [

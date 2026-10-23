@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-1 · 2026-10-23 · Sections that say who plays, the listener's tired-of list, a stop rule
+- because: R-20261023-1 (musicwright-compose), T-20261023-1
+- files: SKILL.md (Step 2; Step 3), references/acestep.md (Lyrics field), references/minimax3.md (lyrics), evals/evals.json (action-2)
+- Section tags carry density and the caption names near and far parts; the locked-seed loop compares matched copies and stops after three or four one-knob changes. Density tags are from the books and not yet compared with mood-only tags by a listener.
+
 ### C-20261018-1 · 2026-10-18 · Adding a part: DCW off, the server version, the lego recipe, pulse and answer
 - because: R-20261017-6, L-001, user request (the listener's verdicts on the stage-2 mixes)
 - files: SKILL.md (Step 5: add a part to a kept take), references/acestep-rest.md (Start and check; Working from existing audio), RESEARCH.md (R-20261017-6, Current understanding, Open questions), LEARNINGS.md (L-001); hub references/recipes.json (acestep-rest-lego)

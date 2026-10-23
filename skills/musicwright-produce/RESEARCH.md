@@ -50,6 +50,13 @@ Best sources: standards bodies, platform help pages, ffmpeg docs; practitioner b
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261023-1 · 2026-10-23 · Mixing With Impact: matched loudness, relative balance, mono lows, dynamics survive normalisation
+- Summary: Oltheten, *Mixing With Impact* (Routledge, 2018), read for the plugin: compare only at matched loudness (5.3); balance is relative and analysers hide timing (3.3, 4.4); masking rules (4.2); a low-mid excess and over-bright sources as the usual faults (4.4, 11.2); lows centred, correlation as the translation check (11.4); normalisation rewards dynamics and the loudness range should suit the destination (14.5); a hand-off to mastering with peaks well below 0 and no limiter (14.3). Turned into `mw.py mixcheck`, `compare`, `preview`, `monobass`, `master --peak` and the presets' `lra_hint`, with thresholds set on 78 real renders.
+- Track: practice
+- Sources: the book (2018 English edition), sections as cited; reading notes kept by the owner
+- Magnitude: 0.3 (the produce skill now runs checks and fixes it used to describe)
+- Applied: C-20261023-1
+
 ### R-20261017-2 · 2026-10-17 · mw.py master on a real take
 - Summary: A -15.7 LUFS flute take mastered to -14 / -1 came out at -14.1 / -1.0, with loudnorm in dynamic mode (the take had 2.5 dB of true-peak headroom). mw.py reports the mode so the change is never silent.
 - Track: testing

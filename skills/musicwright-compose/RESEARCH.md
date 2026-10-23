@@ -48,6 +48,13 @@ Best sources: theory texts and pedagogy sites, library docs, the MCP server repo
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261023-1 · 2026-10-23 · Making Music: melody, arrangement by subtraction, endings, the reference catalogue
+- Summary: DeSantis, *Making Music: 74 Creative Strategies for Electronic Music Producers* (Ableton, 2015), read for the plugin: describe a reference in five fields (ch. 5), an avoidance list of one's habits (6), foreground, middle and background (31), blurred section edges (32), loops of unequal length (37), kick and bass as one line (44), tuned drums (46), melody contour and motifs (49-51), lyric stress (54), harmonic rhythm (59), arrangement by subtraction and the arc (63, 66-72), endings (73, 75), unique events (74), a stop rule (76, 78), feedback at matched loudness (77). The contour rules were tested as checks before use (L-002).
+- Track: practice
+- Sources: the book, chapters as cited; reading notes kept by the owner
+- Magnitude: 0.3 (new sections in theory.md and vocabulary.md, melody hints in render --check)
+- Applied: C-20261023-1
+
 ### R-20261018-1 · 2026-10-18 · Notation to audio and back: tools, licences, what works
 - Summary: FluidSynth 2.6.1 (2026-09-19, LGPL-2.1; Windows zip 2.7 MB, Scoop current, Chocolatey stale at 2.4.7, brew `fluid-synth`), render with `fluidsynth -ni -q -g G -r 48000 -F out.wav sf2 in.mid` (default gain 0.2 is quiet). GeneralUser GS 2.0.3 (32 MB) allows private or commercial use in your own music; MuseScore_General is MIT. music21 10.5.0 (BSD-3, Python 3.11+); abcMIDI GPL-2.0; MuseScore Studio 4.7.5 exports PDF and audio from the command line. PyGuitarPro reads GP3-5 only; alphaTab reads GP6/7. No maintained Python ASCII-tab parser exists, so mw.py has its own. ACE-Step 1.5 takes no MIDI; `cover` with `audio_cover_strength` (1.0 strong, 0.5 balanced, 0.1 loose) on a synth render is the route to a performed sound, tried upstream (PR #795) and reverted the same day (#798), with no published results. basic-pitch 0.4.0 (Apache-2.0) supports Python 3.8-3.11 only; tested here 2026-10-18 on Windows: it runs through uv on Python 3.11 only with numpy<2 and setuptools<81. Demucs moved to adefossez/demucs (4.1.0, MIT). ADTOF drum transcription is CC BY-NC-SA. ABC-Eval (2025) finds models write valid ABC syntax but reason poorly about structure, so generated ABC must be parsed and checked. Local test on a 41 s free-time solo flute: pyin and basic-pitch agreed on pitch in 72% of frames where both heard a note (81% on pitch class); both read hiss in the silent tail as notes until a level gate was added, and pyin jumped octaves until the range was narrowed.
 - Track: tooling

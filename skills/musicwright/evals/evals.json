@@ -84,7 +84,7 @@
    "evidence": {
     "type": "trace",
     "tool": "Bash|PowerShell",
-    "input_match": "mw\\.py\"?\\s+preview\\b"
+    "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+preview\\b"
    },
    "baseline": "not yet run",
    "tools": [

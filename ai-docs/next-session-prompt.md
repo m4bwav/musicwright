@@ -1,3 +1,11 @@
+---
+kind: note
+status: active
+date: 2026-10-18
+title: Prompt for the next musicwright session (owed work from HANDOFF)
+tags: handoff,prompt
+---
+
 # Next session prompt
 
 Paste this into a fresh session in the musicwright repository.

@@ -7,6 +7,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 ## Active
 
 <!-- Example (delete once you have a real entry):
+### L-002 · 2026-10-23 · Check a melody by returning rhythm and leaps, not by a single top note
+- Trigger: the melody rules of thumb from Making Music, tried as checks on 18 public-domain tunes and six random walks: "one highest note" fired on 12 of the 18 tunes and did not separate the two sets; long step runs did not either.
+- Hypothesis: folk and children's tunes return to their peak; what marks a tune is a rhythm that comes back and mostly stepwise motion.
+- Rule: flag a line with over 25% leaps of a fourth or more, or under 65% of its notes inside a four-note rhythm that returns; report the peak and the step runs without a flag.
+- Evidence: calibration 2026-10-23 (both flags: 0 of 18 tunes, 6 of 6 random walks); the repository's parser fixture tune.abc, four bars written to exercise the parser, reads 64% and gets the motif hint
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts
 - Hypothesis: why

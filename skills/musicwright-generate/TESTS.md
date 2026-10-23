@@ -8,6 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261023-1 · 2026-10-23 · headless claude -p with --plugin-dir on branch books-8 (installed copy disabled), three runs per case, in a repository clone and again in a folder holding only the fixtures · Windows 11 dev machine · 6/6
+- action-2 (a dry run that builds and thins): 3/3 clone, 3/3 fixtures-only; every run's sections said which parts play and the captions named a close, dry lead against a distant pad.
+- Read before grading: one run split its options over line continuations, which the first regex stopped at; widened and retested. The eval guard refused one `gen --help` (it treats any gen call without --dry-run as a render).
+- Baselines: 1/1 in a clone, 0/1 fixtures-only (it loaded an older retired music skill).
+- led to: none
+
 ### T-20261017-2 · 2026-10-17 · headless claude -p, one run per case, fresh session, plugin installed from mark-local at eval-fixes 72be5c3 · Windows 11 dev machine · 6/6
 - All six passed. action-1 passed on the trace (`mw.py gen --dry-run`) but with no Skill call: the prompt names musicwright and the run read mw.py in the clone. The skill was not exercised; reword the prompt so it does not name the plugin.
 - decoy-2 (album cover image) went to comfyui-gen again; the widened guard refused its first Python call in that folder, and the run stopped and described the command. No image was rendered. decoy-1 (mp3 loop in Unity) went to musicwright-game.

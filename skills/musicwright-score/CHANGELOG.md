@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-1 · 2026-10-23 · Check cues under dialogue for presence bursts
+- because: user request (books track 8: Oltheten, Mixing With Impact 5.4)
+- files: references/spotting.md (Ducking under dialogue)
+- A cue under speech is checked with `mw.py mixcheck`; BRIGHT or a high presence_db means it competes with the voice.
+
 ### C-20261017-1 · 2026-10-17 · Created as an evergreen unit
 - because: user request
 - files: SKILL.md, RESEARCH.md, LEARNINGS.md, evergreen.json (skills: also TESTS.md and evals/evals.json)
