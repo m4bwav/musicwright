@@ -1,13 +1,13 @@
 {
- "about": "Delivery presets for mw.py master. Integrated loudness (LUFS) and true peak (dBTP). Game targets apply to the whole game mix; master every music asset of one game to one consistent level and balance against SFX in the engine's mixer. Checked 2026-10-17; see musicwright-produce RESEARCH.md R-213.",
+ "about": "Delivery presets for mw.py master. Integrated loudness (LUFS) and true peak (dBTP). Game targets apply to the whole game mix; master every music asset of one game to one consistent level and balance against SFX in the engine's mixer. Checked 2026-10-17; see musicwright-produce RESEARCH.md R-213. lra_hint is advice in words after Oltheten, Mixing With Impact (2018) 14.5: the loudness range should suit where it plays, wide for cinema and personal listening, narrow for phones, cars and beds.",
  "presets": {
-  "streaming":   {"lufs": -14, "true_peak": -1.0, "note": "Spotify normalises to -14 LUFS; keep TP below -1 dBTP (-2 if the master is louder than -14). YouTube turns loud tracks down to about -14."},
-  "apple":       {"lufs": -16, "true_peak": -1.0, "note": "Apple Sound Check at about -16 LUFS (secondary sources); AES TD1008 also suggests -16 for music streams."},
-  "web-video":   {"lufs": -16, "true_peak": -1.5, "note": "music bed or score under web video; one level for every cue in a film."},
-  "game-music":  {"lufs": -18, "true_peak": -1.0, "note": "music assets for a game, mastered consistently below the full mix; balance in the engine mixer."},
-  "game-console-mix": {"lufs": -24, "true_peak": -1.0, "note": "Sony ASWG / IESD whole-mix target (+-2 LU over a long capture). For the final game mix, not a single music file."},
-  "game-mobile-mix":  {"lufs": -18, "true_peak": -1.0, "note": "handheld/mobile whole-mix target; sources disagree (-18 or -16)."},
-  "broadcast":   {"lufs": -23, "true_peak": -1.0, "note": "EBU R128 v5.0 (Nov 2023): -23 LUFS +-0.5 LU."},
-  "broadcast-us": {"lufs": -24, "true_peak": -2.0, "note": "ATSC A/85: -24 LKFS +-2."}
+  "streaming":   {"lufs": -14, "true_peak": -1.0, "lra_hint": "wide is fine: normalisation turns loud masters down, so dynamics cost nothing here", "note": "Spotify normalises to -14 LUFS; keep TP below -1 dBTP (-2 if the master is louder than -14). YouTube turns loud tracks down to about -14."},
+  "apple":       {"lufs": -16, "true_peak": -1.0, "lra_hint": "wide is fine: normalisation turns loud masters down, so dynamics cost nothing here", "note": "Apple Sound Check at about -16 LUFS (secondary sources); AES TD1008 also suggests -16 for music streams."},
+  "web-video":   {"lufs": -16, "true_peak": -1.5, "lra_hint": "narrow: phones and laptops under speech; keep sections within a few LU of each other", "note": "music bed or score under web video; one level for every cue in a film."},
+  "game-music":  {"lufs": -18, "true_peak": -1.0, "lra_hint": "narrow for beds heard for minutes under sound effects; let one-shot cues swell", "note": "music assets for a game, mastered consistently below the full mix; balance in the engine mixer."},
+  "game-console-mix": {"lufs": -24, "true_peak": -1.0, "lra_hint": "the whole mix: living-room playback allows more range than handhelds", "note": "Sony ASWG / IESD whole-mix target (+-2 LU over a long capture). For the final game mix, not a single music file."},
+  "game-mobile-mix":  {"lufs": -18, "true_peak": -1.0, "lra_hint": "the whole mix: narrow, for small speakers and noisy places", "note": "handheld/mobile whole-mix target; sources disagree (-18 or -16)."},
+  "broadcast":   {"lufs": -23, "true_peak": -1.0, "lra_hint": "moderate: narrower than cinema, wider than phones", "note": "EBU R128 v5.0 (Nov 2023): -23 LUFS +-0.5 LU."},
+  "broadcast-us": {"lufs": -24, "true_peak": -2.0, "lra_hint": "moderate: narrower than cinema, wider than phones", "note": "ATSC A/85: -24 LKFS +-2."}
  }
 }

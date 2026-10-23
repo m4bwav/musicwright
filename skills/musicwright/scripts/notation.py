@@ -1374,6 +1374,51 @@ def load(path, tuning=None, tab_step=None, bpm=None, program=None, chords=False,
     return score, kind
 
 
+def melody_hints(score):
+    """Contour and motif figures for each melodic line, with two flags (after DeSantis, Making Music, ch. 49-50).
+
+    Calibrated on 18 public-domain tunes, where neither flag fired, against six random walks, where both fired on
+    all six: leaps of a fourth or more on over a quarter of the moves, and under 65% of the notes inside a
+    four-note rhythm that comes back later. Highest-note counts and step runs did not separate the two sets, so
+    they are reported without a flag."""
+    rows = []
+    for t in score.tracks:
+        ns = sorted(t.notes, key=lambda n: (n.start, -n.pitch))
+        line = [n for i, n in enumerate(ns) if i == 0 or abs(n.start - ns[i - 1].start) > 1e-6]
+        if t.drums or len(line) < 12 or len(line) < 0.8 * len(ns):
+            continue  # drums, too short, or chords rather than a line
+        p = [n.pitch for n in line]
+        moves = [b - a for a, b in zip(p, p[1:]) if b != a]
+        leaps = [i for i, x in enumerate(moves) if abs(x) >= 5]
+        run = best = 0
+        for i, x in enumerate(moves):
+            run = run + 1 if abs(x) <= 2 and i and abs(moves[i - 1]) <= 2 and (x > 0) == (moves[i - 1] > 0) else int(abs(x) <= 2)
+            best = max(best, run)
+        durs = [round(n.dur, 3) for n in line]
+        at = {}
+        for i in range(len(durs) - 3):
+            at.setdefault(tuple(durs[i:i + 4]), []).append(i)
+        held = set()
+        for starts in at.values():
+            if starts[-1] - starts[0] >= 4:
+                for i in starts:
+                    held.update(range(i, i + 4))
+        leap_share = round(len(leaps) / len(moves), 2) if moves else 0.0
+        motif_share = round(len(held) / len(p), 2)
+        hints = []
+        if leap_share > 0.25:
+            hints.append(f"{round(100 * leap_share)}% of the moves leap a fourth or more: the line sounds random; "
+                         "step back after a leap, and save leaps for after a run of steps")
+        if motif_share < 0.65:
+            hints.append(f"only {round(100 * motif_share)}% of the notes sit in a rhythm that comes back: "
+                         "build the line from one or two short motifs, repeated and varied")
+        rows.append({"track": t.name or "melody", "notes": len(p), "leap_share": leap_share,
+                     "unrecovered_leaps": sum(1 for i in leaps if i + 1 < len(moves) and (moves[i + 1] > 0) == (moves[i] > 0)),
+                     "longest_step_run": best, "top_note_visits": sum(1 for i, v in enumerate(p) if v == max(p) and (i == 0 or p[i - 1] != v)),
+                     "motif_share": motif_share, "hints": hints})
+    return rows
+
+
 def transpose(score, semitones):
     for n in score.notes():
         n.pitch += semitones

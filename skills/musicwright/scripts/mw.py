@@ -22,6 +22,10 @@ Commands
   mix      layer stems (gain, offset, pan) into one file and write the aligned stems
   pulse    is there a beat: onsets, inter-onset spread, autocorrelation and grid fit (stdlib)
   answer   does a layered part answer the lead: its level in the lead's rests against under its notes
+  mixcheck band balance, peak-to-loudness, loudness contour, stereo and low-end mono, with flags (stdlib)
+  compare  mixcheck a take beside a reference the user owns, with the differences
+  preview  loudness-matched copies for fair listening (optionally blind, phone-speaker or quiet)
+  monobass fold the lows under a crossover to mono and leave the rest alone
   analyze  tempo and key estimate (needs librosa; prints the uv one-liner when missing)
   render   notation to audio: ABC, ASCII tab, MusicXML or MIDI -> MIDI and audio (FluidSynth or a built-in synth)
   notate   convert between ABC, MusicXML, MIDI and ASCII tab
@@ -352,12 +356,31 @@ def loudnorm_two_pass(src, dst, target_i, target_tp, target_lra, rate):
     return m, mode
 
 
+def master_peak(src, a):
+    """Gain only, so the sample peak lands at --peak: a pre-master for a mastering engineer (no limiter, source rate)."""
+    if a.peak > 0:
+        raise MwError("--peak is a level in dBFS at or below 0, such as -6")
+    before = measure_file(src)
+    if before["sample_peak_db"] is None:
+        raise MwError("the file is silent; nothing to normalise")
+    dst = out_file(a.out) if a.out else src.with_name(f"{src.stem}_premaster.wav")
+    g = round(a.peak - before["sample_peak_db"], 2)
+    ffmpeg(["-y", "-i", str(src), "-af", f"volume={g}dB"] + out_codec(dst) + [str(dst)])
+    after = measure_file(dst)
+    return {"ok": True, "out": str(dst.resolve()), "mode": "peak", "gain_db": g,
+            "before": {k: before[k] for k in ("lufs_i", "sample_peak_db", "true_peak_dbtp")},
+            "after": {k: after[k] for k in ("lufs_i", "sample_peak_db", "true_peak_dbtp", "sample_rate")},
+            "warnings": [], "next": "hand this to the mastering engineer with the reference and the destination; do not master it again here"}
+
+
 def cmd_master(a):
     src = need_file(a.input)
     pr = presets()
     if a.preset not in pr:
         raise MwError(f"unknown preset {a.preset}; choose from {', '.join(sorted(pr))}")
     p = pr[a.preset]
+    if a.peak is not None:
+        return master_peak(src, a)
     ti = a.lufs if a.lufs is not None else p["lufs"]
     tp = a.tp if a.tp is not None else p["true_peak"]
     dst = out_file(a.out) if a.out else src.with_name(f"{src.stem}_{a.preset}.wav")
@@ -370,7 +393,7 @@ def cmd_master(a):
     if after["lufs_i"] is not None and abs(after["lufs_i"] - ti) > 1.0:
         warn.append(f"result {after['lufs_i']} LUFS is more than 1 LU from the target {ti}")
     return {"ok": True, "out": str(dst.resolve()), "preset": a.preset, "target": {"lufs": ti, "true_peak": tp},
-            "preset_note": p.get("note"), "normalization": mode,
+            "preset_note": p.get("note"), "lra_hint": p.get("lra_hint"), "normalization": mode,
             "before": {k: before[k] for k in ("lufs_i", "true_peak_dbtp", "lra")},
             "after": {k: after[k] for k in ("lufs_i", "true_peak_dbtp", "lra", "duration_s", "sample_rate")},
             "warnings": warn}
@@ -587,10 +610,10 @@ def per_file(spec, n, name, default=0.0):
     return vals
 
 
-def decode_f32(path, rate, tmpd):
+def decode_f32(path, rate, tmpd, af=None):
     """Decode to interleaved stereo float32 at rate (ffmpeg decodes; the arithmetic stays in Python, L-001)."""
     raw = Path(tmpd) / (uuid.uuid4().hex + ".f32")
-    ffmpeg(["-y", "-i", str(path), "-ac", "2", "-ar", str(rate), "-f", "f32le", "-c:a", "pcm_f32le", str(raw)])
+    ffmpeg(["-y", "-i", str(path)] + (["-af", af] if af else []) + ["-ac", "2", "-ar", str(rate), "-f", "f32le", "-c:a", "pcm_f32le", str(raw)])
     buf = array("f")
     buf.frombytes(raw.read_bytes())
     if sys.byteorder == "big":
@@ -609,20 +632,48 @@ def encode_f32(buf, rate, dst, tmpd):
     raw.unlink()
 
 
+def automation(specs, n):
+    """--automate '2:0=0,28=0,30=-3' (repeatable): file number, then seconds=dB breakpoints on the mix timeline."""
+    env = [None] * n
+    for spec in specs or []:
+        idx, _, pts = spec.partition(":")
+        try:
+            k = int(idx) - 1
+            pairs = sorted((float(t), float(g)) for t, g in (p.split("=") for p in pts.split(",")))
+        except ValueError:
+            raise MwError(f"--automate takes FILE:SECONDS=DB,SECONDS=DB, e.g. 2:0=0,28=0,30=-3; got {spec}")
+        if not 0 <= k < n or not pairs:
+            raise MwError(f"--automate {spec}: file number must be 1 to {n}, with at least one breakpoint")
+        env[k] = pairs
+    return env
+
+
+def gain_at(pairs, t):
+    """dB at time t: held before the first and after the last breakpoint, linear in dB between them."""
+    if t <= pairs[0][0]:
+        return pairs[0][1]
+    for (t0, g0), (t1, g1) in zip(pairs, pairs[1:]):
+        if t <= t1:
+            return g0 + (g1 - g0) * (t - t0) / (t1 - t0) if t1 > t0 else g1
+    return pairs[-1][1]
+
+
 def cmd_mix(a):
     files = [need_file(f) for f in a.files]
     n = len(files)
     gains = per_file(a.gains, n, "gains")
     offsets = per_file(a.offsets, n, "offsets")
     pans = per_file(a.pans, n, "pans")
+    shelves = per_file(a.shelves, n, "shelves")
+    envs = automation(a.automate, n)
     if any(abs(p) > 1 for p in pans):
         raise MwError("--pans values run from -1 (left) to 1 (right)")
     rate = a.rate
     tmpd = Path(tempfile.mkdtemp(prefix="mw_mix_"))
     try:
         stems = []
-        for f, g, off, pan in zip(files, gains, offsets, pans):
-            buf = decode_f32(f, rate, tmpd)
+        for f, g, off, pan, sh in zip(files, gains, offsets, pans, shelves):
+            buf = decode_f32(f, rate, tmpd, f"highshelf=g={sh}:f={a.shelf_hz}" if sh else None)
             lin = 10 ** (g / 20.0)
             ang = (pan + 1) * math.pi / 4  # equal-power balance; centre leaves both channels at unity
             gl, gr = lin * math.cos(ang) * math.sqrt(2), lin * math.sin(ang) * math.sqrt(2)
@@ -641,12 +692,17 @@ def cmd_mix(a):
             raise MwError("the mix would be empty; check --offsets and --length")
         mix = array("f", bytes(4 * 2 * total))
         aligned = []
-        for buf, start, gl, gr in stems:
+        blk = rate // 100  # automation resolution: 10 ms
+        for (buf, start, gl, gr), env in zip(stems, envs):
             one = array("f", bytes(4 * 2 * total)) if a.stems else None
             frames = min(len(buf) // 2, total - start)
+            mult = [10 ** (gain_at(env, b / 100.0) / 20.0) for b in range(total // blk + 2)] if env else None
             for i in range(max(frames, 0)):
                 j, k = 2 * (start + i), 2 * i
                 left, right = buf[k] * gl, buf[k + 1] * gr
+                if mult:
+                    m = mult[(start + i) // blk]
+                    left, right = left * m, right * m
                 mix[j] += left
                 mix[j + 1] += right
                 if one is not None:
@@ -675,7 +731,8 @@ def cmd_mix(a):
         shutil.rmtree(tmpd, ignore_errors=True)
     m = measure_file(dst)
     return {"ok": True, "out": str(dst.resolve()), "duration_s": round(total / rate, 3),
-            "layers": [{"file": str(f), "gain_db": g, "offset_s": o, "pan": p} for f, g, o, p in zip(files, gains, offsets, pans)],
+            "layers": [{"file": str(f), "gain_db": g, "offset_s": o, "pan": p, "high_shelf_db": sh, "automation": e}
+                       for f, g, o, p, sh, e in zip(files, gains, offsets, pans, shelves, envs)],
             "scaled_db": round(20 * math.log10(scale), 2), "stems": stem_files,
             "measure": {k: m[k] for k in ("lufs_i", "true_peak_dbtp", "lra")}, "warnings": warn,
             "next": "sheet the mix beside its stems, then master it to the destination preset"}
@@ -847,6 +904,215 @@ def cmd_answer(a):
             "next": "to make a part answer, duck it under the lead: mw.py duck PART --under LEAD --stem --out answer.wav, then measure again"}
 
 
+# ---------------------------------------------------------------- mix checks: mixcheck, compare, preview, monobass
+
+MIX_BANDS = (("sub", 20, 60), ("bass", 60, 250), ("lowmid", 250, 500), ("mid", 500, 2000),
+             ("presence", 2000, 5000), ("sibilance", 5000, 10000), ("air", 10000, 16000))
+MIX_RATE = 48000
+MID, SIDE = "pan=mono|c0=0.5*c0+0.5*c1,", "pan=mono|c0=0.5*c0-0.5*c1,"
+
+
+def note_hz(name):
+    return 440.0 * 2 ** ((notation.parse_pitch_name(name) - 69) / 12.0)
+
+
+def mix_series(path, below_hz=None):
+    """One ffmpeg pass: per-second RMS (dB) of the mid signal in each band, of mid and side (full and under
+    120 Hz), and short-term loudness every second, plus integrated loudness and true peak."""
+    def band(lo, hi):
+        return f"highpass=f={lo},highpass=f={lo}," * (lo > 0) + f"lowpass=f={hi},lowpass=f={hi},"
+    chains = [(n, MID + band(lo, hi)) for n, lo, hi in MIX_BANDS]
+    chains += [("body", MID + band(200, 2000)), ("M", MID), ("S", SIDE),
+               ("Mlow", MID + band(0, 120)), ("Slow", SIDE + band(0, 120))]
+    if below_hz:
+        chains.append(("below", MID + band(0, round(below_hz, 1))))
+    n = len(chains) + 1
+    fc = f"[0:a]aresample={MIX_RATE},aformat=channel_layouts=stereo,asplit={n}" + "".join(f"[s{i}]" for i in range(n))
+    for i, (name, pre) in enumerate(chains):
+        fc += (f";[s{i}]{pre}asetnsamples=n={MIX_RATE},astats=metadata=1:reset=1:measure_perchannel=none:"
+               f"measure_overall=RMS_level,ametadata@{name}=print:key=lavfi.astats.Overall.RMS_level,anullsink")
+    fc += f";[s{n - 1}]ebur128=metadata=1:peak=true,ametadata@st=print:key=lavfi.r128.S"
+    err = ffmpeg(["-nostdin", "-i", str(need_file(path)), "-filter_complex", fc, "-f", "null", "-"]).stderr
+    s = {}
+    for m in re.finditer(r"\[ametadata@(\w+) @ [^\]]+\] lavfi\.[\w.]+=(\S+)", err):
+        try:
+            v = float(m.group(2))
+        except ValueError:
+            v = -120.0
+        s.setdefault(m.group(1), []).append(v if math.isfinite(v) else -120.0)
+    s["st"] = s.get("st", [])[9::10]  # ebur128 reports every 100 ms; keep one a second
+    summ = err[err.rfind("Summary:"):]
+    mi, mt = re.search(r"I:\s+(-?[\d.]+) LUFS", summ), re.search(r"Peak:\s+(-?[\d.]+) dBFS", summ)
+    if not s.get("M") or not mi:
+        raise MwError(f"could not measure {path} (silent or too short?)")
+    return s, float(mi.group(1)), float(mt.group(1)) if mt else None
+
+
+def pmean(vals):
+    """Power mean of dB values, skipping silence."""
+    vals = [v for v in vals if v > -119]
+    return 10 * math.log10(sum(10 ** (v / 10) for v in vals) / len(vals)) if vals else -120.0
+
+
+def mixcheck_of(path, lowest=None):
+    below = note_hz(lowest) * 2 ** (-2 / 12) if lowest else None  # a whole tone under the lowest note
+    s, lufs, tp = mix_series(path, below)
+    n = len(s["M"])
+    full = [pmean([a, b]) + 3.01 for a, b in zip(s["M"], s["S"])]  # mid + side power = the mean channel power
+    loud = sorted(full)[int(0.95 * (n - 1))]
+    act = [i for i in range(n) if full[i] > loud - 30] or list(range(n))
+    ref = pmean([s["M"][i] for i in act])
+    bands = {b: round(pmean([s[b][i] for i in act]) - ref, 1) for b, _, _ in MIX_BANDS}
+    mud = round(bands["lowmid"] - (bands["bass"] + bands["mid"]) / 2, 1)
+    pres = sorted(s["presence"][i] - s["body"][i] for i in act)
+    presence = round(pres[len(pres) // 2], 1)
+
+    def corr(mk, sk, idx):
+        m2, s2 = (sum(10 ** (s[k][i] / 10) for i in idx) for k in (mk, sk))
+        return (m2 - s2) / (m2 + s2) if m2 + s2 > 0 else 1.0
+    c_full = corr("M", "S", act)
+    low_idx = [i for i in act if max(s["Mlow"][i], s["Slow"][i]) > loud - 30]  # a faint residue is no low end
+    c_low = corr("Mlow", "Slow", low_idx) if low_idx else None
+    fold = 10 * math.log10(max(1e-9, (1 + c_full) / 2))  # mono fold against the stereo level, in dB
+    st = s["st"]
+    heard = sorted(v for v in st if v > -70)
+    pct = (lambda q: round(heard[int(q * (len(heard) - 1))], 1)) if heard else (lambda q: None)
+    spread = round(pct(0.9) - pct(0.1), 1) if heard else 0.0
+    w = min(10, len(st)) or 1
+    at = max(range(max(1, len(st) - w + 1)), key=lambda i: pmean(st[i:i + w])) if st else 0
+    tenths = [round(pmean(st[int(k * len(st) / 10):max(int((k + 1) * len(st) / 10), int(k * len(st) / 10) + 1)]), 1)
+              for k in range(10)] if len(st) >= 10 else []
+    plr = round(tp - lufs, 1) if tp is not None else None
+    psr = round(tp - max(st), 1) if tp is not None and st else None
+    row = {"file": str(path), "duration_s": n, "lufs_i": lufs, "true_peak_dbtp": tp, "plr_db": plr, "psr_db": psr,
+           "contour": {"short_term_p10": pct(0.1), "short_term_median": pct(0.5), "short_term_p90": pct(0.9),
+                       "spread_lu": spread, "loudest_10s_at_s": at, "by_tenth_lufs": tenths},
+           "bands_db": bands, "lowmid_excess_db": mud, "presence_db": presence,
+           "stereo": {"correlation": round(c_full, 2), "low_correlation": round(c_low, 2) if c_low is not None else None,
+                      "mono_fold_db": round(fold, 1)}}
+    flags = []
+
+    def flag(code, says, fix):
+        flags.append({"code": code, "says": says, "try": fix})
+    if plr is not None and plr < 8:
+        flag("OVER-LIMITED", f"peak-to-loudness ratio {plr} dB (under 8): squashed; after streaming normalisation it plays duller, not louder",
+             "master to the destination preset without extra limiting, or re-roll; never add compression to AI output")
+    if n > 90 and spread < 2:
+        flag("FLAT", f"short-term loudness varies {spread} LU over {n} s: no section contrast or arc",
+             "right for a steady game bed; otherwise sections with their own density (musicwright-compose), or mix --automate 1-3 dB per section")
+    if mud > 3 and bands["bass"] > -15:  # with no bass part (a solo) the average is meaningless
+        flag("MUDDY", f"250-500 Hz sits {mud} dB above the bass and mid bands' average",
+             "with stems, cut 250-500 Hz on the pad or keys (not the bass); in a prompt, ask for fewer sustained low-mid parts")
+    if presence > -10:
+        flag("BRIGHT", f"2-5 kHz is {presence} dB against 200 Hz-2 kHz for half the playing time (heuristic, uncalibrated)",
+             "listen for fatigue at a moderate level; under dialogue keep this band low; darken background stems (mix --shelves)")
+    if c_full < 0:
+        flag("MONO-LOSS", f"more side than mid (correlation {round(c_full, 2)}): a mono speaker plays it {round(-fold, 1)} dB quieter and thinner",
+             "check on a phone speaker; if it must work in mono, re-roll or rebuild from stems")
+    if c_low is not None and c_low < 0.7:
+        flag("LOW-WIDE", f"below 120 Hz the channels disagree (correlation {round(c_low, 2)})",
+             "mw.py monobass IN --out OUT folds the lows to mono and leaves the rest as it is")
+    if below:
+        lvl = round(pmean([s["below"][i] for i in act]) - ref, 1)
+        row["below_lowest"] = {"note": lowest, "under_hz": round(below, 1), "level_db": lvl}
+        if lvl > -15:
+            flag("BELOW-RANGE", f"energy under {lowest} at {lvl} dB against the whole: a part lower than the named instrument can play",
+                 "for a solo brief, re-roll the seed; a drone or bass under a solo is the usual intruder")
+    row["flags"] = flags
+    return row
+
+
+MIXCHECK_READING = ("pointers for what to listen to, not verdicts: analysers miss timing and character. "
+                    "bands_db are each band's level against the whole mid signal; plr_db is true peak minus integrated loudness; "
+                    "mono_fold_db is the level lost when both channels are summed")
+
+
+def cmd_mixcheck(a):
+    return {"ok": True, "files": [mixcheck_of(f, a.lowest) for f in a.files], "reading": MIXCHECK_READING}
+
+
+def cmd_compare(a):
+    take, ref = mixcheck_of(a.take, a.lowest), mixcheck_of(a.ref, a.lowest)
+    diff = {"lufs_i": round(take["lufs_i"] - ref["lufs_i"], 1),
+            "plr_db": None if None in (take["plr_db"], ref["plr_db"]) else round(take["plr_db"] - ref["plr_db"], 1),
+            "spread_lu": round(take["contour"]["spread_lu"] - ref["contour"]["spread_lu"], 1),
+            "bands_db": {b: round(take["bands_db"][b] - ref["bands_db"][b], 1) for b in take["bands_db"]},
+            "correlation": round(take["stereo"]["correlation"] - ref["stereo"]["correlation"], 2)}
+    return {"ok": True, "take": take, "ref": ref, "take_minus_ref": diff,
+            "reading": "bands are relative, so the loudness gap does not move them; a louder take sounds better to every listener: "
+                       "rank only on matched copies (mw.py preview). Use the reference for the concept, not to copy its spectrum. "
+                       + MIXCHECK_READING}
+
+
+def chain_loudness(path, chain):
+    """Integrated loudness and true peak of a file after a filter chain."""
+    err = ffmpeg(["-nostdin", "-i", str(path), "-af", (chain + "," if chain else "") + "ebur128=peak=true", "-f", "null", "-"]).stderr
+    summ = err[err.rfind("Summary:"):]
+    mi, mt = re.search(r"I:\s+(-?[\d.]+) LUFS", summ), re.search(r"Peak:\s+(-?[\d.]+) dBFS", summ)
+    if not mi:
+        raise MwError(f"no measurable loudness in {path}")
+    return float(mi.group(1)), float(mt.group(1)) if mt else None
+
+
+PREVIEW_AS = {"normal": "",
+              "phone": "pan=mono|c0=0.5*c0+0.5*c1,highpass=f=300,highpass=f=300,lowpass=f=6000,lowpass=f=6000,pan=stereo|c0=c0|c1=c0",
+              "quiet": ""}
+
+
+def cmd_preview(a):
+    files = [need_file(f) for f in a.files]
+    chain = PREVIEW_AS[a.as_]
+    meas = [chain_loudness(f, chain) for f in files]
+    # one level for every copy: the target, or lower when a copy would peak over -1 dBTP with plain gain
+    room = min((-1.0 - tp + li) for li, tp in meas if tp is not None) if any(tp is not None for _, tp in meas) else a.lufs
+    target = round(min(a.lufs, room), 1)
+    shift = -20.0 if a.as_ == "quiet" else 0.0
+    order = list(range(len(files)))
+    if a.blind:
+        import random
+        random.Random(a.seed).shuffle(order)
+    od = Path(a.out)
+    od.mkdir(parents=True, exist_ok=True)
+    rows, key = [], {}
+    for pos, i in enumerate(order):
+        f, (li, tp) = files[i], meas[i]
+        name = f"take_{chr(65 + pos)}" if a.blind else f"{slug(f.stem)}_{a.as_}"
+        dst = od / f"{name}.wav"
+        g = round(target - li + shift, 2)
+        ffmpeg(["-nostdin", "-y", "-i", str(f), "-af", (chain + "," if chain else "") + f"volume={g}dB",
+                "-ar", str(MIX_RATE)] + out_codec(dst) + [str(dst)])
+        rows.append({"preview": str(dst.resolve()), "gain_db": g, "source_lufs": li})
+        key[name] = str(f)
+    res = {"ok": True, "as": a.as_, "matched_lufs": round(target + shift, 1), "previews": rows,
+           "reading": "every copy plays at one loudness, so the louder take no longer wins by being louder; rank on these, never on the raw takes"}
+    if a.blind:
+        kf = od / "blind_key.json"
+        write_lf(kf, json.dumps(key, indent=1) + "\n")
+        res["key_file"] = str(kf.resolve())
+        res["previews"] = [{k: v for k, v in r.items() if k != "source_lufs"} for r in rows]
+        res["reading"] += "; the key file maps letters to takes: do not open it until the listener has ranked them"
+    if target < a.lufs:
+        res["note"] = f"matched at {target} LUFS, under the asked {a.lufs}, so no copy peaks over -1 dBTP without a limiter"
+    return res
+
+
+def cmd_monobass(a):
+    src = need_file(a.input)
+    dst = out_file(a.out)
+    # Linkwitz-Riley crossover (two Butterworth stages each side): high-passed L and R plus the low-passed mid in both.
+    # LR4 halves sum flat, so the only change besides the mono lows is one all-pass phase turn. Subtracting a
+    # low-passed side instead leaves the filter's phase lag behind and widened the lows on a real render (L-003).
+    hp, lp = f"highpass=f={a.hz},highpass=f={a.hz}", f"lowpass=f={a.hz},lowpass=f={a.hz}"
+    fc = (f"[0:a]aformat=channel_layouts=stereo,asplit[a][b];[a]{hp}[h];[b]{MID}{lp}[l];"
+          f"[h][l]amerge=inputs=2,pan=stereo|c0=c0+c2|c1=c1+c2[o]")
+    before = mixcheck_of(src)
+    ffmpeg(["-nostdin", "-y", "-i", str(src), "-filter_complex", fc, "-map", "[o]"] + out_codec(dst) + [str(dst)])
+    after = mixcheck_of(dst)
+    return {"ok": True, "out": str(dst.resolve()), "hz": a.hz,
+            "before": before["stereo"], "after": after["stereo"],
+            "next": "listen: the low end should sit centred and firmer; nothing above the crossover changes"}
+
+
 # ---------------------------------------------------------------- notation: render, notate, transcribe
 
 SCORE_EXT = {".abc": "abc", ".mid": "midi", ".midi": "midi", ".musicxml": "musicxml", ".xml": "musicxml",
@@ -883,7 +1149,9 @@ def cmd_render(a):
     score, kind = load_score(a, a.score)
     res = {"ok": True, "score": str(Path(a.score).resolve()), "read_as": kind, **score.summary(), "warnings": score.warnings}
     if a.check:
-        res["next"] = "fix the warnings (a bar that is too long or short usually means a wrong note length), then render with --out"
+        res["melody"] = notation.melody_hints(score)
+        res["next"] = ("fix the warnings (a bar that is too long or short usually means a wrong note length); melody hints are "
+                       "rules of thumb for lines you wrote, not errors; then render with --out")
         return res
     if not a.out:
         raise MwError("give --out (an audio file), or --check to only read the score")
@@ -1502,7 +1770,8 @@ def cmd_doctor(a):
         v = run([ffmpeg_bin(), "-version"]).stdout.splitlines()[0]
         rep["ffmpeg"] = v
         filters = run([ffmpeg_bin(), "-hide_banner", "-filters"]).stdout
-        rep["ffmpeg_filters_missing"] = [f for f in ("ebur128", "loudnorm", "showspectrumpic", "sidechaincompress", "acrossfade") if f not in filters]
+        rep["ffmpeg_filters_missing"] = [f for f in ("ebur128", "loudnorm", "showspectrumpic", "sidechaincompress", "acrossfade",
+                                                                       "astats", "asetnsamples", "ametadata", "anullsink", "amerge", "highshelf") if f not in filters]
     except MwError as e:
         rep["ffmpeg"] = None
         rep["ffmpeg_error"] = str(e)
@@ -1627,6 +1896,7 @@ def build_parser():
     s.add_argument("--lufs", type=float)
     s.add_argument("--tp", type=float)
     s.add_argument("--lra", type=float, default=11.0)
+    s.add_argument("--peak", type=float, help="instead of loudness: gain so the sample peak sits here (-6 for a mastering engineer); no limiter, source rate")
     s.add_argument("--rate", type=int, default=48000)
     s.add_argument("--out")
     s.set_defaults(fn=cmd_master)
@@ -1688,6 +1958,9 @@ def build_parser():
     s.add_argument("--stems", help="also write each aligned, processed layer to this folder")
     s.add_argument("--rate", type=int, default=48000)
     s.add_argument("--no-limit", action="store_true", help="keep the sum even if it peaks above -1 dBFS")
+    s.add_argument("--shelves", help="high-shelf dB per file (negative darkens a background part), comma separated")
+    s.add_argument("--shelf-hz", type=float, default=3000, help="corner of --shelves (default 3000)")
+    s.add_argument("--automate", action="append", help="gain envelope for one file: FILE:SECONDS=DB,SECONDS=DB (1-based file number; repeat per file)")
     s.set_defaults(fn=cmd_mix)
 
     s = sub.add_parser("analyze", help="tempo and key (librosa)")
@@ -1703,6 +1976,33 @@ def build_parser():
     s.add_argument("--lead", required=True)
     s.add_argument("--below", type=float, default=30.0, help="the lead counts as playing within this many dB of its loud frames")
     s.set_defaults(fn=cmd_answer)
+
+    s = sub.add_parser("mixcheck", help="band balance, peak-to-loudness, loudness contour, stereo and low-end mono, with flags")
+    s.add_argument("files", nargs="+")
+    s.add_argument("--lowest", help="lowest note the brief's instruments play (C4 for a flute solo): flags energy under it")
+    s.set_defaults(fn=cmd_mixcheck)
+
+    s = sub.add_parser("compare", help="mixcheck a take beside a reference, with the differences")
+    s.add_argument("take")
+    s.add_argument("ref")
+    s.add_argument("--lowest")
+    s.set_defaults(fn=cmd_compare)
+
+    s = sub.add_parser("preview", help="loudness-matched copies of takes for fair listening")
+    s.add_argument("files", nargs="+")
+    s.add_argument("--out", required=True, help="folder for the copies")
+    s.add_argument("--lufs", type=float, default=-16.0, help="matched level (lowered when a copy would peak over -1 dBTP)")
+    s.add_argument("--as", dest="as_", choices=sorted(PREVIEW_AS), default="normal",
+                   help="phone: mono, 300 Hz-6 kHz; quiet: 20 dB down (the low-level check)")
+    s.add_argument("--blind", action="store_true", help="name the copies take_A, take_B ... in a shuffled order; the key goes to a file")
+    s.add_argument("--seed", type=int, help="shuffle seed for --blind")
+    s.set_defaults(fn=cmd_preview)
+
+    s = sub.add_parser("monobass", help="fold the lows under a crossover to mono, leave the rest")
+    s.add_argument("input")
+    s.add_argument("--out", required=True)
+    s.add_argument("--hz", type=float, default=160.0, help="crossover; the lows are fully mono about an octave under it (200 for a mono low end to 120 Hz)")
+    s.set_defaults(fn=cmd_monobass)
 
     def score_opts(s):
         s.add_argument("--bpm", type=float, help="tempo in quarter notes a minute (overrides the score's)")
