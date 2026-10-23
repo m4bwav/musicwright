@@ -73,6 +73,69 @@ invert, reverse, augment (slower), diminish (faster), fragment, reharmonise, cha
 theme in minor for the tragic beat), change orchestration (solo flute, then full brass). One
 main theme reused across menu, map, boss and victory makes a soundtrack feel authored.
 
+## Melody (for lines you write)
+
+Rules of thumb after DeSantis, *Making Music* (2015), ch. 49-51 and 54.
+
+- Mostly steps with some leaps. After a leap, step back the other way; after a run of steps, a
+  leap the other way sounds fresh.
+- Build the line from one or two short motifs with a rhythm you can recognise; repeat, transpose
+  and vary them. A pair where the first half stays the same and the second half changes is a
+  common chorus shape.
+- An arch with one high point near a strong beat is the default shape. Many folk tunes return to
+  their top note, so treat a single peak as a choice.
+- Two lines at once stay apart with their own rhythm, contrary motion and separate registers; lines
+  that move together are heard as chords.
+- Words: stressed syllables on strong beats and on the longer notes.
+- `mw.py render tune.abc --check` reports, per line, the share of moves that leap a fourth or
+  more and the share of notes inside a four-note rhythm that comes back. It flags over 25% leaps
+  and under 65% returning rhythm. On 18 public-domain tunes neither flag fired; on six random
+  walks both fired every time. A single top note and long step runs did not tell the two apart,
+  so they are reported without a flag.
+
+## Harmonic rhythm and the low end
+
+- A busy surface (arpeggios, sixteenth hats) wants slow chord changes; a slow melody can change
+  chord every beat. Halve the chord rate for a bridge or breakdown; squeeze the progression into
+  half the bars for a driving ending (DeSantis ch. 59).
+- Most pop uses two to four of the seven diatonic chords. V and vii lead home to I, ii and IV lead
+  to V, vi to ii or IV. Keep shared notes between chords and move the rest by the smallest step.
+- Kick and bass are one line: in beat-driven music the bass plays between the kicks (an offbeat
+  bass under four-on-the-floor), so the low notes take turns instead of piling up (ch. 44).
+- Drums have pitch too: a synth kick on the root, toms on chord tones (ch. 46).
+
+## Arrangement
+
+After DeSantis ch. 31-32, 63, 66-75 and Oltheten, *Mixing With Impact* (2018) 3.3.
+
+- Every part is foreground, middle ground or background. High, loud, busy or changing parts come
+  forward; low, steady, repeating parts sit back. A background part stepping forward for one fill
+  makes the depth audible.
+- Arrange by subtraction: write or render the densest section first, then thin it for the others
+  (fewer parts, fewer notes, shorter tails). It is easier to hear what is wrong than to imagine
+  what is missing.
+- Sections contrast by who plays, not by overall level: a dark bass-and-melody verse against a
+  brighter chorus.
+- Blur the seams: let a part enter a beat early, run past the boundary or drop out just before it;
+  a fill peaks just before the downbeat.
+- Two families of form. Song form: verse tension, chorus release, a bridge unlike both. Layering
+  form: builds add parts, breakdowns take them away, and the drop is the densest moment, once or
+  twice a track.
+- The arc: exposition, rise, a climax that is usually the densest passage, fall, and a close that
+  mirrors the opening. Minimal and dub styles build tension by slow change of texture instead.
+- One or two unique events every few minutes (a one-off sound, a break, an effect throw), near a
+  section boundary; more than that and they turn routine.
+- Borrow a skeleton: note where a reference's sections change, in bars (usually multiples of 4 or
+  8), and fill those lengths with new material.
+
+## Endings
+
+- Mirror out: parts leave in the reverse order they came in.
+- Shrinking loop: repeat the closing phrase at 8 bars, then 2, then 1, and stop on a strong beat.
+- Fade only material that could loop for ever, and fade after any limiting (musicwright-produce).
+- For renders: generate the ending as its own movement with an ending in its caption and join it
+  (`mw.py join`); trimming a render that just stops sounds cut off.
+
 ## Ranges (sounding pitch, C4 = middle C) and colour
 
 - Strings: violin G3-E7 (high = shimmer, tension); viola C3-E6 (warm, dark); cello C2-A5 (A2-A4

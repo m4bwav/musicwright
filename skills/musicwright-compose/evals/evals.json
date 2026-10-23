@@ -115,6 +115,29 @@
     }
    },
    "baseline": "not yet run"
+  },
+  {
+   "id": "action-3",
+   "kind": "action",
+   "prompt": "I wrote the melody in tests/fixtures/wander.abc. Before I render it, does it hold together as a tune? Check it properly, don't just eyeball the letters.",
+   "runs": 3,
+   "expectations": [
+    "the score is checked with the plugin's render check, which reports leaps and returning rhythm, proven by the trace",
+    "the answer names the many large leaps or the lack of a repeated motif"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+render\\b(?:[^\\n]|\\\\\\n)*--check"
+   },
+   "baseline": "not yet run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash"
+   ],
+   "max_turns": 12
   }
  ]
 }

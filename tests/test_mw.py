@@ -783,6 +783,201 @@ class PulseAndAnswer(unittest.TestCase):
         self.assertFalse(d["ok"])
 
 
+def stereo(expr_l, expr_r, name, d=6):
+    """A stereo test file from two aevalsrc expressions (left|right)."""
+    return lavfi(f"aevalsrc='{expr_l}|{expr_r}':s={RATE}:d={d}", TMP / "audio" / name)
+
+
+def flag_codes(row):
+    return [f["code"] for f in row["flags"]]
+
+
+@NEEDS_FFMPEG
+class MixCheck(unittest.TestCase):
+    """mixcheck flags: each has a file that must raise it and one that must not."""
+
+    @classmethod
+    def setUpClass(cls):
+        s = "sin(2*PI*{}*t)"
+        cls.inphase = stereo("0.3*" + s.format(440), "0.3*" + s.format(440), "inphase.wav")
+        cls.antiphase = stereo("0.3*" + s.format(440), "-0.3*" + s.format(440), "antiphase.wav")
+        cls.lowwide = stereo(f"0.3*{s.format(60)}+0.2*{s.format(1000)}", f"-0.3*{s.format(60)}+0.2*{s.format(1000)}", "lowwide.wav")
+        both = lambda e, n: stereo(e, e, n)  # noqa: E731
+        cls.flute_drone = both(f"0.3*{s.format(110)}+0.3*{s.format(880)}", "flute_drone.wav")
+        cls.flute = both("0.3*" + s.format(880), "flute.wav")
+        cls.muddy = both(f"0.12*{s.format(100)}+0.4*{s.format(350)}+0.12*{s.format(1000)}", "muddy.wav")
+        cls.muddy_solo = both(f"0.4*{s.format(450)}+0.12*{s.format(1000)}", "muddy_solo.wav")
+        cls.bright = both(f"0.1*{s.format(500)}+0.3*{s.format(3000)}", "bright.wav")
+        cls.dull = both("0.3*" + s.format(500), "dull.wav")
+        cls.bursts = both(f"if(lt(mod(t,1),0.05),0.9,0.03)*{s.format(1000)}", "bursts.wav")
+        cls.steady100 = stereo("0.3*" + s.format(1000), "0.3*" + s.format(1000), "steady100.wav", d=100)
+        cls.swell100 = stereo(f"0.01*pow(10,t/50)*{s.format(1000)}", f"0.01*pow(10,t/50)*{s.format(1000)}", "swell100.wav", d=100)
+
+    def check(self, *files, lowest=None):
+        code, d = run("mixcheck", *files, *(["--lowest", lowest] if lowest else []))
+        self.assertEqual(code, 0, d)
+        return d["files"]
+
+    def test_mono_loss_and_wide_lows(self):
+        inph, anti, low = self.check(self.inphase, self.antiphase, self.lowwide)
+        self.assertGreater(inph["stereo"]["correlation"], 0.95)
+        self.assertNotIn("MONO-LOSS", flag_codes(inph))
+        self.assertLess(anti["stereo"]["correlation"], -0.95)
+        self.assertIn("MONO-LOSS", flag_codes(anti))
+        self.assertLess(low["stereo"]["low_correlation"], -0.9)
+        self.assertIn("LOW-WIDE", flag_codes(low))
+        self.assertNotIn("LOW-WIDE", flag_codes(inph))
+
+    def test_below_range_finds_a_drone_under_a_solo(self):
+        drone, solo = self.check(self.flute_drone, self.flute, lowest="C4")
+        self.assertIn("BELOW-RANGE", flag_codes(drone))
+        self.assertGreater(drone["below_lowest"]["level_db"], -15)
+        self.assertNotIn("BELOW-RANGE", flag_codes(solo))
+        self.assertLess(solo["below_lowest"]["level_db"], -30)
+        self.assertNotIn("below_lowest", self.check(self.flute)[0])
+
+    def test_muddy_needs_a_bass_part_and_bright_needs_presence(self):
+        mud, solo, bright, dull = self.check(self.muddy, self.muddy_solo, self.bright, self.dull)
+        self.assertIn("MUDDY", flag_codes(mud))
+        self.assertGreater(solo["lowmid_excess_db"], 3)  # the excess is there, but there is no bass part to muddy
+        self.assertNotIn("MUDDY", flag_codes(solo))
+        self.assertIn("BRIGHT", flag_codes(bright))
+        self.assertNotIn("BRIGHT", flag_codes(dull))
+
+    def test_over_limited_and_flat(self):
+        steady, bursts = self.check(self.steady100, self.bursts)
+        self.assertLess(steady["plr_db"], 8)
+        self.assertIn("OVER-LIMITED", flag_codes(steady))
+        self.assertGreater(bursts["plr_db"], 8)
+        self.assertNotIn("OVER-LIMITED", flag_codes(bursts))
+        self.assertIn("FLAT", flag_codes(steady))
+        self.assertLess(steady["contour"]["spread_lu"], 1)
+        swell = self.check(self.swell100)[0]
+        self.assertNotIn("FLAT", flag_codes(swell))
+        self.assertGreater(swell["contour"]["spread_lu"], 10)
+        self.assertGreater(swell["contour"]["loudest_10s_at_s"], 80)
+        self.assertEqual(len(swell["contour"]["by_tenth_lufs"]), 10)
+        self.assertEqual(swell["contour"]["by_tenth_lufs"], sorted(swell["contour"]["by_tenth_lufs"]))
+
+    def test_compare_reports_both_and_the_gap(self):
+        code, d = run("compare", FX["tone"], FX["bed"])
+        self.assertEqual(code, 0, d)
+        self.assertAlmostEqual(d["take_minus_ref"]["lufs_i"], d["take"]["lufs_i"] - d["ref"]["lufs_i"], delta=0.11)
+        self.assertLess(d["take_minus_ref"]["lufs_i"], -4)  # the bed is 6 dB hotter, a little less after K-weighting
+        self.assertEqual(set(d["take_minus_ref"]["bands_db"]), {b for b, _, _ in mw.MIX_BANDS})
+        code, d = run("compare", FX["tone"], TMP / "audio" / "missing.wav")
+        self.assertFalse(d["ok"])
+
+
+@NEEDS_FFMPEG
+class FixesAndPreviews(unittest.TestCase):
+    def test_preview_matches_loudness_blind_and_phone(self):
+        out = TMP / "previews"
+        code, d = run("preview", FX["tone"], FX["bed"], "--out", out, "--lufs", "-20")
+        self.assertEqual(code, 0, d)
+        levels = [mw.measure_file(p["preview"])["lufs_i"] for p in d["previews"]]
+        self.assertAlmostEqual(levels[0], levels[1], delta=0.3)
+        self.assertAlmostEqual(levels[0], -20, delta=0.5)
+        code, d = run("preview", FX["tone"], FX["bed"], "--out", out / "blind", "--blind", "--seed", "1")
+        names = sorted(Path(p["preview"]).name for p in d["previews"])
+        self.assertEqual(names, ["take_A.wav", "take_B.wav"])
+        self.assertEqual(Path(d["key_file"]).resolve(), (out / "blind_blind_key.json").resolve())  # not in the folder the listener opens
+        self.assertEqual(sorted(p.name for p in (out / "blind").iterdir()), ["take_A.wav", "take_B.wav"])
+        key = json.loads(Path(d["key_file"]).read_text(encoding="utf-8"))
+        self.assertEqual(sorted(Path(v).name for v in key.values()), ["bed.wav", "tone.wav"])
+        self.assertNotIn("source_lufs", d["previews"][0])  # nothing in the reply gives the order away
+        wide = stereo("0.3*sin(2*PI*440*t)", "0.1*sin(2*PI*660*t)", "pv_wide.wav")
+        code, d = run("preview", wide, "--out", out / "phone", "--as", "phone")
+        self.assertEqual(code, 0, d)
+        p = d["previews"][0]["preview"]
+        self.assertLess(mean_volume(p, 1, 5, "pan=mono|c0=c0-c1"), -80)  # mono
+        code, d = run("preview", FX["tone"], "--out", out / "quiet", "--as", "quiet", "--lufs", "-20")
+        self.assertAlmostEqual(mw.measure_file(d["previews"][0]["preview"])["lufs_i"], -40, delta=0.5)
+
+    def test_monobass_centres_the_lows_and_leaves_the_rest(self):
+        # the bass in the left channel only (correlation 0): folded, it sits in both. Pure anti-phase bass would vanish instead
+        src = stereo("0.3*sin(2*PI*60*t)+0.2*sin(2*PI*1000*t)", "0.2*sin(2*PI*1000*t)", "mb_src.wav")
+        dst = TMP / "mb" / "mono_low.wav"
+        code, d = run("monobass", src, "--out", dst)
+        self.assertEqual(code, 0, d)
+        self.assertLess(d["before"]["low_correlation"], 0.1)
+        self.assertGreater(d["after"]["low_correlation"], 0.9)
+        bp = "bandpass=f=1000:width_type=q:w=8,bandpass=f=1000:width_type=q:w=8"
+        for ch in ("c0", "c1"):  # the 1 kHz part keeps its level in each channel
+            self.assertAlmostEqual(mean_volume(dst, 1, 5, f"pan=mono|c0={ch}," + bp), mean_volume(src, 1, 5, f"pan=mono|c0={ch}," + bp), delta=0.3)
+        anti = stereo("0.3*sin(2*PI*60*t)+0.2*sin(2*PI*1000*t)", "-0.3*sin(2*PI*60*t)+0.2*sin(2*PI*1000*t)", "mb_anti.wav")
+        code, d = run("monobass", anti, "--out", TMP / "mb" / "anti.wav")
+        self.assertLess(d["before"]["low_correlation"], -0.9)
+        self.assertIsNone(d["after"]["low_correlation"])  # bass in anti-phase cancels in mono; only a faint residue is left
+
+    def test_mix_shelves_and_automation(self):
+        hi = lavfi(f"sine=frequency=8000:sample_rate={RATE}:duration=6", TMP / "audio" / "hi8k.wav", extra=("-ac", "2"))
+        code, d = run("mix", hi, "--shelves", "-6", "--shelf-hz", "1500", "--out", TMP / "mix_shelf.wav", "--no-limit")
+        self.assertEqual(code, 0, d)
+        self.assertAlmostEqual(mean_volume(hi, 1, 5) - mean_volume(TMP / "mix_shelf.wav", 1, 5), 6.0, delta=0.5)
+        dst = TMP / "mix_auto.wav"
+        code, d = run("mix", FX["tone"], "--automate", "1:0=0,4=0,5=-6", "--out", dst, "--no-limit")
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["layers"][0]["automation"], [[0.0, 0.0], [4.0, 0.0], [5.0, -6.0]])
+        self.assertAlmostEqual(mean_volume(dst, 1, 3) - mean_volume(dst, 6, 9), 6.0, delta=0.3)
+        self.assertAlmostEqual(mean_volume(dst, 1, 3), mean_volume(FX["tone"], 1, 3), delta=0.2)
+        code, d = run("mix", FX["tone"], "--automate", "2:0=0", "--out", TMP / "x.wav")
+        self.assertIn("file number", d["error"])
+        code, d = run("mix", FX["tone"], "--automate", "1:zero=0", "--out", TMP / "x.wav")
+        self.assertIn("FILE:SECONDS=DB", d["error"])
+
+    def test_master_peak_mode_and_lra_hint(self):
+        code, d = run("master", FX["tone"], "--peak", "-6", "--out", TMP / "pre.wav")
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["mode"], "peak")
+        self.assertAlmostEqual(d["after"]["sample_peak_db"], -6, delta=0.15)
+        self.assertAlmostEqual(d["gain_db"], -6 - d["before"]["sample_peak_db"], delta=0.02)
+        code, d = run("master", FX["tone"], "--peak", "3", "--out", TMP / "pre2.wav")
+        self.assertIn("at or below 0", d["error"])
+        code, d = run("master", FX["tone"], "--preset", "game-music", "--out", TMP / "gm.wav")
+        self.assertTrue(d["lra_hint"])
+
+
+ODE = """X:1
+T:Steps and a motif
+M:4/4
+L:1/4
+K:D
+F F G A | A G F E | D D E F | F3/2 E/ E2 | F F G A | A G F E | D D E F | E3/2 D/ D2 |
+"""
+# a random walk: leaps everywhere, and a rhythm (in sixteenths) where no four durations in a row come back
+WANDER = "\n".join(["X:1", "T:Random walk", "M:4/4", "L:1/16", "K:C", " ".join(
+    p + str(d) for p, d in zip("C, a D g' E, c' F b G, d' A, e' B, f C g, a' D, b' E".split(),
+                               (3, 1, 5, 2, 7, 1, 4, 6, 2, 3, 8, 1, 5, 3, 2, 6, 4, 1, 7, 2))) + " |]", ""])
+
+
+class MelodyHints(unittest.TestCase):
+    def test_wandering_line_gets_both_hints_and_a_motif_line_none(self):
+        good, bad = TMP / "ode.abc", TMP / "wander.abc"
+        good.write_text(ODE, encoding="utf-8")
+        bad.write_text(WANDER, encoding="utf-8")
+        code, d = run("render", good, "--check")
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["melody"][0]["hints"], [], d["melody"])
+        self.assertGreater(d["melody"][0]["motif_share"], 0.65)
+        code, d = run("render", bad, "--check")
+        m = d["melody"][0]
+        self.assertGreater(m["leap_share"], 0.25, m)
+        self.assertLess(m["motif_share"], 0.65, m)
+        self.assertEqual(len(m["hints"]), 2, m)
+
+    def test_chords_and_short_lines_are_skipped(self):
+        sc = mw.notation.Score()
+        t = mw.notation.Track("pad")
+        for i in range(16):  # block chords: three notes on every start, enough starts to pass the length check
+            t.notes += [mw.notation.Note(i, 1, 60 + k) for k in (0, 4, 7)]
+        sc.tracks.append(t)
+        self.assertEqual(mw.notation.melody_hints(sc), [])
+        t.notes = [mw.notation.Note(i, 1, 60 + i) for i in range(6)]
+        self.assertEqual(mw.notation.melody_hints(sc), [])
+
+
+
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
 

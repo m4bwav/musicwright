@@ -19,8 +19,24 @@ structure hint**. Tempo and key go in their own fields when the model has them.
 - **Structure hints**: slow build, building to a climax, steady loop, no intro, abrupt stop,
   fade-out ending, sparse then full, solo section, call and response.
 - **Space and placement**: low in the mix, distant, upfront, faint, subtle, in the background.
+- **Depth**: name the near part and the far part together. Near: close, dry, bright, upfront. Far:
+  distant, dark, reverberant, soft. "close, dry, bright solo flute; distant, dark, reverberant
+  string pad; soft low drums". Dry and close against wet and far is how a mix shows
+  depth, and the words models know for it.
+- **Low end, beat-driven**: tight short kick, offbeat bass, bass between the kicks.
 
 ## Describing a reference without naming the artist
+
+Listen until you can fill five fields, then work only from the fields (after DeSantis, *Making
+Music* ch. 5). The result is a description, never a copy.
+
+| Field | Write down | Goes to |
+|---|---|---|
+| Sound | instruments, timbre, production, space | caption |
+| Harmony | key or mode, how often the chords change | `--key`, mood words |
+| Melody | lead instrument, register, contour, motif | caption |
+| Rhythm | tempo, feel (straight, swung, half-time), the drum sound | `--bpm`, caption |
+| Form | sections in order with their bars or seconds, what enters and leaves | `--sections`, `mw.py join --lengths` |
 
 Translate the reference into: genre + era + instruments + vocal texture (gender, register,
 breathy, raspy, belted, vibrato) + production (reverb size, saturation, drum sound) + tempo feel
@@ -47,3 +63,9 @@ solo piano") and drop modern production words.
 - Metadata contradicts the caption ("slow ballad" at 170 bpm).
 - Extreme tempo, rare keys or very long durations go unstable or repetitive.
 - Naming an instrument to exclude it ("no drums") can bring it in.
+
+## Lyrics that sing
+
+Mark the stressed syllables and place them on beats 1 and 3 or on the longer notes; read every
+line aloud at the target tempo before rendering. A line that fights the natural stress of its
+words sounds forced in a sung take (DeSantis ch. 54). ACE-Step wants 6-10 syllables a line.

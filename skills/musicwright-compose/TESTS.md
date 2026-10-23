@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261023-1 · 2026-10-23 · headless claude -p with --plugin-dir on branch books-8 (installed copy disabled), three runs per case, in a repository clone and again in a folder holding only the fixtures · Windows 11 dev machine · 6/6
+- action-3 (does wander.abc hold together): 3/3 clone, 3/3 fixtures-only; the runs reported the leap share and the missing returning rhythm from `render --check`.
+- Baselines: 1/1 in a clone; 1/1 fixtures-only, because it searched the disk and ran the installed release's mw.py, which has no melody hints, so its evidence passes without the new check.
+- led to: none
+
 ### T-20261017-2 · 2026-10-17 · headless claude -p, one run per case, fresh session, plugin installed from mark-local at eval-fixes 72be5c3 · Windows 11 dev machine · 6/6
 - All six passed. action-1: motif.mid exists (file evidence). outcome-1 (Taylor Swift's newest album): neither written prompt contains the name; the name appears only in the source links; genre, era, instruments, vocal texture and production were given.
 - decoy-1 (master to -14 LUFS) went to musicwright-produce.

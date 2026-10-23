@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-1 · 2026-10-23 · Hand over loudness-matched copies; mixcheck in the look step; new mw.py commands
+- because: R-20261023-1 (musicwright-produce), L-003, L-004, T-20261023-1
+- files: SKILL.md (Step 3), references/listening.md (Numbers that point at the mix; questions 8-9; Checks a script can add), references/cli.md, references/loudness.json (lra_hint per preset), scripts/mw.py (mixcheck, compare, preview, monobass; mix --shelves, --shelf-hz, --automate; master --peak; doctor checks the new filters), scripts/notation.py (melody_hints), evals/evals.json (action-2)
+- The take loop now gives the listener matched copies, because a louder take wins on loudness alone; listening.md explains the mixcheck numbers and replaces a mono rule that would have flagged a mono-safe file measured without dual-mono.
+
 ### C-20261017-4 · 2026-10-17 · mw.py: mix, source tasks on the REST route, duck keeps the music length, --out folders
 - because: user request (add parts to a kept take); HANDOFF bugs (missing --out folders, duck cut the music to the key's length, REST ignored --cfg/--steps/--set, gen made --out on dry runs); R-20261017-4, R-20261017-5 in musicwright-generate
 - files: scripts/mw.py (mix, gen --task/--src/--track/--start/--end/--strength/--model, duck --stem, out_file), references/cli.md (gen, duck, mix rows)

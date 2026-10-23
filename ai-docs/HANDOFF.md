@@ -1,6 +1,16 @@
 # Handoff
 
-State on 2026-10-18, end of the layers-2 and notation session.
+State on 2026-10-23, end of the books track 8 session (mix checks and craft from two music books). Earlier state from 2026-10-18 follows below it.
+
+## Books track 8 (2026-10-23)
+
+- Built on branch books-8: `mw.py mixcheck`, `compare`, `preview` (matched, `--blind`, `--as phone|quiet`), `monobass`; `mix --shelves --shelf-hz --automate`; `master --peak`; `lra_hint` per preset; melody hints in `render --check`; prose in produce, hub, compose, generate, curate, game and score. Rulings K1-K11 and what was not built: [decisions/2026-10-23-books-track8.md](decisions/2026-10-23-books-track8.md).
+- Calibration: 78 real AI renders on the owner's machine (mix flags fire on 1% to 18%; 43 raise none), the three judged flute takes (BELOW-RANGE separates the rejected one by 21 dB), 18 public-domain tunes against six random walks (melody flags 0/18 and 6/6). Rates are in musicwright-produce references/mixing.md and compose references/theory.md.
+- Not built: tuning drift, repetition and `analyze --sections` (librosa), a dynamic-EQ harshness repair, sibilance spikes, kick-bass onset coincidence, a codec-ceiling flag. Each needs material or labels this machine does not have yet.
+- Size: installed skills 446 KB, over the 400 KB green line (yellow to 800); trim before the next addition grows it.
+- Evals: T-20261023-1 in the produce, hub, compose and generate TESTS.md. The private harness ran with `--plugin-dir` pointing at the branch and the installed copy disabled in a session `--settings`; clones across drives need `--no-hardlinks`; a baseline in a repository clone finds mw.py itself, so action baselines run in a folder holding only the fixtures.
+- Owed: a listener's comparison of density section tags against mood-only tags; the BRIGHT flag needs a harsh-labelled render.
+- Research (models, licences, tools, fundamentals): [research/index.md](research/index.md).
 
 ## Done
 
@@ -26,12 +36,6 @@ State on 2026-10-18, end of the layers-2 and notation session.
    - seam's level jump uses the first and last 50 ms, so a loop starting on a drum hit reads "check by ear" with a smooth seam.
    - Docs: cli.md and the game skill say a seam ratio of "about 1 or less" is clean while the code says up to 2; argument errors exit 2 with usage on stderr, not JSON; contract.md omits music.json's `created`.
 6. v0.1.0 released 2026-10-17. The next release (0.1.1) should carry the bug fixes in item 7; bump plugin.json, mw.py VERSION and CHANGELOG.md together.
-
-## Layers (2026-10-17/18, done)
-
-- PR #5: `mw.py mix`, `gen --task lego|complete|extract|cover|repaint`, `duck --stem`, `--out` folders, `dcw_enabled: false` for base-only tasks.
-- Branch `layers-2`: R-20261017-6 written (DCW, base against XL, percussion invents its grid), L-001 in generate and produce, the REST reference names the server version and VRAM per model, generate Step 5 (add a part: pulse, lego, duck --stem, mix), recipe `acestep-rest-lego` (a listener kept the 2B base seed 8101 mix, the ducked one best), `mw.py pulse` and `mw.py answer` with tests.
-- Stage 3 (percussion over the kept stage-2 mix) is built and waits for the listener; the percussion takes had no pulse to follow, so a tempo-locked re-render of the lead is the better route if the listener wants a beat.
 
 ## Notation (2026-10-18)
 

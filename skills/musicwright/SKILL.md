@@ -50,9 +50,12 @@ Most requests run generate, then one of produce, game or score.
 2. Look before you report: `mw.py sheet <takes> --out <dir>/sheets/<slug>.png --measure`, then open
    the PNG. Reading it: [references/listening.md](references/listening.md). Check what the
    picture can show: one melodic line or several, drums or none, a drone where none was asked
-   for, silence at the end, clipping, a loudness that misses the destination.
+   for, silence at the end, clipping, a loudness that misses the destination. `mw.py mixcheck
+   <takes>` adds flags to listen for (`--lowest C4` catches a drone or bass under a solo).
 3. Report to the listener, ranked: each take's path, what the sheet shows, the numbers, and
    your pick with the reason. Say plainly that you have not heard them. Never write "sounds great".
+   Hand over loudness-matched copies, not the raw takes (`mw.py preview <takes> --out
+   <dir>/preview`, `--blind` to hide which is which): the louder take otherwise wins on loudness.
 4. Record what they say: `mw.py verdict <take> keep|reject|maybe --note "<their words>"`. It
    goes to the project ledger and the studio, where musicwright-curate turns verdicts into taste.
 5. Re-roll or change one knob at a time (musicwright-generate's cheat-sheet), then finish.

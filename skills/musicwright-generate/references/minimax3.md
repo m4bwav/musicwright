@@ -23,7 +23,8 @@ A continuous timeline with no hard stops until the very end:
 0:18-0:50: ...
 ```
 
-Lyrics: one block about every 15 s, `[intro]`, `[instrumental]`, `[interlude]`, `[bridge]`,
+Lyrics: stressed syllables on strong beats, each line read aloud at the tempo first
+(musicwright-compose: vocabulary.md). One block about every 15 s, `[intro]`, `[instrumental]`, `[interlude]`, `[bridge]`,
 `[outro]`, each with a short parenthesised performance note, e.g. `[instrumental]` newline
 `(the main theme appears: a soft lead synth)`.
 

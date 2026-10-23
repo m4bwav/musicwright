@@ -7,6 +7,22 @@ Write an entry the moment a real signal happens: a user correction, the same err
 ## Active
 
 <!-- Example (delete once you have a real entry):
+### L-003 · 2026-10-23 · AI renders often fail in mono: check before a phone or a mono speaker
+- Trigger: on 78 real renders (ACE-Step 1.5, MiniMax Music 3, film scores), 13 had more side than mid energy, so mono loses over 3 dB; one ACE-Step XL take loses 10 LU when folded (`aphasemeter` below zero 98% of the time). 14 had wide lows. A batch a listener liked in stereo holds three of the worst.
+- Hypothesis: the generators' decoders write wide, partly out-of-phase stereo; no prompt word controls it, and stereo listening hides it.
+- Rule: run `mw.py mixcheck` on any take bound for phones, laptops or a game that may play in mono; fix wide lows with `mw.py monobass`, and re-roll a MONO-LOSS take that must work in mono.
+- Evidence: calibration 2026-10-23 (mixing.md, "mixcheck flags and how often they fire")
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
+### L-002 · 2026-10-23 · A low-mid mud ratio means nothing without a bass part
+- Trigger: MUDDY (250-500 Hz over the average of the bass and mid bands) fired on both kept flute solos. With no bass part, the 60-250 Hz band sits 23-33 dB down and drags the average.
+- Hypothesis: the ratio assumes all three bands are played.
+- Rule: flag mud only when the bass band is within 15 dB of the whole; 5 of 78 real renders then fire.
+- Evidence: calibration 2026-10-23; a test fixture with a low-mid tone and no bass; mutation check
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts
 - Hypothesis: why

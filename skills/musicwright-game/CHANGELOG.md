@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-1 · 2026-10-23 · Layers by subtraction; beds that never repeat
+- because: user request (books track 8: DeSantis, Making Music ch. 37, 63, 72)
+- files: references/adaptive.md (Techniques)
+- Intensity layers come from one full take so they agree in key, tempo and length; ambient beds stack loops whose lengths share no factor.
+
 ### C-20261017-1 · 2026-10-17 · Created as an evergreen unit
 - because: user request
 - files: SKILL.md, RESEARCH.md, LEARNINGS.md, evergreen.json (skills: also TESTS.md and evals/evals.json)

@@ -6,6 +6,22 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-004 · 2026-10-23 · A blind key must not sit in the folder the listener opens
+- Trigger: in an eval run, the agent asked for blind copies saw `preview --blind` write the key into the listening folder, moved it out by hand and said the tool should not put it there.
+- Hypothesis: a key beside the copies is one click from the listener, which undoes the blind test.
+- Rule: write the key beside the folder (`<folder>_blind_key.json`), never inside it; say where it is and not to open it before the ranking.
+- Evidence: T-20261023-1 (produce action-3, run 1); test_preview_matches_loudness_blind_and_phone checks the folder holds only the copies
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
+### L-003 · 2026-10-23 · Fold the lows to mono with a crossover, not by subtracting a low-passed side
+- Trigger: the first `mw.py monobass` subtracted the low-passed side signal from each channel. On a real render with wide lows it moved the low-end correlation from -0.46 to -0.75, wider than before.
+- Hypothesis: the low-pass filter shifts phase, so the part subtracted no longer lines up with the side signal it should cancel.
+- Rule: use a Linkwitz-Riley crossover (two Butterworth stages a side): the high-passed left and right plus the low-passed mid in both channels. Measure low-end width only over content within 30 dB of the loud passages, or a faint residue reads as wide bass.
+- Evidence: four real renders went to 0.88-1.0 at 160 Hz and 0.96-1.0 at 200 Hz; the subtraction version fails test_monobass_centres_the_lows_and_leaves_the_rest (mutation check)
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
 ### L-002 · 2026-10-17 · Rank takes on intruding parts first; a silent tail is a trim, not a defect
 - Trigger: three solo-flute takes. The sheet flagged a low drone in one (the listener rejected it: "bass a flute can't make"), and the agent ranked a clean take first and a take with a 19 s silent tail second. The listener preferred the second, and asked about faint percussion in it.
 - Hypothesis: listeners judge the melody and anything that breaks the brief (extra instruments); a quiet ending is fixed by trimming, so it should not cost a take its place.

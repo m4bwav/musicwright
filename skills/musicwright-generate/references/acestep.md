@@ -39,7 +39,14 @@ serene, spacious, contemplative, instrumental
 - Tags the model knows: [Intro] [Verse] [Pre-Chorus] [Chorus] [Bridge] [Outro] [Build] [Drop]
   [Breakdown] [Instrumental] [Guitar Solo] [Piano Interlude] [Fade Out] [Silence]; one modifier
   after a hyphen.
-- Vocals: 6-10 syllables a line, sections tagged, 50+ languages.
+- Vocals: 6-10 syllables a line, sections tagged, 50+ languages; stressed syllables on strong
+  beats (musicwright-compose: vocabulary.md, "Lyrics that sing").
+- Tags that say who plays carry the arrangement: `[Intro - pad and kick only]`, `[Build - layers
+  enter]`, `[Breakdown - drums drop out]`, `[Drop - full band]`, `[Outro - layers leave in reverse
+  order]`, with the outro mirroring the intro. From the arrangement books (DeSantis ch. 72, 75);
+  not yet compared against mood-only tags in a listening test here.
+- An ending holds up better as its own short render with an ending in its caption, joined with
+  `mw.py join`, than as a trim of a render that just stops.
 - How much section tags steer is disputed: they helped 3-minute instrumentals, but did not shape
   a 48 s mood arc or a 2-minute loudness curve. Shape short cues in post.
 

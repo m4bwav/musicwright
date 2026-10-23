@@ -29,8 +29,11 @@ number, an example they can hear.
 4. Instruments by register and colour (ranges in theory.md), 3-5 focal parts at once.
 5. Words: build the caption from [references/vocabulary.md](references/vocabulary.md): genre +
    era/production + instruments + mood + vocal or "instrumental" + structure hint.
-6. A reference track or artist: translate it into those descriptors. Never put a living artist's
-   name in a prompt, and never upload someone else's recording as a reference.
+6. A reference track or artist: fill the five reference fields in vocabulary.md (sound, harmony,
+   melody, rhythm, form) and build the caption from them. Never put a living artist's name in a
+   prompt, and never upload someone else's recording as a reference.
+7. Arrangement and ending: densest section first, others by subtraction; sections that differ in
+   who plays; an ending planned as its own section ([references/theory.md](references/theory.md)).
 
 Write the result into the project's `brief.md` (Decisions list) so the choice is kept.
 
@@ -47,7 +50,8 @@ Choose the lightest format that does the job ([references/symbolic.md](reference
 | the user's own DAW | a DAW MCP server (Ableton, REAPER, Logic) | read back the project after every write |
 
 Always validate what you wrote by parsing it back and, when possible, rendering it to audio or an
-image you can look at. Motif continuity across separate AI renders is weak: when a theme must
+image you can look at. `--check` also gives melody hints for each line (too many leaps, no rhythm
+that returns): rules of thumb, so fix or keep them knowingly. Motif continuity across separate AI renders is weak: when a theme must
 return in other cues, keep its notes here and use cover or repaint from one render rather than
 hoping a caption reproduces it.
 
@@ -79,7 +83,7 @@ hoping a caption reproduces it.
 
 ## References
 
-- [references/theory.md](references/theory.md): modes, world scales, progressions, tempo, meter, form, motif development, ranges.
+- [references/theory.md](references/theory.md): modes, world scales, progressions, tempo, meter, form, motif development, melody, harmonic rhythm, arrangement, endings, ranges.
 - [references/vocabulary.md](references/vocabulary.md): caption vocabulary, describing a reference, failure modes.
 - [references/symbolic.md](references/symbolic.md): MIDI, ABC, MusicXML, LilyPond, Strudel, DAW and notation MCP servers, learning path.
 - [references/notation.md](references/notation.md): render, notate and transcribe: what each format reads, FluidSynth and SoundFonts, pyin and basic-pitch, limits.

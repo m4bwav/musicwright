@@ -20,6 +20,13 @@
   appear, brass when health is low). Same length, tempo and key for every stem.
 - **Stingers**: short phrases over or between music on events, quantised to the beat.
 - **One parameter**: a 0-1 intensity or threat value drives layers and switches.
+- **Layers by subtraction**: render or write the fullest version first and take the quieter
+  intensity layers from it (stems of that one take), so every layer shares key, tempo and length
+  (after DeSantis, *Making Music* ch. 63, 72). Layers rendered separately rarely agree.
+- **Beds that never repeat**: two or three ambient layers whose lengths share no factor, for
+  example 23, 37 and 41 s. Make each a seamless loop (`mw.py loop`, then `mw.py seam`); together
+  they line up again only after hours (23 x 37 x 41 s is almost 10 h). Keep them in one key and without a
+  beat, since a pulse would drift between layers (DeSantis ch. 37).
 
 ## Middleware terms
 

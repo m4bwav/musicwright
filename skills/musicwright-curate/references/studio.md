@@ -23,6 +23,11 @@
 - Harsh top end rejected: cfg 7 on ACE-Step XL "harsh"; cfg 4.5 kept (guess from 2 batches).
 - Noise textures (static, hiss, beeps) rejected as foreground.
 
+## Tired of (rewritten <date>)
+- A tempo band, timbre, drum sound or section shape the listener has heard too often, with what
+  to try instead (after DeSantis, *Making Music* ch. 6); musicwright-generate reads it before a
+  caption. Drop a line when a piece needs that thing anyway.
+
 ## Notes
 - 2026-10-17: ... (source: ...)
 ```
