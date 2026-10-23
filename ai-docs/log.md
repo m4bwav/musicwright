@@ -56,3 +56,5 @@ Append-only. Newest last.
 - Owner judged four blind, level-matched pairs (preview --blind): a 0.98-share bed sounded less stuck than a 0.13 one, so REPEATS is no longer a flag; a layer 27.6 cents off was heard as in tune, so TUNING-GAP fires over 30 cents (0 of 14 real layers); a cfg 9 take with BRIGHT at -7.6 dB was slightly tiring, not harsh; density section tags did no better than mood words on one orchestral pair. Rulings P1-P5 in [decisions/2026-10-23-listening-checks.md](decisions/2026-10-23-listening-checks.md); produce L-005, generate L-002.
 - Fixed HANDOFF item 7 plus hosts without `http://`; 92 tests, ten mutations caught. Version 0.1.1.
 ## [2026-10-23] index | rebuilt (6 entries)
+## [2026-10-23] ci | ffmpeg on Ubuntu from a static build
+- `apt-get install ffmpeg` stalled 20-40 minutes on several runs (the analyze job of #10 took 40 min, books-9 hung twice). Ubuntu jobs and release.yml now download BtbN's static ffmpeg 9.0 build (GitHub release, 3-minute limit) and fall back to apt; macOS and Windows unchanged. Owner's go-ahead 2026-10-23.

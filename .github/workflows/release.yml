@@ -18,8 +18,9 @@ jobs:
         run: |
           v=$(python -c "import json;print(json.load(open('.claude-plugin/plugin.json'))['version'])")
           test "v$v" = "${GITHUB_REF_NAME}" || { echo "plugin.json says $v, tag is ${GITHUB_REF_NAME}"; exit 1; }
-      - name: ffmpeg
-        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - name: ffmpeg (static build; apt if the download fails)
+        timeout-minutes: 10
+        run: curl -fsSL --max-time 180 https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz -o /tmp/ff.tar.xz && tar -xJf /tmp/ff.tar.xz -C /tmp && echo "$(ls -d /tmp/ffmpeg-n9.0-*/bin)" >> "$GITHUB_PATH" || { sudo apt-get update -q && sudo apt-get install -y -q ffmpeg; }
       - name: structure checks, mw.py tests and size budget
         env:
           MUSICWRIGHT_REQUIRE_FFMPEG: "1"
