@@ -1,6 +1,7 @@
 # Checks the skills' structure, manifests, links and public-safety guards, and tests mw.py on the three operating
-# systems on the oldest and newest Python supported, with ffmpeg from each system's own package manager (apt on
-# Ubuntu, Homebrew on macOS, Chocolatey on Windows; no third-party action). The analyze job adds librosa so
+# systems on the oldest and newest Python supported, with ffmpeg from a static 9.0 build on Ubuntu (BtbN's GitHub
+# release, apt as the fallback: apt-get stalled for 20-40 minutes several times), Homebrew on macOS and Chocolatey
+# on Windows; no third-party action. The analyze job adds librosa so
 # `mw.py analyze` and `mw.py transcribe` run for real; everywhere else it checks the soft failure and its fix line.
 name: tests
 on:
@@ -22,9 +23,10 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
-      - name: ffmpeg (Ubuntu, apt)
+      - name: ffmpeg (Ubuntu, static build; apt if the download fails)
         if: runner.os == 'Linux'
-        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+        timeout-minutes: 10
+        run: curl -fsSL --max-time 180 https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz -o /tmp/ff.tar.xz && tar -xJf /tmp/ff.tar.xz -C /tmp && echo "$(ls -d /tmp/ffmpeg-n9.0-*/bin)" >> "$GITHUB_PATH" || { sudo apt-get update -q && sudo apt-get install -y -q ffmpeg; }
       - name: ffmpeg (macOS, Homebrew)
         if: runner.os == 'macOS'
         run: brew install ffmpeg
@@ -47,8 +49,9 @@ jobs:
         with:
           python-version: "3.12"
       - name: ffmpeg and librosa
+        timeout-minutes: 15
         run: |
-          sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+          curl -fsSL --max-time 180 https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz -o /tmp/ff.tar.xz && tar -xJf /tmp/ff.tar.xz -C /tmp && echo "$(ls -d /tmp/ffmpeg-n9.0-*/bin)" >> "$GITHUB_PATH" || { sudo apt-get update -q && sudo apt-get install -y -q ffmpeg; }
           python -m pip install librosa soundfile
       - name: mw.py tests with librosa
         env:
