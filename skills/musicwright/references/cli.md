@@ -1,7 +1,7 @@
 # mw.py commands
 
 `python mw.py <command> [options]`. Every command prints one JSON object; failures print
-`{"ok": false, "error": ...}` and exit 1. Needs ffmpeg and ffprobe on PATH (or `MUSICWRIGHT_FFMPEG`
+`{"ok": false, "error": ...}` and exit 1; argument errors (a missing or unknown option) print argparse's usage to stderr and exit 2. Needs ffmpeg and ffprobe on PATH (or `MUSICWRIGHT_FFMPEG`
 pointing at ffmpeg). Hosts: `MUSICWRIGHT_COMFYUI` (comma list, default `http://127.0.0.1:8188,http://127.0.0.1:8000`),
 `MUSICWRIGHT_ACESTEP` (default `http://127.0.0.1:8001`), or `comfyui` / `acestep_rest` in
 `<studio>/config.json`. Studio: `MUSICWRIGHT_HOME`, default `~/.musicwright`.
@@ -17,7 +17,7 @@ pointing at ffmpeg). Hosts: `MUSICWRIGHT_COMFYUI` (comma list, default `http://1
 | `edit <file>` | trim, fade (qsin), resample, convert by extension | `--start --end --fade-in --fade-out --rate --out` |
 | `join <files>` | chain equal-power crossfades; with `--lengths` each part holds that long before its crossfade | `--xfade --lengths --fade-out --out` |
 | `loop <file>` | seamless loop: the tail crossfades into the head; `--bars N --bpm B` makes it exactly N bars; seam check; `--ogg` adds LOOPSTART/LOOPLENGTH | `--start --end --bars --bpm --beats-per-bar --xfade --ogg --out` |
-| `seam <files>` | seam jump against the file's own 99th-percentile step (about 1 or less is clean, over 5 clicks) plus the level jump | |
+| `seam <files>` | seam jump against the file's own 99th-percentile step (2 or less is clean, over 5 clicks) plus the level jump (median of 50 ms windows over half a second each side) | |
 | `duck <music>` | sidechain-duck music under dialogue or a video's sound; keeps the music's length; remuxes when the output is a video; `--stem` writes the ducked music alone | `--under --music-gain --threshold --ratio --attack --release --stem --out` |
 | `mix <files>` | layer stems into one file: per-file gain (dB), offset (s; negative trims the head) and pan (-1..1, equal power); `--shelves` darkens or brightens a file with a high shelf; `--automate N:T=DB,...` gives file N a gain envelope on the mix timeline (linear in dB, 10 ms steps); sums in Python; scales the sum to peak at -1 dBFS unless `--no-limit`; `--stems DIR` writes each processed layer aligned to the mix | `--gains --offsets --pans --shelves --shelf-hz --automate --length longest\|first\|S --stems --rate --no-limit --out` |
 | `pulse <files>` | is there a beat: onset count, inter-onset spread (`ioi_cv`), onset autocorrelation peak against its median, best tempo, distance from the best grid (beat, halves or thirds) against random onsets; `pulse` steady, weak or none | stdlib; no options |
@@ -29,7 +29,7 @@ pointing at ffmpeg). Hosts: `MUSICWRIGHT_COMFYUI` (comma list, default `http://1
 | `compare <take> <ref>` | mixcheck both and report take minus reference | `--lowest` |
 | `preview <files>` | copies at one loudness (lowered so none needs a limiter); `--blind` names them take_A.. in a shuffled order with the key in `<folder>_blind_key.json` beside the folder; `--as phone` (mono, 300 Hz-6 kHz) or `quiet` (20 dB down) | `--out --lufs --as normal\|phone\|quiet --blind --seed` |
 | `monobass <file>` | Linkwitz-Riley crossover: high part keeps its stereo, the low part of the mid goes to both channels; mixcheck stereo before and after | `--hz` (default 160) `--out` |
-| `analyze <files>` | tempo, beats, key estimate, tuning against A440 (cents, spread, trend), repetition share; files after the first report `cents_from_first`; flags OFF-A440, DRIFT, REPEATS, TUNING-GAP (librosa; prints the `uv run` line when it is missing) | `--sections` alone, a count, or tags `"Intro\|Verse\|Outro"`: section start and end in seconds and bars |
+| `analyze <files>` | tempo, beats, key estimate, tuning against A440 (cents, spread, trend), repetition share; files after the first report `cents_from_first`; flags OFF-A440, DRIFT, TUNING-GAP (librosa; prints the `uv run` line when it is missing) | `--sections` alone, a count, or tags `"Intro\|Verse\|Outro"`: section start and end in seconds and bars |
 | `verdict <take> keep\|reject\|maybe` | append the listener's verdict to the ledger and `<studio>/verdicts.jsonl` with the take's recipe | `--note --by` |
 | `ledger [dir]` | takes with recipes and verdicts; lists unjudged takes | |
 | `note taste\|lesson\|recipe\|idea "<text>"` | append a dated line to the studio notes | `--source` |

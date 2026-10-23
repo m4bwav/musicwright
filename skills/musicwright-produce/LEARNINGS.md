@@ -6,6 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-005 · 2026-10-23 · A listener moved two analyze flags: repetition share is not stuckness, and 28 cents apart can sit fine
+- Trigger: blind, level-matched listening checks by the owner. A 10-minute bed with a repetition share of 0.98 (REPEATS) sounded slightly less repetitive than one at 0.13, both only middling. A lead flute layered with a separate jazz flute 27.6 cents sharp (TUNING-GAP at 15) was heard as in tune and the better mix, against a layer 2.5 cents off. A cfg 9 take with BRIGHT at -7.6 dB was slightly harder to listen to than its cfg 4.5 twin (-11.8), and neither was harsh.
+- Hypothesis: the share counts a steady texture coming back, and an ambient bed is supposed to; whether it feels stuck depends on melody and events the chroma blocks do not see. Two moving lines with breath and vibrato hide a steady offset that a held unison would expose.
+- Rule: report `repetition.share`, never flag it; flag TUNING-GAP only over 30 cents; read BRIGHT as a fatigue pointer, not as harshness.
+- Evidence: listening checks 2026-10-23 (decisions 2026-10-23-listening-checks); TUNING-GAP now fires on 0 of 14 real layers (was 1)
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
 ### L-004 · 2026-10-23 · Pitch spread is not drift, and an offset from A440 is not a fault
 - Trigger: per-window tuning on real files. A blues flute take scattered about 20 cents either way from window to window with pyin agreeing, and a dub bed spread 42 cents, with no trend in either. One rendered jazz flute sat steadily 28 to 43 cents sharp. Four of 11 human recordings sit 18 to 33 cents off A440 (string players tuned sharp, a 1920 dance band).
 - Hypothesis: window spread measures bends, vibrato and pitch effects; a steady offset is how the part was tuned. Neither matters until another part plays with it.

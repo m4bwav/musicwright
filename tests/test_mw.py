@@ -120,6 +120,9 @@ def setUpModule():
     FX["clipped"] = lavfi(f"sine=frequency=440:sample_rate={RATE}:duration=4", f"{a}/clipped.wav", af="volume=12")
     # tone cut where the last sample is near a crest and the first is zero: an audible loop seam
     FX["hardcut"] = lavfi(f"sine=frequency=440:sample_rate={RATE}:duration=3", f"{a}/hardcut.wav", af="atrim=end_sample=96027")
+    # a 2 s loop that starts on a kick (one a second over a steady bed): a smooth seam with a loud first 50 ms
+    FX["kickloop"] = lavfi(f"aevalsrc='0.1*sin(2*PI*220*t)+0.8*exp(-mod(t,1)*30)*sin(2*PI*150*mod(t,1))':s={RATE}:d=2",
+                           f"{a}/kickloop.wav")
     # duck fixtures: a 220 Hz bed and a 3 kHz key that is loud from 4 s to 8 s only
     FX["bed"] = lavfi(f"sine=frequency=220:sample_rate={RATE}:duration=10", f"{a}/bed.wav", af="volume=2", extra=("-ac", "2"))
     FX["key"] = lavfi(f"aevalsrc='if(between(t,4,8),0.5*sin(2*PI*3000*t),0)':s={RATE}:d=10", f"{a}/key.wav")
@@ -175,6 +178,8 @@ class Basics(unittest.TestCase):
             self.assertEqual(mw.comfy_hosts(), ["http://h1:8188", "http://h2:8000"])
             self.assertEqual(mw.rest_host(), "http://h3:8001")
             self.assertEqual(mw.comfy_hosts("http://a:1"), ["http://a:1"])
+            self.assertEqual(mw.comfy_hosts("127.0.0.1:8199, h4:8188/"), ["http://127.0.0.1:8199", "http://h4:8188"])
+            self.assertEqual(mw.rest_host("h5:8001"), "http://h5:8001")
         finally:
             os.environ["MUSICWRIGHT_HOME"] = old_home
             for k, v in saved.items():
@@ -198,6 +203,13 @@ class Basics(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertFalse(r["ok"])
         self.assertIn("already has music.json", r["error"])
+
+    def test_new_unknown_preset(self):
+        d = TMP / "proj_badpreset"
+        code, r = run("new", d, "--name", "x", "--use", "song", "--preset", "loud")
+        self.assertEqual(code, 1)
+        self.assertIn("unknown preset", r["error"])
+        self.assertFalse(d.exists())
 
     def test_new_default_presets_exist(self):
         presets = mw.presets()
@@ -292,6 +304,15 @@ class GenDryRun(unittest.TestCase):
         self.assertEqual((te["tags"], te["lyrics"]), ("calm harp", "[Verse]\nla la\n"))
         code, d = run("gen", "--caption", "x", "--seeds", "5", "--out", TMP / "gen_out", "--dry-run")
         self.assertEqual(self.node(d["jobs"][0]["graph"], "TextEncodeAceStepAudio1.5")["inputs"]["lyrics"], "[Instrumental]")
+
+    def test_comfy_says_what_it_filled_or_ignored(self):
+        code, d = run("gen", "--caption", "x", "--seeds", "1", "--out", TMP / "gen_out", "--dry-run")
+        self.assertEqual([v.split()[0] for v in d["filled_in"]], ["bpm", "key"])
+        code, d = run("gen", "--caption", "x", "--bpm", "120", "--key", "D major", "--seeds", "1", "--out", TMP / "gen_out", "--dry-run")
+        self.assertNotIn("filled_in", d)
+        code, d = run("gen", "--recipe", "minimax-music3", "--caption", "x", "--bpm", "100", "--seeds", "1",
+                      "--out", TMP / "gen_out", "--dry-run")
+        self.assertEqual(d["ignored"], ["bpm"])
 
     def test_minimax_duration_pad_and_cap(self):
         code, d = self.gen("minimax-music3")
@@ -426,10 +447,15 @@ class Studio(unittest.TestCase):
     def test_verdict_on_unknown_take_still_records(self):
         d = TMP / "proj_unknown"
         run("new", d, "--name", "x", "--use", "song")
-        code, v = run("verdict", d / "takes" / "loose.wav", "reject")
+        code, v = run("verdict", d / "takes" / "missing.wav", "reject")
+        self.assertEqual(code, 1)
+        self.assertIn("no such file", v["error"])
+        loose = d / "takes" / "loose.wav"
+        loose.write_bytes(b"RIFF")
+        code, v = run("verdict", loose, "reject")
         self.assertEqual(code, 0)
         self.assertFalse(v["matched_take"])
-        self.assertEqual(v["recorded"]["take"], "loose.wav")
+        self.assertEqual(v["recorded"]["take"], "loose")
         self.assertEqual(len(mw.read_jsonl(d / "ledger.jsonl")), 1)
 
     def test_ledger_missing(self):
@@ -532,6 +558,22 @@ class Master(unittest.TestCase):
         self.assertLessEqual(abs(d["after"]["lufs_i"] + 20), 1.0)
         self.assertEqual(d["after"]["sample_rate"], 44100)
         os.remove(d["out"])
+
+    def test_master_custom_target_is_named_custom(self):
+        code, d = run("master", FX["tone220"], "--lufs", "-20")
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["preset"], "custom")
+        self.assertTrue(d["out"].endswith("tone220_custom.wav"))
+        self.assertIsNone(d["preset_note"])
+        os.remove(d["out"])
+
+    def test_dynamic_mode_on_a_steady_tone_does_not_blame_peaks(self):
+        dst = TMP / "master_steady.wav"
+        code, d = run("master", FX["tone"], "--preset", "streaming", "--out", dst)
+        self.assertEqual(code, 0, d)
+        self.assertLess(d["before"]["lra"], 1)
+        for w in d["warnings"]:
+            self.assertNotIn("peaks allow", w)
 
     def test_unknown_preset(self):
         code, d = run("master", FX["tone"], "--preset", "loud")
@@ -651,6 +693,12 @@ class Seam(unittest.TestCase):
         self.assertLessEqual(soft["ratio"], 2)
         self.assertEqual(soft["verdict"], "clean")
         self.assertGreater(hard["ratio"], 4 * max(soft["ratio"], 0.5))
+
+    def test_loop_starting_on_a_hit_is_clean(self):
+        code, d = run("seam", FX["kickloop"])
+        self.assertEqual(code, 0, d)
+        self.assertLess(abs(d["files"][0]["level_jump_db"]), 3, d)
+        self.assertEqual(d["files"][0]["verdict"], "clean")
 
     def test_seam_converts_other_formats(self):
         fl = TMP / "seam_hard.flac"
@@ -1397,6 +1445,8 @@ class AnalyzeMusic(unittest.TestCase):
         a = str(TMP / "audio")
         sharp = 440 * 2 ** (30 / 1200)  # 30 cents above A440
         cls.sharp = lavfi(f"sine=frequency={sharp:.3f}:sample_rate=22050:duration=20", f"{a}/sharp.wav")
+        cls.mild = lavfi(f"sine=frequency={440 * 2 ** (20 / 1200):.3f}:sample_rate=22050:duration=20", f"{a}/mild.wav")
+        cls.wide = lavfi(f"sine=frequency={440 * 2 ** (42 / 1200):.3f}:sample_rate=22050:duration=20", f"{a}/wide.wav")
         cls.drift = lavfi(f"aevalsrc='0.3*sin(2*PI*if(lt(t,50),440,{sharp:.3f})*t)':s=22050:d=100", f"{a}/drift.wav")
         cls.steady = lavfi("aevalsrc='0.3*sin(2*PI*440*t)':s=22050:d=100", f"{a}/steady.wav")
         arp = "0.3*sin(2*PI*220*pow(2,{}/12)*t)"
@@ -1421,7 +1471,15 @@ class AnalyzeMusic(unittest.TestCase):
         self.assertNotIn("OFF-A440", self.codes(plain))
         self.assertIn("OFF-A440", self.codes(sharp))
         self.assertAlmostEqual(sharp["cents_from_first"], 30, delta=5)
-        self.assertIn("TUNING-GAP", self.codes(sharp))
+
+    def test_gap_flag_over_30_cents(self):
+        code, d = run("analyze", FX["tone"], self.mild, self.wide)
+        self.assertEqual(code, 0, d)
+        _, mild, wide = d["files"]
+        self.assertAlmostEqual(mild["cents_from_first"], 20, delta=5)
+        self.assertNotIn("TUNING-GAP", self.codes(mild))
+        self.assertAlmostEqual(wide["cents_from_first"], 42, delta=5)
+        self.assertIn("TUNING-GAP", self.codes(wide))
 
     def test_drift(self):
         code, d = run("analyze", self.drift, self.steady)
@@ -1437,7 +1495,7 @@ class AnalyzeMusic(unittest.TestCase):
         self.assertEqual(code, 0, d)
         loop, through = d["files"]
         self.assertGreaterEqual(loop["repetition"]["share"], 0.9)
-        self.assertIn("REPEATS", self.codes(loop))
+        self.assertNotIn("REPEATS", self.codes(loop))  # reported, not flagged (listening check 2026-10-23)
         self.assertLess(through["repetition"]["share"], 0.5)
         self.assertNotIn("REPEATS", self.codes(through))
 

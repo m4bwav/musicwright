@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-3 · 2026-10-23 · Listening checks moved TUNING-GAP, REPEATS and BRIGHT
+- because: L-005, decisions 2026-10-23-listening-checks
+- files: references/mixing.md (mixcheck flags and how often they fire; analyze flags and how often they fire)
+- TUNING-GAP fires over 30 cents (0 of 14 real layers), REPEATS left the table and the share is reported only, and BRIGHT's note says a take at -7.6 dB was slightly tiring, not harsh.
+
 ### C-20261023-2 · 2026-10-23 · Tuning and layering checks from mw.py analyze
 - because: L-004, T-20261023-2, decisions 2026-10-23-books-track11
 - files: SKILL.md (Step 1), references/mixing.md (Scripted checks; analyze flags and how often they fire), evals/evals.json (action-4, hold-out)

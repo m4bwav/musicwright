@@ -8,7 +8,7 @@
 3. Technical seam: crossfade the tail past the loop end into the head (best for AI audio with
    reverb), or cut both ends at rising zero crossings (sparse material only).
 4. No fade-in, fade-out or silence inside the loop file.
-5. Test: `mw.py seam` (ratio about 1 or less is clean; a hard cut on a test tone scored 80, the
+5. Test: `mw.py seam` (ratio 2 or less is clean; a hard cut on a test tone scored 80, the
    crossfaded loop 0.9), then have someone listen to it three times through.
 
 ## How `mw.py loop` builds it

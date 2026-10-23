@@ -4,6 +4,13 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 
 ## Unreleased
 
+## 0.1.1 (2026-10-23)
+
+- Listening checks (blind, matched level; decisions 2026-10-23-listening-checks): REPEATS is no longer a flag, `repetition.share` is still reported (a bed at 0.98 sounded less stuck than one at 0.13); TUNING-GAP fires over 30 cents, not 15 (a layer 27.6 cents off was heard as in tune; now 0 of 14 real layers); BRIGHT reads as a fatigue pointer (a take at -7.6 dB was slightly tiring, not harsh); the density section-tag advice is marked as not shown to help on one pair.
+- Fixes: `--host` without `http://` works; `seam` no longer calls a loop that starts on a drum hit a level jump; `master` with only `--lufs`/`--tp` is named `custom`, and its dynamic-mode warning no longer blames peaks on a source with no loudness range; `new` refuses an unknown `--preset`; `verdict` fails on a missing file and records an unlogged take by its stem; `gen` through ComfyUI says when it sent the recipe's bpm and key and that MiniMax Music 3 ignores `--bpm`/`--key`.
+- Docs: seam ratio 2 or less is clean; argument errors exit 2 with usage on stderr; `created` in the music.json table.
+- Also in this release, from the Unreleased list of tracks 8, 9 and 11:
+
 - `mw.py analyze` (librosa, still optional) reports tuning against A440 (offset, spread and trend over 10 s windows), each later file's tuning gap from the first, the share of the track that repeats an earlier 8 s block, and with `--sections` the section boundaries in seconds and bars (an automatic count, a number, or tag names). Flags OFF-A440, DRIFT, REPEATS and TUNING-GAP, set on 111 AI renders and 11 human recordings; rates in musicwright-produce's references/mixing.md. Tempo and key are unchanged.
 - `mw.py mixcheck`: one ffmpeg pass gives each band's level against the whole, peak-to-loudness ratio, a short-term loudness contour, stereo correlation, mono-fold loss and low-end width, with flags (OVER-LIMITED, FLAT, MUDDY, BRIGHT, MONO-LOSS, LOW-WIDE, and BELOW-RANGE with `--lowest NOTE`). Thresholds set on 78 real AI renders, rates in musicwright-produce's references/mixing.md. `mw.py compare take ref` sets two files side by side.
 - `mw.py preview`: loudness-matched copies for listening, `--blind` (shuffled take_A, take_B and a key file), `--as phone` and `--as quiet`. The hub's take loop hands these over instead of the raw takes.
