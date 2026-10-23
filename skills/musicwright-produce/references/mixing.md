@@ -80,6 +80,7 @@ levels. Under dialogue or busy SFX: no busy 1-4 kHz lead.
 | mono compatibility | `mixcheck` `mono_fold_db`; by hand, fold with `dualmono=true` so a mono-safe file reads 0 | more than 3 dB lost (MONO-LOSS) |
 | phase | `mixcheck` `correlation` (mid against side energy; agrees with `aphasemeter`) | below 0 (cancellation); 0.3-0.9 is normal stereo |
 | tempo and key | `mw.py analyze` | far from the brief (beware double or half tempo) |
+| tuning, repetition | `mw.py analyze` (librosa; table below) | any flag: listen for it |
 | spectrum | `mw.py sheet` | hard ceiling, holes, a constant whine |
 | loop seam | `mw.py seam` | ratio over about 3, or a level jump over 3 dB |
 
@@ -99,5 +100,21 @@ threshold sits where a minority fires; they are heuristics, not verdicts.
 | LOW-WIDE | correlation under 0.7 below 120 Hz | 14/78 | fixed by `monobass` |
 | BELOW-RANGE | with `--lowest NOTE`: energy a whole tone under the note above -15 dB against the whole | 1/3 flute solos | the take a listener rejected for "bass a flute can't make" read -4.0; the two kept takes -25.1 and -33.3 |
 
-Not built: tuning drift and repetition (need librosa; `mw.py analyze` is the place), sibilance spikes
-(no vocal material to calibrate on), and a codec-ceiling check (the sheet shows it).
+Not built: sibilance spikes (no vocal material to calibrate on) and a codec-ceiling check (the
+sheet shows it).
+
+## analyze flags and how often they fire
+
+Rates on 111 AI renders and layered parts and on 11 human recordings (public domain and CC BY:
+orchestra, string quartet, solo cello, a piano roll, a 1920 dance band, loop-built electronic
+pieces). 100 of the AI files raise none. No listener has judged tuning or repetition yet.
+
+| Flag | Fires when | AI | Human | Note |
+|---|---|---|---|---|
+| OFF-A440 | tuning 15 cents or more from A440 | 6/111 | 4/11 | a layering warning: strings and old recordings sit sharp on purpose |
+| TUNING-GAP | a later file 15 cents or more from the first | | | real lego layers sat 0.4 to 14 cents from their lead; a separate render 28 |
+| DRIFT | the last third 15 cents from the first, on 90 s or more | 0/111 | 0/11 | no real file drifts; proved on a synthetic step |
+| REPEATS | 90% of a track of 60 s or more repeats an earlier 8 s block | 5/111 | 0/11 | all five are 10-minute beds; the human maximum is 0.61, a scherzo with written repeats |
+
+Window spread (`spread_cents`) is not flagged: bends, vibrato and pitch effects raise it (L-004).
+Sections (`--sections`) found 85% of known boundaries in spliced real renders (compose L-003).

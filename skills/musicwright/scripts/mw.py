@@ -819,13 +819,16 @@ def cmd_analyze(a):
     names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
     rows = []
     for f in a.files:
-        y, sr = librosa.load(str(need_file(f)), sr=22050, mono=True)
+        y, sr = librosa.load(str(need_file(f)), sr=None, mono=True)
         tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
+        beat_s = librosa.frames_to_time(beats, sr=sr)
         chroma = librosa.feature.chroma_cqt(y=y, sr=sr).mean(axis=1)
         cands = sorted(((float(np.corrcoef(np.roll(p, k), chroma)[0, 1]), names[k] + (" major" if mj else " minor"))
                         for mj, p in ((1, maj), (0, mnr)) for k in range(12)), reverse=True)
         onset = librosa.onset.onset_strength(y=y, sr=sr)
         bpm = float(np.atleast_1d(tempo)[0])
+        y = librosa.resample(y, orig_sr=sr, target_sr=22050) if sr != 22050 else y  # the rate the new measures were calibrated at
+        sr = 22050
         row = {"file": str(f), "tempo_bpm": round(bpm, 2), "beats": int(len(beats)),
                "key": cands[0][1], "key_confidence": round(cands[0][0], 2), "runner_up": cands[1][1],
                "onset_strength_mean": round(float(onset.mean()), 3),
@@ -833,6 +836,8 @@ def cmd_analyze(a):
         row["tuning"] = tuning_of(y, sr, np, librosa)
         row["repetition"], cuts = structure_of(y, sr, np, librosa, want)
         if cuts is not None:
+            if len(beat_s):  # move each inner boundary to the nearest beat
+                cuts = [cuts[0]] + [round(float(beat_s[np.argmin(np.abs(beat_s - c))]), 1) for c in cuts[1:-1]] + [cuts[-1]]
             bar = 240 / bpm if bpm > 0 else None
             row["sections"] = [{"name": tags[i] if tags and i < len(tags) else None, "start_s": s, "end_s": e,
                                 "start_bar": int(round(s / bar)) + 1 if bar else None,

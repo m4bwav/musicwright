@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261023-2 · 2026-10-23 · headless claude -p (sonnet) with --plugin-dir on branch books-11 (installed copy disabled), three runs per case in a folder holding only the fixtures · Windows 11 dev machine · 3/3
+- action-4 (form of a 180 s reference into form.md): 3/3; each run called `mw.py analyze reference.flac --sections` and wrote the table. One run's closing note said the boundaries fell on fractional bars; they now move to the nearest beat (decisions N7), after these runs.
+- Baseline (no plugin, one run): 0/1. Five hand-written librosa scripts in 273 s, out of turns, no form.md.
+- led to: L-003
+
 ### T-20261023-1 · 2026-10-23 · headless claude -p with --plugin-dir on branch books-8 (installed copy disabled), three runs per case, in a repository clone and again in a folder holding only the fixtures · Windows 11 dev machine · 6/6
 - action-3 (does wander.abc hold together): 3/3 clone, 3/3 fixtures-only; the runs reported the leap share and the missing returning rhythm from `render --check`.
 - Baselines: 1/1 in a clone; 1/1 fixtures-only, because it searched the disk and ran the installed release's mw.py, which has no melody hints, so its evidence passes without the new check.

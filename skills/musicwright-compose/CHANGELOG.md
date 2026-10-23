@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-2 · 2026-10-23 · A reference's form from mw.py analyze --sections
+- because: L-003, T-20261023-2, decisions 2026-10-23-books-track11
+- files: SKILL.md (Step 2 item 6), evals/evals.json (action-4, hold-out)
+- The reference step now takes the form (sections in seconds and bars) from `mw.py analyze REF --sections` on a recording the user owns, after DeSantis, *Making Music* (borrowing a formal skeleton).
+
 ### C-20261023-1 · 2026-10-23 · Melody, harmonic rhythm, arrangement and endings; the five-field reference
 - because: R-20261023-1, L-002, T-20261023-1
 - files: SKILL.md (Step 2 items 6-7; Step 3; References), references/theory.md (Melody; Harmonic rhythm and the low end; Arrangement; Endings), references/vocabulary.md (Depth, Low end, Describing a reference, Lyrics that sing), evals/evals.json (action-3)

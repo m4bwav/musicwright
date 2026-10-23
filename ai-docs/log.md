@@ -41,6 +41,13 @@ Append-only. Newest last.
 - Size: six sibling MAINTENANCE.md files were identical copies of the hub's; they now point at it. Installed skills 446 KB to 422 KB (still yellow: scripts are 168 KB).
 - Not built: a `mw.py cues` neighbour-repeat check (no real beat chart to calibrate on, and games repeat a level theme on purpose; M2).
 - Evals T-20261023-1 (game): outcome-2 3/3 against a baseline 0/3 (no warning cue, no visual twin); triggers and decoys 3/3 except trigger-2, 2/3 once it had a fixture, classed harness (game L-001).
+- Books track 11 (DeSantis, *Making Music*, the items track 8 left for librosa), branch books-11: `mw.py analyze` reports tuning against A440 (offset, spread, trend), each later file's gap from the first, a repetition share, and `--sections` (automatic, a count, or tags) with boundaries on the nearest beat. Flags OFF-A440, DRIFT, REPEATS, TUNING-GAP. Rulings N1-N9 in [decisions/2026-10-23-books-track11.md](decisions/2026-10-23-books-track11.md).
+- librosa stays optional (N1): CI does not install it, the new tests skip without it, `MUSICWRIGHT_REQUIRE_LIBROSA=1` runs them. 86 tests green here with librosa 1.0.0; 11 mutations, each caught.
+- Calibrated on 111 AI renders and layers and 11 human recordings from Wikimedia Commons (kept in the session's scratch folder only): OFF-A440 6/111 and 4/11 (strings and a 1920 band sit sharp), REPEATS 5/111 (all 10-minute beds) and 0/11, DRIFT 0 everywhere. Window spread is bends and effects, not drift (produce L-004). Sections on 24 spliced composites: 85% of boundaries within 3 s (compose L-003).
+- Records fix: track 8's produce L-002, L-003 and compose L-002 had been inserted inside the LEARNINGS template comment; the comment now starts at the template.
+- Evals T-20261023-2: produce and compose action-4 (hold-outs) 3/3 each, baselines 0/1. A passing run's note about fractional bars led to the beat snap.
 ## [2026-10-23] index | rebuilt (3 entries)
 ## [2026-10-23] index | rebuilt (3 entries)
 ## [2026-10-23] index | rebuilt (4 entries)
+## [2026-10-23] index | rebuilt (5 entries)
+## [2026-10-23] index | rebuilt (5 entries)

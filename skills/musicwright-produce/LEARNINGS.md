@@ -6,7 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
-<!-- Example (delete once you have a real entry):
+### L-004 · 2026-10-23 · Pitch spread is not drift, and an offset from A440 is not a fault
+- Trigger: per-window tuning on real files. A blues flute take scattered about 20 cents either way from window to window with pyin agreeing, and a dub bed spread 42 cents, with no trend in either. One rendered jazz flute sat steadily 28 to 43 cents sharp. Four of 11 human recordings sit 18 to 33 cents off A440 (string players tuned sharp, a 1920 dance band).
+- Hypothesis: window spread measures bends, vibrato and pitch effects; a steady offset is how the part was tuned. Neither matters until another part plays with it.
+- Rule: read `mw.py analyze` tuning as three numbers. Spread alone is never a problem; OFF-A440 and TUNING-GAP are warnings for layering; DRIFT (the last third against the first, 90 s or more) is the only sign of a pitch that moves.
+- Evidence: calibration 2026-10-23 (mixing.md, "analyze flags and how often they fire"); decisions 2026-10-23-books-track11 N2-N5
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
 ### L-003 · 2026-10-23 · AI renders often fail in mono: check before a phone or a mono speaker
 - Trigger: on 78 real renders (ACE-Step 1.5, MiniMax Music 3, film scores), 13 had more side than mid energy, so mono loses over 3 dB; one ACE-Step XL take loses 10 LU when folded (`aphasemeter` below zero 98% of the time). 14 had wide lows. A batch a listener liked in stereo holds three of the worst.
 - Hypothesis: the generators' decoders write wide, partly out-of-phase stereo; no prompt word controls it, and stereo listening hides it.
@@ -23,6 +30,7 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
 
+<!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts
 - Hypothesis: why

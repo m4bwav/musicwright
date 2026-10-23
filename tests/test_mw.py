@@ -1404,9 +1404,10 @@ class AnalyzeMusic(unittest.TestCase):
         cls.loop = lavfi("aevalsrc='" + arp.format("mod(floor(t),4)*3") + "':s=22050:d=240", f"{a}/loop.wav")
         cls.through = lavfi("aevalsrc='" + arp.format("floor(12*mod(abs(sin(floor(t)*12.9898)*43758.5453),1))") + "':s=22050:d=180",
                             f"{a}/through.wav")
-        # A (an arpeggio) 0-20 s, B (a held two-note chord) 20-40 s, A again 40-60 s
-        cls.aba = lavfi("aevalsrc='if(lt(t,20)+gte(t,40)," + arp.format("mod(floor(t*2),3)*4")
-                        + ",0.2*sin(2*PI*370*t)+0.2*sin(2*PI*554*t))':s=22050:d=60", f"{a}/aba.wav")
+        # A (an arpeggio) 0-15 s, B (a held two-note chord) 15-40 s, A again 40-60 s, over a click every 0.6 s
+        cls.aba = lavfi("aevalsrc='if(lt(t,15)+gte(t,40)," + arp.format("mod(floor(t*2),3)*4")
+                        + ",0.2*sin(2*PI*370*t)+0.2*sin(2*PI*554*t))+if(lt(mod(t,0.6),0.01),0.6*sin(2*PI*2000*t),0)'"
+                        ":s=22050:d=60", f"{a}/aba.wav")
 
     def codes(self, row):
         return [f["code"] for f in row["flags"]]
@@ -1446,10 +1447,12 @@ class AnalyzeMusic(unittest.TestCase):
             self.assertEqual(code, 0, d)
             secs = d["files"][0]["sections"]
             self.assertEqual(len(secs), 3, (arg, secs))
-            self.assertAlmostEqual(secs[1]["start_s"], 20, delta=3)
+            self.assertAlmostEqual(secs[1]["start_s"], 15, delta=3)
             self.assertAlmostEqual(secs[2]["start_s"], 40, delta=3)
             self.assertAlmostEqual(secs[-1]["end_s"], 60, delta=0.5)
             self.assertEqual(secs[0]["start_bar"], 1)
+            for s in secs[1:]:  # boundaries move to the nearest beat (the clicks)
+                self.assertLess(abs(s["start_s"] - round(s["start_s"] / 0.6) * 0.6), 0.07, s)
         self.assertEqual([s["name"] for s in secs], [None, None, None])
         code, d = run("analyze", self.aba, "--sections", "A|B|A return")
         self.assertEqual(d["files"][0]["sections"][2]["name"], "A return")
