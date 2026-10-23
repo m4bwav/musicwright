@@ -26,7 +26,7 @@ Commands
   compare  mixcheck a take beside a reference the user owns, with the differences
   preview  loudness-matched copies for fair listening (optionally blind, phone-speaker or quiet)
   monobass fold the lows under a crossover to mono and leave the rest alone
-  analyze  tempo and key estimate (needs librosa; prints the uv one-liner when missing)
+  analyze  tempo, key, tuning drift, repetition and --sections (needs librosa; prints the uv one-liner when missing)
   render   notation to audio: ABC, ASCII tab, MusicXML or MIDI -> MIDI and audio (FluidSynth or a built-in synth)
   notate   convert between ABC, MusicXML, MIDI and ASCII tab
   transcribe audio to MIDI and notation (librosa pyin for one instrument, basic-pitch for several)
@@ -738,6 +738,68 @@ def cmd_mix(a):
             "next": "sheet the mix beside its stems, then master it to the destination preset"}
 
 
+ANALYZE_READING = ("pointers for what to listen to, not verdicts. tuning cents are against A440, one value per 10 s window; "
+                   "spread_cents is the 10th-90th percentile range (bends, vibrato and pitch effects raise it), trend_cents the "
+                   "last third against the first; repetition.share is the part of the track that repeats an 8 s block heard "
+                   "earlier; sections come from timbre and harmony changes (4/4 assumed for bars; tempo can be doubled or halved)")
+
+
+def tuning_of(y, sr, np, librosa):
+    n = 10 * sr
+    gate = 20 * np.log10(np.sqrt(np.mean(y ** 2)) + 1e-12) - 20  # skip windows 20 dB under the file
+    c = np.array([float(librosa.estimate_tuning(y=y[i:i + n], sr=sr)) * 100 for i in range(0, max(1, len(y) - n // 2), n)
+                  if 20 * np.log10(np.sqrt(np.mean(y[i:i + n] ** 2)) + 1e-12) >= gate])
+    if not len(c):
+        return None
+    centre = float(np.angle(np.mean(np.exp(2j * np.pi * c / 100)))) * 100 / (2 * np.pi)  # circular: +49 and -49 are 2 cents apart
+    dev = (c - centre + 50) % 100 - 50
+    k = len(dev) // 3
+    return {"cents": round(centre, 1), "spread_cents": round(float(np.percentile(dev, 90) - np.percentile(dev, 10)), 1),
+            "trend_cents": round(float(np.median(dev[-k:]) - np.median(dev[:k])), 1) if len(dev) >= 9 else None,
+            "windows": int(len(dev))}
+
+
+def structure_of(y, sr, np, librosa, sections):
+    hop = max(0.5, len(y) / sr / 2400)  # at most 2400 frames, so a long reference stays in memory
+    k = max(1, int(hop * sr / 512))
+    ch = librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=512)
+    mf = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13, hop_length=512)[1:]
+    m = min(ch.shape[1], mf.shape[1]) // k
+    ch, mf = (x[:, :m * k].reshape(x.shape[0], m, k).mean(axis=2) for x in (ch, mf))
+    mf = (mf - mf.mean(axis=1, keepdims=True)) / (mf.std(axis=1, keepdims=True) + 1e-9)
+    ch, mf = (x / (np.linalg.norm(x, axis=0, keepdims=True) + 1e-9) for x in (ch, mf))
+    S = (0.5 * (ch.T @ ch) + 0.5 * (mf.T @ mf)).astype(np.float32)
+    hop = k * 512 / sr
+    b, cover, best = max(2, int(8 / hop)), np.zeros(m + 1), (0, 0)
+    for lag in range(b, m - b):  # an 8 s block that matches the one `lag` earlier (mean similarity 0.9 or more)
+        hits = np.nonzero(np.convolve(np.diagonal(S, offset=lag), np.ones(b) / b, mode="valid") >= 0.9)[0]
+        if len(hits):
+            np.add.at(cover, hits + lag, 1)
+            np.add.at(cover, np.minimum(hits + lag + b, m), -1)
+            best = max(best, (len(hits), lag))
+    rep = {"share": round(float((np.cumsum(cover)[:m] > 0).mean()), 2) if m else 0.0,
+           "block_period_s": round(best[1] * hop, 1) if best[0] else None}
+    if sections is None:
+        return rep, None
+    w = max(2, int(12 / hop))  # Foote novelty: a checkerboard kernel 24 s wide along the diagonal
+    g = np.outer(np.hanning(2 * w), np.hanning(2 * w))
+    K = g * np.kron([[1, -1], [-1, 1]], np.ones((w, w))) / g.sum()
+    Sp = np.pad(S, w, mode="edge")
+    nov = np.array([float(np.sum(Sp[i:i + 2 * w, i:i + 2 * w] * K)) for i in range(m)])
+    count = sections
+    if not count:  # the number of sections comes from novelty peaks over 0.12, 12 s apart
+        md, peaks = max(1, int(12 / hop)), []
+        for i in np.argsort(-nov):
+            if nov[i] < 0.12:
+                break
+            if md // 2 <= i <= m - md // 2 and all(abs(i - p) >= md for p in peaks):
+                peaks.append(i)
+        count = len(peaks) + 1
+    F = np.array([np.convolve(r, np.ones(8) / 8, mode="same") for r in np.vstack([ch, mf])])
+    starts = [int(i) for i in librosa.segment.agglomerative(F, min(count, m))] if count > 1 else [0]
+    return rep, [round(i * hop, 1) for i in starts] + [round(len(y) / sr, 1)]
+
+
 def cmd_analyze(a):
     try:
         import librosa  # noqa: F401
@@ -748,22 +810,57 @@ def cmd_analyze(a):
                 "fix": f'uv run --no-project --python 3.12 --with librosa --with soundfile python "{script}" analyze ' + " ".join(f'"{f}"' for f in a.files)}
     import librosa
     import numpy as np
+    tags = None
+    if a.sections is not None and not str(a.sections).strip().isdigit():
+        tags = [t.strip() for t in str(a.sections).split("|") if t.strip()]
+    want = None if a.sections is None else (len(tags) if tags is not None else int(a.sections))
     maj = np.array([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88])
     mnr = np.array([6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17])
     names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
     rows = []
     for f in a.files:
-        y, sr = librosa.load(str(need_file(f)), sr=None, mono=True)
+        y, sr = librosa.load(str(need_file(f)), sr=22050, mono=True)
         tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
         chroma = librosa.feature.chroma_cqt(y=y, sr=sr).mean(axis=1)
         cands = sorted(((float(np.corrcoef(np.roll(p, k), chroma)[0, 1]), names[k] + (" major" if mj else " minor"))
                         for mj, p in ((1, maj), (0, mnr)) for k in range(12)), reverse=True)
         onset = librosa.onset.onset_strength(y=y, sr=sr)
-        rows.append({"file": str(f), "tempo_bpm": round(float(np.atleast_1d(tempo)[0]), 2), "beats": int(len(beats)),
-                     "key": cands[0][1], "key_confidence": round(cands[0][0], 2), "runner_up": cands[1][1],
-                     "onset_strength_mean": round(float(onset.mean()), 3),
-                     "note": "tempo can come back doubled or halved; key estimates on modal or pentatonic music often name the relative major/minor"})
-    return {"ok": True, "librosa": librosa.__version__, "files": rows}
+        bpm = float(np.atleast_1d(tempo)[0])
+        row = {"file": str(f), "tempo_bpm": round(bpm, 2), "beats": int(len(beats)),
+               "key": cands[0][1], "key_confidence": round(cands[0][0], 2), "runner_up": cands[1][1],
+               "onset_strength_mean": round(float(onset.mean()), 3),
+               "note": "tempo can come back doubled or halved; key estimates on modal or pentatonic music often name the relative major/minor"}
+        row["tuning"] = tuning_of(y, sr, np, librosa)
+        row["repetition"], cuts = structure_of(y, sr, np, librosa, want)
+        if cuts is not None:
+            bar = 240 / bpm if bpm > 0 else None
+            row["sections"] = [{"name": tags[i] if tags and i < len(tags) else None, "start_s": s, "end_s": e,
+                                "start_bar": int(round(s / bar)) + 1 if bar else None,
+                                "bars": round((e - s) / bar, 1) if bar else None} for i, (s, e) in enumerate(zip(cuts, cuts[1:]))]
+            row["sections_found"] = len(row["sections"])
+        flags = []
+        t = row["tuning"] or {}
+        if t and abs(t["cents"]) >= 15:
+            flags.append({"code": "OFF-A440", "says": f"tuned {t['cents']:+} cents from A440: a part rendered or played at A440 will beat against it",
+                          "try": "fine on its own; before layering, pick a take that agrees or pitch-shift the layer by the same cents"})
+        if t.get("trend_cents") is not None and abs(t["trend_cents"]) >= 15:
+            flags.append({"code": "DRIFT", "says": f"pitch moves {t['trend_cents']:+} cents from the first third to the last",
+                          "try": "listen for a slow sag or rise; re-roll, or layer nothing sustained over it"})
+        if row["repetition"]["share"] >= 0.9 and len(y) / sr >= 60:
+            flags.append({"code": "REPEATS", "says": f"{round(row['repetition']['share'] * 100)}% of the track repeats a block heard earlier"
+                          + (f" (every {row['repetition']['block_period_s']} s)" if row['repetition']['block_period_s'] else ""),
+                          "try": "listen for whether it feels stuck; repaint one short range as a unique event, or give movements their own captions"})
+        row["flags"] = flags
+        rows.append(row)
+    base = (rows[0].get("tuning") or {}).get("cents") if rows else None
+    for r in rows[1:]:
+        c = (r.get("tuning") or {}).get("cents")
+        if base is not None and c is not None:
+            r["cents_from_first"] = gap = round((c - base + 50) % 100 - 50, 1)
+            if abs(gap) >= 15:
+                r["flags"].append({"code": "TUNING-GAP", "says": f"{gap:+} cents from {Path(rows[0]['file']).name}: layered together they beat",
+                                   "try": "pick takes that agree, or pitch-shift one by the gap before mixing"})
+    return {"ok": True, "librosa": librosa.__version__, "files": rows, "reading": ANALYZE_READING}
 
 
 # ---------------------------------------------------------------- pulse and answer (stdlib measures)
@@ -1963,8 +2060,9 @@ def build_parser():
     s.add_argument("--automate", action="append", help="gain envelope for one file: FILE:SECONDS=DB,SECONDS=DB (1-based file number; repeat per file)")
     s.set_defaults(fn=cmd_mix)
 
-    s = sub.add_parser("analyze", help="tempo and key (librosa)")
-    s.add_argument("files", nargs="+")
+    s = sub.add_parser("analyze", help="tempo, key, tuning, repetition and sections (librosa)")
+    s.add_argument("files", nargs="+", help="with several files, each after the first also reports its tuning gap from the first")
+    s.add_argument("--sections", nargs="?", const="0", help="also find section boundaries: alone for an automatic count, a number, or the tags joined by | to name them")
     s.set_defaults(fn=cmd_analyze)
 
     s = sub.add_parser("pulse", help="is there a beat? onsets, IOI spread, autocorrelation, grid fit (stdlib)")

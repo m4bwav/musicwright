@@ -12,8 +12,9 @@ after every change and report both. Script: `mw.py` in the musicwright hub's `sc
 
 `mw.py measure <files>` gives duration, sample rate, integrated loudness (LUFS), loudness range
 (LRA), true peak, head and tail silence, interior gaps, clipping signs and warnings.
-`mw.py analyze <files>` adds tempo and key when librosa is available (it prints the `uv run`
-line when it is not). Picture: `mw.py sheet <files> --out <png>`, then look at it.
+`mw.py analyze <files>` adds tempo, key, tuning and repetition when librosa is available (it
+prints the `uv run` line when it is not); give the lead first and a layer's `cents_from_first`
+says whether they will beat. Picture: `mw.py sheet <files> --out <png>`, then look at it.
 
 `mw.py mixcheck <files>` measures what a mix engineer listens for: each band's level against the
 whole, peak-to-loudness ratio (PLR), a loudness contour, stereo correlation, the mono-fold loss

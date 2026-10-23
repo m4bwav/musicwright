@@ -29,7 +29,7 @@ pointing at ffmpeg). Hosts: `MUSICWRIGHT_COMFYUI` (comma list, default `http://1
 | `compare <take> <ref>` | mixcheck both and report take minus reference | `--lowest` |
 | `preview <files>` | copies at one loudness (lowered so none needs a limiter); `--blind` names them take_A.. in a shuffled order with the key in `<folder>_blind_key.json` beside the folder; `--as phone` (mono, 300 Hz-6 kHz) or `quiet` (20 dB down) | `--out --lufs --as normal\|phone\|quiet --blind --seed` |
 | `monobass <file>` | Linkwitz-Riley crossover: high part keeps its stereo, the low part of the mid goes to both channels; mixcheck stereo before and after | `--hz` (default 160) `--out` |
-| `analyze <files>` | tempo, beats, key estimate (librosa); prints the `uv run` line when librosa is missing | |
+| `analyze <files>` | tempo, beats, key estimate, tuning against A440 (cents, spread, trend), repetition share; files after the first report `cents_from_first`; flags OFF-A440, DRIFT, REPEATS, TUNING-GAP (librosa; prints the `uv run` line when it is missing) | `--sections` alone, a count, or tags `"Intro\|Verse\|Outro"`: section start and end in seconds and bars |
 | `verdict <take> keep\|reject\|maybe` | append the listener's verdict to the ledger and `<studio>/verdicts.jsonl` with the take's recipe | `--note --by` |
 | `ledger [dir]` | takes with recipes and verdicts; lists unjudged takes | |
 | `note taste\|lesson\|recipe\|idea "<text>"` | append a dated line to the studio notes | `--source` |

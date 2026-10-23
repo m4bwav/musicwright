@@ -138,6 +138,30 @@
     "Bash"
    ],
    "max_turns": 12
-  }
+  },
+ {
+  "id": "action-4",
+  "kind": "action",
+  "holdout": true,
+  "prompt": "reference.flac is a track I bought and own. I want my next piece to follow its form, so tell me where its sections change, in seconds and in bars, and write the list to form.md.",
+  "runs": 3,
+  "expectations": [
+   "the section boundaries come from the plugin's analyze command with --sections, not from a hand-written librosa script or a guess"
+  ],
+  "evidence": {
+   "type": "trace",
+   "tool": "Bash|PowerShell",
+   "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+analyze\\b(?:[^\\n]|\\\\\\n)*--sections"
+  },
+  "baseline": "not yet run",
+  "tools": [
+   "Read",
+   "Glob",
+   "Grep",
+   "Bash",
+   "Write"
+  ],
+  "max_turns": 15
+ }
  ]
 }

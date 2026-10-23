@@ -30,8 +30,9 @@ number, an example they can hear.
 5. Words: build the caption from [references/vocabulary.md](references/vocabulary.md): genre +
    era/production + instruments + mood + vocal or "instrumental" + structure hint.
 6. A reference track or artist: fill the five reference fields in vocabulary.md (sound, harmony,
-   melody, rhythm, form) and build the caption from them. Never put a living artist's name in a
-   prompt, and never upload someone else's recording as a reference.
+   melody, rhythm, form) and build the caption from them. For the form, `mw.py analyze REF
+   --sections` gives a recording the user owns as sections in seconds and bars. Never put a living
+   artist's name in a prompt, and never upload someone else's recording as a reference.
 7. Arrangement and ending: densest section first, others by subtraction; sections that differ in
    who plays; an ending planned as its own section ([references/theory.md](references/theory.md)).
 

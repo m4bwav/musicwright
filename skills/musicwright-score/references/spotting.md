@@ -45,6 +45,6 @@ each hit point. A 2 s equal-power crossfade suits a mood change; use 0.5-1 s for
 ## Temp tracks
 
 A temp track sets mood and pace while cutting. Risks: the director falls for it, and with AI it
-tempts copying. Analyse it (`mw.py analyze` for tempo and key; the sheet for density and swells)
+tempts copying. Analyse it (`mw.py analyze --sections` for tempo, key and where its sections change; the sheet for density and swells)
 and write a caption from the descriptors. Do not use it as an audio reference unless the user
 owns it or has a licence.

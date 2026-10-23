@@ -93,7 +93,7 @@ into the agent's skills directory. Keep all seven together, because the siblings
     for s in musicwright/skills/*/; do ln -s "$PWD/$s" ~/.claude/skills/; done
 
 Needs: Python 3.9+ and ffmpeg. For generating: ComfyUI with ACE-Step 1.5 XL (or MiniMax Music 3) weights, or the
-ACE-Step REST server. Optional: librosa for tempo and key (`mw.py analyze` prints a one-line `uv run` that needs
+ACE-Step REST server. Optional: librosa for tempo, key, tuning, repetition and sections (`mw.py analyze` prints a one-line `uv run` that needs
 no install). Hosts: `MUSICWRIGHT_COMFYUI` and `MUSICWRIGHT_ACESTEP`, or `config.json` in your studio
 (`MUSICWRIGHT_HOME`, default `~/.musicwright`).
 

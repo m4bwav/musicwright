@@ -67,9 +67,10 @@ description the LM turns into caption and lyrics.
   and `--planner` do not exist on this route and are listed under `ignored`.
 - Sheet the result beside the source: check whether it is the new part alone or a mix, and whether
   its notes start in the source's rests (an answer) or on top of its notes (a double).
-  `mw.py answer PART --lead SRC` measures it. Lego plays along (about the same level in the rests as
-  under the lead) and carries on into the lead's silent tail; `mw.py duck PART --under SRC --stem`
-  shapes it into an answer (R-20261017-6).
+  `mw.py answer PART --lead SRC` measures it, and `mw.py analyze SRC PART` gives the part's
+  tuning gap from the source (`cents_from_first`; TUNING-GAP at 15 cents or more). Lego plays
+  along (about the same level in the rests as under the lead) and carries on into the lead's
+  silent tail; `mw.py duck PART --under SRC --stem` shapes it into an answer (R-20261017-6).
 - Percussion lego over a free-time source invents its own tempo. Run `mw.py pulse SRC` first; with no
   steady pulse, re-render the source at a fixed bpm or place accents on its phrases.
 
