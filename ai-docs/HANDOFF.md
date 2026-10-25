@@ -1,6 +1,6 @@
 # Handoff
 
-State on 2026-10-23: 0.1.1 released; the four wiki-verification bugs are fixed under Unreleased (0.1.2 not bumped or tagged: needs the owner's go-ahead). Earlier state follows below.
+State on 2026-10-25: 0.1.2 released (the four wiki-verification fixes from #13). Next: the wiki Errors page and the vault kit at 0.1.2. Earlier state follows below.
 
 ## Listening checks and 0.1.1 (2026-10-23)
 
