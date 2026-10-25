@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 DEFAULT_COMFY = "http://127.0.0.1:8188,http://127.0.0.1:8000"
