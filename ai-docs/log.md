@@ -65,3 +65,6 @@ Append-only. Newest last.
 ## [2026-10-23] index | rebuilt (6 entries)
 ## [2026-10-25] fix | 0.1.3: the three candidates from the 0.1.2 wiki run
 - mixcheck/compare: after the best_input retry, a plain `aresample,ebur128=peak=true` pass over the original gives integrated loudness and true peak (the padded copy still gives bands, stereo and contour). A 3.5 s 44.1 kHz tone reads 3.5 s, -21.8 LUFS, -21.1 dBTP on static 7.0.2 (WSL) and 9.0.1 alike. `duration_s` from ffprobe, not the per-second block count. pulse: tempo_bpm, grid_deviation, grid_chance null when pulse is none. Retry test now uses a part-second 44.1 kHz file; three mutations caught; 97 tests on both builds. L-006.
+## [2026-10-25] wiki | 0.1.3 wiki republished
+- Verification (vault kit wiki-build/wiki-verify.py) rerun against tag v0.1.3 on Windows (ffmpeg 9.0.1) and WSL (static 7.0.2): all three 0.1.3 fixes show (pulse nulls, duration_s floats and 3.5 for a 3.5 s file, -21.8 LUFS on both builds). New case `mixcheck short`. 97 tests on both (5 librosa skips on Linux). Installed skills 452 KB, repo 2,269 KB (yellow).
+- Found: mono true peak differs by 3 dB between mixcheck's normal pass and the retry (take_s1.flac -13.5 vs -10.5), and the contour still reads the padding on short files. Both listed in HANDOFF as 0.1.4 candidates.
