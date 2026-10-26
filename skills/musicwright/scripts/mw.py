@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.2"
+VERSION = "0.1.3"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 DEFAULT_COMFY = "http://127.0.0.1:8188,http://127.0.0.1:8000"
@@ -978,6 +978,8 @@ def pulse_of(path, tmpd):
                 "pulse": "steady" if votes >= 3 else ("weak" if votes >= 1 else "none")})
     if row["onset_rise_db"] < 1.0:  # real renders measured 2.4 dB or more; a swelling tone's ripple 0.4
         row.update({"pulse": "none", "why": "onsets rise under 1 dB: a swell or level ripple, not hits"})
+    if row["pulse"] == "none":  # no beat, so no tempo or grid to report
+        row.update({"tempo_bpm": None, "grid_deviation": None, "grid_chance": None})
     return row
 
 
@@ -1060,6 +1062,7 @@ def mix_series(path, below_hz=None):
     fc += f";[s{n - 1}]ebur128=metadata=1:peak=true,ametadata@st=print:key=lavfi.r128.S"
     src = need_file(path)
     p = ffmpeg(["-nostdin", "-i", str(src), "-filter_complex", fc, "-f", "null", "-"], check=False)
+    whole_src = None
     if p.returncode and "best_input" in p.stderr:
         # some builds (static 7.0.2) abort when the 48 kHz stream does not end on a whole second: pad a copy and retry
         tmpd = Path(tempfile.mkdtemp(prefix="mw_mix_"))
@@ -1071,6 +1074,8 @@ def mix_series(path, below_hz=None):
             ffmpeg(["-y", "-i", str(src), "-af", f"aresample={MIX_RATE},apad=whole_len={whole},atrim=end_sample={whole}",
                     "-c:a", codec, str(pad)])
             p = ffmpeg(["-nostdin", "-i", str(pad), "-filter_complex", fc, "-f", "null", "-"])
+            # the padding's silence lowers integrated loudness (-9.1 against -8.9 on a 3.5 s file): read it from the original
+            whole_src = ffmpeg(["-nostdin", "-i", str(src), "-af", f"aresample={MIX_RATE},ebur128=peak=true", "-f", "null", "-"])
         finally:
             shutil.rmtree(tmpd, ignore_errors=True)
     elif p.returncode:
@@ -1084,7 +1089,8 @@ def mix_series(path, below_hz=None):
             v = -120.0
         s.setdefault(m.group(1), []).append(v if math.isfinite(v) else -120.0)
     s["st"] = s.get("st", [])[9::10]  # ebur128 reports every 100 ms; keep one a second
-    summ = err[err.rfind("Summary:"):]
+    loud_err = whole_src.stderr if whole_src else err
+    summ = loud_err[loud_err.rfind("Summary:"):]
     mi, mt = re.search(r"I:\s+(-?[\d.]+) LUFS", summ), re.search(r"Peak:\s+(-?[\d.]+) dBFS", summ)
     if not s.get("M") or not mi:
         raise MwError(f"could not measure {path} (silent or too short?)")
@@ -1127,7 +1133,7 @@ def mixcheck_of(path, lowest=None):
               for k in range(10)] if len(st) >= 10 else []
     plr = round(tp - lufs, 1) if tp is not None else None
     psr = round(tp - max(st), 1) if tp is not None and st else None
-    row = {"file": str(path), "duration_s": n, "lufs_i": lufs, "true_peak_dbtp": tp, "plr_db": plr, "psr_db": psr,
+    row = {"file": str(path), "duration_s": probe(need_file(path))["duration_s"], "lufs_i": lufs, "true_peak_dbtp": tp, "plr_db": plr, "psr_db": psr,
            "contour": {"short_term_p10": pct(0.1), "short_term_median": pct(0.5), "short_term_p90": pct(0.9),
                        "spread_lu": spread, "loudest_10s_at_s": at, "by_tenth_lufs": tenths},
            "bands_db": bands, "lowmid_excess_db": mud, "presence_db": presence,

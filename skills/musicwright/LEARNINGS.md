@@ -6,6 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-006 · 2026-10-25 · A workaround that changes the input must not feed the numbers it changes
+- Trigger: the 0.1.2 wiki run on static ffmpeg 7.0.2 found the padded retry reading a 3.5 s 44.1 kHz file at -9.1 LUFS against -8.9 unpadded on 9.0.1, and `duration_s` 4 for 3.5 s; the 0.1.2 retry test used a whole-second fixture, where padding adds nothing.
+- Hypothesis: the padded half second of silence falls inside gated loudness blocks and lowers the integrated value; the per-second block count rounds the length up.
+- Rule: when a copy is altered to dodge a tool bug, take every number the alteration touches (loudness, peak, length) from the original; test the workaround on an input it actually alters.
+- Evidence: after the fix the same file reads 3.5 s, -21.8 LUFS, -21.1 dBTP on 7.0.2 (padded retry) and on 9.0.1; test_retries_on_the_best_input_abort now runs a 3.5 s 44.1 kHz file; three mutations caught; suite 97 tests on 9.0.1 and on 7.0.2 under WSL
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-25
+
 ### L-005 · 2026-10-23 · Read a seam's level at the seam, and check onsets are hits before calling a beat
 - Trigger: the 0.1.1 wiki verification found `seam` reading a loop cut on a kick as "check by ear" (3.5 dB) and `pulse` calling a swelling tone with no beat "steady" at 120 bpm, though the 0.1.1 tests passed; the test kick was too short to show either.
 - Hypothesis: a median over half a second measures a swell's slope times a quarter second, not a jump; the level envelope of a steady tone ripples, so a rising tone yields evenly spaced onsets of a few tenths of a dB that autocorrelate like a beat.

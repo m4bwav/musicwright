@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.3 (2026-10-25)
+
+- Fixes found by the 0.1.2 wiki verification: on ffmpeg builds that abort with `best_input` (static 7.0.2), `mixcheck` and `compare` still measure the padded copy for bands, stereo and contour, but take integrated loudness and true peak from the original file, since the padding's silence lowered loudness (a 3.5 s 44.1 kHz tone now reads -21.8 LUFS on 7.0.2 and on 9.0.1). `mixcheck` `duration_s` is the file's length, not a count of whole-second blocks (3.5, not 4). `pulse` sets `tempo_bpm`, `grid_deviation` and `grid_chance` to null when it says `none`.
+
 ## 0.1.2 (2026-10-25)
 
 - Fixes found by the 0.1.1 wiki verification: `mixcheck` and `compare` no longer stop on ffmpeg builds that abort with `Assertion best_input >= 0` (static 7.0.2) when a file does not end on a whole second at 48 kHz (44.1 and 8 kHz inputs among them): mw.py pads a copy to whole seconds and measures again. `seam` reads the level jump from a robust line through the window levels at the seam, so a loop cut on a kick over a swelling bed reads clean (3.5 dB before, about 1.3 now) while a real level step still reads as a seam. `pulse` reports `onset_rise_db` and says `none` when onsets rise under 1 dB (a swelling tone with no beat was called steady at 120 bpm).
