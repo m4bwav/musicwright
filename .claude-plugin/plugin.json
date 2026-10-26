@@ -1,6 +1,6 @@
 {
   "name": "musicwright",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Evergreen music skills for AI agents: one hub that turns a brief into takes and keeps every take's recipe and verdict, AI generation with local ACE-Step 1.5 and MiniMax Music 3 through ComfyUI, the ACE-Step REST server or hosted models, theory and prompt vocabulary, finishing to loudness targets (streaming, game, web video, broadcast), seamless game loops with seam checks, scoring a film cut on its hit points, notation and guitar tabs played as audio and recordings transcribed back to notes, and a studio that remembers what the listener liked. A stdlib Python CLI (mw.py, needs ffmpeg) measures, draws spectrogram sheets for an agent that cannot listen, masters, loops, joins, ducks and logs.",
   "author": {
     "name": "Mark Rogers"

@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261025-1 · 2026-10-25 · 0.1.3: loudness from the original after the padded retry; exact mixcheck duration; no tempo beside pulse none
+- because: L-006; wiki verification of 0.1.2 (ai-docs/HANDOFF.md, 0.1.3 candidates)
+- files: scripts/mw.py (mix_series, mixcheck_of, pulse_of), references/cli.md (pulse)
+- After the best_input retry, a plain ebur128 pass over the original gives integrated loudness and true peak; mixcheck duration_s comes from ffprobe; pulse nulls tempo_bpm and the grid numbers when it says none.
+
 ### C-20261023-5 · 2026-10-23 · mixcheck retries on the ffmpeg 7.0.2 abort; seam level jump at the seam; pulse onset rise
 - because: L-005; wiki verification of 0.1.1 (ai-docs/HANDOFF.md item 5)
 - files: scripts/mw.py (mix_series, seam_score, pulse_of), references/cli.md (seam; pulse)

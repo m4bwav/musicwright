@@ -839,6 +839,8 @@ class PulseAndAnswer(unittest.TestCase):
         row = d["files"][0]
         self.assertLess(row["onset_rise_db"], 1, row)
         self.assertEqual(row["pulse"], "none", row)
+        self.assertIsNone(row["tempo_bpm"], row)  # no beat, so no tempo beside "none"
+        self.assertIsNone(row["grid_deviation"], row)
 
     def test_answer_tells_a_reply_from_a_double(self):
         a = TMP / "audio"
@@ -943,6 +945,7 @@ class MixCheck(unittest.TestCase):
 
     def test_retries_on_the_best_input_abort(self):
         # static ffmpeg 7.0.2 aborts on a part-second 48 kHz stream; simulate it and check the padded retry
+        part = lavfi("sine=frequency=440:sample_rate=44100:duration=3.5", TMP / "audio" / "part35.wav", extra=("-ac", "2"))
         real, calls = mw.ffmpeg, []
 
         def flaky(args, check=True):
@@ -950,15 +953,22 @@ class MixCheck(unittest.TestCase):
             if "-filter_complex" in args and len(calls) == 1:
                 return subprocess.CompletedProcess(args, -6, "", "Assertion best_input >= 0 failed at src/fftools/ffmpeg_filter.c:1923")
             return real(args, check)
-        want = self.check(FX["tone"])[0]
-        mw.ffmpeg = flaky
-        try:
-            got = self.check(FX["tone"])[0]
-        finally:
-            mw.ffmpeg = real
-        self.assertEqual(len(calls), 3)  # failed pass, padded copy, measured pass
-        self.assertTrue(any("apad" in " ".join(c) for c in calls))
-        self.assertEqual(got, want)
+        for f in (FX["tone"], part):
+            want = self.check(f)[0]
+            calls.clear()
+            mw.ffmpeg = flaky
+            try:
+                got = self.check(f)[0]
+            finally:
+                mw.ffmpeg = real
+            self.assertEqual(len(calls), 4)  # failed pass, padded copy, measured pass, loudness of the original
+            self.assertTrue(any("apad" in " ".join(c) for c in calls))
+            # loudness and length come from the original, not the padded copy (0.1.2 read 3.5 s as 4 and lower)
+            for k in ("duration_s", "lufs_i", "true_peak_dbtp", "plr_db"):
+                self.assertEqual(got[k], want[k], (f, k))
+            if f == FX["tone"]:
+                self.assertEqual(got, want)
+        self.assertAlmostEqual(want["duration_s"], 3.5, delta=0.01)
 
     def test_compare_reports_both_and_the_gap(self):
         code, d = run("compare", FX["tone"], FX["bed"])

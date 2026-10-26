@@ -1,8 +1,6 @@
 # Handoff
 
-State on 2026-10-25: 0.1.2 released (the four wiki-verification fixes from #13); wiki republished at 0.1.2 (wiki commit ce0d323, verified on Windows and on Linux with the static ffmpeg 7.0.2 build, where mixcheck and compare now pass).
-
-Candidates for 0.1.3, found by the wiki run: (1) the padded retry on ffmpeg 7.0.2 measures the padding too (a 3.5 s 44.1 kHz file read -9.1 LUFS against -8.9 unpadded on 9.0.1); take loudness from the unpadded file. (2) `mixcheck` `duration_s` counts whole-second blocks (4 for 3.5 s). (3) `pulse` still prints `tempo_bpm` and grid numbers beside `none`; null or label them. Earlier state follows below.
+State on 2026-10-25: 0.1.3 released: the three 0.1.2 wiki-run candidates fixed (loudness and true peak from the original after the padded best_input retry, mixcheck duration_s exact, pulse nulls tempo and grid when none; L-006). Verified on Windows (ffmpeg 9.0.1) and under WSL with static 7.0.2 (~/mw-ffmpeg/ffmpeg-7.0.2-amd64-static; tests run with python3 -m unittest, no pytest there). Wiki: republish at 0.1.3 with the vault kit (wiki-build/publish.sh).
 
 ## Listening checks and 0.1.1 (2026-10-23)
 
