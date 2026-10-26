@@ -2,7 +2,7 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## Unreleased
+## 0.1.2 (2026-10-25)
 
 - Fixes found by the 0.1.1 wiki verification: `mixcheck` and `compare` no longer stop on ffmpeg builds that abort with `Assertion best_input >= 0` (static 7.0.2) when a file does not end on a whole second at 48 kHz (44.1 and 8 kHz inputs among them): mw.py pads a copy to whole seconds and measures again. `seam` reads the level jump from a robust line through the window levels at the seam, so a loop cut on a kick over a swelling bed reads clean (3.5 dB before, about 1.3 now) while a real level step still reads as a seam. `pulse` reports `onset_rise_db` and says `none` when onsets rise under 1 dB (a swelling tone with no beat was called steady at 120 bpm).
 - Correction to 0.1.1 below: the six `MAINTENANCE.md` pointers took the installed skills from 446 KB to 422 KB when they were added; tracks 11, the 0.1.1 fixes and these fixes brought the total to 450 KB (`scripts/budget.py`, yellow).
