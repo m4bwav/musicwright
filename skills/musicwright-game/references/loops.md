@@ -44,3 +44,10 @@ or RoFormer (musicwright-produce references/stems.md), then cut every stem with 
 OGG `LOOPSTART` / `LOOPLENGTH` Vorbis comments are in samples (`mw.py loop --ogg` writes them).
 RPG Maker reads them; Unity does not; Godot reportedly honours only a custom start. A
 `music.json` deliverable entry carries the same numbers for any engine script.
+
+Web (WebAudio): loop with `AudioBufferSourceNode.loop`, not an `<audio loop>` element. Lossy files
+carry encoder padding, so decode the shipped file in the target browser (`decodeAudioData`) and check
+the buffer length equals the rendered loop's sample count; any extra samples are a gap at the seam.
+One maker shipped a gapless 21 s AAC loop this way in Chrome (2026-10-29, RESEARCH R-20261029-1).
+For loops synthesised in code, mix notes into a circular buffer so tails wrap into the head, and run
+reverb and filters over two passes for the same reason.

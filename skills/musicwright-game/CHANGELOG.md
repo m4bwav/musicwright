@@ -23,3 +23,6 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - because: user request
 - files: SKILL.md, RESEARCH.md, LEARNINGS.md, evergreen.json (skills: also TESTS.md and evals/evals.json)
 - Initial version. Tier `moderate`, interval 30d. See R-20261017-1 for the research basis; the first test run, for a skill, is logged in TESTS.md.
+
+## 2026-10-29
+- loops.md: WebAudio paragraph (decoded sample count check for lossy loops; circular-buffer mixing for code-synthesised loops), from everscout indie-ai-games scan (R-20261029-1).
