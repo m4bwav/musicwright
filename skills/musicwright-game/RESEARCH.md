@@ -50,7 +50,13 @@ Best sources: Unity manual and issue tracker, middleware docs and courses, Steam
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
-### R-20261017-2 · 2026-10-17 · mw.py loop on a real take
+### R-20261029-1 · 2026-10-29 · Practice: code-synthesised loop, gapless AAC on the web
+- Track: practice
+- A web puzzle dev had Claude Code synthesise a 21 s loop in Node (four chords at 92 BPM, each instrument a function of time), mixing into a circular buffer so tails wrap to the start (no click), rendering three candidates in about 1.5 s, checking clipping and equal loudness by numbers, and checking that Chrome decodes the AAC to exactly the rendered sample count, which kept the WebAudio loop gapless. A person chose the winner by ear. Single maker report, not tested here.
+- Sources: https://www.reddit.com/r/aigamedev/comments/1xic6d6/i_had_claude_code_synthesise_my_web_games_music/
+- Applied: references/loops.md (Web paragraph)
+
+ · 2026-10-17 · mw.py loop on a real take
 - Summary: An 8-bar loop at 66 bpm cut from a flute take came out at exactly 29.0909 s with seam ratio 0.04 and level jump -1.7 dB (clean); OGG carried LOOPSTART=0, LOOPLENGTH=1396364.
 - Track: testing
 - Sources: local run 2026-10-17
