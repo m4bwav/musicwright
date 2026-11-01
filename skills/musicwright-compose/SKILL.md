@@ -52,7 +52,8 @@ Choose the lightest format that does the job ([references/symbolic.md](reference
 
 Always validate what you wrote by parsing it back and, when possible, rendering it to audio or an
 image you can look at. `--check` also gives melody hints for each line (too many leaps, no rhythm
-that returns): rules of thumb, so fix or keep them knowingly. Motif continuity across separate AI renders is weak: when a theme must
+that returns) and a key-fit hint (`key_fit`: out-of-key notes on strong beats against the declared
+K: or key signature; short passing notes pass): rules of thumb, so fix or keep them knowingly. Motif continuity across separate AI renders is weak: when a theme must
 return in other cues, keep its notes here and use cover or repaint from one render rather than
 hoping a caption reproduces it.
 

@@ -64,6 +64,17 @@ serene, spacious, contemplative, instrumental
 | bpm, keyscale, timesignature | set by brief | 30-300 bpm accepted; extremes unstable; 4/4 most reliable |
 | duration | 10-600 s | 2-4 min is the stable zone |
 
+## Control map: change only the wrong level
+
+| Level | Controls | Use when |
+|---|---|---|
+| global | caption (`tags` / `prompt`), style words, bpm, keyscale, LM temperature | the whole take is off-brief |
+| per section | section tags in `lyrics`, `repaint` with `--start`/`--end` | one passage is wrong, the rest is kept |
+| per stem | `lego`, `complete`, `extract` with `--track` ([acestep-rest.md](acestep-rest.md)) | one part is wrong or missing |
+
+Fix at the narrowest level that is wrong: re-captioning a whole take to mend one bar throws away
+what worked (after Foster, *Generative Deep Learning* 2e, ch. 11, on separate control levels).
+
 ## Timing (16 GB RTX 5060 Ti)
 
 XL sft: about 80-100 s per 180 s track; 60 s takes in well under a minute each once loaded; a

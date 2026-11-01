@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.3"
+VERSION = "0.1.4"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 DEFAULT_COMFY = "http://127.0.0.1:8188,http://127.0.0.1:8000"
@@ -1299,6 +1299,7 @@ def cmd_render(a):
     res = {"ok": True, "score": str(Path(a.score).resolve()), "read_as": kind, **score.summary(), "warnings": score.warnings}
     if a.check:
         res["melody"] = notation.melody_hints(score)
+        res["key_fit"] = notation.key_fit(score)
         res["next"] = ("fix the warnings (a bar that is too long or short usually means a wrong note length); melody hints are "
                        "rules of thumb for lines you wrote, not errors; then render with --out")
         return res
