@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.4 (2026-11-01)
+
+- Book learnings (Foster, Generative Deep Learning 2e, ch. 11; approved by the owner): `render --check` adds `key_fit`, the pitch-class histogram against the declared (or estimated) key with out-of-key notes on strong beats listed and short passing notes allowed, with tests. Compose: MIDI and ABC header rule (key and time signature) and events over grids for triplets, repeated notes and dynamics. Generate: temperature ladder and melody-copy check rows, and an ACE-Step control map (global, per section, per stem).
+
 ## 0.1.3 (2026-10-25)
 
 - Fixes found by the 0.1.2 wiki verification: on ffmpeg builds that abort with `best_input` (static 7.0.2), `mixcheck` and `compare` still measure the padded copy for bands, stereo and contour, but take integrated loudness and true peak from the original file, since the padding's silence lowered loudness (a 3.5 s 44.1 kHz tone now reads -21.8 LUFS on 7.0.2 and on 9.0.1). `mixcheck` `duration_s` is the file's length, not a count of whole-second blocks (3.5, not 4). `pulse` sets `tempo_bpm`, `grid_deviation` and `grid_chance` to null when it says `none`.

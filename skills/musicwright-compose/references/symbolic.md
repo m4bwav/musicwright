@@ -17,6 +17,16 @@ music21 --with mido python script.py`.
 A shared events list keeps formats in step: `{layer, start_beat, end_beat, midi, velocity}`
 converts to MIDI, MusicXML, ABC and Strudel.
 
+Header rule: every MIDI file carries key signature and time signature meta events, and every ABC
+tune its `K:` and `M:` lines. Without them a reader (or `mw.py render --check`, whose `key_fit`
+compares the notes with the declared key) has to guess, and a model trained on notes loses the
+context it reads first (after Foster, *Generative Deep Learning* 2e, ch. 11).
+
+Events or grid: a fixed step grid (one cell per sixteenth) cannot hold triplets, cannot tell one
+long note from the same pitch struck again, and has no room for dynamics. Use the events list
+above (start, end, pitch, velocity) whenever a part has triplets, repeated same-pitch notes or
+dynamics; a grid is fine for straight drum patterns (same source).
+
 ## Models that write notes
 
 - YuE2's ABC layer: generate or edit the melody and chord plan as ABC, then render audio (ComfyUI

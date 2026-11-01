@@ -9,6 +9,11 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - files: SKILL.md (Step 2, sections carry density), references/acestep-rest.md (Working from existing audio)
 - In one blind pair the density tags did no better than mood words and neither take reached the tutti asked for; the bullet now says so. The lego tuning check fires over 30 cents.
 
+### C-20261101-1 · 2026-11-01 · Temperature ladder, melody-copy check, control map
+- because: user request (book learnings from Foster, Generative Deep Learning 2e, ch. 11)
+- files: SKILL.md (Step 3 cheat-sheet), references/acestep.md (Control map)
+- Two cheat-sheet rows (hold the seed and step LM temperature 0.7, 0.85, 1.0 before a new seed; compare transcribed contours and n-grams when a reference or cover was used) and a three-level control map that says to change only the wrong level.
+
 ### C-20261023-2 · 2026-10-23 · Tuning gap of an added part
 - because: decisions 2026-10-23-books-track11 (N5)
 - files: references/acestep-rest.md (Adding a part)

@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261101-1 · 2026-11-01 · Key-fit hint and the notation header rule
+- because: user request (book learnings from Foster, Generative Deep Learning 2e, ch. 11)
+- files: SKILL.md (Step 3), references/symbolic.md (Formats and libraries)
+- `--check` now reports `key_fit`; MIDI and ABC must carry key and time signature; events over grids when a part has triplets, repeated same-pitch notes or dynamics.
+
 ### C-20261023-2 · 2026-10-23 · A reference's form from mw.py analyze --sections
 - because: L-003, T-20261023-2, decisions 2026-10-23-books-track11
 - files: SKILL.md (Step 2 item 6), evals/evals.json (action-4, hold-out)

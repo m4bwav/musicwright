@@ -74,6 +74,8 @@ Cheat-sheet (ACE-Step XL):
 | wrong tempo or key | set `--bpm` and `--key` explicitly |
 | an unwanted instrument | reword the caption (solo, unaccompanied, only X); re-roll seeds |
 | goes quiet at the end | render 5-10 s longer than needed and trim |
+| loops on itself or wanders off | temperature ladder: hold the seed, try LM temperature 0.7, 0.85, 1.0, then change the seed (low = safe, loopy; high = wanders) |
+| a reference or cover was used | before release, transcribe both (`mw.py transcribe`) and compare melodic contours and note n-grams; a long shared run is a copy |
 
 ## Step 4: long pieces and changes of mood
 

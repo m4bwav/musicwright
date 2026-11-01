@@ -1374,6 +1374,52 @@ def load(path, tuning=None, tab_step=None, bpm=None, program=None, chords=False,
     return score, kind
 
 
+def key_fit(score):
+    """Key-fit hint (after Foster, Generative Deep Learning 2e, ch. 11: check generated notes against the key).
+
+    Compares the duration-weighted pitch-class histogram with the declared key (ABC K:, MIDI key signature,
+    MusicXML fifths), or with the estimated key when none is declared, and lists out-of-key notes that land on
+    a strong beat (the downbeat, and the half bar in 4/4-like meters). A short note reached and left by step
+    (a passing or neighbour note) is allowed. Minor keys also accept the raised sixth and seventh."""
+    lines = [t for t in score.tracks if not t.drums and t.notes]
+    if not lines:
+        return None
+    declared = score.key is not None
+    fifths, mode = score.key if declared else estimate_key([n for t in lines for n in t.notes])
+    tonic = (fifths * 7) % 12 if mode == "major" else ((fifths * 7) - 3) % 12
+    steps = [0, 2, 4, 5, 7, 9, 11] if mode == "major" else [0, 2, 3, 5, 7, 8, 9, 10, 11]
+    scale = {(tonic + i) % 12 for i in steps}
+    hist = [0.0] * 12
+    for t in lines:
+        for n in t.notes:
+            hist[n.pitch % 12] += n.dur
+    total = sum(hist) or 1
+    outside = sum(h for pc, h in enumerate(hist) if pc not in scale) / total
+    num, den = score.meter
+    bar = num * 4.0 / den
+    strong = [0.0] + ([bar / 2] if num % 2 == 0 and num >= 4 else [])
+    flagged = []
+    for t in lines:
+        ns = sorted(t.notes, key=lambda n: (n.start, n.pitch))
+        for i, n in enumerate(ns):
+            if n.pitch % 12 in scale:
+                continue
+            pos = n.start % bar
+            if not any(abs(pos - s) < 1e-6 for s in strong):
+                continue
+            prev, nxt = (ns[i - 1] if i else None), (ns[i + 1] if i + 1 < len(ns) else None)
+            if (n.dur <= 0.5 and prev and nxt and 0 < abs(n.pitch - prev.pitch) <= 2
+                    and 0 < abs(nxt.pitch - n.pitch) <= 2):
+                continue  # passing or neighbour note
+            flagged.append({"track": t.name, "bar": int(n.start // bar) + 1, "beat": round(pos + 1, 3),
+                            "note": midi_name(n.pitch)})
+    return {"key": key_name(fifths, mode), "declared": declared,
+            "histogram": {NAMES_SHARP[pc]: round(h / total, 3) for pc, h in enumerate(hist) if h},
+            "outside_share": round(outside, 3), "strong_beat_outside": flagged[:20],
+            "flag": bool(flagged), "reading": "a hint, not an error: chromatic notes on strong beats can be meant; "
+            "when the key was not declared it was estimated, so declare K: or a key signature"}
+
+
 def melody_hints(score):
     """Contour and motif figures for each melodic line, with two flags (after DeSantis, Making Music, ch. 49-50).
 

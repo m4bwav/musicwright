@@ -1180,6 +1180,28 @@ class NotationReaders(unittest.TestCase):
             mw.notation.program_of("kazoo")
 
 
+class KeyFit(unittest.TestCase):
+    """render --check key_fit: out-of-key notes on strong beats flag; passing notes and in-key tunes do not."""
+    def fit(self, body, key="C"):
+        return mw.notation.key_fit(mw.notation.parse_abc(f"X:1\nM:4/4\nL:1/8\nK:{key}\n{body}\n"))
+
+    def test_in_key_and_passing_notes_pass(self):
+        self.assertFalse(self.fit("C2 D2 E2 F2|G2 A2 B2 c2|")["flag"])
+        d = self.fit("C2 D2 E2 F2|G2 A2 B2 c2|^c d c2 B2 A2|")  # short C# on a downbeat, stepwise c to d
+        self.assertFalse(d["flag"], d)
+        self.assertGreater(d["outside_share"], 0)
+
+    def test_strong_beat_outside_flags(self):
+        d = self.fit("C2 D2 E2 F2|^F4 G4|_B8|")
+        self.assertTrue(d["flag"])
+        self.assertTrue(d["declared"])
+        self.assertEqual([f["bar"] for f in d["strong_beat_outside"]], [2, 3])
+        self.assertGreater(d["outside_share"], 0.3)
+
+    def test_minor_raised_seventh_is_in_key(self):
+        self.assertFalse(self.fit("A2 B2 c2 d2|e4 ^G4|A8|", key="Am")["flag"])
+
+
 @NEEDS_FFMPEG
 class NotationCommands(unittest.TestCase):
     def test_render_check_and_builtin_render(self):
@@ -1188,6 +1210,7 @@ class NotationCommands(unittest.TestCase):
         self.assertEqual(d["read_as"], "abc")
         self.assertEqual(d["beats"], 24.0)
         self.assertIn("chord symbols were not played", " ".join(d["warnings"]))
+        self.assertIn("key_fit", d)
         dst = TMP / "nt" / "tune.wav"
         code, d = run("render", FIXTURES / "tune.abc", "--chords", "--synth", "builtin", "--out", dst)
         self.assertEqual(code, 0, d)
