@@ -51,5 +51,8 @@ Udio nodes. Templates ship for every native model (`audio_*` in the workflow tem
 
 ## Not yet measured here
 
-YuE2 and Stable Audio 3 Medium on 16 GB; MiniMax Music 3 timings with recorded settings;
+Measured 2026-11-02 on the RTX 5060 Ti 16 GB (weights from Comfy-Org/stable-audio-3 and Comfy-Org/YuE2,
+ungated): Stable Audio 3 Medium, 8 steps lcm/simple cfg 1, a 60 s take in 9 s, exactly 60.0 s, -16.3 LUFS,
+-1.9 dBTP. YuE2 3B int8 with ABC planning (template settings), 90 s asked, 78 s returned in 33 s, about
+8.5 GB VRAM, -14.7 LUFS and +0.1 dBTP (master before use). Not yet judged by ear, so no recipe; still unmeasured:
 any side-by-side listening test of ACE-Step against MiniMax. Add a recipe when one is run and judged.
