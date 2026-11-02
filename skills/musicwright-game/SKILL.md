@@ -6,7 +6,7 @@ description: "Use for the game side of music: seamless loops (bar-exact length, 
 # musicwright-game
 
 Music that plays for hours behind a game: it must loop without a seam, leave room for sound
-effects, not tire the player, and import cleanly. Script: `mw.py` in the musicwright hub.
+effects, not tire the player, and import cleanly. Script: `<this folder>/../musicwright/scripts/mw.py` (the sibling hub folder).
 
 ## Step 1: plan the set
 

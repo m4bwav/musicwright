@@ -6,7 +6,7 @@ description: "Use whenever music audio exists and must be finished or checked: l
 # musicwright-produce
 
 Finishing and checking. Everything here is measured, never guessed: run the number before and
-after every change and report both. Script: `mw.py` in the musicwright hub's `scripts/` folder.
+after every change and report both. Script: `<this folder>/../musicwright/scripts/mw.py` (the sibling hub folder).
 
 ## Step 1: measure
 

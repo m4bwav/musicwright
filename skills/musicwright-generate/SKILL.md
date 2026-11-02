@@ -6,7 +6,7 @@ description: "Use when music should come from an AI model and the question is wh
 # musicwright-generate
 
 Text (and sometimes audio) in, music audio out. This skill chooses the model, writes the prompt,
-runs the takes through `mw.py gen` (in the musicwright hub's `scripts/`) and steers the re-rolls.
+runs the takes through `mw.py gen` (`<this folder>/../musicwright/scripts/mw.py`, the sibling hub folder) and steers the re-rolls.
 The hub's take loop (sheet, report, verdict) applies to every render.
 
 ## Step 1: choose the model

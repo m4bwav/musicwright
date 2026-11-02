@@ -83,3 +83,7 @@ Append-only. Newest last.
 ## [2026-11-01] eval | WSL padding check and generate action-1 rerun
 - Static ffmpeg 7.0.2 under WSL: 102 tests OK (5 skips), so the padded-contour fix holds on both builds.
 - generate action-1 with the reworded prompt, three runs (T-20261101-1): 3/3 on the trace, 0/3 Skill calls; the clone exposes mw.py. Fixtures-only rerun and baselines still owed (HANDOFF item 1).
+
+## [2026-11-02] eval | generate action-1 fixtures-only and baseline
+- Harness gained EVAL_MODE (clone, fixtures = empty folder plus case fixtures, baseline = fixtures with musicwright@mark-local disabled in the --settings file). action-1: 3/3 fixtures-only with the Skill tool each time; baseline 1/3 (one found the plugin cache mw.py by searching). T-20261102-1.
+- Found: no sibling skill said where mw.py sits in an install, so runs used the dev clone path. game, generate, produce and score now name `<this folder>/../musicwright/scripts/mw.py`.
