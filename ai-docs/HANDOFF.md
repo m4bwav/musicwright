@@ -2,6 +2,10 @@
 
 State on 2026-10-25: 0.1.3 released: the three 0.1.2 wiki-run candidates fixed (loudness and true peak from the original after the padded best_input retry, mixcheck duration_s exact, pulse nulls tempo and grid when none; L-006). Verified on Windows (ffmpeg 9.0.1) and under WSL with static 7.0.2 (~/mw-ffmpeg/ffmpeg-7.0.2-amd64-static; tests run with python3 -m unittest, no pytest there). Wiki republished at 0.1.3 on 2026-10-25 (wiki commit 71599c7, 17 pages, 125 anchors, live clean). 0.1.4 candidates from that run (add a LEARNINGS entry when fixed): (1) mixcheck true peak on a mono file depends on the path: the normal pass reads it after `aformat=channel_layouts=stereo` (take_s1.flac -13.5 dBTP, plr 4.5 on 9.0.1) while the 0.1.3 retry reads the original like `measure` (-10.5, plr 7.5 on static 7.0.2), so the two builds now disagree by 3 dB; pick one (measure's -10.5 matches the file) for both paths. (2) After the padded retry the short-term contour still includes the padding: a 3.5 s 44.1 kHz tone reads short_term -22.5 on 7.0.2 against -21.8 on 9.0.1 (sub band -51.5 against -54.4).
 
+## Flute solo (2026-11-01)
+
+- Stage 3 closed by the owner (best: answer lead, percussion -12 dB; no fixed-bpm beat). basic-pitch preferred over pyin for transcription. FluidSynth 2.6.1 + GeneralUser GS now live in the vault studio folder `fluidsynth/` (git-ignored); MUSICWRIGHT_FLUIDSYNTH is set and config.json has `soundfont`. Owed: check `mw.py doctor` and one render in a fresh shell; optional `fluidsynth` key in the studio config. Continue prompt: [plans/2026-11-01-musicwright-continue-prompt.md](plans/2026-11-01-musicwright-continue-prompt.md).
+
 ## Listening checks and 0.1.1 (2026-10-23)
 
 - Four blind pairs judged by the owner: REPEATS dropped as a flag (share still reported), TUNING-GAP over 30 cents, BRIGHT is a fatigue pointer, density section tags not shown to help. Rulings P1-P5 and the bug fixes: [decisions/2026-10-23-listening-checks.md](decisions/2026-10-23-listening-checks.md). The old item 7 bug list is fixed (92 tests, ten mutations caught).
