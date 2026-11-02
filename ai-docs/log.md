@@ -79,3 +79,7 @@ Append-only. Newest last.
 
 ## [2026-11-01] fix | mixcheck mono true peak and padded contour (Unreleased)
 - A mono 0.3 sine read -13.5 dBTP in mixcheck against -10.5 in measure: the aformat=stereo after one asplit set the layout for the ebur128 branch too. Each branch now resamples on its own after [0:a]asplit; test_mono_file_reads_like_measure (102 tests). After the best_input retry the per-second short-term list is cut to the file's whole seconds. Not rerun under WSL 7.0.2.
+
+## [2026-11-01] eval | WSL padding check and generate action-1 rerun
+- Static ffmpeg 7.0.2 under WSL: 102 tests OK (5 skips), so the padded-contour fix holds on both builds.
+- generate action-1 with the reworded prompt, three runs (T-20261101-1): 3/3 on the trace, 0/3 Skill calls; the clone exposes mw.py. Fixtures-only rerun and baselines still owed (HANDOFF item 1).

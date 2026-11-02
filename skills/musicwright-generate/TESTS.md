@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261101-1 · 2026-11-01 · headless claude -p (vault eval-harness run_evals.py, master = the main clone at 0.1.5, installed plugin 0.1.5), three runs of action-1 with the reworded prompt, in a repository clone · Windows 11 dev machine · 3/3
+- action-1: 3/3 on the trace (`mw.py gen --dry-run` with a calm piano caption); nothing submitted. No run called the Skill tool: each found skills/musicwright/scripts/mw.py in the clone and read its help. The rewording removed the plugin name but the clone still leads straight to the script, so the skill stays unexercised; the next run must be fixtures-only (as T-20261023-1 action-2).
+- Baseline: not run (needs the installed plugin disabled).
+- led to: none
+
 ### T-20261023-1 · 2026-10-23 · headless claude -p with --plugin-dir on branch books-8 (installed copy disabled), three runs per case, in a repository clone and again in a folder holding only the fixtures · Windows 11 dev machine · 6/6
 - action-2 (a dry run that builds and thins): 3/3 clone, 3/3 fixtures-only; every run's sections said which parts play and the captions named a close, dry lead against a distant pad.
 - Read before grading: one run split its options over line continuations, which the first regex stopped at; widened and retested. The eval guard refused one `gen --help` (it treats any gen call without --dry-run as a render).
