@@ -1339,7 +1339,7 @@ class FakeHost:
         import threading
         host = self
         self.wav = wav_bytes
-        self.prompts, self.tasks, self.fail = [], [], False
+        self.prompts, self.tasks, self.fail, self.pending = [], [], False, set()
         unets = sorted({r["params"]["unet"] for r in mw.recipes().values() if r["route"] == "comfy"})
 
         class H(http.server.BaseHTTPRequestHandler):
@@ -1364,6 +1364,9 @@ class FakeHost:
                     self.send({"queue_running": [], "queue_pending": [["x"]]})
                 elif p.startswith("/history/"):
                     pid = p.rsplit("/", 1)[1]
+                    if pid in host.pending:
+                        self.send({})
+                        return
                     st = {"status_str": "error", "completed": False, "messages": [["execution_error", {"node_id": "8"}]]} if host.fail \
                         else {"status_str": "success", "completed": True}
                     self.send({pid: {"status": st, "outputs": {"10": {"audio": [{"filename": f"{pid}_00001_.wav", "subfolder": "musicwright", "type": "output"}]}}}})
@@ -1460,7 +1463,49 @@ class GenAgainstFakeHost(unittest.TestCase):
         self.assertEqual(code, 0, r)
         self.assertTrue(r["queued"])
         self.assertTrue(r["jobs"][0]["prompt_id"].startswith("p"))
-        self.assertNotIn("--collect", r["next"])
+        self.assertIn("--collect", r["next"])
+
+    def test_no_wait_then_collect(self):
+        d = TMP / "proj_collect"
+        run("new", d, "--name", "collect", "--use", "game-loop")
+        code, r = run("gen", "--caption", "slow harp", "--seeds", "4,5", "--name", "harp", "--host", self.fake.url,
+                      "--out", d / "takes", "--no-wait")
+        self.assertEqual(code, 0, r)
+        p4, p5 = [j["prompt_id"] for j in r["jobs"]]
+        self.assertEqual([x["type"] for x in mw.read_jsonl(d / "ledger.jsonl")], ["queued", "queued"])
+        self.fake.pending.add(p5)
+        try:
+            code, c = run("gen", "--collect", d / "takes")
+        finally:
+            self.fake.pending.discard(p5)
+        self.assertEqual(code, 0, c)
+        self.assertEqual([Path(t["file"]).name for t in c["takes"]], ["harp_s4.wav"])
+        self.assertEqual([x["prompt_id"] for x in c["pending"]], [p5])
+        code, c2 = run("gen", "--collect", d)
+        self.assertEqual([Path(t["file"]).name for t in c2["takes"]], ["harp_s5.wav"])
+        self.assertEqual(c2["pending"], [])
+        code, c3 = run("gen", "--collect", d)  # nothing left; never downloads a take twice
+        self.assertEqual(c3["takes"], [])
+        takes = [x for x in mw.read_jsonl(d / "ledger.jsonl") if x["type"] == "take"]
+        self.assertEqual([(x["take"], x["recipe"], x["caption"], x["prompt_id"]) for x in takes],
+                         [("harp_s4", "acestep-xl-sft", "slow harp", p4), ("harp_s5", "acestep-xl-sft", "slow harp", p5)])
+        self.assertAlmostEqual(takes[0]["measure"]["duration_s"], 10.0, delta=0.01)
+
+    def test_collect_logs_a_failed_job_once(self):
+        d = TMP / "proj_collect_fail"
+        run("gen", "--caption", "x", "--seeds", "6", "--host", self.fake.url, "--out", d, "--no-wait")
+        self.fake.fail = True
+        try:
+            code, c = run("gen", "--collect", d)
+            code2, c2 = run("gen", "--collect", d)
+        finally:
+            self.fake.fail = False
+        self.assertEqual((code, len(c["failed"]), c2["failed"]), (0, 1, []))
+
+    def test_no_wait_is_comfy_only(self):
+        code, r = run("gen", "--recipe", "acestep-rest", "--caption", "x", "--seeds", "1", "--out", TMP / "gen_rest_nw", "--no-wait")
+        self.assertEqual(code, 1)
+        self.assertIn("--no-wait is for ComfyUI", r["error"])
 
     def test_failed_job_fails_soft(self):
         self.fake.fail = True

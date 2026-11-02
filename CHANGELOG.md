@@ -6,6 +6,7 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 
 - Generate: listen for a known tune before releasing any cue, not only after a reference or cover (Hands-On Generative AI ch. 9).
 - `fluidsynth` key in the studio config.json, read after `MUSICWRIGHT_FLUIDSYNTH` (as `soundfont` already was), with a test.
+- `gen --no-wait` logs each queued ComfyUI job as a `queued` ledger row (recipe, caption, seed, prompt id); `gen --collect DIR` downloads, measures and logs the jobs that have finished, reports the pending ones and logs failed ones once. `--no-wait` on the REST route is now an error. Three tests.
 - `mixcheck` and `compare` read integrated loudness and true peak from the file as it is, like `measure`: a mono file read 3 dB low in true peak (-13.5 against -10.5 dBTP) because the stereo layout spread back up the filter graph. After the padded retry the short-term contour drops the seconds that reach into the padding. Test added.
 
 ## 0.1.5 (2026-11-01)
