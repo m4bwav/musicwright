@@ -1269,7 +1269,7 @@ SCORE_EXT = {".abc": "abc", ".mid": "midi", ".midi": "midi", ".musicxml": "music
 
 
 def fluidsynth_bin():
-    env = os.environ.get("MUSICWRIGHT_FLUIDSYNTH")
+    env = os.environ.get("MUSICWRIGHT_FLUIDSYNTH") or studio_config().get("fluidsynth")
     if env:
         return env if Path(env).exists() else None
     return shutil.which("fluidsynth")

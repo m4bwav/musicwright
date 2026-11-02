@@ -186,6 +186,28 @@ class Basics(unittest.TestCase):
                 if v is not None:
                     os.environ[k] = v
 
+    def test_fluidsynth_and_soundfont_from_studio_config(self):
+        home = TMP / "cfgsynth"
+        home.mkdir(exist_ok=True)
+        fs, sf = home / "fluidsynth.exe", home / "gm.sf2"
+        fs.write_bytes(b"x")
+        sf.write_bytes(b"x")
+        (home / "config.json").write_text(json.dumps({"fluidsynth": str(fs), "soundfont": str(sf)}), encoding="utf-8")
+        saved = {k: os.environ.pop(k, None) for k in ("MUSICWRIGHT_FLUIDSYNTH", "MUSICWRIGHT_SOUNDFONT")}
+        old_home = os.environ["MUSICWRIGHT_HOME"]
+        os.environ["MUSICWRIGHT_HOME"] = str(home)
+        try:
+            self.assertEqual(mw.fluidsynth_bin(), str(fs))
+            self.assertEqual(mw.soundfont(), sf)
+            os.environ["MUSICWRIGHT_FLUIDSYNTH"] = str(home / "missing.exe")
+            self.assertIsNone(mw.fluidsynth_bin())
+        finally:
+            os.environ["MUSICWRIGHT_HOME"] = old_home
+            os.environ.pop("MUSICWRIGHT_FLUIDSYNTH", None)
+            for k, v in saved.items():
+                if v is not None:
+                    os.environ[k] = v
+
     def test_new_scaffolds_and_refuses_twice(self):
         d = TMP / "proj_new"
         code, r = run("new", d, "--name", "Menu theme", "--use", "game-loop", "--duration", "90")
