@@ -4,7 +4,7 @@ State on 2026-10-25: 0.1.3 released: the three 0.1.2 wiki-run candidates fixed (
 
 ## Flute solo (2026-11-01)
 
-- Stage 3 closed by the owner (best: answer lead, percussion -12 dB; no fixed-bpm beat). basic-pitch preferred over pyin for transcription. FluidSynth 2.6.1 + GeneralUser GS now live in the vault studio folder `fluidsynth/` (git-ignored); MUSICWRIGHT_FLUIDSYNTH is set and config.json has `soundfont`. Verified 2026-11-01: `mw.py doctor` finds both and an ABC render ran through FluidSynth (8.0 s, -23.9 LUFS). The studio config now also has a `fluidsynth` key, which mw.py reads after MUSICWRIGHT_FLUIDSYNTH (Unreleased). Next: the main Owed list from item 1. Continue prompt: 2026-11-01-musicwright-continue-prompt.md in the owner's private notes.
+- Stage 3 closed by the owner (best: answer lead, percussion -12 dB; no fixed-bpm beat). basic-pitch preferred over pyin for transcription. FluidSynth 2.6.1 + GeneralUser GS now live in the vault studio folder `fluidsynth/` (git-ignored); MUSICWRIGHT_FLUIDSYNTH is set and config.json has `soundfont`. Verified 2026-11-01: `mw.py doctor` finds both and an ABC render ran through FluidSynth (8.0 s, -23.9 LUFS). The studio config now also has a `fluidsynth` key, which mw.py reads after MUSICWRIGHT_FLUIDSYNTH (Unreleased). Next: the main Owed list from item 1. Later 2026-11-01: both 0.1.4 candidates from the 0.1.3 wiki run (mono true peak path, contour reading the padding) fixed under Unreleased; the padding fix is not yet rerun on static 7.0.2 in WSL. Continue prompt: 2026-11-01-musicwright-continue-prompt.md in the owner's private notes.
 
 ## Listening checks and 0.1.1 (2026-10-23)
 
