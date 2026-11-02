@@ -1055,11 +1055,14 @@ def mix_series(path, below_hz=None):
     if below_hz:
         chains.append(("below", MID + band(0, round(below_hz, 1))))
     n = len(chains) + 1
-    fc = f"[0:a]aresample={MIX_RATE},aformat=channel_layouts=stereo,asplit={n}" + "".join(f"[s{i}]" for i in range(n))
+    # loudness and true peak read the file as it is, like measure (each branch resamples, or the stereo layout
+    # spreads back up the split and a mono file's true peak reads 3 dB low)
+    fc = (f"[0:a]asplit[r][x];[r]aresample={MIX_RATE}[raw];[x]aresample={MIX_RATE},aformat=channel_layouts=stereo,asplit={n - 1}"
+          + "".join(f"[s{i}]" for i in range(n - 1)))
     for i, (name, pre) in enumerate(chains):
         fc += (f";[s{i}]{pre}asetnsamples=n={MIX_RATE},astats=metadata=1:reset=1:measure_perchannel=none:"
                f"measure_overall=RMS_level,ametadata@{name}=print:key=lavfi.astats.Overall.RMS_level,anullsink")
-    fc += f";[s{n - 1}]ebur128=metadata=1:peak=true,ametadata@st=print:key=lavfi.r128.S"
+    fc += ";[raw]ebur128=metadata=1:peak=true,ametadata@st=print:key=lavfi.r128.S"
     src = need_file(path)
     p = ffmpeg(["-nostdin", "-i", str(src), "-filter_complex", fc, "-f", "null", "-"], check=False)
     whole_src = None
@@ -1089,6 +1092,8 @@ def mix_series(path, below_hz=None):
             v = -120.0
         s.setdefault(m.group(1), []).append(v if math.isfinite(v) else -120.0)
     s["st"] = s.get("st", [])[9::10]  # ebur128 reports every 100 ms; keep one a second
+    if whole_src:  # drop the seconds that reach into the padding
+        s["st"] = s["st"][:max(1, int(probe(src)["duration_s"]))]
     loud_err = whole_src.stderr if whole_src else err
     summ = loud_err[loud_err.rfind("Summary:"):]
     mi, mt = re.search(r"I:\s+(-?[\d.]+) LUFS", summ), re.search(r"Peak:\s+(-?[\d.]+) dBFS", summ)

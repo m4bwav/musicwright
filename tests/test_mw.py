@@ -916,6 +916,16 @@ class MixCheck(unittest.TestCase):
         self.assertEqual(code, 0, d)
         return d["files"]
 
+    def test_mono_file_reads_like_measure(self):
+        # loudness and true peak come from the file as it is, not after the stereo upmix (3 dB apart on 9.0.1)
+        mono = lavfi(f"aevalsrc='0.3*sin(2*PI*440*t)':s={RATE}:d=6", TMP / "audio" / "mono440.wav")
+        row, = self.check(mono)
+        code, m = run("measure", mono)
+        self.assertEqual(code, 0, m)
+        m = m["files"][0] if "files" in m else m
+        self.assertAlmostEqual(row["lufs_i"], m["lufs_i"], delta=0.3)
+        self.assertAlmostEqual(row["true_peak_dbtp"], m["true_peak_dbtp"], delta=0.3)
+
     def test_mono_loss_and_wide_lows(self):
         inph, anti, low = self.check(self.inphase, self.antiphase, self.lowwide)
         self.assertGreater(inph["stereo"]["correlation"], 0.95)

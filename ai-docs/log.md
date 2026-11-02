@@ -76,3 +76,6 @@ Append-only. Newest last.
 ## [2026-11-01] verify | FluidSynth from the studio folder, and a `fluidsynth` config key
 - `mw.py doctor` lists the studio FluidSynth 2.6.1 and GeneralUser GS; an 8-bar ABC render used `synth: fluidsynth` (7.98 s, -23.9 LUFS, -13.7 dBTP). Note: the setx variable is not in shells started before it was set, so the Bash tool saw none; the config key fixes that.
 - `fluidsynth_bin()` reads `fluidsynth` from studio config.json after the env var; test added (101 tests), AGENTS.md, notation.md and CHANGELOG Unreleased updated. Studio config gained the key.
+
+## [2026-11-01] fix | mixcheck mono true peak and padded contour (Unreleased)
+- A mono 0.3 sine read -13.5 dBTP in mixcheck against -10.5 in measure: the aformat=stereo after one asplit set the layout for the ebur128 branch too. Each branch now resamples on its own after [0:a]asplit; test_mono_file_reads_like_measure (102 tests). After the best_input retry the per-second short-term list is cut to the file's whole seconds. Not rerun under WSL 7.0.2.

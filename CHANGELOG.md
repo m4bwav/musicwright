@@ -5,6 +5,7 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 ## Unreleased
 
 - `fluidsynth` key in the studio config.json, read after `MUSICWRIGHT_FLUIDSYNTH` (as `soundfont` already was), with a test.
+- `mixcheck` and `compare` read integrated loudness and true peak from the file as it is, like `measure`: a mono file read 3 dB low in true peak (-13.5 against -10.5 dBTP) because the stereo layout spread back up the filter graph. After the padded retry the short-term contour drops the seconds that reach into the padding. Test added.
 
 ## 0.1.5 (2026-11-01)
 
