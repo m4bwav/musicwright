@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
+- Baseline: action-1 0/3 (each run cut the loop with its own soundfile script and judged the seam by sample jumps).
+- led to: none
+
 ### T-20261023-1 · 2026-10-23 · headless claude -p --model sonnet, --plugin-dir on a no-hardlinks clone of books-9 57f09dd, installed musicwright disabled in --settings, each run in a folder holding only its fixtures · Windows 11 dev machine · 17/18 runs; 8/8 cases, trigger-2 classed harness
 - outcome-2 3/3: each run loaded musicwright-game and wrote cues.md that flags the stage 2-3 repeat, gives warning stingers to new enemies, a Warden motif before the boss and an on-screen twin. Baseline (no plugin) 0/3: all three flagged the repeat and two gave a motif, none gave a warning cue or a visual twin.
 - trigger-1, trigger-3, decoy-1 (went to musicwright-score), decoy-2: 3/3 each.

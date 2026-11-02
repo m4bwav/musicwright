@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
+- Baseline: action-1 0/3.
+- led to: none
+
 ### T-20261017-1 · 2026-10-17 · headless claude -p, one run per case, fresh session, plugin installed from mark-local 0.1.0 · Windows 11 dev machine · 6/6
 - action-1 ran `mw.py join tests/fixtures/a.wav tests/fixtures/b.wav --lengths 6,8 --xfade 2 --out out/cue_ab.wav`; the file exists.
 - decoy-1 (menu loop) went to musicwright-game; decoy-2 (video edit) to editwright.

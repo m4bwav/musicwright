@@ -57,7 +57,7 @@
      "input_match": "motif\\.mid"
     }
    },
-   "baseline": "not yet run"
+   "baseline": "3/3 (T-20261102-2): a plain script writes motif.mid, so the file evidence does not separate the skill"
   },
   {
    "id": "outcome-1",
@@ -114,7 +114,7 @@
      "input_match": "render.*tune\\.abc"
     }
    },
-   "baseline": "not yet run"
+   "baseline": "3/3 (T-20261102-2): rendered by hand with a script, so the file evidence does not separate the skill"
   },
   {
    "id": "action-3",
@@ -130,7 +130,7 @@
     "tool": "Bash|PowerShell",
     "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+render\\b(?:[^\\n]|\\\\\\n)*--check"
    },
-   "baseline": "not yet run",
+   "baseline": "0/3 (T-20261102-2, fixtures-only with the plugin disabled)",
    "tools": [
     "Read",
     "Glob",

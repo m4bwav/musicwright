@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
+- Baseline: action-1 3/3 and action-2 3/3 (a plain script wrote motif.mid and rendered tune.wav, so these file-evidence cases do not separate the skill); action-3 0/3. action-4 not run: reference.flac is not kept on disk.
+- led to: none
+
 ### T-20261023-2 · 2026-10-23 · headless claude -p (sonnet) with --plugin-dir on branch books-11 (installed copy disabled), three runs per case in a folder holding only the fixtures · Windows 11 dev machine · 3/3
 - action-4 (form of a 180 s reference into form.md): 3/3; each run called `mw.py analyze reference.flac --sections` and wrote the table. One run's closing note said the boundaries fell on fractional bars; they now move to the nearest beat (decisions N7), after these runs.
 - Baseline (no plugin, one run): 0/1. Five hand-written librosa scripts in 273 s, out of turns, no form.md.
