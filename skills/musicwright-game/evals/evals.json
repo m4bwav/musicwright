@@ -65,7 +65,7 @@
     "tool": "Bash|PowerShell",
     "input_match": "mw\\.py\"?\\s+loop(?!\\s+(-h|--help))"
    },
-   "baseline": "not yet run"
+   "baseline": "0/3 (T-20261102-2, fixtures-only with the plugin disabled)"
   },
   {
    "id": "outcome-1",

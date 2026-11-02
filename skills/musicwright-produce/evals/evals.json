@@ -53,7 +53,7 @@
     "tool": "Bash|PowerShell",
     "input_match": "mw\\.py\"?\\s+master(?!\\s+(-h|--help))"
    },
-   "baseline": "not yet run"
+   "baseline": "0/3 (T-20261102-2, fixtures-only with the plugin disabled)"
   },
   {
    "id": "outcome-1",
@@ -105,7 +105,7 @@
     "tool": "Bash|PowerShell",
     "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+mixcheck\\b(?:[^\\n]|\\\\\\n)*--lowest"
    },
-   "baseline": "not yet run",
+   "baseline": "0/3 (T-20261102-2, fixtures-only with the plugin disabled)",
    "tools": [
     "Read",
     "Glob",
@@ -131,7 +131,7 @@
      "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+preview\\b(?:[^\\n]|\\\\\\n)*--blind"
     }
    },
-   "baseline": "not yet run",
+   "baseline": "0/3 (T-20261102-2, fixtures-only with the plugin disabled)",
    "tools": [
     "Read",
     "Glob",

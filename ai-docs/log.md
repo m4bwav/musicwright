@@ -87,3 +87,7 @@ Append-only. Newest last.
 ## [2026-11-02] eval | generate action-1 fixtures-only and baseline
 - Harness gained EVAL_MODE (clone, fixtures = empty folder plus case fixtures, baseline = fixtures with musicwright@mark-local disabled in the --settings file). action-1: 3/3 fixtures-only with the Skill tool each time; baseline 1/3 (one found the plugin cache mw.py by searching). T-20261102-1.
 - Found: no sibling skill said where mw.py sits in an install, so runs used the dev clone path. game, generate, produce and score now name `<this folder>/../musicwright/scripts/mw.py`.
+
+## [2026-11-02] eval | baselines for the other action cases
+- EVAL_MODE=baseline, three runs each of twelve action cases (T-20261102-2); musicwright absent from every init. 6/36 passed: compose action-1 and action-2 3/3 each (file evidence met by a plain script), the other ten 0/3. evals.json baseline fields filled.
+- Harness (vault eval-harness run_evals.py): fixtures-only folders now get the tests/fixtures files the prompt names, keeping their path. Skipped compose action-4 and produce action-4: their audio is not kept.

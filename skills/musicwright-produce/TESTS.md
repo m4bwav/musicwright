@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
+- Baseline: action-1 0/3, action-2 0/3, action-3 0/3. action-4 not run: lead.flac and part.flac are not kept on disk.
+- led to: none
+
 ### T-20261023-2 · 2026-10-23 · headless claude -p (sonnet) with --plugin-dir on branch books-11 (installed copy disabled), three runs per case in a folder holding only the fixtures · Windows 11 dev machine · 3/3
 - action-4 (will part.flac and lead.flac beat; real kept flute take and a rendered jazz flute): 3/3; every run called `mw.py analyze lead.flac part.flac` and reported +27.6 cents. One run spent 180 s looking for mw.py before it found it.
 - Baseline (no plugin, one run): 0/1. It wrote its own pitch script and estimated 15 to 20 cents.

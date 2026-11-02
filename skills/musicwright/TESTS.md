@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
+- Baseline: action-1 0/3, action-2 0/3.
+- led to: none
+
 ### T-20261023-1 · 2026-10-23 · headless claude -p with --plugin-dir on branch books-8 (installed copy disabled), three runs per case, in a repository clone and again in a folder holding only the fixtures · Windows 11 dev machine · 6/6
 - action-2 (two takes to hear): 3/3 clone, 3/3 fixtures-only; every run handed over `mw.py preview` copies, and every run loaded musicwright-produce rather than the hub (the evidence is the call, so it passes).
 - Read before grading: all three fixtures-only runs called the script through a shell variable; the regex was widened and retested.

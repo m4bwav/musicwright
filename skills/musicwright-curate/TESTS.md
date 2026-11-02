@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
+- Baseline: action-1 0/3.
+- led to: none
+
 ### T-20261017-1 · 2026-10-17 · headless claude -p, one run per case, fresh session, plugin installed from mark-local 0.1.0 · Windows 11 dev machine · 6/6
 - action-1 ran `mw.py verdict` (also `verdict --help`, which the regex would accept alone); the scratch studio holds verdicts.jsonl and a new taste.md.
 - outcome-1 passed, narrowly on the prose: LEARNINGS named (musicwright-generate's), studio first and the plugin copy stripped of names, paths and projects; it did not say "taste" in so many words.

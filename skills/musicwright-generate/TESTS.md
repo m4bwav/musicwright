@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
+- Baseline: action-2 0/3. action-1 baseline is T-20261102-1 (1/3).
+- led to: none
+
 ### T-20261102-1 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py with the new EVAL_MODE), action-1 three times in an empty folder and three times as a baseline with musicwright@mark-local disabled through --settings enabledPlugins · Windows 11 dev machine · 3/3, baseline 1/3
 - action-1 fixtures-only: 3/3, every run called the Skill tool (musicwright-generate) and then `mw.py gen --dry-run` with a piano caption; the guard refused one `gen --help` per run. Run 3 called `python "$M" gen ... --dry-run`, which the evidence regex misses; graded by hand as a pass.
 - Read before grading: all three runs found mw.py at the owner's dev clone, not the installed copy, because no skill said where mw.py sits next to it. The game, generate, produce and score skills now name `<this folder>/../musicwright/scripts/mw.py`.
