@@ -6,7 +6,7 @@ description: "Use whenever music must fit a video or film cut: spotting (where c
 # musicwright-score
 
 Music written to picture. The cut is the boss: every decision starts from the timeline. Script:
-`mw.py` in the musicwright hub. When a film plugin owns the whole sound mix, this skill delivers
+`<this folder>/../musicwright/scripts/mw.py` (the sibling hub folder). When a film plugin owns the whole sound mix, this skill delivers
 the music stem it asks for and lets that plugin mix.
 
 ## Step 1: spot the cut

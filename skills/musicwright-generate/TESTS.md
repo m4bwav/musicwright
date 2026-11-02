@@ -8,6 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-1 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py with the new EVAL_MODE), action-1 three times in an empty folder and three times as a baseline with musicwright@mark-local disabled through --settings enabledPlugins · Windows 11 dev machine · 3/3, baseline 1/3
+- action-1 fixtures-only: 3/3, every run called the Skill tool (musicwright-generate) and then `mw.py gen --dry-run` with a piano caption; the guard refused one `gen --help` per run. Run 3 called `python "$M" gen ... --dry-run`, which the evidence regex misses; graded by hand as a pass.
+- Read before grading: all three runs found mw.py at the owner's dev clone, not the installed copy, because no skill said where mw.py sits next to it. The game, generate, produce and score skills now name `<this folder>/../musicwright/scripts/mw.py`.
+- Baseline (plugin off, confirmed in each init message): 1/3. Two loaded the retired comfyui-music / acestep-music user skills and printed an old workflow file; one searched the disk, found the plugin cache's mw.py and ran the dry run anyway, so a baseline on this machine leaks through the cache.
+- led to: the mw.py location line in four sibling skills
+
 ### T-20261101-1 · 2026-11-01 · headless claude -p (vault eval-harness run_evals.py, master = the main clone at 0.1.5, installed plugin 0.1.5), three runs of action-1 with the reworded prompt, in a repository clone · Windows 11 dev machine · 3/3
 - action-1: 3/3 on the trace (`mw.py gen --dry-run` with a calm piano caption); nothing submitted. No run called the Skill tool: each found skills/musicwright/scripts/mw.py in the clone and read its help. The rewording removed the plugin name but the clone still leads straight to the script, so the skill stays unexercised; the next run must be fixtures-only (as T-20261023-1 action-2).
 - Baseline: not run (needs the installed plugin disabled).
