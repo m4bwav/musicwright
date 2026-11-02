@@ -101,3 +101,8 @@ Append-only. Newest last.
 ## [2026-11-02] build | gen --collect, and MiniMax Music 3 on real hardware
 - `gen --no-wait` writes a `queued` ledger row per ComfyUI job; `gen --collect DIR` downloads, measures and logs finished ones, lists pending, logs failures once; REST --no-wait now errors. 105 tests. Checked live: queued a 90 s take, collect said pending, then logged it.
 - MiniMax Music 3 via mw.py gen (PC ComfyUI 8199): 60 s -> 43 s in 105 s; 90 s -> 63 s in 140 s; peak 15.3 GB VRAM. Recipe timing note updated. Takes in Ai/Music/hw-checks await a listener.
+
+## [2026-11-02] hardware | Stable Audio 3 Medium and YuE2 on the PC
+- Weights from Comfy-Org/stable-audio-3 (medium + t5gemma_b_b_ul2) and Comfy-Org/YuE2 (3B int8 + sheetsage2) into D:/ComfyUI/models; nodes were already native. Standalone graphs from the bundled templates in Ai/Music/hw-checks/run_native.py (not in mw.py: no take judged yet).
+- SA3 Medium: 60 s in 9 s, 60.0 s, -16.3 LUFS, -1.9 dBTP. YuE2: 90 s asked, 78 s in 33 s, ~8.5 GB, -14.7 LUFS, +0.1 dBTP; its ABC plan saved beside the take. Both await a listener.
+- ACE-Step REST: no server on either host; ACE-Step-1.5 cloned to D:/AI/ACE-Step-1.5 but `uv sync` was refused by the auto-mode classifier (runs downloaded code). Mark runs `uv sync && uv run acestep-api` there, then REST, cover, repaint and extract can be measured.
