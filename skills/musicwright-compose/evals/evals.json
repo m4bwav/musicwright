@@ -46,18 +46,14 @@
    "prompt": "Write a 4-bar melody in A minor pentatonic as a MIDI file named motif.mid in the current folder, then read it back and list the notes.",
    "runs": 3,
    "expectations": [
-    "the action happened, proven by the trace or the file, not by the reply"
+    "motif.mid is written or read back with the plugin's render or notate command, proven by the trace (a plain script also makes the file)"
    ],
    "evidence": {
-    "type": "file",
-    "path": "motif.mid",
-    "or": {
-     "type": "trace",
-     "tool": "Bash|PowerShell|Write",
-     "input_match": "motif\\.mid"
-    }
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+(?:render|notate)\\b(?:[^\\n]|\\\\\\n)*motif\\.(?:abc|mid)"
    },
-   "baseline": "3/3 (T-20261102-2): a plain script writes motif.mid, so the file evidence does not separate the skill"
+   "baseline": "0/3 (T-20261102-2 traces rescored on the trace evidence; with the plugin 2/3, T-20261102-3)"
   },
   {
    "id": "outcome-1",
@@ -103,18 +99,14 @@
    "prompt": "Render tests/fixtures/tune.abc to out/tune.wav so I can listen to it.",
    "runs": 3,
    "expectations": [
-    "the action happened, proven by the trace or the file, not by the reply"
+    "tune.abc is rendered with the plugin's render command, proven by the trace (a hand-written synth also makes the file)"
    ],
    "evidence": {
-    "type": "file",
-    "path": "out/tune.wav",
-    "or": {
-     "type": "trace",
-     "tool": "Bash|PowerShell",
-     "input_match": "render.*tune\\.abc"
-    }
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+render\\b(?:[^\\n]|\\\\\\n)*tune\\.abc"
    },
-   "baseline": "3/3 (T-20261102-2): rendered by hand with a script, so the file evidence does not separate the skill"
+   "baseline": "0/3 (T-20261102-2 traces rescored on the trace evidence; with the plugin 3/3, T-20261102-3)"
   },
   {
    "id": "action-3",

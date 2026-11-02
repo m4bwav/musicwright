@@ -91,3 +91,6 @@ Append-only. Newest last.
 ## [2026-11-02] eval | baselines for the other action cases
 - EVAL_MODE=baseline, three runs each of twelve action cases (T-20261102-2); musicwright absent from every init. 6/36 passed: compose action-1 and action-2 3/3 each (file evidence met by a plain script), the other ten 0/3. evals.json baseline fields filled.
 - Harness (vault eval-harness run_evals.py): fixtures-only folders now get the tests/fixtures files the prompt names, keeping their path. Skipped compose action-4 and produce action-4: their audio is not kept.
+
+## [2026-11-02] eval | compose action-1 and action-2 need mw.py
+- Evidence is now a trace of `mw.py render` (action-1 also `notate`, and motif.abc or motif.mid) instead of the output file. Kept baseline traces rescored 0/3 each; fixtures-only with the plugin (T-20261102-3): action-1 2/3, action-2 3/3. The action-1 miss never loaded the skill: a 'MIDI file' prompt can still skip compose.
