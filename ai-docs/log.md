@@ -94,3 +94,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] eval | compose action-1 and action-2 need mw.py
 - Evidence is now a trace of `mw.py render` (action-1 also `notate`, and motif.abc or motif.mid) instead of the output file. Kept baseline traces rescored 0/3 each; fixtures-only with the plugin (T-20261102-3): action-1 2/3, action-2 3/3. The action-1 miss never loaded the skill: a 'MIDI file' prompt can still skip compose.
+
+## [2026-11-02] eval | action-4 baselines on stand-in audio
+- Harness: EVAL_AUDIO copies bare audio names in a prompt from a stand-in folder (vault eval-harness/audio: reference.flac from spacey_album 01, lead/part.flac from flute takes s52203/s41017). T-20261102-4: compose action-4 and produce action-4 baseline 0/3 each, with the plugin 3/3 each. Owed item 1 (baselines) is closed.

@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-4 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_AUDIO stand-ins: reference.flac = spacey_album 01_orbital_dawn; EVAL_MODE=baseline and fixtures) · Windows 11 dev machine · action-4 3/3
+- With the plugin 3/3: each run loaded the skill and ran `mw.py analyze reference.flac --sections`. Baseline 0/3: musicwright absent from init, no plugin analyze call.
+- led to: none
+
 ### T-20261102-3 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=fixtures, plugin enabled; baselines rescored from the kept T-20261102-2 traces) · Windows 11 dev machine · action-1 2/3, action-2 3/3
 - action-1 and action-2 now need a trace of `mw.py render` (or `notate` for action-1) naming the score; file evidence dropped, since a plain script also makes motif.mid and tune.wav. action-1 accepts motif.abc too: the plugin route renders an ABC and writes the .mid beside the audio.
 - With the plugin: action-1 2/3 (the miss never called the Skill tool and wrote the MIDI bytes by hand), action-2 3/3. Baseline rescored: 0/3 and 0/3 (was 3/3 and 3/3 on the file evidence).

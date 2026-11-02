@@ -154,7 +154,7 @@
    "tool": "Bash|PowerShell",
    "input_match": "(?:mw\\.py\"?|\\$\\{?\\w+\\}?\"?)\\s+analyze\\b(?:[^\\n]|\\\\\\n)*(?:lead|part)\\.flac(?:[^\\n]|\\\\\\n)*(?:part|lead)\\.flac"
   },
-  "baseline": "not yet run",
+  "baseline": "0/3 (T-20261102-4, stand-in audio from the owner's Music folder; with the plugin 3/3)",
   "tools": [
    "Read",
    "Glob",

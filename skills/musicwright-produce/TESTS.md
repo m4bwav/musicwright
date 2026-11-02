@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261102-4 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_AUDIO stand-ins: lead.flac and part.flac = flute takes s52203 and s41017; EVAL_MODE=baseline and fixtures) · Windows 11 dev machine · action-4 3/3
+- With the plugin 3/3: each run loaded the skill and ran `mw.py analyze lead.flac part.flac`. Baseline 0/3: musicwright absent from init, no plugin analyze call.
+- led to: none
+
 ### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
 - Baseline: action-1 0/3, action-2 0/3, action-3 0/3. action-4 not run: lead.flac and part.flac are not kept on disk.
 - led to: none
