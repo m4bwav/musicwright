@@ -9,6 +9,11 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - files: SKILL.md (Step 2, sections carry density), references/acestep-rest.md (Working from existing audio)
 - In one blind pair the density tags did no better than mood words and neither take reached the tutti asked for; the bullet now says so. The lego tuning check fires over 30 cents.
 
+### C-20261101-2 · 2026-11-01 · Copy check for every released cue
+- because: user request (book learnings, Hands-On Generative AI with Transformers and Diffusion Models ch. 9; everscout ai-video beat)
+- files: SKILL.md (Step 3 cheat-sheet)
+- A cheat-sheet row: listen for a known tune before releasing any cue, not only after a reference or cover, since scarce-data music models can reproduce training tracks. Unverified.
+
 ### C-20261101-1 · 2026-11-01 · Temperature ladder, melody-copy check, control map
 - because: user request (book learnings from Foster, Generative Deep Learning 2e, ch. 11)
 - files: SKILL.md (Step 3 cheat-sheet), references/acestep.md (Control map)
