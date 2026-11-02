@@ -1749,22 +1749,29 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
     base = {"host": host, "queue_before": q, "jobs": jobs, "params": recipe_used, **notes}
     if a.no_wait:
         return {"ok": True, "queued": True, **base,
-                "next": f"watch {host}/queue; finished audio is listed at {host}/history/<prompt_id> and saved in ComfyUI's output/musicwright folder. Queued takes are not downloaded, measured or logged; run gen without --no-wait for that."}
+                "next": f"mw.py gen --collect {outdir.resolve()} downloads, measures and logs the takes that have finished; run it again for the rest"}
     t0 = time.time()
     done = wait_comfy(host, [j["prompt_id"] for j in jobs], a.timeout)
     takes = []
     for j in jobs:
-        for f in comfy_outputs(done[j["prompt_id"]]):
-            qs = urllib.parse.urlencode({"filename": f["filename"], "subfolder": f.get("subfolder", ""), "type": f.get("type", "output")})
-            data = http_get_bytes(f"{host}/view?{qs}")
-            dst = outdir / f"{slug(a.name)}_s{j['seed']}{Path(f['filename']).suffix}"
-            n = 2
-            while dst.exists():
-                dst = outdir / f"{slug(a.name)}_s{j['seed']}_{n}{Path(f['filename']).suffix}"
-                n += 1
-            dst.write_bytes(data)
-            takes.append({"seed": j["seed"], "file": dst, "prompt_id": j["prompt_id"]})
+        takes += fetch_comfy_takes(host, done[j["prompt_id"]], outdir, a.name, j["seed"], j["prompt_id"])
     return {"ok": True, **base, "elapsed_s": round(time.time() - t0), "takes": takes}
+
+
+def fetch_comfy_takes(host, entry, outdir, name, seed, prompt_id):
+    """Download a finished job's audio as <name>_s<seed>.ext, never overwriting a take."""
+    takes = []
+    for f in comfy_outputs(entry):
+        qs = urllib.parse.urlencode({"filename": f["filename"], "subfolder": f.get("subfolder", ""), "type": f.get("type", "output")})
+        data = http_get_bytes(f"{host}/view?{qs}")
+        dst = outdir / f"{slug(name)}_s{seed}{Path(f['filename']).suffix}"
+        n = 2
+        while dst.exists():
+            dst = outdir / f"{slug(name)}_s{seed}_{n}{Path(f['filename']).suffix}"
+            n += 1
+        dst.write_bytes(data)
+        takes.append({"seed": seed, "file": dst, "prompt_id": prompt_id})
+    return takes
 
 
 def gen_rest(a, r, seeds, caption, lyrics, outdir):
@@ -1888,12 +1895,62 @@ def check_task(a, r):
         a.duration = probe(a.src)["duration_s"]
 
 
+def take_row(f, t, meta):
+    """Measure a downloaded take and build its ledger row from the gen settings in meta."""
+    m = measure_file(f)
+    t["file"] = str(f.resolve())
+    t["measure"] = {k: m[k] for k in ("duration_s", "lufs_i", "true_peak_dbtp", "tail_silence_s", "warnings")}
+    return {"type": "take", "date": now(), "take": f.stem, "file": t["file"], **meta, "seed": t["seed"],
+            **({"prompt_id": t["prompt_id"]} if t.get("prompt_id") else {}), "measure": t["measure"]}
+
+
+def collect_queued(a):
+    """Fetch the takes of earlier --no-wait jobs logged as queued rows in the ledger."""
+    led = find_ledger(a.collect)
+    if not led:
+        raise MwError(f"no ledger.jsonl at or above {a.collect}")
+    rows = read_jsonl(led)
+    closed = {x.get("prompt_id") for x in rows if x.get("type") in ("take", "queue_error")}
+    queued = [x for x in rows if x.get("type") == "queued" and x["prompt_id"] not in closed]
+    takes, pending, failed = [], [], []
+    for q in queued:
+        host, pid = q["host"], q["prompt_id"]
+        try:
+            h = http(f"{host}/history/{pid}", timeout=15)
+        except (urllib.error.URLError, OSError, ValueError) as e:
+            pending.append({"prompt_id": pid, "seed": q["seed"], "why": f"{host} unreachable ({type(e).__name__})"})
+            continue
+        st = (h.get(pid) or {}).get("status", {})
+        if st.get("status_str") == "error":
+            msgs = [m for m in st.get("messages", []) if m and m[0] == "execution_error"]
+            append_jsonl(led, {"type": "queue_error", "date": now(), "prompt_id": pid, "seed": q["seed"], "error": json.dumps(msgs)[:600]})
+            failed.append({"prompt_id": pid, "seed": q["seed"], "error": json.dumps(msgs)[:300]})
+            continue
+        if not st.get("completed"):
+            pending.append({"prompt_id": pid, "seed": q["seed"]})
+            continue
+        outdir = Path(q["out"])
+        outdir.mkdir(parents=True, exist_ok=True)
+        meta = {k: q.get(k) for k in ("route", "recipe", "model", "caption", "lyrics", "duration_s", "bpm", "key", "params", "host")}
+        for t in fetch_comfy_takes(host, h[pid], outdir, q["name"], q["seed"], pid):
+            append_jsonl(led, take_row(Path(t["file"]), t, meta))
+            takes.append(t)
+    res = {"ok": True, "ledger": str(led.resolve()), "takes": takes, "pending": pending, "failed": failed}
+    res["next"] = ("run mw.py gen --collect again later for the pending jobs" if pending else
+                   "mw.py sheet <takes> --out sheets/<name>.png, look at it, then ask the listener and record mw.py verdict")
+    return res
+
+
 def cmd_gen(a):
+    if a.collect:
+        return collect_queued(a)
     rs = recipes()
     if a.recipe not in rs:
         raise MwError(f"unknown recipe {a.recipe}; choose from {', '.join(sorted(rs))}")
     r = rs[a.recipe]
     check_task(a, r)
+    if a.no_wait and r["route"] != "comfy":
+        raise MwError("--no-wait is for ComfyUI recipes; the REST route waits for each take")
     if a.duration is None:
         a.duration = 120.0
     caption = a.caption
@@ -1915,19 +1972,20 @@ def cmd_gen(a):
         outdir.mkdir(parents=True, exist_ok=True)
     fn = gen_comfy if r["route"] == "comfy" else gen_rest
     res = fn(a, r, seeds, caption, lyrics, outdir)
-    if res.get("dry_run") or res.get("queued"):
+    if res.get("dry_run"):
         return res
     led = find_ledger(outdir) or (outdir / "ledger.jsonl")
+    meta = {"route": r["route"], "recipe": a.recipe, "model": r.get("model"), "caption": caption, "lyrics": lyrics,
+            "duration_s": a.duration, "bpm": a.bpm, "key": a.key, "params": res.get("params"), "host": res.get("host"),
+            **({"task": a.task, "src": str(Path(a.src).resolve()), "track": a.track} if a.task else {})}
+    if res.get("queued"):
+        for j in res["jobs"]:
+            append_jsonl(led, {"type": "queued", "date": now(), "prompt_id": j["prompt_id"], "seed": j["seed"],
+                               "name": a.name, "out": str(outdir.resolve()), **meta})
+        res["ledger"] = str(led.resolve())
+        return res
     for t in res["takes"]:
-        f = Path(t["file"])
-        m = measure_file(f)
-        t["file"] = str(f.resolve())
-        t["measure"] = {k: m[k] for k in ("duration_s", "lufs_i", "true_peak_dbtp", "tail_silence_s", "warnings")}
-        append_jsonl(led, {"type": "take", "date": now(), "take": f.stem, "file": t["file"], "route": r["route"],
-                           "recipe": a.recipe, "model": r.get("model"), "seed": t["seed"], "caption": caption,
-                           "lyrics": lyrics, "duration_s": a.duration, "bpm": a.bpm, "key": a.key,
-                           "params": res.get("params"), "host": res.get("host"), "measure": t["measure"],
-                           **({"task": a.task, "src": str(Path(a.src).resolve()), "track": a.track} if a.task else {})})
+        append_jsonl(led, take_row(Path(t["file"]), t, meta))
     res["ledger"] = str(led.resolve())
     res["next"] = "mw.py sheet <takes> --out sheets/<name>.png, look at it, then ask the listener and record mw.py verdict"
     return res
@@ -2041,7 +2099,8 @@ def build_parser():
     s.add_argument("--strength", type=float, help="cover: how closely to follow the source, 0-1")
     s.add_argument("--model", help="REST route: DiT the server should use, e.g. acestep-v15-base")
     s.add_argument("--timeout", type=int, default=3600)
-    s.add_argument("--no-wait", action="store_true")
+    s.add_argument("--no-wait", action="store_true", help="ComfyUI: queue the jobs, log them as queued and return")
+    s.add_argument("--collect", metavar="DIR", help="fetch, measure and log the finished --no-wait jobs in DIR's ledger")
     s.add_argument("--dry-run", action="store_true", help="print the graph or payload, submit nothing")
     s.set_defaults(fn=cmd_gen)
 

@@ -67,7 +67,7 @@
     "duration_pad": 1.2,
     "max_seconds": 340.0
    },
-   "timing": "3-7 min per take typical; takes came back shorter than asked (98-170 s for 180-195 s); one 240 s beatless request hung over an hour. Use --timeout and render longer than needed.",
+   "timing": "3-7 min per take typical; takes came back shorter than asked (98-170 s for 180-195 s); one 240 s beatless request hung over an hour. Use --timeout and render longer than needed; 2026-11-02 on the 16 GB RTX 5060 Ti: 60 s asked -> 43 s in 105 s, 90 s asked -> 63 s in 140 s (about 0.7 of the request), peak 15.3 GB VRAM. Ask for about 1.4x the length you need.",
    "source": "ComfyUI audio_minimax_music_3 template; album attempt 2026-08 (quality never judged by a listener)"
   },
   "acestep-rest": {

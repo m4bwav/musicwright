@@ -97,3 +97,7 @@ Append-only. Newest last.
 
 ## [2026-11-02] eval | action-4 baselines on stand-in audio
 - Harness: EVAL_AUDIO copies bare audio names in a prompt from a stand-in folder (vault eval-harness/audio: reference.flac from spacey_album 01, lead/part.flac from flute takes s52203/s41017). T-20261102-4: compose action-4 and produce action-4 baseline 0/3 each, with the plugin 3/3 each. Owed item 1 (baselines) is closed.
+
+## [2026-11-02] build | gen --collect, and MiniMax Music 3 on real hardware
+- `gen --no-wait` writes a `queued` ledger row per ComfyUI job; `gen --collect DIR` downloads, measures and logs finished ones, lists pending, logs failures once; REST --no-wait now errors. 105 tests. Checked live: queued a 90 s take, collect said pending, then logged it.
+- MiniMax Music 3 via mw.py gen (PC ComfyUI 8199): 60 s -> 43 s in 105 s; 90 s -> 63 s in 140 s; peak 15.3 GB VRAM. Recipe timing note updated. Takes in Ai/Music/hw-checks await a listener.
