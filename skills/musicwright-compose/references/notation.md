@@ -28,7 +28,7 @@ Sound:
   2.6.1 is LGPL-2.1, a 2.7 MB zip on Windows (Scoop `extras/fluidsynth`; Chocolatey lags behind),
   `brew install fluid-synth`, or the Linux package. GeneralUser GS (32 MB) allows use in your own
   music, private or commercial; MuseScore_General is MIT. Point mw.py at them with
-  `MUSICWRIGHT_FLUIDSYNTH` and `--sf2`, `MUSICWRIGHT_SOUNDFONT`, or `"soundfont"` in the studio
+  `MUSICWRIGHT_FLUIDSYNTH` or `"fluidsynth"`, and `--sf2`, `MUSICWRIGHT_SOUNDFONT` or `"soundfont"`, in the studio
   `config.json`. Renders come out quiet (about -20 to -26 LUFS); master them afterwards.
 - **Built-in synth** otherwise: plucked strings for guitars, basses and harps, a soft wind
   tone, bells and an organ. It is a sketch, good enough to check notes and to use as a source.

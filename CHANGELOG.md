@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## Unreleased
+
+- `fluidsynth` key in the studio config.json, read after `MUSICWRIGHT_FLUIDSYNTH` (as `soundfont` already was), with a test.
+
 ## 0.1.5 (2026-11-01)
 
 - Compose: a "Rhythm and groove" section in theory.md (DeSantis, *Making Music*: unequal loop lengths, the 3+3+2 backbone, groove offsets and ghost notes, silence or a bed between notes, breadth before depth), the strategies the 2026-10-22 book pass had left out.
