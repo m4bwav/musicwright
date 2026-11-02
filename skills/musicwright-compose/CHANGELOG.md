@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261101-2 · 2026-11-01 · Theory: rhythm and groove from DeSantis
+- because: user request (book run for the everscout downtempo beat found five *Making Music* strategies not applied on 2026-10-22: ch. 30, 37, 39-40, 42, 47)
+- files: references/theory.md (new "Rhythm and groove")
+- Unequal loop lengths, the 3+3+2 backbone, groove offsets and ghost notes, silence or a bed between notes, breadth before depth.
+
 ### C-20261101-1 · 2026-11-01 · Key-fit hint and the notation header rule
 - because: user request (book learnings from Foster, Generative Deep Learning 2e, ch. 11)
 - files: SKILL.md (Step 3), references/symbolic.md (Formats and libraries)

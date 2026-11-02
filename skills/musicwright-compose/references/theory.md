@@ -59,6 +59,24 @@ report double or half the felt tempo.
 4/4 default and most reliable. 3/4 waltz, lullaby; 6/8 lilting, jig, shanty, gallop; 12/8 shuffle;
 5/4 and 7/8 restless or alien (models drift back to 4/4: say "in 7" as well as the field).
 
+## Rhythm and groove
+
+After DeSantis, *Making Music* ch. 30, 37, 39-40, 42 and 47.
+
+- Unequal loop lengths make a static part move: patterns of 4 and 5 sixteenths line up again
+  only every 20, and adding one of 3 makes it 60. An LFO or automation of yet another length adds
+  drift. For notes you write, give one part an odd-length cycle against the bar.
+- 3+3+2 (the tresillo) is a shared backbone of Latin, funk, hip-hop, house and bass music. Add or
+  drop hits, or stretch the threes before the closing two, to play stability against instability.
+  In captions: "syncopated 3-3-2 kick", "tresillo bass".
+- Groove is small offsets and accents against parts that stay on the grid: quantise only some
+  pieces, accent the first and third sixteenths, push hats late for weight or early for urgency,
+  and use ghost notes that lead into the downbeat. An offset is heard only against a part that holds still.
+- Choose what fills the space between notes: true silence (dry, short, surgical sounds) or a steady
+  bed of noise and ambience (dub techno, downtempo). Say which in the caption, since models default to a wash.
+- Breadth before depth: sketch many rough parts or takes while ideas come, judging whether the notes
+  are right, and polish later. For renders, fish several short seeds before refining any one.
+
 ## Form
 
 Verse-chorus: Intro, V1, (Pre), Chorus, V2, (Pre), Chorus, Bridge, Chorus, Outro, sections of 8
