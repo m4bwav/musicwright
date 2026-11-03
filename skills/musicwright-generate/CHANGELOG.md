@@ -2,10 +2,15 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+Entry shape: `### C-20261102-1 · 2026-11-02 · pulse --threshold adaptive for building leads
+- because: user request (book distill: Lerch, Audio Content Analysis)
+- files: SKILL.md Step 5
+
+Step 5 tells a quiet-then-building lead to use `pulse --threshold adaptive`; the global threshold misses its quiet hits (Lerch, *An Introduction to Audio Content Analysis* 2nd ed., sec. 9.3.2).
+
+### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261023-3 · 2026-10-23 · Density section tags marked as not shown to help; TUNING-GAP over 30 cents
-- 0.1.6 (2026-11-02): Step 5 points a quiet-then-building lead at `pulse --threshold adaptive` (Lerch, Audio Content Analysis sec. 9.3.2).
 - because: L-002, decisions 2026-10-23-listening-checks
 - files: SKILL.md (Step 2, sections carry density), references/acestep-rest.md (Working from existing audio)
 - In one blind pair the density tags did no better than mood words and neither take reached the tutti asked for; the bullet now says so. The lego tuning check fires over 30 cents.
