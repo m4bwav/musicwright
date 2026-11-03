@@ -14,5 +14,6 @@ The first research pass for musicwright, 2026-10-17: three notes written by rese
 - [02-agent-tools-and-workflows.md](02-agent-tools-and-workflows.md): read before recommending or building on another skill, plugin or MCP server; DAW bridges, code-music tools, vendor skills, what works and what does not, patterns musicwright borrows (R-101 to R-149).
 - [03-music-fundamentals.md](03-music-fundamentals.md): read before changing theory, vocabulary, loudness targets, loop method, Unity settings, scoring rules or QC checks; tested ffmpeg recipes (R-201 to R-233).
 - [04-learned-quality-score.md](04-learned-quality-score.md): read before adding a learned quality score to take ranking; Audiobox Aesthetics on nine judged takes (2026-11-02).
+- [05-sources-to-mine.md](05-sources-to-mine.md): the owner's list of forums, sites, books, blogs and docs to mine, in order, with access limits and a done list (2026-11-02).
 
 Related: [../INDEX.md](../INDEX.md)

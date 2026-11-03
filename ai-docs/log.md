@@ -116,3 +116,6 @@ Append-only. Newest last.
 ## [2026-11-02] hardware | cover through stock ComfyUI nodes (Mark: move ComfyUI-native source tasks ahead of the loudness curve)
 - Graph: the mw.py XL text2music graph with EmptyAceStep1.5LatentAudio swapped for LoadAudio -> VAEEncodeAudio, generate_audio_codes off, KSampler denoise < 1 (Ai/Music/hw-checks/native_cover.py). 30 s source rest_t2m_s3501: denoise 0.5 and 0.7 each ~2 min (REST server also resident). Log-spectrogram correlation to the source: 0.48 (d0.5), 0.42 (d0.7), REST cover 0.62. Unheard.
 - No stock node masks a 1D audio latent by time (SetLatentNoiseMask takes an image mask), so repaint needs a small custom node (time-range mask over the ACE-Step 1.5 latent); extract needs the ACE-Step task instruction, which no stock node passes. Plan in HANDOFF item 7.
+
+## [2026-11-02] plan | sources to mine
+- Mark's list of 50 forums, tutorial sites, books, blogs and docs filed as research 05 with an order and access limits (Reddit RSS only, Discord unreadable); HANDOFF item 8, after item 7 (ComfyUI-native source tasks).
