@@ -204,3 +204,6 @@ Append-only. Newest last.
 
 ## [2026-11-03] build | loudness-curve fit (Owed item 4)
 - `mw.py curve FILES --shape 0:-30,20:-18,50%:-14,end:-24 [--absolute]`: per-second short-term loudness (ebur128 frame log, needs `-v verbose` on ffmpeg 9) against the interpolated shape, skipping the first 3 s and silence; rms error after the level offset, correlation, worst second, mean error per span; takes ranked. Synthetic test: a rising tone 2.1 LU, a flat one 6.7. On four hw-checks takes with a rise-and-fall shape: 3.8 to 7.3 LU, none follows it. PR #64 merged. Next: item 8 group 7.
+
+## [2026-11-03] build | extract retry on a clear mix (Owed item 7)
+- Source vocalsrc_s4001 (acestep-xl-sft, punk rock, loud drums, shouted male vocal, 30 s). `mw.py gen --recipe acestep-xl-base --task extract --track drums|vocals --seeds 4002`. Takes correlate 0.02 with each other and 0.25/0.17 with the source; band shares: drums sub -6.8, mid -13.9 dB; vocals sub -33.8, presence -8.5 dB. Isolation shown by numbers; unheard, listening owed. Item 8 closed (six groups, all mined).
