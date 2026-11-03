@@ -128,3 +128,7 @@ Append-only. Newest last.
 ## [2026-11-02] build | gen --task cover and repaint through ComfyUI (Owed item 7)
 - check_task lets cover and repaint through on acestep15-graph recipes; gen_comfy uploads --src via /upload/image (input/musicwright) and rewrites the graph (source_graph): cover = VAEEncodeAudio latent, denoise 1 - strength (default 0.4); repaint = AudioLatentRepaintMask window (no --end: to the source end), checked via /object_info first. Node moved to skills/musicwright/comfy_nodes so it installs with the plugin. 107 tests.
 - Real run on the PC: 10-20 s repaint of rest_t2m_s3501 in 35 s; seg_corr outside the window 0.99-1.00, inside waveform ~0, spectral 0.69-0.83. Take mwgen_repaint_s3601 in Ai/Music/hw-checks, unheard.
+
+## [2026-11-02] research | sources pass 1 (Owed item 8): torchaudio, Demucs, librosa
+- PC ComfyUI busy (another session's Flux job, 13.5 GB, 97%), so item 7's cover runs (strength 0.7, audio codes) waited; did item 8 instead.
+- Demucs 4.1.0 on PyPI no longer uses torchaudio; bare `uvx demucs` fails on missing numpy, `uvx --with numpy demucs` works (10 s clip, 3 s CPU). stems.md and generate models.md fixed; R-20261102-1 in produce RESEARCH.md. librosa still 0.11.0. Research 05 Done list started.

@@ -50,6 +50,13 @@ Best sources: standards bodies, platform help pages, ffmpeg docs; practitioner b
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261102-1 · 2026-11-02 · Demucs, torchaudio and librosa today (sources pass 1)
+- Summary: torchaudio is in maintenance since 2.9: load and save are TorchCodec wrappers. Demucs 4.1.0 on PyPI no longer imports torchaudio, so that change does not touch it, but the package leaves out numpy: a bare `uvx demucs` fails, `uvx --with numpy demucs` separates a 10 s clip in 3 s on CPU (torch 2.15, Python 3.14). librosa is still 0.11.0 (March 2025), nothing that touches mw.py. stems.md commands fixed.
+- Track: tooling
+- Sources: https://docs.pytorch.org/audio/stable/torchaudio.html, https://pypi.org/project/demucs-torchcodec, https://pypi.org/project/demucs-infer/, https://librosa.org/doc/latest/changelog.html, local run 2026-11-02
+- Magnitude: 0.1 (one broken command)
+- Applied: stems.md, generate models.md
+
 ### R-20261023-1 · 2026-10-23 · Mixing With Impact: matched loudness, relative balance, mono lows, dynamics survive normalisation
 - Summary: Oltheten, *Mixing With Impact* (Routledge, 2018), read for the plugin: compare only at matched loudness (5.3); balance is relative and analysers hide timing (3.3, 4.4); masking rules (4.2); a low-mid excess and over-bright sources as the usual faults (4.4, 11.2); lows centred, correlation as the translation check (11.4); normalisation rewards dynamics and the loudness range should suit the destination (14.5); a hand-off to mastering with peaks well below 0 and no limiter (14.3). Turned into `mw.py mixcheck`, `compare`, `preview`, `monobass`, `master --peak` and the presets' `lra_hint`, with thresholds set on 78 real renders.
 - Track: practice
