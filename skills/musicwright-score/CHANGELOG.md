@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261103-1 · 2026-11-03 · Rank takes against a loudness shape
+- because: RESEARCH.md open question (loudness-curve fit); HANDOFF Owed item 4
+- files: SKILL.md (Step 3, Loudness shape), RESEARCH.md (Open questions)
+- Step 3 names `mw.py curve`, which ranks takes by how closely their short-term loudness follows a time:LUFS shape after removing the level offset.
+
 ### C-20261023-2 · 2026-10-23 · A temp track's sections from analyze
 - because: decisions 2026-10-23-books-track11
 - files: references/spotting.md (Temp tracks)

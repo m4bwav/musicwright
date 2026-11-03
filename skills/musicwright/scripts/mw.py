@@ -1032,6 +1032,75 @@ def cmd_pulse(a):
                        "a track that builds from a quiet intro: rerun with --threshold adaptive, the global one misses the quiet hits. grid_deviation near grid_chance means the onsets ignore the grid; ioi_cv above about 0.8 is rubato or phrase-led; onset_rise_db under 1 means no hits at all"}
 
 
+def parse_shape(spec, dur):
+    """'0:-30,50%:-14,end:-24' -> sorted [(seconds, LUFS)]; times in seconds, percent of the take, or 'end'."""
+    pts = []
+    for part in spec.split(","):
+        t, _, v = part.strip().rpartition(":")
+        if not t:
+            raise MwError(f"--shape point {part!r} needs time:lufs")
+        t = t.strip().lower()
+        s = dur if t == "end" else dur * float(t[:-1]) / 100 if t.endswith("%") else float(t)
+        pts.append((min(max(s, 0.0), dur), float(v)))
+    if len(pts) < 2:
+        raise MwError("--shape needs at least two points")
+    return sorted(pts)
+
+
+def shape_at(pts, t):
+    if t <= pts[0][0]:
+        return pts[0][1]
+    for (t0, v0), (t1, v1) in zip(pts, pts[1:]):
+        if t <= t1:
+            return v0 if t1 == t0 else v0 + (v1 - v0) * (t - t0) / (t1 - t0)
+    return pts[-1][1]
+
+
+def short_term_series(path):
+    """Short-term loudness (3 s window) once a second, from ebur128's frame log."""
+    err = ffmpeg(["-nostdin", "-v", "verbose", "-i", str(path), "-af", "ebur128=framelog=verbose", "-f", "null", "-"]).stderr
+    st = [float(m.group(1)) for m in re.finditer(r"\bt:\s*[\d.]+\s+TARGET.*?\bS:\s*(-?[\d.]+|-inf)", err)]
+    return [v if math.isfinite(v) else -120.0 for v in st[9::10]]  # one row per 100 ms; keep the one ending each second
+
+
+def cmd_curve(a):
+    rows = []
+    for f in a.files:
+        path = need_file(f)
+        dur = probe(path)["duration_s"]
+        pts = parse_shape(a.shape, dur)
+        sec = [(i + 1, v) for i, v in enumerate(short_term_series(path)) if i + 1 >= 3 and v > -70]  # full window from 3 s; skip silence
+        if len(sec) < 3:
+            raise MwError(f"{path}: under 3 s of measurable short-term loudness")
+        tgt = [shape_at(pts, t) for t, _ in sec]
+        diff = [v - g for (_, v), g in zip(sec, tgt)]
+        off = 0.0 if a.absolute else sum(diff) / len(diff)  # mastering sets the level, so fit the shape
+        err = [d - off for d in diff]
+        rms = math.sqrt(sum(e * e for e in err) / len(err))
+        xs = [v for _, v in sec]
+        mx, my = sum(xs) / len(xs), sum(tgt) / len(tgt)
+        sxy = sum((x - mx) * (y - my) for x, y in zip(xs, tgt))
+        sxx, syy = sum((x - mx) ** 2 for x in xs), sum((y - my) ** 2 for y in tgt)
+        spans = []
+        for (t0, v0), (t1, v1) in zip(pts, pts[1:]):
+            e = [err[i] for i, (t, _) in enumerate(sec) if t0 <= t <= t1]
+            if e:
+                spans.append({"from_s": round(t0, 1), "to_s": round(t1, 1), "target_lufs": [v0, v1],
+                              "mean_error_lu": round(sum(e) / len(e), 1)})
+        worst = max(range(len(err)), key=lambda i: abs(err[i]))
+        rows.append({"file": str(path), "duration_s": dur, "offset_lu": round(off, 1), "rms_error_lu": round(rms, 2),
+                     "correlation": round(sxy / math.sqrt(sxx * syy), 2) if sxx > 0 and syy > 0 else None,
+                     "worst_s": sec[worst][0], "worst_error_lu": round(err[worst], 1), "spans": spans})
+    rows.sort(key=lambda x: x["rms_error_lu"])
+    for i, x in enumerate(rows, 1):
+        x["rank"] = i
+    return {"ok": True, "shape": a.shape, "absolute": a.absolute, "takes": rows,
+            "reading": "rank 1 follows the shape best. rms_error_lu is the miss after removing the level offset (--absolute keeps it): "
+                       "under about 2 LU follows the curve, over 4 does not. mean_error_lu per span says where: plus is too loud there, "
+                       "minus too quiet. correlation near 1 means it rises and falls with the target even when the depth differs. "
+                       "Short-term loudness lags up to 3 s, so a hit in the shape reads late; the first 3 s are skipped"}
+
+
 def power_mean_db(env, idx):
     if not idx:
         return None
@@ -2321,6 +2390,12 @@ def build_parser():
     s.add_argument("--threshold", choices=["global", "adaptive"], default="global",
                    help="adaptive: a moving-median onset threshold, for tracks whose level changes (a quiet intro, a build)")
     s.set_defaults(fn=cmd_pulse)
+
+    s = sub.add_parser("curve", help="rank takes against a target loudness shape (film cues)")
+    s.add_argument("files", nargs="+")
+    s.add_argument("--shape", required=True, help="time:lufs points, e.g. 0:-30,20:-18,50%%:-14,end:-24 (seconds, percent of the take, or end)")
+    s.add_argument("--absolute", action="store_true", help="score the level too, not just the shape")
+    s.set_defaults(fn=cmd_curve)
 
     s = sub.add_parser("answer", help="does a part answer the lead? its level in the lead's rests vs under its notes")
     s.add_argument("part")

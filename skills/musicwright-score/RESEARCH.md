@@ -14,7 +14,7 @@ Topic: Scoring to picture: spotting, hit maths, movements, ducking, temp tracks.
 
 ## Open questions
 
-- A loudness-curve fit (rank takes against a target shape per section) worth adding to mw.py.
+- Answered 2026-11-03: the loudness-curve fit is `mw.py curve` (C-20261103-1). Not yet judged on real cues: whether 2 LU and 4 LU are the right lines.
 - Video-to-music models (Sonilo partner node, Foley-Omni) for first drafts.
 
 ## Search plan
