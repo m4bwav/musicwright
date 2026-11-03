@@ -59,6 +59,7 @@ import notation  # noqa: E402  (same folder; stdlib only)
 VERSION = "0.1.5"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
+NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
 DEFAULT_COMFY = "http://127.0.0.1:8188,http://127.0.0.1:8000"
 DEFAULT_REST = "http://127.0.0.1:8001"
 AUDIO_EXT = {".wav", ".flac", ".mp3", ".ogg", ".opus", ".m4a", ".aac", ".aif", ".aiff"}
@@ -1658,6 +1659,40 @@ def graph_minimax3(r, caption, lyrics, seed, duration, bpm, key, prefix, overrid
 
 
 GRAPHS = {"acestep15": graph_acestep, "minimax3": graph_minimax3}
+COMFY_TASKS = ("cover", "repaint")
+
+
+def source_graph(g, task, audio, a):
+    """Turn an ACE-Step text2music graph into cover or repaint of an uploaded source (log 2026-11-02).
+
+    Cover: the source latent replaces the empty one and KSampler runs at denoise 1 - strength.
+    Repaint: AudioLatentRepaintMask (comfy_nodes/) marks the window; KSampler keeps the rest.
+    """
+    g["5"]["inputs"]["generate_audio_codes"] = False
+    g["11"] = {"class_type": "LoadAudio", "inputs": {"audio": audio}}
+    if task == "cover":
+        g["7"] = {"class_type": "VAEEncodeAudio", "inputs": {"audio": ["11", 0], "vae": ["3", 0]}}
+        g["8"]["inputs"]["denoise"] = round(1.0 - (0.4 if a.strength is None else a.strength), 3)
+    else:
+        g["12"] = {"class_type": "VAEEncodeAudio", "inputs": {"audio": ["11", 0], "vae": ["3", 0]}}
+        end = a.duration if a.end is None or a.end < 0 else a.end
+        g["7"] = {"class_type": "AudioLatentRepaintMask", "inputs": {
+            "samples": ["12", 0], "start_s": float(a.start or 0.0), "end_s": float(end), "fade_s": 0.0, "frames_per_s": 25.0}}
+    return g
+
+
+def upload_source(host, src):
+    """Put the source in ComfyUI's input/musicwright folder; returns the LoadAudio name."""
+    r = http_multipart(host + "/upload/image", {"subfolder": "musicwright", "type": "input", "overwrite": "true"}, {"image": src})
+    return f"{r['subfolder']}/{r['name']}" if r.get("subfolder") else r["name"]
+
+
+def need_repaint_node(host):
+    try:
+        http(host + "/object_info/AudioLatentRepaintMask", timeout=10)["AudioLatentRepaintMask"]
+    except (urllib.error.URLError, OSError, ValueError, KeyError):
+        raise MwError(f"{host} has no AudioLatentRepaintMask node; copy {NODES} into ComfyUI's custom_nodes folder "
+                      "and restart ComfyUI, or use --recipe acestep-rest")
 
 
 def pick_comfy(hosts, needed_model):
@@ -1721,10 +1756,19 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
             ov[k] = v
     if a.planner:
         ov["clip2"] = a.planner
-    jobs, recipe_used = [], None
+    jobs, recipe_used, audio = [], None, None
+    if a.task:
+        if a.dry_run:
+            audio = "musicwright/" + Path(a.src).name
+        else:
+            if a.task == "repaint":
+                need_repaint_node(host)
+            audio = upload_source(host, a.src)
     for s in seeds:
         prefix = f"musicwright/{slug(a.name)}_s{s}"
         g, recipe_used = GRAPHS[r["graph"]](r, caption, lyrics, s, a.duration, a.bpm, a.key, prefix, ov)
+        if a.task:
+            g = source_graph(g, a.task, audio, a)
         if a.dry_run:
             jobs.append({"seed": s, "graph": g})
             continue
@@ -1877,8 +1921,8 @@ def check_task(a, r):
         if a.src or a.track:
             raise MwError("--src and --track need --task (cover, repaint, lego, complete or extract)")
         return
-    if r["route"] != "rest":
-        raise MwError(f"--task {task} runs on the ACE-Step REST server; use --recipe acestep-rest (ComfyUI's native ACE-Step nodes have no source-audio tasks)")
+    if r["route"] != "rest" and not (r.get("graph") == "acestep15" and task in COMFY_TASKS):
+        raise MwError(f"--task {task} runs on the ACE-Step REST server; use --recipe acestep-rest (in ComfyUI only the ACE-Step recipes do cover and repaint)")
     if not a.src:
         raise MwError(f"--task {task} needs --src, the audio to work from")
     a.src = need_file(a.src)
@@ -2091,12 +2135,12 @@ def build_parser():
     s.add_argument("--shift", type=float)
     s.add_argument("--planner", help="ACE-Step planner LM file (clip_name2)")
     s.add_argument("--set", help="JSON object of recipe param overrides")
-    s.add_argument("--task", choices=REST_TASKS, help="REST route: work from --src (cover, repaint; lego, complete, extract need a base model)")
+    s.add_argument("--task", choices=REST_TASKS, help="work from --src: cover and repaint on REST or the ACE-Step ComfyUI recipes; lego, complete, extract on REST with a base model")
     s.add_argument("--src", help="source audio for --task (uploaded to the server)")
     s.add_argument("--track", help="lego/extract: the part, e.g. woodwinds or percussion; complete: comma list")
     s.add_argument("--start", type=float, help="repaint/lego window start, seconds")
     s.add_argument("--end", type=float, help="repaint/lego window end, seconds (-1 = end)")
-    s.add_argument("--strength", type=float, help="cover: how closely to follow the source, 0-1")
+    s.add_argument("--strength", type=float, help="cover: how closely to follow the source, 0-1 (ComfyUI: denoise = 1 - strength, default 0.4)")
     s.add_argument("--model", help="REST route: DiT the server should use, e.g. acestep-v15-base")
     s.add_argument("--timeout", type=int, default=3600)
     s.add_argument("--no-wait", action="store_true", help="ComfyUI: queue the jobs, log them as queued and return")
