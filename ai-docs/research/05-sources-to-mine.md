@@ -34,3 +34,4 @@ Already covered by earlier passes (research 01 to 03): Demucs, Essentia, Magenta
 - 2026-11-02: HF transformers audio docs, IT-JIM blog (no matching post found) (R-20261102-3). Next: group 2 from Torin Hopkins.
 - 2026-11-02: Torin Hopkins (a researcher, no resources page), MusicMakerApp (no guide found), Kingy AI (partly sponsored roundups) (R-20261102-4). Next: Artlist and Mubert guides, Artificial Analysis.
 - 2026-11-02: Artlist, Mubert, Artificial Analysis Music Arena (R-20261102-5; Mubert and Artlist rows and the arena ranking in hosted.md). Group 2 done; next: group 3 (forums: r/SunoAI via RSS first).
+- 2026-11-02: r/SunoAI and r/udiomusic top-of-month RSS (R-20261102-6 in the produce RESEARCH.md: afftdn row in mixing.md; Suno upload flagging in hosted.md). Next: r/ArtificialInteligence music threads, Hugging Face audio discussions, awesome-ai-music lists.

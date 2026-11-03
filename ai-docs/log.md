@@ -152,3 +152,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | sources pass 5 (Owed item 8)
 - Artlist (runs Lyria 3; prompt template), Mubert (API v3, vendor-claimed sub-licensing) and the Artificial Analysis Music Arena v1.1 (Suno v6 leads instrumental; ACE-Step and YuE unranked) added to generate references/hosted.md (R-20261102-5). Group 2 done. Next pass: group 3 forums.
+
+## [2026-11-02] research | sources pass 6 (Owed item 8)
+- r/SunoAI and r/udiomusic top-of-month RSS: Suno v6 hiss/"radio static" complaints led to an ffmpeg afftdn row in produce mixing.md (tested on a synthetic tone plus high-band noise); Suno flagging users' own and public-domain uploads noted in hosted.md (R-20261102-6). Next pass: r/ArtificialInteligence, HF audio discussions, awesome-ai-music lists.
