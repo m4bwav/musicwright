@@ -177,3 +177,6 @@ Append-only. Newest last.
 
 ## [2026-11-03] research | sources pass 13 (Owed item 8)
 - Farnell, *Designing Sound*: procedural SFX in Pure Data, out of scope. Nierhaus, *Algorithmic Composition*: Markov, grammars, GA, CA; not a gap while the agent writes notes, Markov-over-intervals variations a candidate only. Tables of contents only, no copies on disk (R-20261103-2). Next pass: Dean, then Zolzer.
+
+## [2026-11-03] research | sources pass 14 (Owed item 8)
+- Dean, *Oxford Handbook of Computer Music*: survey, IDyOM-style expectation a candidate only. Zölzer, *Digital Audio Signal Processing*: dither and resampling already covered. Listings only, no skill change (R-20261103-3). Next pass: Dodge, then Foster.
