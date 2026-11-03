@@ -50,6 +50,13 @@ Best sources: standards bodies, platform help pages, ffmpeg docs; practitioner b
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261102-6 · 2026-11-02 · r/SunoAI and r/udiomusic, top of the month (sources pass 6)
+- Summary: forum anecdotes, low confidence. Suno v6 users report a muffled or "radio static" high band and mix drift in long rock tracks; one popular thread hands ChatGPT a spectral-subtraction recipe (quietest 12% of frames as the noise profile, about 7 dB at most, bass below 350 Hz left alone). ffmpeg afftdn does the same locally: tested on a synthetic tone plus 5 kHz+ pink noise (band -55.9 to -60.9 dB, tone unchanged), row added to mixing.md. Uploads of own recordings and public-domain carols flagged as copyrighted by Suno: noted in hosted.md. Udio: walled garden, downloads blocked, nothing for the skills.
+- Track: practice
+- Sources: https://www.reddit.com/r/SunoAI/top/.rss?t=month, https://www.reddit.com/r/udiomusic/top/.rss?t=month (read 2026-11-02), local ffmpeg run
+- Magnitude: 0.1 (one new fix row)
+- Applied: produce references/mixing.md, generate references/hosted.md
+
 ### R-20261102-1 · 2026-11-02 · Demucs, torchaudio and librosa today (sources pass 1)
 - Summary: torchaudio is in maintenance since 2.9: load and save are TorchCodec wrappers. Demucs 4.1.0 on PyPI no longer imports torchaudio, so that change does not touch it, but the package leaves out numpy: a bare `uvx demucs` fails, `uvx --with numpy demucs` separates a 10 s clip in 3 s on CPU (torch 2.15, Python 3.14). librosa is still 0.11.0 (March 2025), nothing that touches mw.py. stems.md commands fixed.
 - Track: tooling

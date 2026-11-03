@@ -55,6 +55,7 @@ Oltheten, *Mixing With Impact* (2018) and DeSantis, *Making Music* (2015).
 | MONO-LOSS | the mix plays quieter and thinner on a phone or a mono speaker: check with `mw.py preview --as phone`; re-roll if it must work there |
 | OVER-LIMITED | master to the destination preset without more limiting; a louder master is turned down by streaming services and only sounds duller |
 | BELOW-RANGE on a solo brief | a drone or bass the instrument cannot play: re-roll the seed |
+| hiss or "radio static" in the highs (users report it on Suno v6 renders) | a light FFT denoise before mastering: `ffmpeg -i in.wav -af "afftdn=nr=7:nf=-50:tn=1" out.wav` (about 7 dB at most, noise floor tracked); on a sine plus 5 kHz+ pink noise it took the band from -55.9 to -60.9 dB and left the tone at -21.2/-21.3 dB; listen for swirly artefacts and back off `nr` if they appear |
 | a louder take keeps winning | rank on `mw.py preview` copies |
 
 Bass to mono: `mw.py monobass in.wav --out out.wav` splits at 160 Hz with a Linkwitz-Riley
