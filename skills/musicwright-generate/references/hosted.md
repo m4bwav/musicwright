@@ -11,10 +11,10 @@ linked pages before relying on them.
 | ElevenLabs Music v2.5 | API `music_v2_5`, official skill and MCP | USD 0.15 a minute | commercial on paid plans, but film, TV and studio games need Enterprise; stems, inpainting |
 | MiniMax Music (hosted) | API, official MCP | about USD 0.15 a song (secondary source) | API terms |
 | Mureka | web, prepaid API | about USD 0.045-0.05 a song (secondary) | paid plans royalty-free |
-| Suno v6 | web app only | Pro USD 8, Premier USD 24 a month | no public API: never automate it; downloads capped (Pro 20, Premier 60 a month); remixes non-commercial; Suno may fingerprint files (users reported in October 2026 that uploads of their own recordings and public-domain carols were flagged as copyrighted; do not count on uploading source audio); stream-ripping banned |
+| Suno v6 | web app only | Pro USD 8, Premier USD 24 a month | no public API: never automate it; downloads capped (Pro 20, Premier 60 a month); remixes non-commercial; Suno may fingerprint files (users reported in October 2026 that uploads of their own recordings and public-domain carols were flagged as copyrighted; do not count on uploading source audio); stream-ripping banned; Warner deal (2025-11) promises licensed models in 2026, UMG and Sony talks stalled (FT, 2026-04) |
 | Mubert | API v3 (Company_ID + License_Token), 150+ channels | API plans, not published | vendor says royalty-free with sub-licensing on API and Enterprise plans; loops and streams more than songs |
 | Artlist AI music | web AI Toolkit, runs Google Lyria 3 | Artlist subscription | commercial use per plan; prompt = genre + mood + instruments + tempo + structure + use case |
-| Udio | web app | | downloads disabled since 2025-10-29; licensed platform not launched as of 2026-09 |
+| Udio | web app | | downloads disabled since 2025-10-29; licensed platform not launched as of 2026-11 (deals: UMG 2025-10, Warner 2025-11, Merlin, Kobalt, NMPA 2026-06; Sony none) |
 
 Pages: https://ai.google.dev/gemini-api/docs/music-generation, https://ai.google.dev/gemini-api/docs/pricing,
 https://elevenlabs.io/pricing/api, https://elevenlabs.io/music, https://suno.com/pricing,

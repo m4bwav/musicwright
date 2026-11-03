@@ -164,3 +164,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | sources pass 9 (Owed item 8)
 - Meta AI: nothing since AudioCraft. Magenta RealTime 2 already in models.md (licence confirmed via HF API). No 2026 HF music blog post. LeVo 2 licence is a custom Tencent file that could not be fetched, so no row (R-20261102-9). Next pass: OpenAI research, Sound on Sound, Music Business Worldwide.
+
+## [2026-11-02] research | sources pass 10 (Owed item 8)
+- OpenAI: no released music model. Sound on Sound: nothing found. MBW: label deals with Udio (no platform launch yet) and Suno added to generate hosted.md (R-20261102-10). Next pass: Towards Data Science audio, Synthtopia, then books.
