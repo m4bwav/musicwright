@@ -434,6 +434,17 @@ class GenDryRun(unittest.TestCase):
         self.assertEqual((g["1"]["inputs"]["unet_name"], g["13"]["inputs"]["cfg"]), ("acestep_v1.5_xl_base_bf16.safetensors", 7.0))
         refs = [v for n in g.values() for v in n["inputs"].values() if isinstance(v, list) and len(v) == 2 and isinstance(v[0], str)]
         self.assertTrue(all(r[0] in g for r in refs), refs)  # every link points at a node in the graph
+        code, d = run("gen", "--task", "cover", "--hints", "--src", src, "--caption", "x", "--seeds", "1",
+                      "--out", TMP / "gen_out", "--dry-run")
+        self.assertEqual(code, 0, d)
+        g = d["jobs"][0]["graph"]
+        self.assertEqual((g["13"]["class_type"], g["5"]["inputs"]["task_type"], g["5"]["inputs"]["track_name"], g["15"]["inputs"]["denoise"]),
+                         ("MWAceStep15CoverGuider", "cover", "None", 1.0))
+        refs = [v for n in g.values() for v in n["inputs"].values() if isinstance(v, list) and len(v) == 2 and isinstance(v[0], str)]
+        self.assertTrue(all(r[0] in g for r in refs), refs)
+        for extra, msg in ((("--strength", "0.5"), "does not apply"), (("--recipe", "acestep-rest"), "--hints is for")):
+            code, d = run("gen", "--task", "cover", "--hints", "--src", src, "--caption", "x", "--out", TMP / "gen_err", "--dry-run", *extra)
+            self.assertIn(msg, d["error"])
 
     def test_dry_run_creates_no_folder(self):
         code, d = run("gen", "--caption", "x", "--seeds", "1", "--out", TMP / "gen_dry_only", "--dry-run")

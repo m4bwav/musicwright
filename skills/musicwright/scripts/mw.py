@@ -1703,21 +1703,29 @@ def source_graph(g, task, audio, a):
 
     Cover: the source latent replaces the empty one and KSampler runs at denoise 1 - strength.
     Repaint: AudioLatentRepaintMask (comfy_nodes/) marks the window; KSampler keeps the rest.
+    Cover with --hints: MWAceStep15CoverGuider feeds the source's semantic hints (is_covers=1), as the
+    REST server does with audio codes; denoise 1, so --strength does not apply.
     Extract: the vendored MW extract nodes (comfy_nodes/musicwright_nodes/acestep15, research 06)
     put the "Extract the TRACK track" instruction in the text encoder and the source in a guider.
     """
     g["5"]["inputs"]["generate_audio_codes"] = False
     g["11"] = {"class_type": "LoadAudio", "inputs": {"audio": audio}}
-    if task == "extract":
+    if task == "extract" or (task == "cover" and getattr(a, "hints", False)):
         t, k = g["5"]["inputs"], g["8"]["inputs"]
         g["12"] = {"class_type": "VAEEncodeAudio", "inputs": {"audio": ["11", 0], "vae": ["3", 0]}}
         g["5"] = {"class_type": "MWAceStep15TaskTextEncode", "inputs": {
-            "clip": t["clip"], "text": t["tags"], "task_type": "extract", "track_name": a.track, "lyrics": "",
+            "clip": t["clip"], "text": t["tags"], "task_type": task, "track_name": a.track or "None",
+            "lyrics": t.get("lyrics", "") if task == "cover" else "",
             "bpm": t["bpm"], "duration": t["duration"], "keyscale": t["keyscale"],
             "timesignature": t["timesignature"], "language": t["language"], "seed": t["seed"]}}
-        g["13"] = {"class_type": "MWAceStep15ExtractGuider", "inputs": {
-            "model": k["model"], "positive": ["5", 0], "negative": ["6", 0], "cfg": k["cfg"],
-            "source_latents": ["12", 0], "track_name": a.track}}
+        if task == "extract":
+            g["13"] = {"class_type": "MWAceStep15ExtractGuider", "inputs": {
+                "model": k["model"], "positive": ["5", 0], "negative": ["6", 0], "cfg": k["cfg"],
+                "source_latents": ["12", 0], "track_name": a.track}}
+        else:  # semantic-hint cover: the source's decoded 5 Hz codes steer, its latent is the start
+            g["13"] = {"class_type": "MWAceStep15CoverGuider", "inputs": {
+                "model": k["model"], "positive": ["5", 0], "negative": ["6", 0], "cfg": k["cfg"],
+                "source_latents": ["12", 0]}}
         g["14"] = {"class_type": "KSamplerSelect", "inputs": {"sampler_name": k["sampler_name"]}}
         g["15"] = {"class_type": "BasicScheduler", "inputs": {
             "model": k["model"], "scheduler": k["scheduler"], "steps": k["steps"], "denoise": 1.0}}
@@ -1820,6 +1828,8 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
                 need_repaint_node(host)
             elif a.task == "extract":
                 need_repaint_node(host, "MWAceStep15ExtractGuider")
+            elif a.task == "cover" and a.hints:
+                need_repaint_node(host, "MWAceStep15CoverGuider")
             audio = upload_source(host, a.src)
     for s in seeds:
         prefix = f"musicwright/{slug(a.name)}_s{s}"
@@ -1982,6 +1992,10 @@ def check_task(a, r):
         raise MwError(f"--task {task} runs on the ACE-Step REST server; use --recipe acestep-rest (in ComfyUI the ACE-Step recipes do cover and repaint, acestep-xl-base does extract)")
     if r["route"] != "rest" and task == "extract" and "extract" not in r.get("tasks", ()):
         raise MwError("--task extract in ComfyUI needs the base checkpoint: use --recipe acestep-xl-base (or acestep-rest)")
+    if getattr(a, "hints", False) and (task != "cover" or r["route"] == "rest"):
+        raise MwError("--hints is for --task cover on an ACE-Step ComfyUI recipe (REST cover already uses the source's audio codes)")
+    if getattr(a, "hints", False) and a.strength is not None:
+        raise MwError("--hints runs at denoise 1, so --strength does not apply")
     if not a.src:
         raise MwError(f"--task {task} needs --src, the audio to work from")
     a.src = need_file(a.src)
@@ -2199,6 +2213,7 @@ def build_parser():
     s.add_argument("--track", help="lego/extract: the part, e.g. woodwinds or percussion; complete: comma list")
     s.add_argument("--start", type=float, help="repaint/lego window start, seconds")
     s.add_argument("--end", type=float, help="repaint/lego window end, seconds (-1 = end)")
+    s.add_argument("--hints", action="store_true", help="cover in ComfyUI: follow the source's semantic hints (its audio codes) through MWAceStep15CoverGuider instead of a partial denoise")
     s.add_argument("--strength", type=float, help="cover: how closely to follow the source, 0-1 (ComfyUI: denoise = 1 - strength, default 0.4)")
     s.add_argument("--model", help="REST route: DiT the server should use, e.g. acestep-v15-base")
     s.add_argument("--timeout", type=int, default=3600)
