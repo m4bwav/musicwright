@@ -146,3 +146,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | sources pass 3 (Owed item 8)
 - HF transformers text-to-audio docs: speech-first, needs torchcodec; no gap. IT-JIM ACE-Step/LeVo/YuE post not found. LeVo missing from models.md, noted only (R-20261102-3). Next pass: Torin Hopkins, MusicMakerApp, Kingy AI.
+
+## [2026-11-02] research | sources pass 4 (Owed item 8)
+- Torin Hopkins, MusicMakerApp, Kingy AI: nothing usable, no skill change (R-20261102-4). Fixed the HANDOFF title line split by an earlier insert. Next pass: Artlist and Mubert guides, Artificial Analysis audio benchmarks.
