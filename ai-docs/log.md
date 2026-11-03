@@ -173,3 +173,7 @@ Append-only. Newest last.
 
 ## [2026-11-03] research | sources pass 12 (Owed item 8)
 - Müller's book not on disk; FMP notebooks read instead. Structure, key and tempo already in mw.py; chord recognition, DTW alignment and HPSS noted as candidates, no skill change (R-20261103-1). The Music/notation-stage3/ask folder has no questions.json (nothing open). Next pass: Farnell, then Nierhaus.
+
+
+## [2026-11-03] research | sources pass 13 (Owed item 8)
+- Farnell, *Designing Sound*: procedural SFX in Pure Data, out of scope. Nierhaus, *Algorithmic Composition*: Markov, grammars, GA, CA; not a gap while the agent writes notes, Markov-over-intervals variations a candidate only. Tables of contents only, no copies on disk (R-20261103-2). Next pass: Dean, then Zolzer.

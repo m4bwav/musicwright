@@ -48,6 +48,13 @@ Best sources: theory texts and pedagogy sites, library docs, the MCP server repo
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261103-2 · 2026-11-03 · Farnell, Designing Sound; Nierhaus, Algorithmic Composition (sources pass 13)
+- Summary: no copy of either book on disk; read from library tables of contents. Farnell (MIT Press 2010; parts Theory, Tools, Technique, Practicals, all in Pure Data) is procedural sound effects, not music: out of scope here, at most a pointer for a future game SFX plugin. Nierhaus (Springer 2009) surveys Markov models, generative grammars, transition networks, chaos and self-similarity, genetic algorithms, cellular automata, neural networks and rule-based AI. The compose skill names none of these, but the agent writes notes directly and AI models make the audio, so a Markov or grammar generator is not a gap; a candidate only if a user wants endless seeded variations of a motif without a model (a small Markov over intervals in mw.py would do). No skill change.
+- Track: subject
+- Sources: https://vufind.daystar.ac.ke/Record/138154/TOC, https://ocw.mit.edu/courses/21m-380-music-and-technology-sound-design-spring-2016/pages/readings-and-assignments, https://find.library.upatras.gr/Record/978-3-211-75540-2/TOC?lng=en (read 2026-11-03)
+- Magnitude: 0 (candidates only)
+- Applied: none
+
 ### R-20261023-1 · 2026-10-23 · Making Music: melody, arrangement by subtraction, endings, the reference catalogue
 - Summary: DeSantis, *Making Music: 74 Creative Strategies for Electronic Music Producers* (Ableton, 2015), read for the plugin: describe a reference in five fields (ch. 5), an avoidance list of one's habits (6), foreground, middle and background (31), blurred section edges (32), loops of unequal length (37), kick and bass as one line (44), tuned drums (46), melody contour and motifs (49-51), lyric stress (54), harmonic rhythm (59), arrangement by subtraction and the arc (63, 66-72), endings (73, 75), unique events (74), a stop rule (76, 78), feedback at matched loudness (77). The contour rules were tested as checks before use (L-002).
 - Track: practice
