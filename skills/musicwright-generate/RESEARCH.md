@@ -137,3 +137,9 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - Meta AI: no audio or music model since AudioCraft/MusicGen; the MusicGen row (CC BY-NC weights) stands.
 - Google Magenta: Magenta RealTime 2 (2026-06-04, google/magenta-realtime-2, CC BY 4.0, 2.4B Base and 230M Small, 48 kHz stereo, ~200 ms control latency, text/audio/MIDI steering) is already in models.md; HF API confirms the licence tag. Lyria stays hosted only.
 - Hugging Face blog: no 2026 music post found. LeVo 2 (Tencent SongGeneration v2-large, released 2026-03-01) surfaced again; its licence is a custom Tencent file ("Other" on HF) that could not be read (GitHub 404, HF 401 without login), and third parties disagree on commercial use. No models.md row until the licence is read from the source.
+
+### R-20261102-10 · 2026-11-02 · Sources pass 10: OpenAI research, Sound on Sound, Music Business Worldwide
+
+- OpenAI: no released music model; only October 2025 reports (The Information) of one in development (text and audio prompts, Juilliard score annotation). No models.md row.
+- Sound on Sound: no AI mastering or separation article surfaced; search returned vendor blogs only. No change.
+- Music Business Worldwide: Udio licensed by UMG (2025-10), Warner (2025-11), Merlin, Kobalt (2026-04) and NMPA (2026-06); Sony none; downloads still off, licensed platform not launched (2026-11). Suno: Warner deal 2025-11 (licensed models promised in 2026), UMG and Sony talks stalled (FT 2026-04). hosted.md Udio and Suno rows updated.
