@@ -183,3 +183,6 @@ Append-only. Newest last.
 
 ## [2026-11-03] research | sources pass 15 (Owed item 8)
 - Dodge and Jerse, *Computer Music*: synthesis out of scope, ch. 11 1/f melodies a candidate only. Foster, *Generative Deep Learning* ch. 11: symbolic models superseded. No skill change; group 5 done (R-20261103-4). Next pass: group 6 course syllabi.
+
+## [2026-11-03] research | ACE-Step node packs (Owed item 7)
+- Cloned three packs for research (not installed). RyanOnTheInside has native extract, lego and semantic-hint cover guiders (MIT); official pack and AceMusic have no extract. Ruling: vendor the guiders into comfy_nodes rather than install the heavy pack (research 06). Next: build the extract route.
