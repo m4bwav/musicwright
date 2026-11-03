@@ -4,6 +4,7 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 
 ## Unreleased
 
+- `gen --task cover|repaint` on the ACE-Step ComfyUI recipes: uploads `--src` to ComfyUI and runs cover as LoadAudio -> VAEEncodeAudio -> KSampler at denoise 1 - strength (default 0.4), repaint through the new AudioLatentRepaintMask node shipped in `skills/musicwright/comfy_nodes/` (checked on the host first). Measured on the PC: a 10-20 s repaint of a 30 s take in 35 s, source kept outside the window (0.99-1.00). Three tests on the fake server.
 - Generate: listen for a known tune before releasing any cue, not only after a reference or cover (Hands-On Generative AI ch. 9).
 - `fluidsynth` key in the studio config.json, read after `MUSICWRIGHT_FLUIDSYNTH` (as `soundfont` already was), with a test.
 - `gen --no-wait` logs each queued ComfyUI job as a `queued` ledger row (recipe, caption, seed, prompt id); `gen --collect DIR` downloads, measures and logs the jobs that have finished, reports the pending ones and logs failed ones once. `--no-wait` on the REST route is now an error. Three tests.

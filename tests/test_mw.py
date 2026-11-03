@@ -398,8 +398,28 @@ class GenDryRun(unittest.TestCase):
                 self.assertEqual(code, 1, d)
                 self.assertIn(msg, d["error"])
         code, d = run("gen", "--task", "lego", "--src", src, "--track", "drums", "--caption", "x", "--out", TMP / "gen_err", "--dry-run")
-        self.assertIn("REST server", d["error"])  # the default comfy recipe cannot do source tasks
+        self.assertIn("REST server", d["error"])  # the default comfy recipe does cover and repaint only
+        code, d = run("gen", "--recipe", "minimax-music3", "--task", "cover", "--src", src, "--caption", "x", "--out", TMP / "gen_err", "--dry-run")
+        self.assertIn("only the ACE-Step recipes", d["error"])
         self.assertFalse((TMP / "gen_err").exists())
+
+    def test_comfy_source_tasks_dry_run(self):
+        if not HAVE_FFMPEG:
+            self.skipTest("the source length comes from ffprobe")
+        src = FX["tone"]
+        code, d = run("gen", "--task", "cover", "--src", src, "--strength", "0.3", "--caption", "x", "--seeds", "1",
+                      "--out", TMP / "gen_out", "--dry-run")
+        self.assertEqual(code, 0, d)
+        g = d["jobs"][0]["graph"]
+        self.assertEqual((g["7"]["class_type"], g["7"]["inputs"]["audio"], g["11"]["inputs"]["audio"]),
+                         ("VAEEncodeAudio", ["11", 0], "musicwright/" + Path(src).name))
+        self.assertEqual((g["8"]["inputs"]["denoise"], g["5"]["inputs"]["generate_audio_codes"]), (0.7, False))
+        code, d = run("gen", "--task", "repaint", "--src", src, "--start", "2", "--caption", "x", "--seeds", "1",
+                      "--out", TMP / "gen_out", "--dry-run")
+        g = d["jobs"][0]["graph"]
+        m = g["7"]["inputs"]
+        self.assertEqual((g["7"]["class_type"], m["samples"], m["start_s"], m["end_s"], g["8"]["inputs"]["denoise"]),
+                         ("AudioLatentRepaintMask", ["12", 0], 2.0, 10.0, 1.0))  # no --end: to the end of the source
 
     def test_dry_run_creates_no_folder(self):
         code, d = run("gen", "--caption", "x", "--seeds", "1", "--out", TMP / "gen_dry_only", "--dry-run")
@@ -1340,6 +1360,7 @@ class FakeHost:
         host = self
         self.wav = wav_bytes
         self.prompts, self.tasks, self.fail, self.pending = [], [], False, set()
+        self.nodes = {"AudioLatentRepaintMask"}
         unets = sorted({r["params"]["unet"] for r in mw.recipes().values() if r["route"] == "comfy"})
 
         class H(http.server.BaseHTTPRequestHandler):
@@ -1372,6 +1393,9 @@ class FakeHost:
                     self.send({pid: {"status": st, "outputs": {"10": {"audio": [{"filename": f"{pid}_00001_.wav", "subfolder": "musicwright", "type": "output"}]}}}})
                 elif p.startswith("/view") or p.startswith("/v1/audio"):
                     self.send(raw=host.wav, ctype="audio/wav")
+                elif p.startswith("/object_info/"):
+                    name = p.rsplit("/", 1)[1]
+                    self.send({name: {"input": {}}} if name in host.nodes else {})
                 elif p == "/health":
                     self.send({"data": {"status": "ok"}})
                 else:
@@ -1396,6 +1420,8 @@ class FakeHost:
                 if self.path == "/prompt":
                     host.prompts.append(body)
                     self.send({"prompt_id": f"p{len(host.prompts)}", "number": len(host.prompts), "node_errors": {}})
+                elif self.path == "/upload/image":
+                    self.send({"name": "src.wav", "subfolder": "musicwright", "type": "input"})
                 elif self.path == "/release_task":
                     host.tasks.append(body)
                     self.send({"data": {"task_id": f"t{len(host.tasks)}"}})
@@ -1457,6 +1483,25 @@ class GenAgainstFakeHost(unittest.TestCase):
         self.assertEqual(Path(r2["takes"][0]["file"]).name, "flute_s7_2.wav")  # never overwrites a take
         code, v = run("verdict", d / "takes" / "flute_s8.wav", "keep")
         self.assertTrue(v["matched_take"])
+
+    def test_comfy_repaint_uploads_and_checks_the_node(self):
+        n0 = len(self.fake.prompts)
+        code, r = run("gen", "--task", "repaint", "--src", FX["tone"], "--start", "2", "--end", "4", "--caption", "x",
+                      "--seeds", "5", "--host", self.fake.url, "--out", TMP / "gen_repaint")
+        self.assertEqual(code, 0, r)
+        self.assertEqual(self.fake.uploads["image"], Path(FX["tone"]).read_bytes())
+        g = self.fake.prompts[n0]["prompt"]
+        self.assertEqual(g["11"]["inputs"]["audio"], "musicwright/src.wav")
+        row = mw.read_jsonl(Path(r["ledger"]))[-1]
+        self.assertEqual((row["task"], row["recipe"]), ("repaint", "acestep-xl-sft"))
+        self.fake.nodes = set()
+        try:
+            code, r = run("gen", "--task", "repaint", "--src", FX["tone"], "--start", "2", "--caption", "x",
+                          "--seeds", "5", "--host", self.fake.url, "--out", TMP / "gen_repaint")
+        finally:
+            self.fake.nodes = {"AudioLatentRepaintMask"}
+        self.assertEqual(code, 1, r)
+        self.assertIn("custom_nodes", r["error"])
 
     def test_no_wait_queues(self):
         code, r = run("gen", "--caption", "x", "--seeds", "3", "--host", self.fake.url, "--out", TMP / "gen_nowait", "--no-wait")

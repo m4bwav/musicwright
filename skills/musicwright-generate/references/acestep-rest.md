@@ -53,6 +53,8 @@ description the LM turns into caption and lyrics.
 | `complete` | add a backing band to a single part | base only | `--task complete --src F --track drums,bass` |
 | `extract` | pull one part out of a mix | base only | `--task extract --src F --track vocals` |
 
+Cover and repaint also run without this server: `--task cover` or `--task repaint` on `acestep-xl-sft` goes through ComfyUI (cover at denoise 1 - strength, keeps less of the source than REST; repaint needs the `AudioLatentRepaintMask` node from the hub's `comfy_nodes/` copied into ComfyUI's custom_nodes, and the audio outside the window comes back through a VAE round trip, correlation 0.96-1.00, not bit-identical).
+
 - Parts (`--track`): woodwinds, brass, fx, synth, strings, percussion, keyboard, guitar, bass, drums,
   backing_vocals, vocals. There is no "flute": use `woodwinds` and say flute in the caption.
 - The server loads one DiT at start, named by `ACESTEP_CONFIG_PATH` (default `acestep-v15-turbo`).
