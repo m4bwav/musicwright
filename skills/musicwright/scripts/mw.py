@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -825,6 +825,22 @@ def structure_of(y, sr, np, librosa, sections):
     return rep, [round(i * hop, 1) for i in starts] + [round(len(y) / sr, 1)]
 
 
+KEY_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+
+
+def key_relation(a, b):
+    """How key b relates to key a ("A minor", "C major"): relative, parallel, fifth, or None."""
+    (ta, ma), (tb, mb) = [(KEY_NAMES.index(k.split()[0]), k.split()[1]) for k in (a, b)]
+    d = (tb - ta) % 12
+    if ma != mb:
+        if ta == tb:
+            return "parallel"
+        if (ma == "major" and d == 9) or (ma == "minor" and d == 3):
+            return "relative"
+        return None
+    return "fifth" if d in (5, 7) else None
+
+
 def cmd_analyze(a):
     try:
         import librosa  # noqa: F401
@@ -841,7 +857,7 @@ def cmd_analyze(a):
     want = None if a.sections is None else (len(tags) if tags is not None else int(a.sections))
     maj = np.array([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88])
     mnr = np.array([6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17])
-    names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+    names = KEY_NAMES
     rows = []
     for f in a.files:
         y, sr = librosa.load(str(need_file(f)), sr=None, mono=True)
@@ -856,6 +872,7 @@ def cmd_analyze(a):
         sr = 22050
         row = {"file": str(f), "tempo_bpm": round(bpm, 2), "beats": int(len(beats)),
                "key": cands[0][1], "key_confidence": round(cands[0][0], 2), "runner_up": cands[1][1],
+               "key_margin": round(cands[0][0] - cands[1][0], 3), "runner_up_relation": key_relation(cands[0][1], cands[1][1]),
                "onset_strength_mean": round(float(onset.mean()), 3),
                "note": "tempo can come back doubled or halved; key estimates on modal or pentatonic music often name the relative major/minor"}
         row["tuning"] = tuning_of(y, sr, np, librosa)
@@ -876,6 +893,9 @@ def cmd_analyze(a):
         if t.get("trend_cents") is not None and abs(t["trend_cents"]) >= 15:
             flags.append({"code": "DRIFT", "says": f"pitch moves {t['trend_cents']:+} cents from the first third to the last",
                           "try": "listen for a slow sag or rise; re-roll, or layer nothing sustained over it"})
+        if row["key_margin"] < 0.05:  # Krumhansl profiles score near keys close together (Lerch sec. 7.5.2)
+            flags.append({"code": "KEY-AMBIGUOUS", "says": f"{row['key']} only just beats {row['runner_up']} ({row['runner_up_relation'] or 'unrelated'})",
+                          "try": "name both keys in the caption or brief, or check the bass note of the first and last chord by ear"})
         row["flags"] = flags
         rows.append(row)
     base = (rows[0].get("tuning") or {}).get("cents") if rows else None
@@ -911,15 +931,31 @@ def envelope_db(path, tmpd):
     return env
 
 
-def onsets_from_env(env, floor_db=-50.0):
-    """Onset frames: peaks of the rising level (dB per 10 ms) above an adaptive threshold."""
+def local_threshold(sm, half=150, step=10, k=1.5):
+    """Per-frame threshold: the median of the novelty within +-half frames plus k spreads of that window.
+
+    A global threshold misses the hits of a quiet intro once a loud section raises it (Lerch, Audio Content
+    Analysis, 2nd ed., sec. 9.3.2); the spread is the window's mean absolute deviation, floored so silence stays quiet."""
+    thr, n = [0.0] * len(sm), len(sm)
+    for c in range(0, n, step):
+        w = sorted(sm[max(0, c - half):c + half + 1])
+        med = w[len(w) // 2]
+        dev = max(sum(abs(v - med) for v in w) / len(w), 0.05)
+        for i in range(c, min(c + step, n)):
+            thr[i] = med + k * 2 * dev
+    return thr
+
+
+def onsets_from_env(env, floor_db=-50.0, threshold="global"):
+    """Onset frames: peaks of the rising level (dB per 10 ms) above a global or a moving-median threshold."""
     flux = [0.0] + [max(0.0, env[i] - env[i - 1]) if env[i] > floor_db else 0.0 for i in range(1, len(env))]
     sm = [sum(flux[max(0, i - 1):i + 2]) / 3 for i in range(len(flux))]
     mean = sum(sm) / max(len(sm), 1)
     sd = math.sqrt(sum((v - mean) ** 2 for v in sm) / max(len(sm), 1))
-    thr, gap, last, hits = mean + 1.5 * sd, int(0.08 / ENV_HOP), -10 ** 9, []
+    thr = local_threshold(sm) if threshold == "adaptive" else [mean + 1.5 * sd] * len(sm)
+    gap, last, hits = int(0.08 / ENV_HOP), -10 ** 9, []
     for i in range(1, len(sm) - 1):
-        if sm[i] > thr and sm[i] >= sm[i - 1] and sm[i] >= sm[i + 1] and i - last >= gap:
+        if sm[i] > thr[i] and sm[i] >= sm[i - 1] and sm[i] >= sm[i + 1] and i - last >= gap:
             hits.append(i)
             last = i
     return sm, hits
@@ -939,13 +975,13 @@ def grid_deviation(times, period):
     return best
 
 
-def pulse_of(path, tmpd):
+def pulse_of(path, tmpd, threshold="global"):
     import random
     env = envelope_db(path, tmpd)
-    strength, hits = onsets_from_env(env)
+    strength, hits = onsets_from_env(env, threshold=threshold)
     times = [h * ENV_HOP for h in hits]
     dur = len(env) * ENV_HOP
-    row = {"file": str(path), "duration_s": round(dur, 2), "onsets": len(times),
+    row = {"file": str(path), "duration_s": round(dur, 2), "threshold": threshold, "onsets": len(times),
            "onsets_per_min": round(60 * len(times) / dur, 1) if dur else 0}
     if len(times) < 6:
         row.update({"pulse": "none", "why": "fewer than 6 onsets"})
@@ -987,13 +1023,13 @@ def pulse_of(path, tmpd):
 def cmd_pulse(a):
     tmpd = Path(tempfile.mkdtemp(prefix="mw_pulse_"))
     try:
-        rows = [pulse_of(need_file(f), tmpd) for f in a.files]
+        rows = [pulse_of(need_file(f), tmpd, a.threshold) for f in a.files]
     finally:
         shutil.rmtree(tmpd, ignore_errors=True)
     return {"ok": True, "files": rows,
             "reading": "steady: a beat a percussion part can lock to (tempo_bpm may be doubled or halved); "
                        "weak or none: free time, so place accents on phrases or re-render on a fixed tempo rather than adding a beat. "
-                       "grid_deviation near grid_chance means the onsets ignore the grid; ioi_cv above about 0.8 is rubato or phrase-led; onset_rise_db under 1 means no hits at all"}
+                       "a track that builds from a quiet intro: rerun with --threshold adaptive, the global one misses the quiet hits. grid_deviation near grid_chance means the onsets ignore the grid; ioi_cv above about 0.8 is rubato or phrase-led; onset_rise_db under 1 means no hits at all"}
 
 
 def power_mean_db(env, idx):
@@ -2244,6 +2280,8 @@ def build_parser():
 
     s = sub.add_parser("pulse", help="is there a beat? onsets, IOI spread, autocorrelation, grid fit (stdlib)")
     s.add_argument("files", nargs="+")
+    s.add_argument("--threshold", choices=["global", "adaptive"], default="global",
+                   help="adaptive: a moving-median onset threshold, for tracks whose level changes (a quiet intro, a build)")
     s.set_defaults(fn=cmd_pulse)
 
     s = sub.add_parser("answer", help="does a part answer the lead? its level in the lead's rests vs under its notes")

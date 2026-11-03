@@ -14,7 +14,8 @@ after every change and report both. Script: `<this folder>/../musicwright/script
 (LRA), true peak, head and tail silence, interior gaps, clipping signs and warnings.
 `mw.py analyze <files>` adds tempo, key, tuning and repetition when librosa is available (it
 prints the `uv run` line when it is not); give the lead first and a layer's `cents_from_first`
-says whether they will beat. Picture: `mw.py sheet <files> --out <png>`, then look at it.
+says whether they will beat. A `KEY-AMBIGUOUS` flag (`key_margin` under 0.05) means the runner-up
+(often the relative minor or major) is nearly as likely: name both in a brief. Picture: `mw.py sheet <files> --out <png>`, then look at it.
 
 `mw.py mixcheck <files>` measures what a mix engineer listens for: each band's level against the
 whole, peak-to-loudness ratio (PLR), a loudness contour, stereo correlation, the mono-fold loss

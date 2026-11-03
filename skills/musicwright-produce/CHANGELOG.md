@@ -5,6 +5,7 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261023-3 · 2026-10-23 · Listening checks moved TUNING-GAP, REPEATS and BRIGHT
+- 0.1.6 (2026-11-02): `analyze` key margin and the KEY-AMBIGUOUS flag explained (Lerch, Audio Content Analysis sec. 7.5.2).
 - because: L-005, decisions 2026-10-23-listening-checks
 - files: references/mixing.md (mixcheck flags and how often they fire; analyze flags and how often they fire)
 - TUNING-GAP fires over 30 cents (0 of 14 real layers), REPEATS left the table and the share is reported only, and BRIGHT's note says a take at -7.6 dB was slightly tiring, not harsh.

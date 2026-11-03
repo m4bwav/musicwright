@@ -873,6 +873,26 @@ class PulseAndAnswer(unittest.TestCase):
         self.assertGreater(loose["ioi_cv"], 0.5)
         self.assertGreater(steady["onset_rise_db"], 10)
 
+    def test_adaptive_threshold_keeps_quiet_intro_hits(self):
+        # Lerch sec. 9.3.2: a global threshold set by a loud section misses a quiet intro's hits
+        env = []
+        for beat in range(40):
+            rise = 3.0 if beat < 20 else 30.0
+            env += [-40.0 + (rise if beat >= 20 else 0)] * 45 + [-40.0 + rise + (rise if beat >= 20 else 0)] * 5
+        _, glob = mw.onsets_from_env(env)
+        _, adap = mw.onsets_from_env(env, threshold="adaptive")
+        quiet = lambda hits: sum(1 for h in hits if h < 20 * 50)
+        self.assertLess(quiet(glob), 5)
+        self.assertGreaterEqual(quiet(adap), 18)
+        self.assertGreaterEqual(len(adap) - quiet(adap), 18)
+
+    def test_key_relation(self):
+        self.assertEqual(mw.key_relation("C major", "A minor"), "relative")
+        self.assertEqual(mw.key_relation("A minor", "C major"), "relative")
+        self.assertEqual(mw.key_relation("D minor", "D major"), "parallel")
+        self.assertEqual(mw.key_relation("C major", "G major"), "fifth")
+        self.assertIsNone(mw.key_relation("C major", "F# major"))
+
     def test_swelling_tone_has_no_pulse(self):
         # 0.1.1 called this "steady" at 120 bpm: the envelope's ripple on the rise read as onsets
         swell = lavfi(f"aevalsrc='0.3*sin(2*PI*196*t)*(0.6+0.4*sin(2*PI*0.1*t))':s={RATE}:d=27", TMP / "audio" / "swell.wav")
