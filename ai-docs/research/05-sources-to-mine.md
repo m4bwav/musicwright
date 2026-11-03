@@ -45,3 +45,5 @@ Already covered by earlier passes (research 01 to 03): Demucs, Essentia, Magenta
 - 2026-11-03: Dean (survey; IDyOM-style expectation a melody-check candidate only) and Zölzer (dither, resampling already covered) from listings (R-20261103-3 in the produce RESEARCH.md, no skill change). Next: Dodge, *Computer Music*, then Foster, *Generative Deep Learning*.
 - 2026-11-03: Dodge and Jerse (synthesis is the models' job; 1/f and random-walk melodies join the Nierhaus candidate) and Foster (symbolic Transformers, MuseGAN: superseded) from contents lists (R-20261103-4 in the compose RESEARCH.md, no skill change). Group 5 done; next: group 6 course syllabi (Ableton Learning Music, Soundfly first).
 - 2026-11-03: Ableton Learning Music (covered by theory.md) and Soundfly (403, skipped) (R-20261103-5 in the compose RESEARCH.md, no skill change). Next: Coursera music-production syllabi, Kaggle Learn (audio), which ends group 6.
+
+- 2026-11-03: Coursera syllabi (Berklee capstone, Malachi mixing course: covered) and Kaggle Learn (no audio course) (R-20261103-6 in the compose RESEARCH.md, no skill change). Group 6 done; all groups mined unless the list grows.
