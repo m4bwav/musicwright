@@ -15,5 +15,6 @@ The first research pass for musicwright, 2026-10-17: three notes written by rese
 - [03-music-fundamentals.md](03-music-fundamentals.md): read before changing theory, vocabulary, loudness targets, loop method, Unity settings, scoring rules or QC checks; tested ffmpeg recipes (R-201 to R-233).
 - [04-learned-quality-score.md](04-learned-quality-score.md): read before adding a learned quality score to take ranking; Audiobox Aesthetics on nine judged takes (2026-11-02).
 - [05-sources-to-mine.md](05-sources-to-mine.md): the owner's list of forums, sites, books, blogs and docs to mine, in order, with access limits and a done list (2026-11-02).
+- [06-acestep-node-packs.md](06-acestep-node-packs.md): ACE-Step extract node packs compared; vendor the RyanOnTheInside extract and cover guiders into comfy_nodes (2026-11-03).
 
 Related: [../INDEX.md](../INDEX.md)
