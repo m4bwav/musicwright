@@ -46,6 +46,14 @@ Best sources: ai-docs research 00-02 (first pass), ComfyUI releases, the repos n
 
 ## Findings log
 
+### R-20261103-1 · 2026-11-03 · Quiet check
+
+- Summary: no new music agent skills or MCP servers (an 'acestep-docs' docs-reading skill on aggregators only); no ComfyUI audio node changes since 2026-10-17. Testing: CMI-RewardBench v2 shows LLM judges under 80% agreement with people, supporting the hub's render-measure-ask loop. Practice: nothing new.
+- Track: tooling, practice, testing
+- Sources: arxiv.org/html/2603.00610v2; github.com/comfyanonymous/ComfyUI releases
+- Magnitude: 0.05
+- applied: none
+
 Newest first. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261017-2 · 2026-10-17 · Sheet test on real takes
