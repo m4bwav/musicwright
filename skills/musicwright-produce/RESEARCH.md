@@ -50,6 +50,13 @@ Best sources: standards bodies, platform help pages, ffmpeg docs; practitioner b
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261103-1 · 2026-11-03 · Müller, Fundamentals of Music Processing, through the FMP notebooks (sources pass 12)
+- Summary: no copy of the book on disk, so the free FMP notebooks (the book's companion, text CC BY-NC-SA 4.0, libfmp code MIT) stood in. mw.py already covers C4 structure (Foote checkerboard novelty in `analyze --sections`), C5's key half (chroma template correlation) and C6 onsets and tempo (`pulse`, adaptive threshold since 0.1.6). Not covered: C5 chord recognition (chroma templates plus HMM smoothing; would let a check say whether a take follows the asked progression), C3 DTW alignment (take against a rendered MIDI sketch), C8 harmonic/percussive separation. None is a wrong statement in the skills, so no skill change; chord recognition is the one worth building if a cue ever needs its progression checked (librosa has the pieces, libfmp is MIT).
+- Track: practice
+- Sources: https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html (read 2026-11-03)
+- Magnitude: 0 (candidates only)
+- Applied: none
+
 ### R-20261102-6 · 2026-11-02 · r/SunoAI and r/udiomusic, top of the month (sources pass 6)
 - Summary: forum anecdotes, low confidence. Suno v6 users report a muffled or "radio static" high band and mix drift in long rock tracks; one popular thread hands ChatGPT a spectral-subtraction recipe (quietest 12% of frames as the noise profile, about 7 dB at most, bass below 350 Hz left alone). ffmpeg afftdn does the same locally: tested on a synthetic tone plus 5 kHz+ pink noise (band -55.9 to -60.9 dB, tone unchanged), row added to mixing.md. Uploads of own recordings and public-domain carols flagged as copyrighted by Suno: noted in hosted.md. Udio: walled garden, downloads blocked, nothing for the skills.
 - Track: practice

@@ -170,3 +170,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | sources pass 11 (Owed item 8)
 - Towards Data Science audio: only 2023-24 explainers. Synthtopia: synth and preset tools, no generators. No skill change; group 4 done (R-20261102-11). No open askwright questions. Next pass: group 5 books, Müller first.
+
+## [2026-11-03] research | sources pass 12 (Owed item 8)
+- Müller's book not on disk; FMP notebooks read instead. Structure, key and tempo already in mw.py; chord recognition, DTW alignment and HPSS noted as candidates, no skill change (R-20261103-1). The Music/notation-stage3/ask folder has no questions.json (nothing open). Next pass: Farnell, then Nierhaus.
