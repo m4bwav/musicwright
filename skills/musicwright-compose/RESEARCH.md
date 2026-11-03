@@ -48,6 +48,13 @@ Best sources: theory texts and pedagogy sites, library docs, the MCP server repo
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261103-4 · 2026-11-03 · Dodge and Jerse, Computer Music; Foster, Generative Deep Learning (sources pass 15)
+- Summary: no copy of either on disk; read from contents lists. Dodge and Jerse (2nd ed. 1997): synthesis (oscillators, FM, subtractive, granular, physical modelling), reverberation and localisation, composition with computers (conditional probabilities, random walks, fractional 1/f noise, motivic and canonic transforms), real-time performance. Synthesis is the AI models' job and mw.py's sketch synth is enough for previews; ch. 11 adds 1/f melodies to the Nierhaus candidate (R-20261103-2), still not a gap. Foster (2nd ed. 2023) ch. 11: symbolic Transformers, polyphonic tokenisation, MuseGAN on Bach chorales; superseded for this plugin by audio models, and MidiTok is already noted (R-20261102-2 in generate). No skill change; group 5 done.
+- Track: subject
+- Sources: https://lib.ecu.edu/catalog-preview/catalog/648316, https://www.oreilly.com/library/view/generative-deep-learning/9781098134174/part03.html, https://obalkyknih.cz/file/toc/844250/pdf (read 2026-11-03)
+- Magnitude: 0 (candidates only)
+- Applied: none
+
 ### R-20261103-2 · 2026-11-03 · Farnell, Designing Sound; Nierhaus, Algorithmic Composition (sources pass 13)
 - Summary: no copy of either book on disk; read from library tables of contents. Farnell (MIT Press 2010; parts Theory, Tools, Technique, Practicals, all in Pure Data) is procedural sound effects, not music: out of scope here, at most a pointer for a future game SFX plugin. Nierhaus (Springer 2009) surveys Markov models, generative grammars, transition networks, chaos and self-similarity, genetic algorithms, cellular automata, neural networks and rule-based AI. The compose skill names none of these, but the agent writes notes directly and AI models make the audio, so a Markov or grammar generator is not a gap; a candidate only if a user wants endless seeded variations of a motif without a model (a small Markov over intervals in mw.py would do). No skill change.
 - Track: subject
