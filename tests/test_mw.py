@@ -429,6 +429,7 @@ class GenDryRun(unittest.TestCase):
         self.assertNotIn("7", g)
         self.assertEqual((g["5"]["class_type"], g["5"]["inputs"]["task_type"], g["5"]["inputs"]["track_name"]),
                          ("MWAceStep15TaskTextEncode", "extract", "drums"))
+        self.assertEqual(g["5"]["inputs"]["text"], "")  # None would reach the model as the word "None"
         self.assertEqual((g["13"]["inputs"]["source_latents"], g["8"]["inputs"]["guider"], g["8"]["inputs"]["latent_image"]),
                          (["12", 0], ["13", 0], ["12", 0]))
         self.assertEqual((g["1"]["inputs"]["unet_name"], g["13"]["inputs"]["cfg"]), ("acestep_v1.5_xl_base_bf16.safetensors", 7.0))
@@ -931,6 +932,9 @@ class PulseAndAnswer(unittest.TestCase):
         self.assertGreater(first["correlation"], 0.9, first)
         code, d = run("curve", rise, "--shape", "0:-40")
         self.assertNotEqual(code, 0, d)  # one point is no shape
+        code, d = run("curve", rise, "--shape", "0:-40,10:-30,50%:-20,end:-14")
+        self.assertEqual(code, 0, d)  # 50% of 20 s lands on 10 s: a step, no zero-length span
+        self.assertTrue(all(x["to_s"] > x["from_s"] for x in d["takes"][0]["spans"]), d)
 
     def test_swelling_tone_has_no_pulse(self):
         # 0.1.1 called this "steady" at 120 bpm: the envelope's ripple on the rise read as onsets

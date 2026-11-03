@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## Unreleased
+
+- `mw.py gen --task extract` without a caption sends an empty text, where ComfyUI would have read the caption as the word "None". `mw.py curve` no longer prints a zero-length span when two shape points land on one time. The `acestep-rest` recipe's `use` line no longer says ComfyUI lacks the source tasks. Found by the 0.1.7 wiki run.
+
 ## 0.1.7 (2026-11-03)
 
 - `mw.py curve FILES --shape 0:-30,20:-18,50%:-14,end:-24 [--absolute]` ranks takes against a target loudness shape for film cues: per-second short-term loudness against the interpolated shape, rms error after the level offset, correlation, worst second and mean error per span. Test added.
