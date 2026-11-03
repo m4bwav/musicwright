@@ -48,6 +48,13 @@ Best sources: theory texts and pedagogy sites, library docs, the MCP server repo
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261103-5 · 2026-11-03 · Ableton Learning Music; Soundfly (sources pass 16)
+- Summary: Ableton Learning Music chapters (beats and tempo by genre, backbeats, pitch, keys and scales, triads and progressions, basslines, melodies, song structure; advanced: modes, pentatonic, whole tone, octatonic, pelog, 19-tone, inversions, voicings, sevenths) are all in theory.md or below what the agent needs; pelog and 19-tone are not, but models do not take microtonal captions reliably, so not a gap. Soundfly's course list returned 403; skipped. No skill change.
+- Track: subject
+- Sources: https://learningmusic.ableton.com/ (read 2026-11-03), https://soundfly.com/courses (403)
+- Magnitude: 0
+- Applied: none
+
 ### R-20261103-4 · 2026-11-03 · Dodge and Jerse, Computer Music; Foster, Generative Deep Learning (sources pass 15)
 - Summary: no copy of either on disk; read from contents lists. Dodge and Jerse (2nd ed. 1997): synthesis (oscillators, FM, subtractive, granular, physical modelling), reverberation and localisation, composition with computers (conditional probabilities, random walks, fractional 1/f noise, motivic and canonic transforms), real-time performance. Synthesis is the AI models' job and mw.py's sketch synth is enough for previews; ch. 11 adds 1/f melodies to the Nierhaus candidate (R-20261103-2), still not a gap. Foster (2nd ed. 2023) ch. 11: symbolic Transformers, polyphonic tokenisation, MuseGAN on Bach chorales; superseded for this plugin by audio models, and MidiTok is already noted (R-20261102-2 in generate). No skill change; group 5 done.
 - Track: subject
