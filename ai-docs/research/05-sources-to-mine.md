@@ -29,4 +29,4 @@ Already covered by earlier passes (research 01 to 03): Demucs, Essentia, Magenta
 
 ## Done
 
-(none yet)
+- 2026-11-02: torchaudio, Demucs, librosa (R-20261102-1 in the produce RESEARCH.md: `uvx demucs` needs `--with numpy`). Next in group 1: Hugging Face transformers audio docs, Essentia, MidiTok, AudioCraft, Stable Audio API.

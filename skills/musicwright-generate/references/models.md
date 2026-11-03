@@ -29,7 +29,7 @@ for loops and SFX.
 
 | Task | Tool | Licence | Note |
 |---|---|---|---|
-| Stems | adefossez/demucs v4 (`htdemucs`, `htdemucs_ft`, `htdemucs_6s`) | MIT | upstream archived; the fork is the home, little maintenance |
+| Stems | adefossez/demucs v4 (`htdemucs`, `htdemucs_ft`, `htdemucs_6s`) | MIT | upstream archived; the fork is the home, little maintenance; `uvx --with numpy demucs` (the package leaves numpy out) |
 | Stems, best vocals | BS-RoFormer / Mel-RoFormer via python-audio-separator, ZFTurbo MSST, UVR | MIT code, weights vary | |
 | Separate by text prompt | Meta SAM Audio | SAM Licence, gated | read the licence before commercial use |
 | Voice conversion | RVC WebUI, Applio | MIT | never convert into a real singer's voice without consent |
