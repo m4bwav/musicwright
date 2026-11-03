@@ -149,3 +149,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | sources pass 4 (Owed item 8)
 - Torin Hopkins, MusicMakerApp, Kingy AI: nothing usable, no skill change (R-20261102-4). Fixed the HANDOFF title line split by an earlier insert. Next pass: Artlist and Mubert guides, Artificial Analysis audio benchmarks.
+
+## [2026-11-02] research | sources pass 5 (Owed item 8)
+- Artlist (runs Lyria 3; prompt template), Mubert (API v3, vendor-claimed sub-licensing) and the Artificial Analysis Music Arena v1.1 (Suno v6 leads instrumental; ACE-Step and YuE unranked) added to generate references/hosted.md (R-20261102-5). Group 2 done. Next pass: group 3 forums.

@@ -1,4 +1,4 @@
-# Hosted music services (checked 2026-10-17)
+# Hosted music services (checked 2026-10-17; Mubert, Artlist, arena 2026-11-02)
 
 Paid calls need the user's go-ahead: say the price first. Prices and terms move; re-check the
 linked pages before relying on them.
@@ -12,11 +12,19 @@ linked pages before relying on them.
 | MiniMax Music (hosted) | API, official MCP | about USD 0.15 a song (secondary source) | API terms |
 | Mureka | web, prepaid API | about USD 0.045-0.05 a song (secondary) | paid plans royalty-free |
 | Suno v6 | web app only | Pro USD 8, Premier USD 24 a month | no public API: never automate it; downloads capped (Pro 20, Premier 60 a month); remixes non-commercial; Suno may fingerprint files; stream-ripping banned |
+| Mubert | API v3 (Company_ID + License_Token), 150+ channels | API plans, not published | vendor says royalty-free with sub-licensing on API and Enterprise plans; loops and streams more than songs |
+| Artlist AI music | web AI Toolkit, runs Google Lyria 3 | Artlist subscription | commercial use per plan; prompt = genre + mood + instruments + tempo + structure + use case |
 | Udio | web app | | downloads disabled since 2025-10-29; licensed platform not launched as of 2026-09 |
 
 Pages: https://ai.google.dev/gemini-api/docs/music-generation, https://ai.google.dev/gemini-api/docs/pricing,
 https://elevenlabs.io/pricing/api, https://elevenlabs.io/music, https://suno.com/pricing,
 https://suno.com/legal/terms.
+
+Outside ranking: Artificial Analysis Music Arena v1.1 (blind votes, instrumental and vocals boards,
+https://artificialanalysis.ai/music/leaderboard/instrumental). Instrumental on 2026-11-02: Suno v6 1148,
+Mureka V9.5 1084, Lyria 3 Pro 1080, Lyria 3.5 1078, Eleven Music 1021, Stable Audio 3 Large 1014,
+MiniMax Music 3.0 1000; ACE-Step and YuE are not ranked. Use it to pick a hosted model, never as a
+verdict on a take.
 
 When a user brings a Suno or Udio track: treat it as audio to finish (musicwright-produce), check
 which plan made it (free tier is personal use only), and keep the plan and date in the ledger.
