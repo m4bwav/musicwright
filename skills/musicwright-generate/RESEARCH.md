@@ -126,3 +126,8 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 
 - GitHub lists: Curated-Awesome-Lists/awesome-ai-music-generation (503 stars, mostly old research repos) and wildminder/awesome-ai-music (per-model pages with ComfyUI node packs, quants and LoRAs; the better index). New to models.md, each checked at its repo or HF card: DiffSynth-Music (Apache 2.0, control templates on ACE-Step 1.5), acestep.cpp and the official acestep.vst3 (MIT), ACE-Step Transcriber (MIT). Neither list names a ComfyUI node pack with ACE-Step extract, so item 7 extract is unchanged.
 - r/ArtificialInteligence search RSS for music (top of month) returned nothing. Hugging Face audio discussions skipped: no single forum; the per-model community tabs are covered by the model checks.
+
+### R-20261102-8 · 2026-11-02 · Sources pass 8: Gearspace, Kaggle, Stability audio news
+
+- Gearspace AI subforum and Kaggle audio forums: searches found no relevant threads (KVR threads instead, opinion only). One vendor-blog figure (raw Suno export near -11 LUFS short-term against -7 to -8 for a commercial rock master) adds nothing the produce loudness presets lack.
+- Stable Audio 3 (released 2026-05-20, arXiv 2026-05-18): the Medium HF card says it supports inpainting and continuation, through stable-audio-tools `generate_diffusion_cond_inpaint`; the card shows no mask input and no ComfyUI route. Added to the models.md row as a possible second repaint route, untested.

@@ -158,3 +158,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | sources pass 7 (Owed item 8)
 - wildminder/awesome-ai-music is the useful list (per-model ComfyUI packs, quants, LoRAs). Added to generate models.md after checking each source: DiffSynth-Music (Apache 2.0 control templates on ACE-Step 1.5: keep vocals or band, beats, prosody), acestep.cpp and acestep.vst3 (MIT), ACE-Step Transcriber (MIT). No list names an ACE-Step extract node pack. r/ArtificialInteligence music RSS empty; HF discussions skipped (R-20261102-7). Next pass: Gearspace, Kaggle, then blogs.
+
+## [2026-11-02] research | sources pass 8 (Owed item 8)
+- Gearspace and Kaggle: no relevant threads; group 3 done. Stable Audio 3 HF card: inpainting and continuation via stable-audio-tools (no ComfyUI route), noted in generate models.md as a possible repaint route, untested (R-20261102-8). Next pass: Meta AI, Google Magenta, HF audio posts.
