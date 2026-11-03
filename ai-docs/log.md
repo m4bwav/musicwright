@@ -136,3 +136,6 @@ Append-only. Newest last.
 ## [2026-11-02] hardware | ComfyUI cover at strength 0.7 and 0.85 (Owed item 7)
 - Queued behind another session's Flux job with `gen --no-wait`, collected by a background loop (Mark: queue and wait instead of stopping on a busy GPU). Source rest_t2m_s3501, seed 3701, caption solo violin.
 - seg_corr per 2 s against the source: 0.7 spectral 0.77-0.91, waveform 0.1-0.8 (structure kept, new sound; more than REST cover 0.6 at 0.62); 0.85 spectral 0.93-0.98, waveform ~0.92 (nearly a copy, true peak 0.0 dBTP, clipping warning). Both 3.25 s silent tail, inherited from the source. Guidance in acestep-rest.md: 0.5-0.75 on ComfyUI. Takes mwgen_cover_st07/st085_s3701 unheard. Cover with source audio codes not run: no mw.py or stock-node route feeds codes.
+
+## [2026-11-02] research | sources pass 2 (Owed item 8)
+- Essentia, MidiTok, AudioCraft, Stable Audio API: no real gaps; SA3 Large reseller price added to models.md (R-20261102-2). Item 7 remainder: extract waits on Mark choosing a community node pack; cover with audio codes needs a node route (not started). Next pass: HF transformers audio, then IT-JIM.

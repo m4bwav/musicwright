@@ -94,3 +94,11 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - Magnitude: n/a (initial)
 - Applied: C-20261017-1
 
+
+### R-20261102-2 · 2026-11-02 · Sources pass 2: Essentia, MidiTok, AudioCraft, Stable Audio API
+
+- Essentia: PyPI still ships only 2.1b6 dev builds; AGPL rule in models.md stands; nothing it adds over librosa and beat_this for mw.py today.
+- MidiTok 3.1.0 (Python >=3.10): a tokenizer for training symbolic models; no use in a plugin that does not train. No change.
+- AudioCraft 1.3.0: MusicGen weights still CC BY-NC; models.md row correct. No change.
+- Stable Audio 3 Large: API-only; resellers list about USD 0.02 a take (WaveSpeed text-to-audio, async poll). Stability's own price page not found. Added to the models.md row.
+- Hugging Face transformers audio docs: not read this pass (moved to pass 3).
