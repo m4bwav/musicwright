@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## Unreleased
+
+- `mw.py gen --recipe acestep-xl-base --task extract --track NAME` runs ACE-Step 1.5 extract inside ComfyUI on the XL base checkpoint, through two nodes (MWAceStep15TaskTextEncode, MWAceStep15ExtractGuider) vendored from ComfyUI_RyanOnTheInside at 52daf66 (MIT) into comfy_nodes/musicwright_nodes/acestep15; the upstream import-time mask patch is left out. New recipe acestep-xl-base; sft recipes refuse extract. Dry-run test.
+
 ## 0.1.6 (2026-11-02)
 
 - `pulse --threshold adaptive`: a moving-median onset threshold (median plus spread over a 3 s window) for tracks whose level changes; the global threshold missed a quiet intro's hits once a loud section raised it (Lerch, *An Introduction to Audio Content Analysis*, 2nd ed., sec. 9.3.2). Default stays global, so earlier readings hold. Rows say which threshold ran. Test added.

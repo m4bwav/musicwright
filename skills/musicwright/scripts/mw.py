@@ -1695,7 +1695,7 @@ def graph_minimax3(r, caption, lyrics, seed, duration, bpm, key, prefix, overrid
 
 
 GRAPHS = {"acestep15": graph_acestep, "minimax3": graph_minimax3}
-COMFY_TASKS = ("cover", "repaint")
+COMFY_TASKS = ("cover", "repaint", "extract")
 
 
 def source_graph(g, task, audio, a):
@@ -1703,10 +1703,29 @@ def source_graph(g, task, audio, a):
 
     Cover: the source latent replaces the empty one and KSampler runs at denoise 1 - strength.
     Repaint: AudioLatentRepaintMask (comfy_nodes/) marks the window; KSampler keeps the rest.
+    Extract: the vendored MW extract nodes (comfy_nodes/musicwright_nodes/acestep15, research 06)
+    put the "Extract the TRACK track" instruction in the text encoder and the source in a guider.
     """
     g["5"]["inputs"]["generate_audio_codes"] = False
     g["11"] = {"class_type": "LoadAudio", "inputs": {"audio": audio}}
-    if task == "cover":
+    if task == "extract":
+        t, k = g["5"]["inputs"], g["8"]["inputs"]
+        g["12"] = {"class_type": "VAEEncodeAudio", "inputs": {"audio": ["11", 0], "vae": ["3", 0]}}
+        g["5"] = {"class_type": "MWAceStep15TaskTextEncode", "inputs": {
+            "clip": t["clip"], "text": t["tags"], "task_type": "extract", "track_name": a.track, "lyrics": "",
+            "bpm": t["bpm"], "duration": t["duration"], "keyscale": t["keyscale"],
+            "timesignature": t["timesignature"], "language": t["language"], "seed": t["seed"]}}
+        g["13"] = {"class_type": "MWAceStep15ExtractGuider", "inputs": {
+            "model": k["model"], "positive": ["5", 0], "negative": ["6", 0], "cfg": k["cfg"],
+            "source_latents": ["12", 0], "track_name": a.track}}
+        g["14"] = {"class_type": "KSamplerSelect", "inputs": {"sampler_name": k["sampler_name"]}}
+        g["15"] = {"class_type": "BasicScheduler", "inputs": {
+            "model": k["model"], "scheduler": k["scheduler"], "steps": k["steps"], "denoise": 1.0}}
+        g["16"] = {"class_type": "RandomNoise", "inputs": {"noise_seed": k["seed"]}}
+        g["8"] = {"class_type": "SamplerCustomAdvanced", "inputs": {
+            "noise": ["16", 0], "guider": ["13", 0], "sampler": ["14", 0], "sigmas": ["15", 0], "latent_image": ["12", 0]}}
+        del g["7"]
+    elif task == "cover":
         g["7"] = {"class_type": "VAEEncodeAudio", "inputs": {"audio": ["11", 0], "vae": ["3", 0]}}
         g["8"]["inputs"]["denoise"] = round(1.0 - (0.4 if a.strength is None else a.strength), 3)
     else:
@@ -1723,11 +1742,11 @@ def upload_source(host, src):
     return f"{r['subfolder']}/{r['name']}" if r.get("subfolder") else r["name"]
 
 
-def need_repaint_node(host):
+def need_repaint_node(host, node="AudioLatentRepaintMask"):
     try:
-        http(host + "/object_info/AudioLatentRepaintMask", timeout=10)["AudioLatentRepaintMask"]
+        http(host + "/object_info/" + node, timeout=10)[node]
     except (urllib.error.URLError, OSError, ValueError, KeyError):
-        raise MwError(f"{host} has no AudioLatentRepaintMask node; copy {NODES} into ComfyUI's custom_nodes folder "
+        raise MwError(f"{host} has no {node} node; copy {NODES} into ComfyUI's custom_nodes folder "
                       "and restart ComfyUI, or use --recipe acestep-rest")
 
 
@@ -1799,6 +1818,8 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
         else:
             if a.task == "repaint":
                 need_repaint_node(host)
+            elif a.task == "extract":
+                need_repaint_node(host, "MWAceStep15ExtractGuider")
             audio = upload_source(host, a.src)
     for s in seeds:
         prefix = f"musicwright/{slug(a.name)}_s{s}"
@@ -1958,7 +1979,9 @@ def check_task(a, r):
             raise MwError("--src and --track need --task (cover, repaint, lego, complete or extract)")
         return
     if r["route"] != "rest" and not (r.get("graph") == "acestep15" and task in COMFY_TASKS):
-        raise MwError(f"--task {task} runs on the ACE-Step REST server; use --recipe acestep-rest (in ComfyUI only the ACE-Step recipes do cover and repaint)")
+        raise MwError(f"--task {task} runs on the ACE-Step REST server; use --recipe acestep-rest (in ComfyUI the ACE-Step recipes do cover and repaint, acestep-xl-base does extract)")
+    if r["route"] != "rest" and task == "extract" and "extract" not in r.get("tasks", ()):
+        raise MwError("--task extract in ComfyUI needs the base checkpoint: use --recipe acestep-xl-base (or acestep-rest)")
     if not a.src:
         raise MwError(f"--task {task} needs --src, the audio to work from")
     a.src = need_file(a.src)
@@ -2171,7 +2194,7 @@ def build_parser():
     s.add_argument("--shift", type=float)
     s.add_argument("--planner", help="ACE-Step planner LM file (clip_name2)")
     s.add_argument("--set", help="JSON object of recipe param overrides")
-    s.add_argument("--task", choices=REST_TASKS, help="work from --src: cover and repaint on REST or the ACE-Step ComfyUI recipes; lego, complete, extract on REST with a base model")
+    s.add_argument("--task", choices=REST_TASKS, help="work from --src: cover and repaint on REST or the ACE-Step ComfyUI recipes; extract on acestep-xl-base in ComfyUI; lego, complete, extract on REST with a base model")
     s.add_argument("--src", help="source audio for --task (uploaded to the server)")
     s.add_argument("--track", help="lego/extract: the part, e.g. woodwinds or percussion; complete: comma list")
     s.add_argument("--start", type=float, help="repaint/lego window start, seconds")

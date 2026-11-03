@@ -186,3 +186,7 @@ Append-only. Newest last.
 
 ## [2026-11-03] research | ACE-Step node packs (Owed item 7)
 - Cloned three packs for research (not installed). RyanOnTheInside has native extract, lego and semantic-hint cover guiders (MIT); official pack and AceMusic have no extract. Ruling: vendor the guiders into comfy_nodes rather than install the heavy pack (research 06). Next: build the extract route.
+
+## [2026-11-03] build | ComfyUI extract route (Owed item 7)
+- Vendored the RyanOnTheInside ACE-Step 1.5 extract guider, its common helpers and the lazy model/tokenizer patches (MIT, 52daf66) into comfy_nodes/musicwright_nodes/acestep15, with two MW-prefixed nodes; dropped the upstream import-time reshape_mask patch so AudioLatentRepaintMask keeps stock behaviour. Recipe acestep-xl-base (downloaded acestep_v1.5_xl_base_bf16, 9.97 GB, from Comfy-Org/ACE-Step-1.5). `mw.py gen --task extract` builds a SamplerCustomAdvanced graph with the guider.
+- Real run on the PC (ComfyUI restarted by PID from run_comfy_8199_hidden.cmd; patches logged as applied): source rest_t2m_s3501, drums and vocals, seed 3801, 45 s cold / 15 s warm for 30 s. Both takes nearly identical (waveform correlation 0.97, 0.66-0.69 to the source), no energy above 5 kHz (sibilance and air bands about -53 dB). The REST extract of the same source is not isolated either, and the source may hold no vocals. Isolation unproven: listening owed (mwgen_extract_drums/vocals_s3801 in Ai/Music/hw-checks); retry on a source with clear drums and vocals.
