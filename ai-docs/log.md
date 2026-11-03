@@ -119,3 +119,8 @@ Append-only. Newest last.
 
 ## [2026-11-02] plan | sources to mine
 - Mark's list of 50 forums, tutorial sites, books, blogs and docs filed as research 05 with an order and access limits (Reddit RSS only, Discord unreadable); HANDOFF item 8, after item 7 (ComfyUI-native source tasks).
+
+## [2026-11-02] hardware | repaint inside ComfyUI with a custom node (Owed item 7)
+- Stock KSampler already blends a latent noise_mask each step, and comfy.utils.reshape_mask takes [B,1,T] for 1D latents, so repaint needs only a mask builder: AudioLatentRepaintMask (comfy_nodes/musicwright_nodes, installed in D:/ComfyUI/custom_nodes). Graph LoadAudio -> VAEEncodeAudio -> mask -> KSampler denoise 1 (Ai/Music/hw-checks/native_repaint.py).
+- 10-20 s of rest_t2m_s3501: 54 s cold, 15 s warm. Per-2 s correlation to the source (seg_corr.py): outside the window waveform 0.96-1.00 (a VAE round trip, not bit-identical like REST); inside, spectral 0.50-0.70 against REST 0.58-0.81, so it follows the context less. A 0.5 s fade changed little. Unheard: native_repaint_10_20_f0/f5 in hw-checks.
+- Extract: no stock route. Community packs (ComfyUI-AceMusic, the official ace-step/ACE-Step-ComfyUI, RyanOnTheInside, kaola-ace-step) claim cover/repaint, extract only partly; installing one runs downloaded code, so it waits on Mark. comfyui-gen gained references/custom-nodes.md (PR #159, L-225: restart the PC server from its cmd file, the scheduled task did not restart it).
