@@ -131,3 +131,9 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 
 - Gearspace AI subforum and Kaggle audio forums: searches found no relevant threads (KVR threads instead, opinion only). One vendor-blog figure (raw Suno export near -11 LUFS short-term against -7 to -8 for a commercial rock master) adds nothing the produce loudness presets lack.
 - Stable Audio 3 (released 2026-05-20, arXiv 2026-05-18): the Medium HF card says it supports inpainting and continuation, through stable-audio-tools `generate_diffusion_cond_inpaint`; the card shows no mask input and no ComfyUI route. Added to the models.md row as a possible second repaint route, untested.
+
+### R-20261102-9 · 2026-11-02 · Sources pass 9: Meta AI, Google Magenta, Hugging Face audio posts
+
+- Meta AI: no audio or music model since AudioCraft/MusicGen; the MusicGen row (CC BY-NC weights) stands.
+- Google Magenta: Magenta RealTime 2 (2026-06-04, google/magenta-realtime-2, CC BY 4.0, 2.4B Base and 230M Small, 48 kHz stereo, ~200 ms control latency, text/audio/MIDI steering) is already in models.md; HF API confirms the licence tag. Lyria stays hosted only.
+- Hugging Face blog: no 2026 music post found. LeVo 2 (Tencent SongGeneration v2-large, released 2026-03-01) surfaced again; its licence is a custom Tencent file ("Other" on HF) that could not be read (GitHub 404, HF 401 without login), and third parties disagree on commercial use. No models.md row until the licence is read from the source.
