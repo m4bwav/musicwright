@@ -41,7 +41,10 @@ let the director listen, record verdicts.
 - Trim or extend at bar boundaries; small tempo nudges with `atempo` up to about ±5%
   (musicwright-produce ffmpeg.md).
 - Loudness shape: section tags rarely shape a cue's dynamics. Shape it after rendering, with
-  gain changes per section in a DAW or the film plugin, rather than re-rolling for it.
+  gain changes per section in a DAW or the film plugin, rather than re-rolling for it. To pick
+  the take that already follows the arc, rank them against the target shape:
+  `mw.py curve t1.flac t2.flac --shape 0:-30,20:-18,50%:-14,end:-24` (rms_error_lu under about
+  2 follows it; spans say where a take is too loud or quiet; short-term loudness lags up to 3 s).
 
 ## Step 4: sit it under the picture
 

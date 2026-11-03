@@ -918,6 +918,20 @@ class PulseAndAnswer(unittest.TestCase):
         self.assertEqual(mw.key_relation("C major", "G major"), "fifth")
         self.assertIsNone(mw.key_relation("C major", "F# major"))
 
+    def test_curve_ranks_the_take_that_follows_the_shape(self):
+        a = TMP / "audio"
+        rise = lavfi(f"aevalsrc='0.5*(t/20)*sin(2*PI*220*t)':s={RATE}:d=20", a / "rise.wav")
+        flat = lavfi(f"aevalsrc='0.2*sin(2*PI*220*t)':s={RATE}:d=20", a / "flat.wav")
+        code, d = run("curve", flat, rise, "--shape", "0:-40,end:-14")
+        self.assertEqual(code, 0, d)
+        first, second = d["takes"]
+        self.assertTrue(first["file"].endswith("rise.wav"), d)
+        self.assertLess(first["rms_error_lu"], 3, first)
+        self.assertGreater(second["rms_error_lu"], 5, second)
+        self.assertGreater(first["correlation"], 0.9, first)
+        code, d = run("curve", rise, "--shape", "0:-40")
+        self.assertNotEqual(code, 0, d)  # one point is no shape
+
     def test_swelling_tone_has_no_pulse(self):
         # 0.1.1 called this "steady" at 120 bpm: the envelope's ripple on the rise read as onsets
         swell = lavfi(f"aevalsrc='0.3*sin(2*PI*196*t)*(0.6+0.4*sin(2*PI*0.1*t))':s={RATE}:d=27", TMP / "audio" / "swell.wav")
