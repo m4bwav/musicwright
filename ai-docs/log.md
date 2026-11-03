@@ -112,3 +112,7 @@ Append-only. Newest last.
 
 ## [2026-11-02] hardware | ACE-Step REST through mw.py gen (Owed item 2)
 - Mark ran uv sync and started acestep-api (8001). Freed ComfyUI VRAM via /free first. acestep-rest recipe: text2music 30 s in 190 s cold (-15.6 LUFS, 3.25 s silent tail); cover (strength 0.6, violin), repaint 10-20 s, extract track vocals each ~9 s warm. Repaint: correlation with source 1.0 outside the window, -0.08 inside. Cover: ~0.1 (new material). Extract on a solo-flute source returned nearly the source (0.98), so it is not a real stem test; rerun on a mixed source. Takes rest_* in Ai/Music/hw-checks, unheard.
+
+## [2026-11-02] hardware | cover through stock ComfyUI nodes (Mark: move ComfyUI-native source tasks ahead of the loudness curve)
+- Graph: the mw.py XL text2music graph with EmptyAceStep1.5LatentAudio swapped for LoadAudio -> VAEEncodeAudio, generate_audio_codes off, KSampler denoise < 1 (Ai/Music/hw-checks/native_cover.py). 30 s source rest_t2m_s3501: denoise 0.5 and 0.7 each ~2 min (REST server also resident). Log-spectrogram correlation to the source: 0.48 (d0.5), 0.42 (d0.7), REST cover 0.62. Unheard.
+- No stock node masks a 1D audio latent by time (SetLatentNoiseMask takes an image mask), so repaint needs a small custom node (time-range mask over the ACE-Step 1.5 latent); extract needs the ACE-Step task instruction, which no stock node passes. Plan in HANDOFF item 7.
