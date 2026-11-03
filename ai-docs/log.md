@@ -139,3 +139,10 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | sources pass 2 (Owed item 8)
 - Essentia, MidiTok, AudioCraft, Stable Audio API: no real gaps; SA3 Large reseller price added to models.md (R-20261102-2). Item 7 remainder: extract waits on Mark choosing a community node pack; cover with audio codes needs a node route (not started). Next pass: HF transformers audio, then IT-JIM.
+
+## [2026-11-02] tool | easy_piano.py beginner sheets (outside the plugin)
+- Ai/Music/piano-kids/easy_piano.py: clip -> ffmpeg -> mw.py transcribe -> top line, eighth grid, easy key, C4-G5 -> ABC + printable abcjs HTML with letter names. README there. Candidate for a future `mw.py` option if Mark uses it.
+- Fix: easy_piano.py finds the uv-installed basic-pitch (~/.local/bin) and stops on transcribe errors.
+
+## [2026-11-02] research | sources pass 3 (Owed item 8)
+- HF transformers text-to-audio docs: speech-first, needs torchcodec; no gap. IT-JIM ACE-Step/LeVo/YuE post not found. LeVo missing from models.md, noted only (R-20261102-3). Next pass: Torin Hopkins, MusicMakerApp, Kingy AI.

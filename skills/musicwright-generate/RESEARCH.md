@@ -102,3 +102,10 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - AudioCraft 1.3.0: MusicGen weights still CC BY-NC; models.md row correct. No change.
 - Stable Audio 3 Large: API-only; resellers list about USD 0.02 a take (WaveSpeed text-to-audio, async poll). Stability's own price page not found. Added to the models.md row.
 - Hugging Face transformers audio docs: not read this pass (moved to pass 3).
+
+
+### R-20261102-3 · 2026-11-02 · Sources pass 3: Hugging Face transformers audio docs, IT-JIM blog
+
+- transformers text-to-audio docs: the `"text-to-audio"` pipeline now leads with speech models (CSM, Dia, Bark, VITS); its install line needs `torchcodec`, matching research 04's torchaudio 2.9 note. MusicGen through transformers carries the same CC BY-NC weights as AudioCraft. No change.
+- IT-JIM blog: no post on ACE-Step, LeVo or YuE found by search; the list's claim is unverified. Skipped.
+- Gap noted, not acted on: LeVo (Tencent SongGeneration) is absent from models.md; a SongEval leaderboard (wizwand.com) puts it level with YuE. Add a row only after its licence and a local run are checked.
