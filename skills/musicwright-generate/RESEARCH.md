@@ -109,3 +109,9 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - transformers text-to-audio docs: the `"text-to-audio"` pipeline now leads with speech models (CSM, Dia, Bark, VITS); its install line needs `torchcodec`, matching research 04's torchaudio 2.9 note. MusicGen through transformers carries the same CC BY-NC weights as AudioCraft. No change.
 - IT-JIM blog: no post on ACE-Step, LeVo or YuE found by search; the list's claim is unverified. Skipped.
 - Gap noted, not acted on: LeVo (Tencent SongGeneration) is absent from models.md; a SongEval leaderboard (wizwand.com) puts it level with YuE. Add a row only after its licence and a local run are checked.
+
+### R-20261102-4 · 2026-11-02 · Sources pass 4: Torin Hopkins, MusicMakerApp, Kingy AI
+
+- Torin Hopkins (CU Boulder ATLAS): a researcher (AIMC 2023 papers on AI jam partners, AR drumming), not a resources page; nothing on model use or prompting. Skipped.
+- MusicMakerApp: a hosted Suno-style text and lyrics to song app; no "Creation Lab" or vendor prompt guide found. Skipped.
+- Kingy AI (kingy.ai): tool profiles and video summaries of Suno, Udio, Mureka, Musick AI, MusicGen; self-described as partly sponsored. Nothing the hosted-model notes lack. No change.
