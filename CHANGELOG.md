@@ -2,7 +2,7 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## Unreleased
+## 0.1.7 (2026-11-03)
 
 - `mw.py curve FILES --shape 0:-30,20:-18,50%:-14,end:-24 [--absolute]` ranks takes against a target loudness shape for film cues: per-second short-term loudness against the interpolated shape, rms error after the level offset, correlation, worst second and mean error per span. Test added.
 
