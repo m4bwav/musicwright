@@ -106,3 +106,6 @@ Append-only. Newest last.
 - Weights from Comfy-Org/stable-audio-3 (medium + t5gemma_b_b_ul2) and Comfy-Org/YuE2 (3B int8 + sheetsage2) into D:/ComfyUI/models; nodes were already native. Standalone graphs from the bundled templates in Ai/Music/hw-checks/run_native.py (not in mw.py: no take judged yet).
 - SA3 Medium: 60 s in 9 s, 60.0 s, -16.3 LUFS, -1.9 dBTP. YuE2: 90 s asked, 78 s in 33 s, ~8.5 GB, -14.7 LUFS, +0.1 dBTP; its ABC plan saved beside the take. Both await a listener.
 - ACE-Step REST: no server on either host; ACE-Step-1.5 cloned to D:/AI/ACE-Step-1.5 but `uv sync` was refused by the auto-mode classifier (runs downloaded code). Mark runs `uv sync && uv run acestep-api` there, then REST, cover, repaint and extract can be measured.
+
+## [2026-11-02] research | Audiobox Aesthetics on the judged takes (Owed item 4, half)
+- Item 2 still blocked: no ACE-Step venv (uv sync is Mark's), takes unheard. Ran audio-aes via uv tool run (pins: requests, soundfile, torch/torchaudio<2.9) on 16 files in 50 s. CE matched the owner on the s52203/s41017 keep/reject and the s8101 over s8303 mixes; noise on slight gaps; PQ ranked the reject higher. Not added to mw.py. Note: ai-docs/research/04-learned-quality-score.md; raw scores in Ai/Music/aes-check/out.jsonl.
