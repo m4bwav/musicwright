@@ -180,3 +180,6 @@ Append-only. Newest last.
 
 ## [2026-11-03] research | sources pass 14 (Owed item 8)
 - Dean, *Oxford Handbook of Computer Music*: survey, IDyOM-style expectation a candidate only. Zölzer, *Digital Audio Signal Processing*: dither and resampling already covered. Listings only, no skill change (R-20261103-3). Next pass: Dodge, then Foster.
+
+## [2026-11-03] research | sources pass 15 (Owed item 8)
+- Dodge and Jerse, *Computer Music*: synthesis out of scope, ch. 11 1/f melodies a candidate only. Foster, *Generative Deep Learning* ch. 11: symbolic models superseded. No skill change; group 5 done (R-20261103-4). Next pass: group 6 course syllabi.
