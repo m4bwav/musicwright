@@ -14,8 +14,10 @@ ai-docs/research/01-models-landscape.md.
 | Stable Audio 3 Small / Small-SFX / Medium | open weights (Large API-only) | Stability Community Licence: free under USD 1M revenue, you own outputs | likely (0.46B / 1.4B) | native | licensed training data; instrumental and SFX up to 6:20; no vocals; Large through resellers about USD 0.02 a take (WaveSpeed, 2026-11; Stability's own price unchecked) |
 | HeartMuLa-oss-3B | yes | Apache 2.0 | unknown | custom | songs, MuLaCover covers |
 | DiffRhythm 1.2 / 2 | yes | Apache 2.0 | v1 yes (8 GB chunked) | custom | full songs; repo quiet |
+| DiffSynth-Music (DiffSynth-Studio) | yes | Apache 2.0 | low-VRAM offload stated, unmeasured | none (Python, DiffSynth-Studio) | control templates on the ACE-Step 1.5 backbone: beats (click track), keep vocals and write the band, keep the band and write vocals, prosody, reference; ships its own track separator; HF card 2026-09 |
 | MusicGen | weights NC | CC BY-NC 4.0 | yes | custom | non-commercial: not a default |
 | Magenta RealTime 2 | yes | CC BY 4.0 weights, no claim on outputs | offline on NVIDIA | none | real-time only on Apple Silicon |
+| ACE-Step 1.5 in C++ | acestep.cpp (MIT, GGML: CPU, CUDA, ROCm, Metal, Vulkan; text + lyrics to 48 kHz WAV or MP3) and acestep.vst3 (MIT, official, a DAW plugin built on it) | | | none | for a machine without Python or a DAW-side draft; unmeasured here |
 | Tencent SongGeneration, SongBloom | unclear | official repos gone or 404 | | custom | do not depend on them |
 | Lyria 3.5 / 3 Clip / RealTime | hosted | Gemini API terms, SynthID watermark | n/a | none | USD 0.08 a song, 0.04 a 30 s clip; RealTime experimental, instrumental |
 | ElevenLabs Music v2.5 | hosted | paid plans commercial, but film, TV and studio games need Enterprise | n/a | partner (SFX and speech only) | USD 0.15 a minute; stems, inpainting |
@@ -34,6 +36,7 @@ for loops and SFX.
 | Separate by text prompt | Meta SAM Audio | SAM Licence, gated | read the licence before commercial use |
 | Voice conversion | RVC WebUI, Applio | MIT | never convert into a real singer's voice without consent |
 | Singing synthesis | DiffSinger | Apache 2.0 | |
+| Lyrics and captions from audio | ACE-Step Transcriber (HF ACE-Step/acestep-transcriber, MIT, audio-text-to-text) | MIT | untested here |
 | Transcription to MIDI | MuScriptor (2026-07, weights licence unstated), MT3, basic-pitch | Apache 2.0 (MT3, basic-pitch) | |
 | Beats, tempo, key | beat_this (MIT), librosa, Essentia (AGPL: call it, never vendor it) | | |
 | Captioning | Music Flamingo, Qwen3-Omni, ACE-Step's LM | research licences | |

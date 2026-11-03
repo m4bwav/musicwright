@@ -121,3 +121,8 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - Artlist help and blog: text-to-music runs Google Lyria 3; prompt template genre + mood + instruments + tempo/energy + structure + use case (matches the caption guidance); licence per plan, official licence text not found. Row added to hosted.md.
 - Mubert: API v3 with Company_ID and License_Token, 150+ channels; royalty-free and sub-licensing claimed by the vendor (github.com/MubertAI/skills, mubert.com blog). Third-party tutorials still show the retired v2 endpoint. Row added to hosted.md.
 - Artificial Analysis Music Arena v1.1 (instrumental): Suno v6 1148 leads, Lyria 3.5 1078, Stable Audio 3 Large 1014, MiniMax Music 3.0 1000; ACE-Step and YuE absent. Added as an outside ranking in hosted.md, dated.
+
+### R-20261102-7 · 2026-11-02 · Sources pass 7: awesome-ai-music lists, r/ArtificialInteligence
+
+- GitHub lists: Curated-Awesome-Lists/awesome-ai-music-generation (503 stars, mostly old research repos) and wildminder/awesome-ai-music (per-model pages with ComfyUI node packs, quants and LoRAs; the better index). New to models.md, each checked at its repo or HF card: DiffSynth-Music (Apache 2.0, control templates on ACE-Step 1.5), acestep.cpp and the official acestep.vst3 (MIT), ACE-Step Transcriber (MIT). Neither list names a ComfyUI node pack with ACE-Step extract, so item 7 extract is unchanged.
+- r/ArtificialInteligence search RSS for music (top of month) returned nothing. Hugging Face audio discussions skipped: no single forum; the per-model community tabs are covered by the model checks.
