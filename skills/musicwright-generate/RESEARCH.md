@@ -52,6 +52,14 @@ Best sources: model cards and repos, vendor pricing and terms pages, court and r
 
 ## Findings log
 
+### R-20261103-1 · 2026-11-03 · Quiet check
+
+- Summary: ACE-Step-1.5 still at v0.1.8; no MiniMax Music successor; nothing new on YuE2 or ComfyUI audio nodes; Suno/Udio unchanged (no API, Udio downloads off). ElevenLabs Music list price still USD 0.15/min (a 50% OpenRouter launch discount ended 2026-10-19). Aggregator lists Stable Audio 3.0 hosted at USD 0.26/generation and Google tiers as 'Lyria 3 Pro' (USD 0.08/song) and 'Lyria 3 Clip' (USD 0.04/30 s): open question whether the main file's 'Lyria 3.5' name is right; confirm on ai.google.dev pricing. Tooling: nothing new. Testing: CMI-RewardBench v2 (arxiv 2603.00610) shows Gemini-2.5-Pro under 80% agreement with human preference, so LLM judges of takes stay a pre-sort only.
+- Track: subject, tooling, testing
+- Sources: github.com/ace-step/ACE-Step-1.5/releases; cometapi.com/ai-music-api-pricing; openrouter.ai audio collection; arxiv.org/html/2603.00610v2
+- Magnitude: 0.15
+- applied: none (note only)
+
 Newest first. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261017-6 · 2026-10-18 · Lego on base checkpoints: DCW, base against XL, percussion over free time

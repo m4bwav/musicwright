@@ -13,9 +13,9 @@
   "source": null,
   "topic": "AI music generation: models, licences, hosted APIs, ACE-Step and MiniMax prompting and parameters, re-roll strategy",
   "tier": "fast",
-  "interval_days": 14,
-  "last_checked": "2026-10-17",
-  "next_due": "2026-10-31",
+  "interval_days": 14.0,
+  "last_checked": "2026-11-03",
+  "next_due": "2026-11-15",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -32,12 +32,18 @@
       "m": null,
       "interval_after": 14,
       "note": "created"
+    },
+    {
+      "date": "2026-11-03",
+      "m": 0.15,
+      "interval_after": 14.0,
+      "note": "quiet: ACE-Step v0.1.8 still latest, no new models; Lyria naming open; cost: searches 6 · fetches 1 · tool calls 9"
     }
   ],
   "counts": {
     "learnings": 0,
     "changes": 0,
-    "research": 0,
+    "research": 1,
     "tests": 2
   },
   "consolidate_every": 25,
