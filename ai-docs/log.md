@@ -109,3 +109,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | Audiobox Aesthetics on the judged takes (Owed item 4, half)
 - Item 2 still blocked: no ACE-Step venv (uv sync is Mark's), takes unheard. Ran audio-aes via uv tool run (pins: requests, soundfile, torch/torchaudio<2.9) on 16 files in 50 s. CE matched the owner on the s52203/s41017 keep/reject and the s8101 over s8303 mixes; noise on slight gaps; PQ ranked the reject higher. Not added to mw.py. Note: ai-docs/research/04-learned-quality-score.md; raw scores in Ai/Music/aes-check/out.jsonl.
+
+## [2026-11-02] hardware | ACE-Step REST through mw.py gen (Owed item 2)
+- Mark ran uv sync and started acestep-api (8001). Freed ComfyUI VRAM via /free first. acestep-rest recipe: text2music 30 s in 190 s cold (-15.6 LUFS, 3.25 s silent tail); cover (strength 0.6, violin), repaint 10-20 s, extract track vocals each ~9 s warm. Repaint: correlation with source 1.0 outside the window, -0.08 inside. Cover: ~0.1 (new material). Extract on a solo-flute source returned nearly the source (0.98), so it is not a real stem test; rerun on a mixed source. Takes rest_* in Ai/Music/hw-checks, unheard.
