@@ -155,3 +155,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | sources pass 6 (Owed item 8)
 - r/SunoAI and r/udiomusic top-of-month RSS: Suno v6 hiss/"radio static" complaints led to an ffmpeg afftdn row in produce mixing.md (tested on a synthetic tone plus high-band noise); Suno flagging users' own and public-domain uploads noted in hosted.md (R-20261102-6). Next pass: r/ArtificialInteligence, HF audio discussions, awesome-ai-music lists.
+
+## [2026-11-02] research | sources pass 7 (Owed item 8)
+- wildminder/awesome-ai-music is the useful list (per-model ComfyUI packs, quants, LoRAs). Added to generate models.md after checking each source: DiffSynth-Music (Apache 2.0 control templates on ACE-Step 1.5: keep vocals or band, beats, prosody), acestep.cpp and acestep.vst3 (MIT), ACE-Step Transcriber (MIT). No list names an ACE-Step extract node pack. r/ArtificialInteligence music RSS empty; HF discussions skipped (R-20261102-7). Next pass: Gearspace, Kaggle, then blogs.
