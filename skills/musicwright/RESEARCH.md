@@ -14,7 +14,7 @@ Topic: Routing music work for agents: brief, route, the take loop for an agent t
 
 ## Open questions
 
-- Whether a learned audio-quality scorer (Audiobox Aesthetics, SongEval) adds useful signal to the sheet for ranking takes.
+- Whether a learned audio-quality scorer adds useful signal for ranking takes. Partly answered 2026-11-02 (ai-docs research 04): Audiobox Aesthetics CE agreed with the owner on both large gaps among nine judged flute files and was noise on slight ones; PQ got the reject wrong. Coarse pre-sort only, not in mw.py; recheck with ten or more judged takes. SongEval untried.
 - Whether an MCP wrapper over mw.py is worth its install cost.
 
 ## Search plan
