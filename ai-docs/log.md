@@ -193,3 +193,7 @@ Append-only. Newest last.
 
 ## [2026-11-03] research | sources pass 16 (Owed item 8)
 - Ableton Learning Music: every chapter already in theory.md (pelog, 19-tone not, models do not take microtonal captions). Soundfly 403. No skill change (R-20261103-5). Next pass: Coursera, Kaggle Learn; then the semantic-hint cover guider (item 7).
+
+
+## [2026-11-03] research | sources pass 17 (Owed item 8)
+- Coursera music-production syllabi covered by produce; Kaggle Learn has no audio course. No skill change; group 6 done (R-20261103-6). Next: the semantic-hint cover guider (item 7).

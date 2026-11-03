@@ -48,6 +48,13 @@ Best sources: theory texts and pedagogy sites, library docs, the MCP server repo
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261103-6 · 2026-11-03 · Coursera music-production syllabi; Kaggle Learn (sources pass 17)
+- Summary: Berklee's Music Production Capstone (mixing philosophies, techniques, mixing and mastering checklists) and Malachi's Mixing and Completing Your Music Production (critical listening, loudness standards, metadata) are covered by produce mixing.md, mastering presets and ffmpeg.md tagging. Kaggle Learn has no audio course; the Hugging Face Audio Course is speech and classification, outside scope. No skill change; group 6 done.
+- Track: subject
+- Sources: https://www.coursera.org/learn/music-production-capstone, https://www.coursera.org/learn/mixing-and-completing-your-music-production, https://huggingface.co/learn/audio-course (searched 2026-11-03)
+- Magnitude: 0
+- Applied: none
+
 ### R-20261103-5 · 2026-11-03 · Ableton Learning Music; Soundfly (sources pass 16)
 - Summary: Ableton Learning Music chapters (beats and tempo by genre, backbeats, pitch, keys and scales, triads and progressions, basslines, melodies, song structure; advanced: modes, pentatonic, whole tone, octatonic, pelog, 19-tone, inversions, voicings, sevenths) are all in theory.md or below what the agent needs; pelog and 19-tone are not, but models do not take microtonal captions reliably, so not a gap. Soundfly's course list returned 403; skipped. No skill change.
 - Track: subject
