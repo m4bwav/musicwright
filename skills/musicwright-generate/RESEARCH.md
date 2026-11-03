@@ -115,3 +115,9 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - Torin Hopkins (CU Boulder ATLAS): a researcher (AIMC 2023 papers on AI jam partners, AR drumming), not a resources page; nothing on model use or prompting. Skipped.
 - MusicMakerApp: a hosted Suno-style text and lyrics to song app; no "Creation Lab" or vendor prompt guide found. Skipped.
 - Kingy AI (kingy.ai): tool profiles and video summaries of Suno, Udio, Mureka, Musick AI, MusicGen; self-described as partly sponsored. Nothing the hosted-model notes lack. No change.
+
+### R-20261102-5 · 2026-11-02 · Sources pass 5: Artlist, Mubert, Artificial Analysis
+
+- Artlist help and blog: text-to-music runs Google Lyria 3; prompt template genre + mood + instruments + tempo/energy + structure + use case (matches the caption guidance); licence per plan, official licence text not found. Row added to hosted.md.
+- Mubert: API v3 with Company_ID and License_Token, 150+ channels; royalty-free and sub-licensing claimed by the vendor (github.com/MubertAI/skills, mubert.com blog). Third-party tutorials still show the retired v2 endpoint. Row added to hosted.md.
+- Artificial Analysis Music Arena v1.1 (instrumental): Suno v6 1148 leads, Lyria 3.5 1078, Stable Audio 3 Large 1014, MiniMax Music 3.0 1000; ACE-Step and YuE absent. Added as an outside ranking in hosted.md, dated.
