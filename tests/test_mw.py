@@ -400,7 +400,9 @@ class GenDryRun(unittest.TestCase):
         code, d = run("gen", "--task", "lego", "--src", src, "--track", "drums", "--caption", "x", "--out", TMP / "gen_err", "--dry-run")
         self.assertIn("REST server", d["error"])  # the default comfy recipe does cover and repaint only
         code, d = run("gen", "--recipe", "minimax-music3", "--task", "cover", "--src", src, "--caption", "x", "--out", TMP / "gen_err", "--dry-run")
-        self.assertIn("only the ACE-Step recipes", d["error"])
+        self.assertIn("the ACE-Step recipes do cover", d["error"])
+        code, d = run("gen", "--task", "extract", "--src", src, "--track", "drums", "--out", TMP / "gen_err", "--dry-run")
+        self.assertIn("acestep-xl-base", d["error"])  # sft cannot extract
         self.assertFalse((TMP / "gen_err").exists())
 
     def test_comfy_source_tasks_dry_run(self):
@@ -420,6 +422,18 @@ class GenDryRun(unittest.TestCase):
         m = g["7"]["inputs"]
         self.assertEqual((g["7"]["class_type"], m["samples"], m["start_s"], m["end_s"], g["8"]["inputs"]["denoise"]),
                          ("AudioLatentRepaintMask", ["12", 0], 2.0, 10.0, 1.0))  # no --end: to the end of the source
+        code, d = run("gen", "--recipe", "acestep-xl-base", "--task", "extract", "--src", src, "--track", "drums",
+                      "--seeds", "1", "--out", TMP / "gen_out", "--dry-run")
+        self.assertEqual(code, 0, d)
+        g = d["jobs"][0]["graph"]
+        self.assertNotIn("7", g)
+        self.assertEqual((g["5"]["class_type"], g["5"]["inputs"]["task_type"], g["5"]["inputs"]["track_name"]),
+                         ("MWAceStep15TaskTextEncode", "extract", "drums"))
+        self.assertEqual((g["13"]["inputs"]["source_latents"], g["8"]["inputs"]["guider"], g["8"]["inputs"]["latent_image"]),
+                         (["12", 0], ["13", 0], ["12", 0]))
+        self.assertEqual((g["1"]["inputs"]["unet_name"], g["13"]["inputs"]["cfg"]), ("acestep_v1.5_xl_base_bf16.safetensors", 7.0))
+        refs = [v for n in g.values() for v in n["inputs"].values() if isinstance(v, list) and len(v) == 2 and isinstance(v[0], str)]
+        self.assertTrue(all(r[0] in g for r in refs), refs)  # every link points at a node in the graph
 
     def test_dry_run_creates_no_folder(self):
         code, d = run("gen", "--caption", "x", "--seeds", "1", "--out", TMP / "gen_dry_only", "--dry-run")

@@ -49,6 +49,33 @@
    "timing": "10-minute tracks take about 9.5-10 minutes on a 16 GB card",
    "source": "ComfyUI's ACE-Step 1.5 XL template; used for long-form and short film cues 2026-08 to 2026-10"
   },
+  "acestep-xl-base": {
+   "route": "comfy",
+   "graph": "acestep15",
+   "model": "ACE-Step 1.5 XL base (MIT)",
+   "use": "extract one part (--task extract --track) inside ComfyUI; base is the only 1.5 checkpoint trained for extract",
+   "params": {
+    "unet": "acestep_v1.5_xl_base_bf16.safetensors",
+    "clip1": "qwen_0.6b_ace15.safetensors",
+    "clip2": "qwen_1.7b_ace15.safetensors",
+    "vae": "ace_1.5_vae.safetensors",
+    "shift": 3.0,
+    "steps": 50,
+    "cfg": 7.0,
+    "sampler": "er_sde",
+    "scheduler": "linear_quadratic",
+    "lm_cfg": 2.0,
+    "temperature": 0.85,
+    "top_p": 0.9,
+    "timesignature": "4",
+    "language": "en"
+   },
+   "timing": "untested",
+   "source": "Comfy-Org/ACE-Step-1.5 split_files; extract nodes vendored from ComfyUI_RyanOnTheInside (research 06, 2026-11-03)",
+   "tasks": [
+    "extract"
+   ]
+  },
   "minimax-music3": {
    "route": "comfy",
    "graph": "minimax3",

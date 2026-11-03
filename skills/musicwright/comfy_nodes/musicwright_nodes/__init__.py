@@ -39,3 +39,10 @@ class AudioLatentRepaintMask:
 
 NODE_CLASS_MAPPINGS = {"AudioLatentRepaintMask": AudioLatentRepaintMask}
 NODE_DISPLAY_NAME_MAPPINGS = {"AudioLatentRepaintMask": "Audio Latent Repaint Mask"}
+
+try:
+    from .acestep15.nodes import NODE_CLASS_MAPPINGS as _X, NODE_DISPLAY_NAME_MAPPINGS as _XN
+    NODE_CLASS_MAPPINGS.update(_X)
+    NODE_DISPLAY_NAME_MAPPINGS.update(_XN)
+except ImportError as e:  # ComfyUI without ACE-Step 1.5 support: repaint still loads
+    print(f"[musicwright_nodes] ACE-Step 1.5 extract nodes not loaded: {e}")
