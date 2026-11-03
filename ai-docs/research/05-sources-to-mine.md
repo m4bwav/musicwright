@@ -1,0 +1,32 @@
+---
+kind: research
+status: active
+date: 2026-11-02
+title: Sources to mine for improvements (read before a mining pass or a skill refresh's search plan)
+tags: research,sources,mining
+---
+
+# Sources to mine
+
+The owner handed over a list of forums, tutorial sites, books, blogs and docs on AI music generation on 2026-11-02 (written by another AI, unverified) and asked that they be mined for improvements. Each pass takes a few sources, reads what is new, and records findings as numbered R- entries in a research note or a skill's RESEARCH.md, with a change in a skill only when a finding names something the skills lack or get wrong. Mark sources done below with the date.
+
+Already covered by earlier passes (research 01 to 03): Demucs, Essentia, Magenta, Stability's models, Suno and Udio terms. Mine those only for what changed.
+
+## Access
+
+- Reddit: only the public RSS feeds work (`https://www.reddit.com/r/<sub>/top/.rss?t=month`), one request every 30 to 60 s; JSON and WebFetch are refused. Never use Arctic Shift.
+- Discord servers (Suno, Udio, AudioCraft): not readable from here. Skip unless the owner pastes threads.
+- Paywalled books: use the owner's copies through readwright if he has them; otherwise tables of contents and publisher samples only.
+
+## Order (most likely to pay off first)
+
+1. Docs that touch code musicwright runs or could run: Hugging Face transformers audio docs, torchaudio docs (note: 2.9 needs TorchCodec, research 04), Demucs, librosa, Essentia, MidiTok, AudioCraft, Stable Audio API.
+2. Tutorial and technical sites: IT-JIM blog (ACE-Step, LeVo, YuE tests), Torin Hopkins' AI music resources, MusicMakerApp Creation Lab, Kingy AI, Artlist and Mubert guides (licensing, prompt structure), Artificial Analysis audio benchmarks.
+3. Forums: r/SunoAI, r/udiomusic (the list's "r/UdIO"; check the real name), r/ArtificialInteligence music threads, Hugging Face audio discussions, GitHub awesome-ai-music lists, Gearspace AI subforum, Kaggle audio forums.
+4. Blogs: Stability Audio, Meta AI, Google Magenta, Hugging Face audio posts, OpenAI research, Sound on Sound tech, Music Business Worldwide (law and licensing; feeds generate's licence notes), Towards Data Science audio tag, Synthtopia.
+5. Books, most relevant first: Müller, *Fundamentals of Music Processing*; Farnell, *Designing Sound*; Nierhaus, *Algorithmic Composition*; Dean (ed.), *The Oxford Handbook of Computer Music*; Zölzer, *Digital Audio Signal Processing*; Dodge, *Computer Music*; Foster, *Generative Deep Learning*. Low value for this plugin: Müller and Guido, Géron, Petzold's *Code*.
+6. Courses (Coursera, Kaggle Learn, Soundfly, Ableton Learning Music): skim the syllabus for any check or technique the skills lack; do not take them.
+
+## Done
+
+(none yet)
