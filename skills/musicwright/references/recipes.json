@@ -79,7 +79,7 @@
     "thinking": true
    },
    "timing": "60 s -> 22 s, 120 s -> 31 s warm; the first request after server start loads models for about 2.5 min (submit timeout 900 s)",
-   "source": "measured 2026-09-12 and 2026-10-12 on a 16 GB RTX 5060 Ti"
+   "source": "measured 2026-09-12 and 2026-10-12 on a 16 GB RTX 5060 Ti; rechecked 2026-11-02 through mw.py gen: text2music 30 s in 3 min 10 s cold, cover, repaint and extract about 9 s each warm (repaint left audio outside the window bit-identical)"
   },
   "acestep-rest-lego": {
    "route": "rest",
