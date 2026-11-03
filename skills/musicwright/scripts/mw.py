@@ -1084,7 +1084,7 @@ def cmd_curve(a):
         spans = []
         for (t0, v0), (t1, v1) in zip(pts, pts[1:]):
             e = [err[i] for i, (t, _) in enumerate(sec) if t0 <= t <= t1]
-            if e:
+            if e and t1 > t0:  # two points at one time are a step, not a span
                 spans.append({"from_s": round(t0, 1), "to_s": round(t1, 1), "target_lufs": [v0, v1],
                               "mean_error_lu": round(sum(e) / len(e), 1)})
         worst = max(range(len(err)), key=lambda i: abs(err[i]))
@@ -1783,7 +1783,7 @@ def source_graph(g, task, audio, a):
         t, k = g["5"]["inputs"], g["8"]["inputs"]
         g["12"] = {"class_type": "VAEEncodeAudio", "inputs": {"audio": ["11", 0], "vae": ["3", 0]}}
         g["5"] = {"class_type": "MWAceStep15TaskTextEncode", "inputs": {
-            "clip": t["clip"], "text": t["tags"], "task_type": task, "track_name": a.track or "None",
+            "clip": t["clip"], "text": t["tags"] or "", "task_type": task, "track_name": a.track or "None",
             "lyrics": t.get("lyrics", "") if task == "cover" else "",
             "bpm": t["bpm"], "duration": t["duration"], "keyscale": t["keyscale"],
             "timesignature": t["timesignature"], "language": t["language"], "seed": t["seed"]}}

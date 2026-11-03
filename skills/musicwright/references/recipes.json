@@ -100,7 +100,7 @@
   "acestep-rest": {
    "route": "rest",
    "model": "ACE-Step 1.5 2B turbo + 5Hz LM planner through the ACE-Step REST server (MIT)",
-   "use": "fast drafts (a 60 s take in about 22 s once warm) and the tasks ComfyUI core lacks: cover, repaint, extend, extract",
+   "use": "fast drafts (a 60 s take in about 22 s once warm) and the source tasks without custom nodes: cover, repaint, extend, extract (ComfyUI needs the plugin's comfy_nodes for repaint and extract)",
    "params": {
     "format": "wav",
     "thinking": true

@@ -207,3 +207,8 @@ Append-only. Newest last.
 
 ## [2026-11-03] build | extract retry on a clear mix (Owed item 7)
 - Source vocalsrc_s4001 (acestep-xl-sft, punk rock, loud drums, shouted male vocal, 30 s). `mw.py gen --recipe acestep-xl-base --task extract --track drums|vocals --seeds 4002`. Takes correlate 0.02 with each other and 0.25/0.17 with the source; band shares: drums sub -6.8, mid -13.9 dB; vocals sub -33.8, presence -8.5 dB. Isolation shown by numbers; unheard, listening owed. Item 8 closed (six groups, all mined).
+
+## [2026-11-03] release | 0.1.7, wiki, listening page
+- Tagged v0.1.7 (PR #67), installed. Wiki republished from 0.1.3 to 0.1.7 (a8f0c25), verified on Windows and on static ffmpeg 7.0.2 in WSL. Its findings are fixed under Unreleased: extract without a caption sent null, which ComfyUI would read as the word "None"; curve printed a zero-length span; a stale recipe line.
+- Real rerun with the empty caption (same source, seed 4002): drums correlate 0.99 and vocals 0.85 with the earlier takes, and 0.035 with each other, so separation holds. extract3_* in Ai/Music/hw-checks; the listening page still plays extract2_*.
+- Listening page: askwright set hw-checks-listening with extract, blind cover, repaint, MM3, SA3 and YuE2. Unanswered.
