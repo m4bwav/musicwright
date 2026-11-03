@@ -2,7 +2,13 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## Unreleased
+## 0.1.6 (2026-11-02)
+
+- `pulse --threshold adaptive`: a moving-median onset threshold (median plus spread over a 3 s window) for tracks whose level changes; the global threshold missed a quiet intro's hits once a loud section raised it (Lerch, *An Introduction to Audio Content Analysis*, 2nd ed., sec. 9.3.2). Default stays global, so earlier readings hold. Rows say which threshold ran. Test added.
+- `analyze` reports `key_margin` (top key profile score minus the runner-up) and `runner_up_relation` (relative, parallel, fifth), and flags `KEY-AMBIGUOUS` under 0.05 (Lerch sec. 7.5.2: Krumhansl profiles score near keys close together). Test for the relation helper.
+
+Earlier unreleased work, now in 0.1.6:
+
 
 - `gen --task cover|repaint` on the ACE-Step ComfyUI recipes: uploads `--src` to ComfyUI and runs cover as LoadAudio -> VAEEncodeAudio -> KSampler at denoise 1 - strength (default 0.4), repaint through the new AudioLatentRepaintMask node shipped in `skills/musicwright/comfy_nodes/` (checked on the host first). Measured on the PC: a 10-20 s repaint of a 30 s take in 35 s, source kept outside the window (0.99-1.00). Three tests on the fake server.
 - Generate: listen for a known tune before releasing any cue, not only after a reference or cover (Hands-On Generative AI ch. 9).

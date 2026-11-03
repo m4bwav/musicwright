@@ -2,7 +2,13 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+Entry shape: `### C-20261102-1 · 2026-11-02 · analyze key margin and KEY-AMBIGUOUS
+- because: user request (book distill: Lerch, Audio Content Analysis)
+- files: SKILL.md opening (analyze)
+
+`analyze` now reports `key_margin` and flags KEY-AMBIGUOUS under 0.05; the skill says what to do with it (Lerch sec. 7.5.2).
+
+### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261023-3 · 2026-10-23 · Listening checks moved TUNING-GAP, REPEATS and BRIGHT
 - because: L-005, decisions 2026-10-23-listening-checks

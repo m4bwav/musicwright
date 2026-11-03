@@ -89,7 +89,8 @@ repeat; three movements of about 3 min crossfaded hold up better.
 ## Step 5: add a part to a kept take
 
 1. `mw.py pulse lead.flac`: a steady pulse can carry percussion; with none, offer a re-render at
-   a fixed bpm or phrase-placed accents instead of a beat.
+   a fixed bpm or phrase-placed accents instead of a beat. A lead that starts quiet and builds:
+   add `--threshold adaptive`, or the loud part hides the quiet hits.
 2. Start the REST server on `acestep-v15-base` (references/acestep-rest.md), then
    `mw.py gen --recipe acestep-rest-lego --task lego --src lead.flac --track woodwinds --caption "..."
    --seeds 8101,8202,8303`. Sheet each take: noise means DCW was on (an old server).
