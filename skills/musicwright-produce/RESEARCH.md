@@ -50,6 +50,13 @@ Best sources: standards bodies, platform help pages, ffmpeg docs; practitioner b
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261103-3 · 2026-11-03 · Dean (ed.), Oxford Handbook of Computer Music; Zölzer, Digital Audio Signal Processing (sources pass 14)
+- Summary: no copy of either book on disk; read from publisher and library listings. Dean (OUP 2011): histories, composition and improvisation, sounding out, performance modes, cognition and computation (Wiggins, Pearce, Müllensiefen: statistical expectation models such as IDyOM), cultural issues; a survey with nothing an agent can run, IDyOM-style melodic surprise a candidate only for melody checks. Zölzer (Wiley, 3rd ed. 2022): quantization and dither, AD/DA, audio processing systems, filters, room simulation, dynamics, sample rate conversion, audio coding, machine learning for audio. Dither and resampling are already in mw.py and produce references (ffmpeg.md, loudness.md); no gap. No skill change.
+- Track: subject
+- Sources: https://www.schweitzer-online.de/en/buch/Dean/Oxford-Handbook-Computer-Music/9780199792030/A1073080/, https://oreilly.com/library/view/digital-audio-signal/9781119832676, https://katalog.ub.uni-heidelberg.de/titel/69056401 (read 2026-11-03)
+- Magnitude: 0 (candidates only)
+- Applied: none
+
 ### R-20261103-1 · 2026-11-03 · Müller, Fundamentals of Music Processing, through the FMP notebooks (sources pass 12)
 - Summary: no copy of the book on disk, so the free FMP notebooks (the book's companion, text CC BY-NC-SA 4.0, libfmp code MIT) stood in. mw.py already covers C4 structure (Foote checkerboard novelty in `analyze --sections`), C5's key half (chroma template correlation) and C6 onsets and tempo (`pulse`, adaptive threshold since 0.1.6). Not covered: C5 chord recognition (chroma templates plus HMM smoothing; would let a check say whether a take follows the asked progression), C3 DTW alignment (take against a rendered MIDI sketch), C8 harmonic/percussive separation. None is a wrong statement in the skills, so no skill change; chord recognition is the one worth building if a cue ever needs its progression checked (librosa has the pieces, libfmp is MIT).
 - Track: practice
