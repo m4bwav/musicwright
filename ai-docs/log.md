@@ -167,3 +167,6 @@ Append-only. Newest last.
 
 ## [2026-11-02] research | sources pass 10 (Owed item 8)
 - OpenAI: no released music model. Sound on Sound: nothing found. MBW: label deals with Udio (no platform launch yet) and Suno added to generate hosted.md (R-20261102-10). Next pass: Towards Data Science audio, Synthtopia, then books.
+
+## [2026-11-02] research | sources pass 11 (Owed item 8)
+- Towards Data Science audio: only 2023-24 explainers. Synthtopia: synth and preset tools, no generators. No skill change; group 4 done (R-20261102-11). No open askwright questions. Next pass: group 5 books, Müller first.

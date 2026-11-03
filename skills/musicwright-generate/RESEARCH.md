@@ -143,3 +143,8 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - OpenAI: no released music model; only October 2025 reports (The Information) of one in development (text and audio prompts, Juilliard score annotation). No models.md row.
 - Sound on Sound: no AI mastering or separation article surfaced; search returned vendor blogs only. No change.
 - Music Business Worldwide: Udio licensed by UMG (2025-10), Warner (2025-11), Merlin, Kobalt (2026-04) and NMPA (2026-06); Sony none; downloads still off, licensed platform not launched (2026-11). Suno: Warner deal 2025-11 (licensed models promised in 2026), UMG and Sony talks stalled (FT 2026-04). hosted.md Udio and Suno rows updated.
+
+### R-20261102-11 · 2026-11-02 · Sources pass 11: Towards Data Science audio, Synthtopia
+
+- Towards Data Science: the music and audio pieces found are 2023-2024 explainers (Landschoot's audio diffusion intro and Tiny Audio Diffusion, a MusicLM overview); nothing on current models. No change.
+- Synthtopia: AI items are instruments and synth tools (SPIN on MusicGen, Combobulator, sonicLAB Fundamental 4.1 with text-to-preset and an MCP server, MicroMusic), not music generators. No change; group 4 blogs done.
