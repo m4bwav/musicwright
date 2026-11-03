@@ -5,6 +5,7 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 ## Unreleased
 
 - `mw.py gen --recipe acestep-xl-base --task extract --track NAME` runs ACE-Step 1.5 extract inside ComfyUI on the XL base checkpoint, through two nodes (MWAceStep15TaskTextEncode, MWAceStep15ExtractGuider) vendored from ComfyUI_RyanOnTheInside at 52daf66 (MIT) into comfy_nodes/musicwright_nodes/acestep15; the upstream import-time mask patch is left out. New recipe acestep-xl-base; sft recipes refuse extract. Dry-run test.
+- `mw.py gen --task cover --hints` covers inside ComfyUI from the source's semantic hints (decoded 5 Hz codes) through a new MWAceStep15CoverGuider node and the vendored extract_semantic_hints (same pack, MIT), at denoise 1; refused with `--strength` or on REST. Dry-run test.
 
 ## 0.1.6 (2026-11-02)
 

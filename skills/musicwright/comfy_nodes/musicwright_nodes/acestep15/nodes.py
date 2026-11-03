@@ -1,10 +1,10 @@
-"""Two nodes for ACE-Step 1.5 extract, adapted from ComfyUI_RyanOnTheInside nodes.py (MIT, see LICENSE).
+"""Nodes for ACE-Step 1.5 extract and semantic-hint cover, adapted from ComfyUI_RyanOnTheInside nodes.py (MIT, see LICENSE).
 
 Names carry an MW prefix so they never clash with the full pack if both are installed.
 Extract needs the base checkpoint (acestep_v1.5_xl_base_bf16), not sft or turbo.
 """
 from . import patches
-from .ace_step_guiders_v15 import ACEStep15NativeExtractGuider
+from .ace_step_guiders_v15 import ACEStep15NativeCoverGuider, ACEStep15NativeExtractGuider
 
 TRACKS = ["vocals", "drums", "bass", "guitar", "keyboard", "strings",
           "percussion", "synth", "fx", "brass", "woodwinds", "backing_vocals"]
@@ -64,7 +64,33 @@ class MWAceStep15ExtractGuider:
         return (ACEStep15NativeExtractGuider(model, positive, negative, cfg, src, track_name),)
 
 
+class MWAceStep15CoverGuider:
+    """Cover that follows the source's semantic hints (its 5 Hz codes, decoded to 25 Hz), not its raw latent."""
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "model": ("MODEL",),
+            "positive": ("CONDITIONING",),
+            "negative": ("CONDITIONING",),
+            "cfg": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 100.0, "step": 0.1}),
+            "source_latents": ("LATENT",),
+        }}
+
+    RETURN_TYPES = ("GUIDER",)
+    FUNCTION = "get_guider"
+    CATEGORY = "sampling/custom_sampling/guiders"
+
+    def get_guider(self, model, positive, negative, cfg, source_latents):
+        patches.apply_acestep_patches()
+        src = source_latents["samples"]
+        if src.ndim != 3 or src.shape[1] != 64:
+            raise ValueError(f"ACE-Step 1.5 needs a (batch, 64, length) latent, got {tuple(src.shape)}")
+        return (ACEStep15NativeCoverGuider(model, positive, negative, cfg, src),)
+
+
 NODE_CLASS_MAPPINGS = {"MWAceStep15TaskTextEncode": MWAceStep15TaskTextEncode,
-                       "MWAceStep15ExtractGuider": MWAceStep15ExtractGuider}
+                       "MWAceStep15ExtractGuider": MWAceStep15ExtractGuider,
+                       "MWAceStep15CoverGuider": MWAceStep15CoverGuider}
 NODE_DISPLAY_NAME_MAPPINGS = {"MWAceStep15TaskTextEncode": "ACE-Step 1.5 Task Text Encode (musicwright)",
-                              "MWAceStep15ExtractGuider": "ACE-Step 1.5 Extract Guider (musicwright)"}
+                              "MWAceStep15ExtractGuider": "ACE-Step 1.5 Extract Guider (musicwright)",
+                              "MWAceStep15CoverGuider": "ACE-Step 1.5 Cover Guider, semantic hints (musicwright)"}
