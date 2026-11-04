@@ -2,6 +2,11 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.9 (2026-11-03)
+
+- The take loop puts sound tests on an askwright page when that plugin is installed, reads the answers back and records them with `mw.py verdict`. Chat stays the fallback.
+- RESEARCH.md notes the SongEval run: not adopted.
+
 ## 0.1.8 (2026-11-03)
 
 - New recipes from a listener's keeps: `stable-audio3-medium` and `yue2-3b-int8`, through `mw.py gen`. YuE2 needs lyrics and saves its ABC plan beside the take. `doctor` also looks for checkpoints. `mw.py gen --task cover` in ComfyUI now follows the source's semantic hints unless `--strength` is given (behaviour change: the old default was denoise 0.6), after a blind listening pair; the docs lead with ComfyUI for cover, repaint and extract.

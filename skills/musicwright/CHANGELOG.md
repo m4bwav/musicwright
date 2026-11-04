@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261103-1 · 2026-11-03 · Sound tests go on an askwright page
+- because: user request
+- files: SKILL.md (Step 3), references/listening.md (Log sound tests with askwright), evals/evals.json (action-askwright)
+- Listening tests are asked on an askwright page when that plugin is installed, read back, then recorded with `mw.py verdict`; chat is the fallback.
+
 ### C-20261025-1 · 2026-10-25 · 0.1.3: loudness from the original after the padded retry; exact mixcheck duration; no tempo beside pulse none
 - because: L-006; wiki verification of 0.1.2 (ai-docs/HANDOFF.md, 0.1.3 candidates)
 - files: scripts/mw.py (mix_series, mixcheck_of, pulse_of), references/cli.md (pulse)
