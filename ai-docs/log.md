@@ -217,3 +217,7 @@ Append-only. Newest last.
 - All seven hw-checks-listening questions answered: extract clean, hint cover won blind (key opened after), ComfyUI repaint better than REST, MM3, SA3 and YuE2 kept. Rulings in decisions/2026-11-03-listening-verdicts.md. Ten verdicts recorded with `mw.py verdict`.
 - `mw.py gen`: graphs and recipes stable-audio3-medium and yue2-3b-int8, YuE2 saves its ABC; hosts and doctor look in checkpoints too; ComfyUI cover defaults to hints. Real runs: SA3 20 s in 26 s cold, YuE2 30 s in 20 s. 112 tests pass.
 ## [2026-11-03] index | rebuilt (7 entries)
+
+## [2026-11-03] release | wiki at 0.1.8; SongEval blocked
+- Wiki republished at 0.1.8 (407dd49, 17 pages, live clean), verified on Windows and on static ffmpeg 7.0.2 in WSL; no new bugs. The verify script assumed every ComfyUI recipe has a unet; fixed in the private notes.
+- SongEval read but not run: the install of its requirements was refused by the permission check. 23 verdicts exist, so it is otherwise ready (research 04).
