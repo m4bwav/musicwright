@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261103-2 · 2026-11-03 · headless claude -p (vault eval-harness, EVAL_MODE=fixtures, MUSICWRIGHT_ASKWRIGHT set), installed 0.1.10 · 3/3
+- action-3 · all three routed to musicwright-produce and called `ask.py` on the trace. Baseline not run.
+- led to: none
+
 ### T-20261103-1 · 2026-11-03 · headless claude -p (vault eval-harness, EVAL_MODE=fixtures), installed 0.1.9 · 0/3
 - action-3 · action · skill gap · all three routed to musicwright-produce, ran `mw.py preview --blind` and answered in chat; the rule sat only in the hub.
 - led to: C-20261103-2
