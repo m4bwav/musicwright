@@ -108,7 +108,7 @@
     "tool": "Bash|PowerShell",
     "input_match": "ask\\.py\"?\\s+(?:new|inline|serve)\\b"
    },
-   "baseline": "not run",
+   "baseline": "0/3 (T-20261104-1)",
    "tools": [
     "Read",
     "Glob",
