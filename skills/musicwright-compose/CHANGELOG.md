@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261103-9 · 2026-11-03 · Sound tests point at the askwright page
+- because: user request; T-20261103-1 (0/3: the hub-only rule was missed when this skill handled the request)
+- files: SKILL.md
+- One line sends listening tests to an askwright page when `mw.py doctor` reports the script.
+
 ### C-20261101-2 · 2026-11-01 · Theory: rhythm and groove from DeSantis
 - because: user request (book run for the everscout downtempo beat found five *Making Music* strategies not applied on 2026-10-22: ch. 30, 37, 39-40, 42, 47)
 - files: references/theory.md (new "Rhythm and groove")

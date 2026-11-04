@@ -77,7 +77,7 @@ the breathy start" is the most valuable data this plugin collects.
 
 ## Log sound tests with askwright
 
-Any test that needs ears, whether a take ranking, a blind pair, a recipe check or a flag to confirm, goes on an askwright page when that plugin is installed (ask the person to install it otherwise, or fall back to chat; never install it yourself). The page keeps the question, the audio and the answer together on disk, so a later session can act on them.
+Any test that needs ears, whether a take ranking, a blind pair, a recipe check or a flag to confirm, goes on an askwright page when `mw.py doctor` reports an `askwright` script, called `ask.py` below (otherwise ask in chat, and mention `askwright_hint`; never install it yourself). The page keeps the question, the audio and the answer together on disk, so a later session can act on them.
 
 1. `ask.py new <dir>/ask --title "<what this round decides>"`, then one question per test: `media` holds the matched copies, `look_for` holds what to listen for (the list above), and each option's `consequence` says what the answer changes.
 2. Keep a blind test blind: use the neutral names from `mw.py preview --blind` and open the key only after the answer.

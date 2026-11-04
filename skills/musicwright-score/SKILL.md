@@ -31,7 +31,7 @@ Method: [references/spotting.md](references/spotting.md).
   vocabulary.md); "gentle, tender" pulls a modern sound.
 
 Generate the movements through musicwright-generate (several seeds each), look at the sheets,
-let the director listen, record verdicts.
+let the director listen (on an askwright page when `mw.py doctor` reports `askwright`; hub Step 3), record verdicts.
 
 ## Step 3: assemble
 

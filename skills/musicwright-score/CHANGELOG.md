@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261103-9 · 2026-11-03 · Sound tests point at the askwright page
+- because: user request; T-20261103-1 (0/3: the hub-only rule was missed when this skill handled the request)
+- files: SKILL.md
+- One line sends listening tests to an askwright page when `mw.py doctor` reports the script.
+
 ### C-20261103-1 · 2026-11-03 · Rank takes against a loudness shape
 - because: RESEARCH.md open question (loudness-curve fit); HANDOFF Owed item 4
 - files: SKILL.md (Step 3, Loudness shape), RESEARCH.md (Open questions)

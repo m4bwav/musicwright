@@ -57,7 +57,7 @@ Model details, VRAM and licences: [references/models.md](references/models.md) a
 
 1. Fish: 3-6 seeds at the target length (or 120-180 s for long pieces), same caption.
 2. Look and report (hub Step 3), get a verdict, lock the best seed.
-3. Change **one** knob, re-render the locked seed, compare on matched copies (`mw.py preview`).
+3. Change **one** knob, re-render the locked seed, compare on matched copies (`mw.py preview`) on an askwright page when `mw.py doctor` reports `askwright` (hub Step 3).
    Then scale up.
 4. Stop: three or four one-knob changes after the lock is usually the end of real gains. When the
    last two did not help, say so and finish with the best take; further changes are a coin toss

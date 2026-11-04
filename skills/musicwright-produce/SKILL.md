@@ -33,7 +33,7 @@ Impact* 5.3). Before a listener ranks takes or judges a fix, write matched copie
 `mw.py preview <files> --out <dir>` (one LUFS for all, lowered when a copy would need a limiter).
 `--blind` names them take_A, take_B in a shuffled order and keeps the key in a file you open only
 after the ranking; `--as phone` (mono, 300 Hz-6 kHz) and `--as quiet` (20 dB down) are the small
-speaker and low-level checks.
+speaker and low-level checks. A sound test goes on an askwright page, not in chat, when `mw.py doctor` reports `askwright` (hub Step 3).
 
 ## Step 2: pick the destination preset
 

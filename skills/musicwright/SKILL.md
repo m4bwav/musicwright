@@ -56,9 +56,9 @@ Most requests run generate, then one of produce, game or score.
    your pick with the reason. Say plainly that you have not heard them. Never write "sounds great".
    Hand over loudness-matched copies, not the raw takes (`mw.py preview <takes> --out
    <dir>/preview`, `--blind` to hide which is which): the louder take otherwise wins on loudness.
-   Put every sound test on an askwright page when that plugin is installed: one question per test,
-   with the matched copies as its media (`<dir>/ask`; [listening.md](references/listening.md#log-sound-tests-with-askwright)).
-   Without it, ask in chat.
+   Put every sound test on an askwright page when `mw.py doctor` reports `askwright`: one question
+   per test, with the matched copies as its media (`<dir>/ask`;
+   [listening.md](references/listening.md#log-sound-tests-with-askwright)). Without it, ask in chat.
 4. Record what they say: read the answers (`ask.py read <dir>/ask`), then `mw.py verdict <take>
    keep|reject|maybe --note "<their words>"` for each. It goes to the project ledger and the
    studio, where musicwright-curate turns verdicts into taste.

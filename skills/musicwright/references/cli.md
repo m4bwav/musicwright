@@ -8,7 +8,7 @@ pointing at ffmpeg). Hosts: `MUSICWRIGHT_COMFYUI` (comma list, default `http://1
 
 | Command | Does | Key options |
 |---|---|---|
-| `doctor` | ffmpeg and filters, librosa, studio, each ComfyUI host (GPU, VRAM, music models, queue), ACE-Step REST, runnable recipes | `--host` |
+| `doctor` | ffmpeg and filters, librosa, studio, each ComfyUI host (GPU, VRAM, music models, queue), ACE-Step REST, runnable recipes, the askwright `ask.py` for sound-test pages | `--host` |
 | `new <dir>` | scaffold `brief.md`, `music.json`, `takes/ out/ sheets/`, `ledger.jsonl` | `--name --use --duration --preset` |
 | `gen` | render takes, download them, measure each, append to the ledger | `--recipe --caption[-file] --lyrics[-file] --sections "A\|B" --duration --bpm --key --seeds 1,2 --takes 3 --name --out --host --cfg --steps --sampler --scheduler --shift --planner --set '{json}' --timeout --no-wait --dry-run`; `--collect DIR` fetches finished `--no-wait` jobs (ComfyUI only); from a source: `--task cover\|repaint\|lego\|complete\|extract --src F --track woodwinds --start --end --strength --model` (REST; the ACE-Step ComfyUI recipes do cover and repaint, repaint needing `comfy_nodes/musicwright_nodes` in ComfyUI's custom_nodes) |
 | `measure <files>` | duration, rate, LUFS, LRA, true peak, head/tail silence, interior gaps, clipping signs, warnings | `--silence-db --silence-min` |

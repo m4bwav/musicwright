@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.9"
+VERSION = "0.1.10"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1379,6 +1379,14 @@ SCORE_EXT = {".abc": "abc", ".mid": "midi", ".midi": "midi", ".musicxml": "music
              ".txt": "tab", ".tab": "tab"}
 
 
+def askwright_script():
+    env = os.environ.get("MUSICWRIGHT_ASKWRIGHT") or studio_config().get("askwright")
+    if env and Path(env).exists():
+        return str(Path(env))
+    found = sorted((Path.home() / ".claude" / "plugins" / "cache").glob("*/askwright/*/skills/askwright/scripts/ask.py"))
+    return str(found[-1]) if found else None
+
+
 def fluidsynth_bin():
     env = os.environ.get("MUSICWRIGHT_FLUIDSYNTH") or studio_config().get("fluidsynth")
     if env:
@@ -2254,6 +2262,9 @@ def cmd_doctor(a):
     if not (rep["fluidsynth"] and rep["soundfont"]):
         rep["render_hint"] = "optional, for render: FluidSynth (LGPL) and a General MIDI SoundFont; without them render uses its built-in sketch synth"
     rep["basic_pitch"] = shutil.which("basic-pitch")
+    rep["askwright"] = askwright_script()
+    if not rep["askwright"]:
+        rep["askwright_hint"] = "optional, for sound-test pages: install the askwright plugin, or set MUSICWRIGHT_ASKWRIGHT or askwright in the studio config.json to its ask.py"
     rep["studio"] = str(studio_dir())
     rep["studio_exists"] = studio_dir().exists()
     hosts = []
