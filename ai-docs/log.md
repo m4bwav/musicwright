@@ -216,3 +216,4 @@ Append-only. Newest last.
 ## [2026-11-03] build | listening verdicts applied, 0.1.8
 - All seven hw-checks-listening questions answered: extract clean, hint cover won blind (key opened after), ComfyUI repaint better than REST, MM3, SA3 and YuE2 kept. Rulings in decisions/2026-11-03-listening-verdicts.md. Ten verdicts recorded with `mw.py verdict`.
 - `mw.py gen`: graphs and recipes stable-audio3-medium and yue2-3b-int8, YuE2 saves its ABC; hosts and doctor look in checkpoints too; ComfyUI cover defaults to hints. Real runs: SA3 20 s in 26 s cold, YuE2 30 s in 20 s. 112 tests pass.
+## [2026-11-03] index | rebuilt (7 entries)
