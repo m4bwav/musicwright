@@ -233,3 +233,6 @@ Append-only. Newest last.
 
 ## [2026-11-03] check | third recheck, nothing owed
 - Same result: no open PRs or issues, CI green, 0.1.8 installed, no skill past due. The `open: 7` from `ask.py status` on hw-checks-listening is question status; `ask.py read` shows all seven answered.
+
+## [2026-11-03] build | sound tests on askwright, 0.1.9 and 0.1.10
+- Rule added to the take loop (0.1.9); eval action-3 0/3 because requests route to produce and nothing showed whether askwright was present. 0.1.10: doctor reports ask.py, siblings carry the rule; action-3 3/3 (T-20261103-2). Wiki still at 0.1.8.

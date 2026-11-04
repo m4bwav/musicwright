@@ -1,5 +1,9 @@
 # Handoff
 
+## Sound tests on askwright, 0.1.10 (2026-11-03)
+
+Owner's request: sound tests are logged with askwright. The hub's take loop, listening.md and produce, generate, score and compose say so; `mw.py doctor` reports `askwright` (env, studio config, plugin cache). 0.1.9 had the rule in the hub only and eval action-3 scored 0/3; 0.1.10 scored 3/3 (T-20261103-2). askwright is not installed as a plugin on the owner's PC, so the studio config points at the clone. Owed: republish the wiki at 0.1.10 (it is at 0.1.8; needs a real rerun, no hurry), and action-3's baseline. Evals that serve a page should set ASKWRIGHT_HOME to a scratch folder, or their sets reach the shared inbox.
+
 ## Checked, nothing owed (2026-11-03)
 
 A continue session found no agent work: no open pull requests, no unanswered askwright questions (hw-checks-listening and notation-stage3 are done), 0.1.8 released and installed, CI green. Next dated work: evergreen refreshes from 2026-11-15 (generate first). The RESEARCH.md note from the SongEval run still ships with the next release. Optional listening is listed in the section below. Rechecked later the same day by another continue session: unchanged. A third recheck agreed. `ask.py status` reports hw-checks-listening as `open: 7` with `done: true`: that counts question status, all seven are answered and applied. Another continue session has nothing to do before 2026-11-15.
