@@ -94,6 +94,29 @@
     "Bash"
    ],
    "max_turns": 14
+  },
+  {
+   "id": "action-3",
+   "kind": "action",
+   "prompt": "tests/fixtures/a.wav and tests/fixtures/b.wav are two takes of the same cue. Set up a sound test so I can tell you which one I prefer.",
+   "runs": 3,
+   "expectations": [
+    "the sound test is put on an askwright page, proven by the trace"
+   ],
+   "evidence": {
+    "type": "trace",
+    "tool": "Bash|PowerShell",
+    "input_match": "ask\\.py\"?\\s+(?:new|inline|serve)\\b"
+   },
+   "baseline": "not run",
+   "tools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash",
+    "Write"
+   ],
+   "max_turns": 20
   }
  ]
 }

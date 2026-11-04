@@ -75,6 +75,15 @@ listen for:
 Record their answer with `mw.py verdict` in their words. A verdict like "too harsh" or "loved
 the breathy start" is the most valuable data this plugin collects.
 
+## Log sound tests with askwright
+
+Any test that needs ears, whether a take ranking, a blind pair, a recipe check or a flag to confirm, goes on an askwright page when that plugin is installed (ask the person to install it otherwise, or fall back to chat; never install it yourself). The page keeps the question, the audio and the answer together on disk, so a later session can act on them.
+
+1. `ask.py new <dir>/ask --title "<what this round decides>"`, then one question per test: `media` holds the matched copies, `look_for` holds what to listen for (the list above), and each option's `consequence` says what the answer changes.
+2. Keep a blind test blind: use the neutral names from `mw.py preview --blind` and open the key only after the answer.
+3. `ask.py serve <dir>/ask --detach`, give the person the link, and stop before anything that depends on their ears.
+4. `ask.py read <dir>/ask`, then record each answer with `mw.py verdict`, in their words. The ledger and the studio stay the record taste is built from; the page is where the test was asked. `status` can still show answered questions as open, so go by `read`.
+
 ## Checks a script can add
 
 Built: mono compatibility and phase (`mw.py mixcheck`), loop seam (`mw.py seam`). Still by hand
