@@ -35,5 +35,5 @@ Lyrics: stressed syllables on strong beats, each line read aloud at the tempo fi
 - One 240 s beatless request ran over an hour twice and then the ComfyUI server stopped
   answering. Use `mw.py gen --timeout`, and check `mw.py doctor` before queueing more.
 - Runs took about 3-7 min per take, up to 13 min, with settings not recorded at the time.
-- Quality has not been judged against ACE-Step by a listener yet. Treat it as a second opinion.
+- A listener kept two instrumental takes on 2026-11-03, but has not compared it with ACE-Step side by side. Treat it as a second opinion.
 - Output is 32 kHz; resample to 48 kHz on delivery (`mw.py master` does).

@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.7"
+VERSION = "0.1.8"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1763,16 +1763,58 @@ def graph_minimax3(r, caption, lyrics, seed, duration, bpm, key, prefix, overrid
     }, p
 
 
-GRAPHS = {"acestep15": graph_acestep, "minimax3": graph_minimax3}
+def graph_stableaudio3(r, caption, lyrics, seed, duration, bpm, key, prefix, overrides):
+    p = dict(r["params"])
+    p.update(overrides)
+    return {
+        "1": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": p["checkpoint"]}},
+        "2": {"class_type": "CLIPLoader", "inputs": {"clip_name": p["clip"], "type": "stable_audio", "device": "default"}},
+        "3": {"class_type": "CLIPTextEncode", "inputs": {"clip": ["2", 0], "text": caption}},
+        "4": {"class_type": "CLIPTextEncode", "inputs": {"clip": ["2", 0], "text": ""}},
+        "5": {"class_type": "EmptyLatentAudio", "inputs": {"seconds": float(duration), "batch_size": 1}},
+        "6": {"class_type": "KSampler", "inputs": {
+            "model": ["1", 0], "seed": seed, "steps": p["steps"], "cfg": p["cfg"], "sampler_name": p["sampler"],
+            "scheduler": p["scheduler"], "positive": ["3", 0], "negative": ["4", 0], "latent_image": ["5", 0], "denoise": 1.0}},
+        "7": {"class_type": "VAEDecodeAudio", "inputs": {"samples": ["6", 0], "vae": ["1", 2]}},
+        "8": {"class_type": "SaveAudio", "inputs": {"audio": ["7", 0], "filename_prefix": prefix}},
+    }, p
+
+
+def graph_yue2(r, caption, lyrics, seed, duration, bpm, key, prefix, overrides):
+    """YuE2 plans an ABC score from style and lyrics, then renders it; PreviewAny returns the score."""
+    p = dict(r["params"])
+    p.update(overrides)
+    return {
+        "1": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": p["checkpoint"]}},
+        "2": {"class_type": "YuE2GenerateABC", "inputs": {
+            "clip": ["1", 1], "style": caption, "lyrics": lyrics, "seed": seed, "mode": "full", "max_abc_tokens": p["max_abc_tokens"],
+            "temperature": p["abc_temperature"], "top_p": p["abc_top_p"], "top_k": p["abc_top_k"],
+            "repetition_penalty": p["abc_repetition_penalty"], "penalty_window": p["abc_penalty_window"]}},
+        "3": {"class_type": "YuE2GenerateMusic", "inputs": {
+            "clip": ["1", 1], "style": caption, "lyrics": lyrics, "abc": ["2", 0], "seed": seed, "mode": "full",
+            "max_duration": float(duration), "temperature": p["music_temperature"], "top_p": p["music_top_p"],
+            "top_k": p["music_top_k"], "repetition_penalty": p["music_repetition_penalty"]}},
+        "4": {"class_type": "ConditioningZeroOut", "inputs": {"conditioning": ["3", 0]}},
+        "5": {"class_type": "EmptyYuE2LatentAudio", "inputs": {"seconds": ["3", 1], "batch_size": 1}},
+        "6": {"class_type": "KSampler", "inputs": {
+            "model": ["1", 0], "seed": seed, "steps": p["steps"], "cfg": p["cfg"], "sampler_name": p["sampler"],
+            "scheduler": p["scheduler"], "positive": ["3", 0], "negative": ["4", 0], "latent_image": ["5", 0], "denoise": 1.0}},
+        "7": {"class_type": "VAEDecodeAudio", "inputs": {"samples": ["6", 0], "vae": ["1", 2]}},
+        "8": {"class_type": "SaveAudio", "inputs": {"audio": ["7", 0], "filename_prefix": prefix}},
+        "9": {"class_type": "PreviewAny", "inputs": {"source": ["2", 0]}},
+    }, p
+
+
+GRAPHS = {"acestep15": graph_acestep, "minimax3": graph_minimax3, "stableaudio3": graph_stableaudio3, "yue2": graph_yue2}
 COMFY_TASKS = ("cover", "repaint", "extract")
 
 
 def source_graph(g, task, audio, a):
     """Turn an ACE-Step text2music graph into cover or repaint of an uploaded source (log 2026-11-02).
 
-    Cover: the source latent replaces the empty one and KSampler runs at denoise 1 - strength.
+    Cover with --strength: the source latent replaces the empty one and KSampler runs at denoise 1 - strength.
     Repaint: AudioLatentRepaintMask (comfy_nodes/) marks the window; KSampler keeps the rest.
-    Cover with --hints: MWAceStep15CoverGuider feeds the source's semantic hints (is_covers=1), as the
+    Cover otherwise (a listener preferred it blind, 2026-11-03): MWAceStep15CoverGuider feeds the source's semantic hints (is_covers=1), as the
     REST server does with audio codes; denoise 1, so --strength does not apply.
     Extract: the vendored MW extract nodes (comfy_nodes/musicwright_nodes/acestep15, research 06)
     put the "Extract the TRACK track" instruction in the text encoder and the source in a guider.
@@ -1804,7 +1846,7 @@ def source_graph(g, task, audio, a):
         del g["7"]
     elif task == "cover":
         g["7"] = {"class_type": "VAEEncodeAudio", "inputs": {"audio": ["11", 0], "vae": ["3", 0]}}
-        g["8"]["inputs"]["denoise"] = round(1.0 - (0.4 if a.strength is None else a.strength), 3)
+        g["8"]["inputs"]["denoise"] = round(1.0 - a.strength, 3)
     else:
         g["12"] = {"class_type": "VAEEncodeAudio", "inputs": {"audio": ["11", 0], "vae": ["3", 0]}}
         end = a.duration if a.end is None or a.end < 0 else a.end
@@ -1832,7 +1874,7 @@ def pick_comfy(hosts, needed_model):
     tried = []
     for h in hosts:
         try:
-            models = http(h + "/models/diffusion_models", timeout=5)
+            models = http(h + "/models/diffusion_models", timeout=5) + http(h + "/models/checkpoints", timeout=5)
         except (urllib.error.URLError, OSError, ValueError) as e:
             tried.append(f"{h}: unreachable ({type(e).__name__})")
             continue
@@ -1880,7 +1922,7 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
     if a.dry_run:
         host, q = hosts[0], None
     else:
-        host, q = pick_comfy(hosts, r["params"]["unet"])
+        host, q = pick_comfy(hosts, r["params"].get("unet") or r["params"]["checkpoint"])
     ov = json.loads(a.set) if a.set else {}
     for k in ("cfg", "steps", "sampler", "scheduler", "shift"):
         v = getattr(a, k, None)
@@ -1919,11 +1961,11 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
         if filled:
             notes["filled_in"] = filled
             notes["filled_note"] = "the ACE-Step text encoder needs a tempo and a key, so the recipe's values were sent; pass --bpm and --key to choose them"
-    elif r["graph"] == "minimax3":
+    else:
         ignored = [o for o in ("bpm", "key") if getattr(a, o, None)]
         if ignored:
             notes["ignored"] = ignored
-            notes["ignored_note"] = "MiniMax Music 3 has no tempo or key input; put them in the caption"
+            notes["ignored_note"] = "this model has no tempo or key input; put them in the caption"
     if a.dry_run:
         return {"ok": True, "dry_run": True, "host": host, "jobs": jobs, "params": recipe_used, **notes}
     base = {"host": host, "queue_before": q, "jobs": jobs, "params": recipe_used, **notes}
@@ -1951,6 +1993,9 @@ def fetch_comfy_takes(host, entry, outdir, name, seed, prompt_id):
             n += 1
         dst.write_bytes(data)
         takes.append({"seed": seed, "file": dst, "prompt_id": prompt_id})
+    score = (entry.get("outputs", {}).get("9") or {}).get("text")  # YuE2's ABC plan, editable
+    if score and takes:
+        takes[0]["file"].with_suffix(".abc").write_text(score[0] if isinstance(score, list) else str(score), encoding="utf-8")
     return takes
 
 
@@ -2065,6 +2110,8 @@ def check_task(a, r):
         raise MwError("--hints is for --task cover on an ACE-Step ComfyUI recipe (REST cover already uses the source's audio codes)")
     if getattr(a, "hints", False) and a.strength is not None:
         raise MwError("--hints runs at denoise 1, so --strength does not apply")
+    if task == "cover" and r["route"] != "rest" and a.strength is None:
+        a.hints = True
     if not a.src:
         raise MwError(f"--task {task} needs --src, the audio to work from")
     a.src = need_file(a.src)
@@ -2144,6 +2191,8 @@ def cmd_gen(a):
         caption = Path(a.caption_file).read_text(encoding="utf-8").strip()
     if not caption and a.task != "extract":
         raise MwError("give --caption or --caption-file")
+    if r.get("graph") == "yue2" and not (a.lyrics or a.lyrics_file or a.sections):
+        raise MwError("YuE2 sings from lyrics: give --lyrics, --lyrics-file or --sections")
     lyrics = a.lyrics
     if a.lyrics_file:
         lyrics = Path(a.lyrics_file).read_text(encoding="utf-8")
@@ -2216,7 +2265,7 @@ def cmd_doctor(a):
             dev = (st.get("devices") or [{}])[0]
             e.update(up=True, comfyui=(st.get("system") or {}).get("comfyui_version"), device=dev.get("name"),
                      vram_gb=round((dev.get("vram_total") or 0) / 2 ** 30, 1))
-            dm = http(h + "/models/diffusion_models", timeout=5)
+            dm = http(h + "/models/diffusion_models", timeout=5) + http(h + "/models/checkpoints", timeout=5)
             e["music_models"] = [m for m in dm if music_like.search(m)]
             q = http(h + "/queue", timeout=5)
             e["queue"] = {"running": len(q.get("queue_running", [])), "pending": len(q.get("queue_pending", []))}
@@ -2232,7 +2281,7 @@ def cmd_doctor(a):
         rep["acestep_rest"] = {"host": rh, "up": False, "error": type(ex).__name__}
     have = {m for h in hosts for m in h.get("music_models", [])}
     rep["recipes_runnable"] = [k for k, r in recipes().items()
-                               if (r["route"] == "comfy" and r["params"]["unet"] in have) or (r["route"] == "rest" and rep["acestep_rest"]["up"])]
+                               if (r["route"] == "comfy" and (r["params"].get("unet") or r["params"]["checkpoint"]) in have) or (r["route"] == "rest" and rep["acestep_rest"]["up"])]
     return rep
 
 
@@ -2282,8 +2331,8 @@ def build_parser():
     s.add_argument("--track", help="lego/extract: the part, e.g. woodwinds or percussion; complete: comma list")
     s.add_argument("--start", type=float, help="repaint/lego window start, seconds")
     s.add_argument("--end", type=float, help="repaint/lego window end, seconds (-1 = end)")
-    s.add_argument("--hints", action="store_true", help="cover in ComfyUI: follow the source's semantic hints (its audio codes) through MWAceStep15CoverGuider instead of a partial denoise")
-    s.add_argument("--strength", type=float, help="cover: how closely to follow the source, 0-1 (ComfyUI: denoise = 1 - strength, default 0.4)")
+    s.add_argument("--hints", action="store_true", help="cover in ComfyUI, the default unless --strength is given: follow the source's semantic hints (its audio codes) through MWAceStep15CoverGuider instead of a partial denoise")
+    s.add_argument("--strength", type=float, help="cover: how closely to follow the source, 0-1 (ComfyUI: denoise = 1 - strength, in place of semantic hints)")
     s.add_argument("--model", help="REST route: DiT the server should use, e.g. acestep-v15-base")
     s.add_argument("--timeout", type=int, default=3600)
     s.add_argument("--no-wait", action="store_true", help="ComfyUI: queue the jobs, log them as queued and return")
