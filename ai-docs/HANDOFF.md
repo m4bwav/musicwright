@@ -1,5 +1,9 @@
 # Handoff
 
+## Baseline and wiki at 0.1.10 (2026-11-04)
+
+Both items owed by the section below are done: action-3's baseline is 0/3 (T-20261104-1), and the wiki is republished at 0.1.10, rerun on Windows and on static ffmpeg 7.0.2 in WSL with no new bugs. Nothing is owed. Optional listening is unchanged, and the next dated work is the evergreen refreshes from 2026-11-15 (generate first). Another continue session has nothing to do before then.
+
 ## Sound tests on askwright, 0.1.10 (2026-11-03)
 
 Owner's request: sound tests are logged with askwright. The hub's take loop, listening.md and produce, generate, score and compose say so; `mw.py doctor` reports `askwright` (env, studio config, plugin cache). 0.1.9 had the rule in the hub only and eval action-3 scored 0/3; 0.1.10 scored 3/3 (T-20261103-2). askwright is not installed as a plugin on the owner's PC, so the studio config points at the clone. Owed: republish the wiki at 0.1.10 (it is at 0.1.8; needs a real rerun, no hurry), and action-3's baseline. Evals that serve a page should set ASKWRIGHT_HOME to a scratch folder, or their sets reach the shared inbox.

@@ -236,3 +236,6 @@ Append-only. Newest last.
 
 ## [2026-11-03] build | sound tests on askwright, 0.1.9 and 0.1.10
 - Rule added to the take loop (0.1.9); eval action-3 0/3 because requests route to produce and nothing showed whether askwright was present. 0.1.10: doctor reports ask.py, siblings carry the rule; action-3 3/3 (T-20261103-2). Wiki still at 0.1.8.
+
+## [2026-11-04] eval, release | action-3 baseline, wiki at 0.1.10
+- Baseline 0/3: every run wrote its own blind HTML page, none used askwright (T-20261104-1). Wiki republished at 0.1.10, covering 0.1.9; diffout showed only expected changes, no new bugs.

@@ -8,8 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261104-1 · 2026-11-04 · headless claude -p (vault eval-harness, EVAL_MODE=baseline: fixtures-only folder, musicwright@mark-local disabled and absent from every init), installed 0.1.10 · baseline only · 0/3
+- action-3 · no run called `ask.py`. All three wrote their own blind HTML page, which cannot hand the answer back to the agent or record a verdict.
+- led to: none
+
 ### T-20261103-2 · 2026-11-03 · headless claude -p (vault eval-harness, EVAL_MODE=fixtures, MUSICWRIGHT_ASKWRIGHT set), installed 0.1.10 · 3/3
-- action-3 · all three routed to musicwright-produce and called `ask.py` on the trace. Baseline not run.
+- action-3 · all three routed to musicwright-produce and called `ask.py` on the trace. Baseline 0/3 (T-20261104-1).
 - led to: none
 
 ### T-20261103-1 · 2026-11-03 · headless claude -p (vault eval-harness, EVAL_MODE=fixtures), installed 0.1.9 · 0/3
