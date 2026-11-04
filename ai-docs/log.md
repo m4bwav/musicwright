@@ -230,3 +230,6 @@ Append-only. Newest last.
 
 ## [2026-11-03] check | still nothing owed
 - Second continue session: no open PRs or issues, no unanswered askwright questions, 0.1.8 released and installed, CI green, no skill past due. Next: evergreen refreshes from 2026-11-15.
+
+## [2026-11-03] check | third recheck, nothing owed
+- Same result: no open PRs or issues, CI green, 0.1.8 installed, no skill past due. The `open: 7` from `ask.py status` on hw-checks-listening is question status; `ask.py read` shows all seven answered.

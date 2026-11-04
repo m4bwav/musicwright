@@ -2,7 +2,7 @@
 
 ## Checked, nothing owed (2026-11-03)
 
-A continue session found no agent work: no open pull requests, no unanswered askwright questions (hw-checks-listening and notation-stage3 are done), 0.1.8 released and installed, CI green. Next dated work: evergreen refreshes from 2026-11-15 (generate first). The RESEARCH.md note from the SongEval run still ships with the next release. Optional listening is listed in the section below. Rechecked later the same day by another continue session: unchanged.
+A continue session found no agent work: no open pull requests, no unanswered askwright questions (hw-checks-listening and notation-stage3 are done), 0.1.8 released and installed, CI green. Next dated work: evergreen refreshes from 2026-11-15 (generate first). The RESEARCH.md note from the SongEval run still ships with the next release. Optional listening is listed in the section below. Rechecked later the same day by another continue session: unchanged. A third recheck agreed. `ask.py status` reports hw-checks-listening as `open: 7` with `done: true`: that counts question status, all seven are answered and applied. Another continue session has nothing to do before 2026-11-15.
 
 ## SongEval tried, not adopted (2026-11-03)
 
