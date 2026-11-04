@@ -221,3 +221,6 @@ Append-only. Newest last.
 ## [2026-11-03] release | wiki at 0.1.8; SongEval blocked
 - Wiki republished at 0.1.8 (407dd49, 17 pages, live clean), verified on Windows and on static ffmpeg 7.0.2 in WSL; no new bugs. The verify script assumed every ComfyUI recipe has a unet; fixed in the private notes.
 - SongEval read but not run: the install of its requirements was refused by the permission check. 23 verdicts exist, so it is otherwise ready (research 04).
+
+## [2026-11-03] research | SongEval run, not adopted (Owed item 4)
+- Owner allowed the install. 20 judged files on CPU, 63 s. Backwards on flute keep vs reject and hint vs plain cover, right on repaint and stage 2 s8101 vs s8303, noise on slight pairs; score mostly tracks material (YuE2 song 4.35, flute about 1.5). Not adopted, item 4 closed (research 04). Needed torchaudio==2.7.0 and transformers==4.50.3 on Windows. Test folder deleted.

@@ -1,5 +1,9 @@
 # Handoff
 
+## SongEval tried, not adopted (2026-11-03)
+
+The owner allowed the install. SongEval scored the 20 judged audio files and got two of four clear ranked pairs backwards, including the flute reject and the blind cover pair; it mostly follows the kind of audio. Not adopted; item 4 is closed ([research/04-learned-quality-score.md](research/04-learned-quality-score.md)). The Owed list is empty apart from optional listening, no hurry: recipecheck_sa3_s4101 and recipecheck_yue2_s4102 in Ai/Music/hw-checks, which MM3 seed is better, and the undecided sound near the end of extract2_drums_s4002. Evergreen refreshes for the skills fall due from 2026-11-15. The RESEARCH.md note ships with the next release; it needs no release of its own.
+
 ## Wiki at 0.1.8, SongEval blocked (2026-11-03)
 
 Wiki republished at 0.1.8 (wiki commit 407dd49, 17 pages, live check clean), rerun on Windows and on static ffmpeg 7.0.2 in WSL; the run found no new bugs in mw.py. This clears item 1 of the section below.
