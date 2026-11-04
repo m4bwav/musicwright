@@ -224,3 +224,6 @@ Append-only. Newest last.
 
 ## [2026-11-03] research | SongEval run, not adopted (Owed item 4)
 - Owner allowed the install. 20 judged files on CPU, 63 s. Backwards on flute keep vs reject and hint vs plain cover, right on repaint and stage 2 s8101 vs s8303, noise on slight pairs; score mostly tracks material (YuE2 song 4.35, flute about 1.5). Not adopted, item 4 closed (research 04). Needed torchaudio==2.7.0 and transformers==4.50.3 on Windows. Test folder deleted.
+
+## [2026-11-03] check | nothing owed
+- No open PRs or askwright questions; 0.1.8 released and installed; CI green. No changes beyond this note. Next: evergreen refreshes from 2026-11-15.
