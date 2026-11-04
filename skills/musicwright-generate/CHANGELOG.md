@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261103-1 · 2026-11-03 · Listener verdicts: ComfyUI first for source tasks, two new recipes
+- because: user request (listening page hw-checks-listening, seven answers)
+- files: SKILL.md route table; references acestep-rest.md, acestep.md, minimax3.md, models.md
+
+Cover without `--strength` now uses semantic hints, which won a blind pair. ComfyUI repaint and extract lead their routes. Stable Audio 3 Medium and YuE2 become recipes through `mw.py gen`. Each ruling rests on one listener and one source, and the docs say so.
+
 ### C-20261102-1 · 2026-11-02 · pulse --threshold adaptive for building leads
 - because: user request (book distill: Lerch, Audio Content Analysis)
 - files: SKILL.md Step 5

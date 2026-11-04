@@ -70,8 +70,8 @@
     "timesignature": "4",
     "language": "en"
    },
-   "timing": "untested",
-   "source": "Comfy-Org/ACE-Step-1.5 split_files; extract nodes vendored from ComfyUI_RyanOnTheInside (research 06, 2026-11-03)",
+   "timing": "30 s source: 45 s cold, 15 s warm on a 16 GB RTX 5060 Ti",
+   "source": "Comfy-Org/ACE-Step-1.5 split_files; extract nodes vendored from ComfyUI_RyanOnTheInside (research 06, 2026-11-03). A listener rated drums and vocals taken from one punk mix as mostly that part alone, 2026-11-03 (seed 4002); a cymbal or synth sound near the end of the drums was left undecided",
    "tasks": [
     "extract"
    ]
@@ -95,7 +95,48 @@
     "max_seconds": 340.0
    },
    "timing": "3-7 min per take typical; takes came back shorter than asked (98-170 s for 180-195 s); one 240 s beatless request hung over an hour. Use --timeout and render longer than needed; 2026-11-02 on the 16 GB RTX 5060 Ti: 60 s asked -> 43 s in 105 s, 90 s asked -> 63 s in 140 s (about 0.7 of the request), peak 15.3 GB VRAM. Ask for about 1.4x the length you need.",
-   "source": "ComfyUI audio_minimax_music_3 template; album attempt 2026-08 (quality never judged by a listener)"
+   "source": "ComfyUI audio_minimax_music_3 template. Kept by a listener 2026-11-03: two instrumental takes (calm fantasy theme, flute over strings, D major, 90 bpm, seeds 3101 and 3102); the verdict covered the pair, not one seed"
+  },
+  "stable-audio3-medium": {
+   "route": "comfy",
+   "graph": "stableaudio3",
+   "model": "Stable Audio 3 Medium (open weights, Stability Community Licence: free under USD 1M revenue, you own outputs)",
+   "use": "very fast instrumental drafts and beds with no vocals; give tempo and key in the caption",
+   "params": {
+    "checkpoint": "stable_audio_3_medium.safetensors",
+    "clip": "t5gemma_b_b_ul2.safetensors",
+    "steps": 8,
+    "cfg": 1.0,
+    "sampler": "lcm",
+    "scheduler": "simple"
+   },
+   "timing": "60 s in 9 s on a 16 GB RTX 5060 Ti; returned exactly the asked length",
+   "source": "ComfyUI bundled template. Kept by a listener 2026-11-03: one take, calm ambient space theme, seed 3301"
+  },
+  "yue2-3b-int8": {
+   "route": "comfy",
+   "graph": "yue2",
+   "model": "YuE2-3B int8 (CC BY-NC 4.0 weights plus creator permission: individuals may sell outputs, companies need a licence)",
+   "use": "lyrics-led songs; plans an ABC score, saved beside the take as .abc. Needs --lyrics, --lyrics-file or --sections; the caption is the style",
+   "params": {
+    "checkpoint": "yue2_3b_int8_convrot.safetensors",
+    "max_abc_tokens": 8192,
+    "abc_temperature": 0.7,
+    "abc_top_p": 0.9,
+    "abc_top_k": 30,
+    "abc_repetition_penalty": 1.005,
+    "abc_penalty_window": 100,
+    "music_temperature": 1.0,
+    "music_top_p": 0.95,
+    "music_top_k": 100,
+    "music_repetition_penalty": 1.2,
+    "steps": 32,
+    "cfg": 1.0,
+    "sampler": "dpm_2",
+    "scheduler": "sgm_uniform"
+   },
+   "timing": "90 s asked, 78 s returned in 33 s, about 8.5 GB VRAM on a 16 GB card; peaks reached +0.1 dBTP, so master before use",
+   "source": "ComfyUI bundled template. Kept by a listener 2026-11-03: one take, a folk ballad with lyrics, seed 3401"
   },
   "acestep-rest": {
    "route": "rest",

@@ -8,6 +8,7 @@ as CI does). `analyze` checks its soft failure when librosa is missing and runs 
 (MUSICWRIGHT_REQUIRE_LIBROSA=1 makes a missing librosa a failure). Nothing touches the network: ComfyUI and
 ACE-Step hosts point at an unused localhost port, and `gen` runs only with --dry-run.
 """
+import argparse
 import contextlib
 import io
 import json
@@ -21,6 +22,7 @@ import tempfile
 import unittest
 import wave
 from pathlib import Path
+from unittest import mock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "skills", "musicwright", "scripts"))
@@ -249,6 +251,9 @@ class GenDryRun(unittest.TestCase):
                  "ConditioningZeroOut", "EmptyAceStep1.5LatentAudio", "KSampler", "VAEDecodeAudio", "SaveAudio"}
     MINIMAX_NODES = {"CLIPLoader", "UNETLoader", "VAELoader", "MiniMaxMusic3TextEncode", "EmptyMiniMaxMusic3LatentAudio",
                      "ConditioningZeroOut", "KSampler", "VAEDecodeAudioTiled", "SaveAudio"}
+    SA3_NODES = {"CheckpointLoaderSimple", "CLIPLoader", "CLIPTextEncode", "EmptyLatentAudio", "KSampler", "VAEDecodeAudio", "SaveAudio"}
+    YUE2_NODES = {"CheckpointLoaderSimple", "YuE2GenerateABC", "YuE2GenerateMusic", "ConditioningZeroOut", "EmptyYuE2LatentAudio",
+                  "KSampler", "VAEDecodeAudio", "SaveAudio", "PreviewAny"}
 
     def gen(self, recipe, *extra):
         return run("gen", "--recipe", recipe, "--caption", "bright flute over soft strings, 90 bpm", "--duration", "60",
@@ -267,7 +272,7 @@ class GenDryRun(unittest.TestCase):
     def test_every_recipe_dry_runs(self):
         for name, r in mw.recipes().items():
             with self.subTest(recipe=name):
-                code, d = self.gen(name)
+                code, d = self.gen(name, *(("--lyrics", "[Verse] la") if r.get("graph") == "yue2" else ()))
                 self.assertEqual(code, 0, d)
                 self.assertTrue(d["dry_run"])
                 self.assertEqual([j["seed"] for j in d["jobs"]], [11, 22])
@@ -276,15 +281,19 @@ class GenDryRun(unittest.TestCase):
                     for j in d["jobs"]:
                         g = j["graph"]
                         self.check_links(g)
-                        want = self.ACE_NODES if r["graph"] == "acestep15" else self.MINIMAX_NODES
+                        want = {"acestep15": self.ACE_NODES, "minimax3": self.MINIMAX_NODES,
+                                "stableaudio3": self.SA3_NODES, "yue2": self.YUE2_NODES}[r["graph"]]
                         self.assertEqual({n["class_type"] for n in g.values()}, want)
                         ks = self.node(g, "KSampler")["inputs"]
                         self.assertEqual(ks["seed"], j["seed"])
                         for k_graph, k_recipe in (("cfg", "cfg"), ("steps", "steps"), ("sampler_name", "sampler"), ("scheduler", "scheduler")):
                             self.assertEqual(ks[k_graph], r["params"][k_recipe])
-                        self.assertEqual(self.node(g, "UNETLoader")["inputs"]["unet_name"], r["params"]["unet"])
+                        if "unet" in r["params"]:
+                            self.assertEqual(self.node(g, "UNETLoader")["inputs"]["unet_name"], r["params"]["unet"])
+                        else:
+                            self.assertEqual(self.node(g, "CheckpointLoaderSimple")["inputs"]["ckpt_name"], r["params"]["checkpoint"])
                         self.assertEqual(self.node(g, "SaveAudio")["inputs"]["filename_prefix"], f"musicwright/dry_take_s{j['seed']}")
-                    self.assertEqual(d["params"]["unet"], r["params"]["unet"])
+                    self.assertEqual({k: d["params"][k] for k in r["params"]}, r["params"])
                 else:
                     self.assertEqual(d["host"], os.environ["MUSICWRIGHT_ACESTEP"])
                     for j in d["jobs"]:
@@ -335,6 +344,26 @@ class GenDryRun(unittest.TestCase):
         code, d = run("gen", "--recipe", "minimax-music3", "--caption", "x", "--bpm", "100", "--seeds", "1",
                       "--out", TMP / "gen_out", "--dry-run")
         self.assertEqual(d["ignored"], ["bpm"])
+
+    def test_yue2_needs_lyrics_and_saves_its_score(self):
+        code, d = run("gen", "--recipe", "yue2-3b-int8", "--caption", "x", "--out", TMP / "gen_err", "--dry-run")
+        self.assertIn("lyrics", d["error"])
+        code, d = self.gen("yue2-3b-int8", "--lyrics", "[Verse] la")
+        g = d["jobs"][0]["graph"]
+        self.assertEqual(self.node(g, "YuE2GenerateMusic")["inputs"]["abc"], ["2", 0])
+        out = TMP / "yue_score"
+        out.mkdir(exist_ok=True)
+        entry = {"outputs": {"8": {"audio": [{"filename": "a.flac"}]}, "9": {"text": ["X:1"]}}, "status": {}}
+        with mock.patch.object(mw, "http_get_bytes", return_value=b"x"):
+            takes = mw.fetch_comfy_takes("http://h", entry, out, "song", 5, "p")
+        self.assertEqual(takes[0]["file"].with_suffix(".abc").read_text(encoding="utf-8"), "X:1")
+
+    def test_comfy_cover_defaults_to_hints_and_strength_opts_out(self):
+        for strength, hints in ((None, True), (0.5, False)):
+            a = argparse.Namespace(task="cover", src=None, track=None, hints=False, strength=strength, duration=1.0)
+            with self.assertRaises(mw.MwError):  # no --src: stops after the route is chosen
+                mw.check_task(a, mw.recipes()["acestep-xl-sft"])
+            self.assertEqual(a.hints, hints)
 
     def test_minimax_duration_pad_and_cap(self):
         code, d = self.gen("minimax-music3")
@@ -1424,7 +1453,9 @@ class FakeHost:
         self.wav = wav_bytes
         self.prompts, self.tasks, self.fail, self.pending = [], [], False, set()
         self.nodes = {"AudioLatentRepaintMask"}
-        unets = sorted({r["params"]["unet"] for r in mw.recipes().values() if r["route"] == "comfy"})
+        comfy = [r["params"] for r in mw.recipes().values() if r["route"] == "comfy"]
+        unets = sorted({p["unet"] for p in comfy if "unet" in p})
+        checkpoints = sorted({p["checkpoint"] for p in comfy if "checkpoint" in p})
 
         class H(http.server.BaseHTTPRequestHandler):
             def log_message(self, *a):
@@ -1444,6 +1475,8 @@ class FakeHost:
                     self.send({"system": {"comfyui_version": "test"}, "devices": [{"name": "fake gpu", "vram_total": 16 * 2 ** 30}]})
                 elif p == "/models/diffusion_models":
                     self.send(unets + ["some_image_model.safetensors"])
+                elif p == "/models/checkpoints":
+                    self.send(checkpoints)
                 elif p == "/queue":
                     self.send({"queue_running": [], "queue_pending": [["x"]]})
                 elif p.startswith("/history/"):

@@ -212,3 +212,7 @@ Append-only. Newest last.
 - Tagged v0.1.7 (PR #67), installed. Wiki republished from 0.1.3 to 0.1.7 (a8f0c25), verified on Windows and on static ffmpeg 7.0.2 in WSL. Its findings are fixed under Unreleased: extract without a caption sent null, which ComfyUI would read as the word "None"; curve printed a zero-length span; a stale recipe line.
 - Real rerun with the empty caption (same source, seed 4002): drums correlate 0.99 and vocals 0.85 with the earlier takes, and 0.035 with each other, so separation holds. extract3_* in Ai/Music/hw-checks; the listening page still plays extract2_*.
 - Listening page: askwright set hw-checks-listening with extract, blind cover, repaint, MM3, SA3 and YuE2. Unanswered.
+
+## [2026-11-03] build | listening verdicts applied, 0.1.8
+- All seven hw-checks-listening questions answered: extract clean, hint cover won blind (key opened after), ComfyUI repaint better than REST, MM3, SA3 and YuE2 kept. Rulings in decisions/2026-11-03-listening-verdicts.md. Ten verdicts recorded with `mw.py verdict`.
+- `mw.py gen`: graphs and recipes stable-audio3-medium and yue2-3b-int8, YuE2 saves its ABC; hosts and doctor look in checkpoints too; ComfyUI cover defaults to hints. Real runs: SA3 20 s in 26 s cold, YuE2 30 s in 20 s. 112 tests pass.

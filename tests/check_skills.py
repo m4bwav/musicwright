@@ -143,10 +143,10 @@ def check_data():
                     problems.append(f"recipes.json: recipe {k} has no {f}")
             if r.get("route") not in ("comfy", "rest"):
                 problems.append(f"recipes.json: recipe {k} route {r.get('route')!r} is not comfy or rest")
-            if r.get("route") == "comfy" and r.get("graph") not in ("acestep15", "minimax3"):
+            if r.get("route") == "comfy" and r.get("graph") not in ("acestep15", "minimax3", "stableaudio3", "yue2"):
                 problems.append(f"recipes.json: comfy recipe {k} graph {r.get('graph')!r} is not one mw.py builds")
-            if r.get("route") == "comfy" and not (r.get("params") or {}).get("unet"):
-                problems.append(f"recipes.json: comfy recipe {k} names no unet (doctor and gen look for it)")
+            if r.get("route") == "comfy" and not ((r.get("params") or {}).get("unet") or (r.get("params") or {}).get("checkpoint")):
+                problems.append(f"recipes.json: comfy recipe {k} names no unet or checkpoint (doctor and gen look for it)")
     except (OSError, ValueError, KeyError, AttributeError) as e:
         problems.append(f"skills/musicwright/references/recipes.json: unreadable ({e})")
     try:
