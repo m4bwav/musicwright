@@ -1,5 +1,11 @@
 # Handoff
 
+## Wiki at 0.1.8, SongEval blocked (2026-11-03)
+
+Wiki republished at 0.1.8 (wiki commit 407dd49, 17 pages, live check clean), rerun on Windows and on static ffmpeg 7.0.2 in WSL; the run found no new bugs in mw.py. This clears item 1 of the section below.
+
+Owed now: (1) the learned quality score (item 4). The ledger and studio hold 23 verdicts, so the ten-take bar is met, but SongEval has not run: installing its requirements was refused by the session's permission check, so nothing was installed. It waits on the owner allowing that install; the exact steps and the caveats, including a licence conflict, are in [research/04-learned-quality-score.md](research/04-learned-quality-score.md). (2) Optional listening, no hurry, as listed below. Nothing else on the Owed list is open.
+
 ## Listening verdicts applied (2026-11-03)
 
 The owner answered all seven questions on hw-checks-listening. Rulings: [decisions/2026-11-03-listening-verdicts.md](decisions/2026-11-03-listening-verdicts.md). 0.1.8 carries them. Nothing is waiting on the agent's side of those answers.
