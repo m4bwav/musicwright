@@ -2,7 +2,7 @@
 
 ## Checked, nothing owed (2026-11-03)
 
-A continue session found no agent work: no open pull requests, no unanswered askwright questions (hw-checks-listening and notation-stage3 are done), 0.1.8 released and installed, CI green. Next dated work: evergreen refreshes from 2026-11-15 (generate first). The RESEARCH.md note from the SongEval run still ships with the next release. Optional listening is listed in the section below.
+A continue session found no agent work: no open pull requests, no unanswered askwright questions (hw-checks-listening and notation-stage3 are done), 0.1.8 released and installed, CI green. Next dated work: evergreen refreshes from 2026-11-15 (generate first). The RESEARCH.md note from the SongEval run still ships with the next release. Optional listening is listed in the section below. Rechecked later the same day by another continue session: unchanged.
 
 ## SongEval tried, not adopted (2026-11-03)
 
