@@ -70,7 +70,7 @@ hoping a caption reproduces it.
 3. **Write it down**: `mw.py transcribe take.flac --out notes/take.mid --to abc,musicxml,tab`
    with `--lowest`/`--highest` set to the instrument's range. One line: pyin. Several notes at once:
    `--engine basic-pitch`, on stems for a full mix. Free time: run `mw.py pulse` and pass `--bpm`.
-4. Render the transcription back and let the listener compare it with the recording; open the
+4. Render the transcription back and let the listener compare it with the recording (hub Step 3 for the page); open the
    MusicXML in MuseScore to read or correct it. Say that a transcription is a draft.
 
 ## Rules

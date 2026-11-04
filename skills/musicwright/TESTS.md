@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261103-1 · 2026-11-03 · headless claude -p (vault eval-harness, EVAL_MODE=fixtures), installed 0.1.9 · 0/3
+- action-3 · action · skill gap · all three routed to musicwright-produce, ran `mw.py preview --blind` and answered in chat; the rule sat only in the hub.
+- led to: C-20261103-2
+
 ### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
 - Baseline: action-1 0/3, action-2 0/3.
 - led to: none

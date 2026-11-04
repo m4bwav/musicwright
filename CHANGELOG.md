@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.10 (2026-11-03)
+
+- `mw.py doctor` reports the askwright `ask.py` (`MUSICWRIGHT_ASKWRIGHT`, `askwright` in the studio config.json, or the plugin cache). The sound-test rule now reaches produce, generate, score and compose, after an eval showed the hub-only rule was missed.
+
 ## 0.1.9 (2026-11-03)
 
 - The take loop puts sound tests on an askwright page when that plugin is installed, reads the answers back and records them with `mw.py verdict`. Chat stays the fallback.

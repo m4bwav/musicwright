@@ -164,6 +164,17 @@ class Basics(unittest.TestCase):
             self.assertIsNone(d["ffmpeg"])
             self.assertIn("not found", d["ffmpeg_error"])
 
+    def test_doctor_reports_askwright_from_env(self):
+        script = Path(tempfile.mkdtemp()) / "ask.py"
+        script.write_text("", encoding="utf-8")
+        os.environ["MUSICWRIGHT_ASKWRIGHT"] = str(script)
+        try:
+            code, d = run("doctor")
+        finally:
+            del os.environ["MUSICWRIGHT_ASKWRIGHT"]
+        self.assertEqual(code, 0)
+        self.assertEqual(d["askwright"], str(script))
+
     def test_doctor_host_option_lists_each_host(self):
         p1, p2 = unused_port(), unused_port()
         code, d = run("doctor", "--host", f"http://127.0.0.1:{p1}, http://127.0.0.1:{p2}/")
