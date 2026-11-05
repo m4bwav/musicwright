@@ -1,5 +1,9 @@
 # Handoff
 
+## Optional listening on a page (2026-11-04)
+
+Owner's request: the leftover optional listening is now askwright set `ask-round2` in Ai/Music/hw-checks (`ask.py serve` it if down; `ask.py read` for answers), four questions: SA3 and YuE2 through mw.py, the MM3 seed (blind; key preview_mm3_blind_blind_key.json, open only after it is answered), the sound near the end of the extract drums. The folder is not matched by the continue prompt's `Music/*/ask`, so check it by name. Act on the answers: recipe source notes, a note in the extract docs if it leaks, a bug hunt if a take is broken. Unanswered so far.
+
 ## Baseline and wiki at 0.1.10 (2026-11-04)
 
 Both items owed by the section below are done: action-3's baseline is 0/3 (T-20261104-1), and the wiki is republished at 0.1.10, rerun on Windows and on static ffmpeg 7.0.2 in WSL with no new bugs. Nothing is owed. Optional listening is unchanged, and the next dated work is the evergreen refreshes from 2026-11-15 (generate first). Another continue session has nothing to do before then. Rechecked later on 2026-11-04: unchanged.

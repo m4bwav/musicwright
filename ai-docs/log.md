@@ -242,3 +242,6 @@ Append-only. Newest last.
 
 ## [2026-11-04] check | nothing owed
 - No open PRs or issues, CI green, 0.1.10 released and installed, all seven hw-checks-listening answers applied, no skill past due. Next: evergreen refreshes from 2026-11-15.
+
+## [2026-11-04] listening | optional checks on askwright
+- Set ask-round2 in Ai/Music/hw-checks, four questions, served on the owner's request; MM3 pair blind through `mw.py preview --blind`. Unanswered.
