@@ -14,6 +14,8 @@ JSON object per command). Run `python <this folder>/scripts/mw.py doctor` once p
 ffmpeg, ComfyUI hosts and the music models on them, the ACE-Step REST server, librosa and the
 studio folder, and lists the recipes that can run here. Commands: [references/cli.md](references/cli.md).
 
+Spoken voices and a voice's identity record belong to the voicewright plugin when installed (`voices.json`); songs and singing generation stay here.
+
 ## Step 1: the brief (ask only what you cannot infer)
 
 - **Use**: `game-loop`, `game-cue` (stinger, victory), `film-cue`, `listening`, `song` (vocals).
