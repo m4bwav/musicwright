@@ -239,3 +239,6 @@ Append-only. Newest last.
 
 ## [2026-11-04] eval, release | action-3 baseline, wiki at 0.1.10
 - Baseline 0/3: every run wrote its own blind HTML page, none used askwright (T-20261104-1). Wiki republished at 0.1.10, covering 0.1.9; diffout showed only expected changes, no new bugs.
+
+## [2026-11-04] check | nothing owed
+- No open PRs or issues, CI green, 0.1.10 released and installed, all seven hw-checks-listening answers applied, no skill past due. Next: evergreen refreshes from 2026-11-15.

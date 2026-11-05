@@ -2,7 +2,7 @@
 
 ## Baseline and wiki at 0.1.10 (2026-11-04)
 
-Both items owed by the section below are done: action-3's baseline is 0/3 (T-20261104-1), and the wiki is republished at 0.1.10, rerun on Windows and on static ffmpeg 7.0.2 in WSL with no new bugs. Nothing is owed. Optional listening is unchanged, and the next dated work is the evergreen refreshes from 2026-11-15 (generate first). Another continue session has nothing to do before then.
+Both items owed by the section below are done: action-3's baseline is 0/3 (T-20261104-1), and the wiki is republished at 0.1.10, rerun on Windows and on static ffmpeg 7.0.2 in WSL with no new bugs. Nothing is owed. Optional listening is unchanged, and the next dated work is the evergreen refreshes from 2026-11-15 (generate first). Another continue session has nothing to do before then. Rechecked later on 2026-11-04: unchanged.
 
 ## Sound tests on askwright, 0.1.10 (2026-11-03)
 
