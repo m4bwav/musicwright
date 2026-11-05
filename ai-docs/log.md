@@ -248,3 +248,6 @@ Append-only. Newest last.
 
 ## [2026-11-04] listening | round two applied
 - All four ask-round2 answers applied: recipe source notes, extract leak in the docs, four ledger verdicts. Blind key opened after the answer: Take B is seed 3101. See decisions/2026-11-04-listening-round2.md.
+
+## [2026-11-04] check | after 0.1.11, nothing owed
+- No open PRs or issues, CI green, 0.1.11 released and installed, doctor finds askwright, no skill past due (generate first on 2026-11-15). Next: evergreen refreshes from 2026-11-15.
