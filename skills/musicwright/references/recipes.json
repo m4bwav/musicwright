@@ -95,7 +95,7 @@
     "max_seconds": 340.0
    },
    "timing": "3-7 min per take typical; takes came back shorter than asked (98-170 s for 180-195 s); one 240 s beatless request hung over an hour. Use --timeout and render longer than needed; 2026-11-02 on the 16 GB RTX 5060 Ti: 60 s asked -> 43 s in 105 s, 90 s asked -> 63 s in 140 s (about 0.7 of the request), peak 15.3 GB VRAM. Ask for about 1.4x the length you need.",
-   "source": "ComfyUI audio_minimax_music_3 template. Kept by a listener 2026-11-03: two instrumental takes (calm fantasy theme, flute over strings, D major, 90 bpm, seeds 3101 and 3102); the verdict covered the pair, not one seed"
+   "source": "ComfyUI audio_minimax_music_3 template. Kept by a listener 2026-11-03: two instrumental takes (calm fantasy theme, flute over strings, D major, 90 bpm, seeds 3101 and 3102); the verdict covered the pair. Blind pair 2026-11-04, one listener: seed 3101 preferred, the reference take"
   },
   "stable-audio3-medium": {
    "route": "comfy",
@@ -111,7 +111,7 @@
     "scheduler": "simple"
    },
    "timing": "60 s in 9 s on a 16 GB RTX 5060 Ti; returned exactly the asked length",
-   "source": "ComfyUI bundled template. Kept by a listener 2026-11-03: one take, calm ambient space theme, seed 3301"
+   "source": "ComfyUI bundled template. Kept by a listener 2026-11-03: one take, calm ambient space theme, seed 3301. Second take through mw.py gen, seed 4101, same brief, 2026-11-04: not bad but slightly too intense, not calm or ambient, so it can miss a calm brief: fish seeds or tighten the caption"
   },
   "yue2-3b-int8": {
    "route": "comfy",
@@ -136,7 +136,7 @@
     "scheduler": "sgm_uniform"
    },
    "timing": "90 s asked, 78 s returned in 33 s, about 8.5 GB VRAM on a 16 GB card; peaks reached +0.1 dBTP, so master before use",
-   "source": "ComfyUI bundled template. Kept by a listener 2026-11-03: one take, a folk ballad with lyrics, seed 3401"
+   "source": "ComfyUI bundled template. Kept by a listener 2026-11-03: one take, a folk ballad with lyrics, seed 3401. Second take through mw.py gen, seed 4102, also kept 2026-11-04"
   },
   "acestep-rest": {
    "route": "rest",
