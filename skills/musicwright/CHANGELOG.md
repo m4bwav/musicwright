@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261104-1 · 2026-11-04 · Recipe source notes from second-round listening
+- because: user request (listening page ask-round2)
+- files: references/recipes.json (minimax-music3, stable-audio3-medium, yue2-3b-int8)
+- Source notes only; no setting changed.
+
 ### C-20261103-2 · 2026-11-03 · doctor finds askwright; the rule reaches the siblings
 - because: T-20261103-1 (0/3, routed to produce, and no way to tell whether askwright was present)
 - files: scripts/mw.py (askwright_script, cmd_doctor), references/cli.md, references/listening.md, SKILL.md (Step 3), TESTS.md

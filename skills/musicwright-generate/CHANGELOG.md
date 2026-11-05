@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261104-1 · 2026-11-04 · Second-round listening: extract leak, recipe notes
+- because: user request (listening page ask-round2, four answers; decisions 2026-11-04-listening-round2)
+- files: SKILL.md route table; references acestep.md, acestep-rest.md; hub references/recipes.json
+
+Extract drums are no longer described as clean: one spot near the end leaked. The recipe source notes record the Stable Audio 3 miss, the YuE2 keep and the preferred MiniMax seed. One listener, one source each.
+
 ### C-20261103-9 · 2026-11-03 · Sound tests point at the askwright page
 - because: user request; T-20261103-1 (0/3: the hub-only rule was missed when this skill handled the request)
 - files: SKILL.md

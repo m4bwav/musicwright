@@ -17,7 +17,7 @@ Check what can run here first: `mw.py doctor` lists `recipes_runnable`. Then:
 |---|---|---|
 | Instrumental 30 s to 4 min (beds, themes, solos, cues) | `acestep-xl-sft` (ComfyUI) | MIT, commercial outputs, best local quality, about 1.5 min per 3 min |
 | Fast drafts, many seeds | `acestep-rest` (2B turbo) | a 60 s take in about 22 s once warm |
-| Cover, repaint a time range, one part out of a mix | ComfyUI first: `mw.py gen --task cover` or `repaint` on acestep-xl-sft, `--task extract` on acestep-xl-base | each preferred or rated clean by one listener on one source, 2026-11-03; needs the plugin's comfy_nodes |
+| Cover, repaint a time range, one part out of a mix | ComfyUI first: `mw.py gen --task cover` or `repaint` on acestep-xl-sft, `--task extract` on acestep-xl-base | each preferred or rated mostly clean by one listener on one source, 2026-11-03, one slight leak in the extract drums; needs the plugin's comfy_nodes |
 | Extend, lego, complete | ACE-Step REST tasks | REST only ([references/acestep-rest.md](references/acestep-rest.md)) |
 | Song with sung lyrics | `acestep-xl-sft` with lyrics, then `minimax-music3` as a second opinion | MiniMax needs product attribution and disclosure |
 | Lyrics-led song with an editable score | `yue2-3b-int8` (ComfyUI native) | about 8.5 GB; saves the ABC score; companies need a licence |

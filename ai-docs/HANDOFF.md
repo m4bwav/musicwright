@@ -1,5 +1,9 @@
 # Handoff
 
+## Round-two listening applied (2026-11-04)
+
+The owner answered all of ask-round2. Rulings: [decisions/2026-11-04-listening-round2.md](decisions/2026-11-04-listening-round2.md). Released as 0.1.11; the wiki stays at 0.1.10, as only notes changed. Optional listening is finished and nothing is owed. Next dated work: evergreen refreshes from 2026-11-15, generate first. No retry of the Stable Audio caption was asked for or rendered; do it only when someone needs that route for a calm brief.
+
 ## Optional listening on a page (2026-11-04)
 
 Owner's request: the leftover optional listening is now askwright set `ask-round2` in Ai/Music/hw-checks (`ask.py serve` it if down; `ask.py read` for answers), four questions: SA3 and YuE2 through mw.py, the MM3 seed (blind; key preview_mm3_blind_blind_key.json, open only after it is answered), the sound near the end of the extract drums. The folder is not matched by the continue prompt's `Music/*/ask`, so check it by name. Act on the answers: recipe source notes, a note in the extract docs if it leaks, a bug hunt if a take is broken. Unanswered so far.

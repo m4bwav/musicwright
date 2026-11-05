@@ -245,3 +245,6 @@ Append-only. Newest last.
 
 ## [2026-11-04] listening | optional checks on askwright
 - Set ask-round2 in Ai/Music/hw-checks, four questions, served on the owner's request; MM3 pair blind through `mw.py preview --blind`. Unanswered.
+
+## [2026-11-04] listening | round two applied
+- All four ask-round2 answers applied: recipe source notes, extract leak in the docs, four ledger verdicts. Blind key opened after the answer: Take B is seed 3101. See decisions/2026-11-04-listening-round2.md.
