@@ -120,6 +120,7 @@
    "use": "lyrics-led songs; plans an ABC score, saved beside the take as .abc. Needs --lyrics, --lyrics-file or --sections; the caption is the style",
    "params": {
     "checkpoint": "yue2_3b_int8_convrot.safetensors",
+    "melody_encoder": "sheetsage2_bf16.safetensors",
     "max_abc_tokens": 8192,
     "abc_temperature": 0.7,
     "abc_top_p": 0.9,

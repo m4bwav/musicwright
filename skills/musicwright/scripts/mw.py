@@ -1827,6 +1827,12 @@ def source_graph(g, task, audio, a):
     Extract: the vendored MW extract nodes (comfy_nodes/musicwright_nodes/acestep15, research 06)
     put the "Extract the TRACK track" instruction in the text encoder and the source in a guider.
     """
+    if "melody_encoder" in a.recipe_params:  # YuE2: SheetSage2 transcribes the source's melody; the template's melody mode sings over it
+        g["10"] = {"class_type": "AudioEncoderLoader", "inputs": {"audio_encoder_name": a.recipe_params["melody_encoder"]}}
+        g["11"] = {"class_type": "LoadAudio", "inputs": {"audio": audio}}
+        g["2"] = {"class_type": "SheetSage2AudioToABC", "inputs": {"audio_encoder": ["10", 0], "audio": ["11", 0], "mode": "melody"}}
+        g["3"]["inputs"]["mode"] = "melody"
+        return g
     g["5"]["inputs"]["generate_audio_codes"] = False
     g["11"] = {"class_type": "LoadAudio", "inputs": {"audio": audio}}
     if task == "extract" or (task == "cover" and getattr(a, "hints", False)):
@@ -1954,6 +1960,7 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
         prefix = f"musicwright/{slug(a.name)}_s{s}"
         g, recipe_used = GRAPHS[r["graph"]](r, caption, lyrics, s, a.duration, a.bpm, a.key, prefix, ov)
         if a.task:
+            a.recipe_params = recipe_used if r.get("graph") == "yue2" else {}
             g = source_graph(g, a.task, audio, a)
         if a.dry_run:
             jobs.append({"seed": s, "graph": g})
@@ -2109,6 +2116,13 @@ def check_task(a, r):
     if task == "text2music":
         if a.src or a.track:
             raise MwError("--src and --track need --task (cover, repaint, lego, complete or extract)")
+        return
+    if r.get("graph") == "yue2" and task == "cover":
+        if a.strength is not None or getattr(a, "hints", False):
+            raise MwError("YuE2 cover follows the melody transcribed from --src; --strength and --hints do not apply")
+        if not a.src:
+            raise MwError("--task cover needs --src, the audio to work from")
+        a.src = need_file(a.src)
         return
     if r["route"] != "rest" and not (r.get("graph") == "acestep15" and task in COMFY_TASKS):
         raise MwError(f"--task {task} runs on the ACE-Step REST server; use --recipe acestep-rest (in ComfyUI the ACE-Step recipes do cover and repaint, acestep-xl-base does extract)")

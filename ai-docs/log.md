@@ -269,3 +269,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] check | continue session, nothing owed
 - No wanted book on disk, owner candidates unanswered, no open PRs, CI green, 0.1.12 installed. Next dated work: evergreen refreshes from 2026-11-15, generate first.
+
+## [2026-11-06] build | YuE2 melody cover
+- `gen --task cover` on yue2-3b-int8, two takes unheard. SFT pack install refused by the permission check.
