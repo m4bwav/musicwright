@@ -11,11 +11,12 @@ sensitive; harshness 2-5k) · sibilance 5-8k · air 10-16k.
 ## Moves
 
 - EQ: cut before boost; narrow cuts, wide gentle boosts; high-pass everything that is not bass
-  (pads about 100-200 Hz, reverb returns 200-300 Hz).
+  (pads about 100-200 Hz, reverb returns 200-300 Hz). Senior: shelves before peaks, a boost in one band and under 6 dB, high-pass slopes no steeper than about 18 dB/octave and not resonant, and judge every setting in the mix, not solo.
 - Masking: carve the rival (dip the pad at the lead's 2-3 kHz), pan apart, or sidechain bass to kick.
 - Compression: bus 1.5:1-2:1 with 1-3 dB reduction; vocals 3:1-4:1 with 3-6 dB; slow attack
   (10-30 ms) keeps transients.
-- Reverb: pre-delay 10-30 ms; rooms intimate, 2-4 s halls epic; little on bass and kick.
+- Compression exists to steady a balance: if a part sits at one fader position, leave it alone (Senior ch. 9).
+- Reverb: pre-delay 10-30 ms; rooms intimate, 2-4 s halls epic; little on bass and kick. Name the job first (table below).
 - Stereo: kick, bass and lead centred; below about 100-150 Hz mono.
 - AI output: gentle EQ, a limiter, loudness normalisation. It is usually dense already: add no
   compression.
@@ -38,6 +39,33 @@ sensitive; harshness 2-5k) · sibilance 5-8k · air 10-16k.
   base.flac --stem --out answer.wav`, ratio 3, attack 80 ms, release 700 ms as a start) and check
   with `mw.py answer answer.wav --lead base.flac`: `rests_minus_under_db` above 0 means it now sits
   in the rests. A listener preferred the ducked mix of a lego part over the plain one.
+
+## Reverb and delay by job
+
+One reverb does five jobs at once and they fight. Pick the job, then the settings (Senior, *Mixing Secrets*, 2nd ed. 2018, ch. 16-17).
+
+| Job | Preset | Pre-delay | Use |
+|---|---|---|---|
+| blend (same room) | natural, tail cut short | 10-20 ms | many parts, after the balance is set |
+| size (bigger space) | natural, soft onset | 50 ms or more | many parts, after the balance is set |
+| tone | unnatural, tail cut short | set by ear | one or two parts, while balancing |
+| sustain | unnatural, soft onset | 25 ms or more | one or two parts, while balancing |
+| spread (width) | bland, uncoloured | set by ear | when a part is too narrow |
+
+A delay does the same jobs and masks less. A delay on the tempo sinks into the mix; one off the tempo pops out, so keep it for effects.
+
+## A render is premixed audio
+
+A stereo render has the problem of a sample from a finished record: it was made to stand alone and leaves no room. Senior's rebalancing moves (ch. 15.2) carry over; applying them to AI renders is our inference, untested. Stems (stems.md) come first when separation is clean.
+
+- Adding a part: high-pass the render when a new bass goes in, and cut whatever the new part needs; low-pass it if hiss or crackle keeps a new lead from coming forward.
+- One part too loud: a narrow peak on its pitch for a tonal part; fast high-band limiting for a loud tambourine or hat; if it is panned, process that side or the mid or side alone.
+- One bad hit: paste a clean hit from elsewhere in the take.
+- If none of it works, re-roll: Senior's own last resort is to replace the part rather than salvage it (ch. 12).
+
+## Referencing a take
+
+Senior calls this what actually teaches mixing (ch. 4, 19.2-19.3). The agent cannot hear, so it sets up the comparison and the listener answers. Make loudness-matched copies (`mw.py preview`, `mw.py compare`), judge the side effects and not the level gain, and ask in this order: overall tone; level and dynamics of the main parts; tone of the main parts; reverb and delay length and level; stereo image. Compare the loudest section first, since it should be the peak. Do not match a reference's spectrum curve: mixes differ by key and arrangement. If most references have less in one region (say 300-500 Hz), try a cut there. Last pass: a written snag list after a night's rest, the whole track, eyes off the displays.
 
 ## AI renders: what goes wrong and what to run
 
@@ -67,7 +95,7 @@ afterwards, which is what a mono speaker would play anyway.
 ## Arrangement density
 
 3-5 focal elements at once, each in its own register. A good track has at least two density
-levels. Under dialogue or busy SFX: no busy 1-4 kHz lead.
+levels. Under dialogue or busy SFX: no busy 1-4 kHz lead. Senior's stricter test is three main points of interest at a time, which may change from moment to moment, with each section given its own sound and a fill when a part repeats more than three times (ch. 7). Use it to write or judge prompts, not as a flag. A single small mono speaker makes balance errors easier to hear (ch. 2).
 
 ## Scripted checks
 

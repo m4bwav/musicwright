@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.14 (2026-11-06)
+
+- musicwright-produce: mixing.md gains reverb and delay by job, a render treated as premixed audio, and a referencing order, from Senior, *Mixing Secrets* (2nd ed.).
+
 ## 0.1.13 (2026-11-06)
 
 - New recipe `acestep-xl-sft-pack`, through the optional ComfyUI-AceStep_SFT nodes: one listener preferred it blind on two seeds of one caption. Not the default. `gen` and `doctor` check for its node.
