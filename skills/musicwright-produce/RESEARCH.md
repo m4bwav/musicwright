@@ -50,6 +50,13 @@ Best sources: standards bodies, platform help pages, ffmpeg docs; practitioner b
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261106-3 · 2026-11-06 · Katz and Senior read
+- Summary: Katz, *Mastering Audio* 3rd ed.: lowering level does not remove clipping in the file, and a limiter can sound worse (ch. 16); filters and lossy coding can raise peaks (ch. 16, 18); section moves go before the loud entry, never during a build (ch. 5); tails and heads (ch. 3); judge at the loudest passage (ch. 4). Senior, *Mixing Secrets*: several lossless, lightly limited references (ch. 4); side effects of loudness processing, buildups beyond level and a consumer play-through (ch. 19); crossovers can colour. Practitioner opinion, nothing tested on AI renders. The PLR limits for `linear` (13 dB for `streaming` and so on) are not in Katz: they are arithmetic from loudness.json on his target-plus-PLR method (p. 255 read on the page image). On synthetic files `master --preset streaming` went dynamic at PLR 14.9 and linear at 7.5. Preset numbers unchanged. The premixed-render, referencing and three-points lines came in with 0.1.14 and are not repeated.
+- Track: practice
+- Sources: the two books, by chapter
+- Magnitude: 2 (corrects the source-clipping fix and the monobass claim)
+- Applied: SKILL.md Steps 1, 1b, 3, 4; references/mixing.md; references/loudness.md
+
 ### R-20261103-3 · 2026-11-03 · Dean (ed.), Oxford Handbook of Computer Music; Zölzer, Digital Audio Signal Processing (sources pass 14)
 - Summary: no copy of either book on disk; read from publisher and library listings. Dean (OUP 2011): histories, composition and improvisation, sounding out, performance modes, cognition and computation (Wiggins, Pearce, Müllensiefen: statistical expectation models such as IDyOM), cultural issues; a survey with nothing an agent can run, IDyOM-style melodic surprise a candidate only for melody checks. Zölzer (Wiley, 3rd ed. 2022): quantization and dither, AD/DA, audio processing systems, filters, room simulation, dynamics, sample rate conversion, audio coding, machine learning for audio. Dither and resampling are already in mw.py and produce references (ffmpeg.md, loudness.md); no gap. No skill change.
 - Track: subject

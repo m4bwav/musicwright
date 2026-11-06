@@ -10,6 +10,11 @@ Tempo search for several hits, from round-two reading; see the RESEARCH entry fo
 
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-3 · 2026-11-06 · Karlin and Wright: hit tolerance, entries and exits, treatment, gaps
+- because: R-20261106-4
+- files: SKILL.md (Steps 1, 2, 4), references/spotting.md (Spotting notes, Tempo and hits, Ducking, Temp tracks), RESEARCH.md (Current understanding)
+- Replaces one frame with two on sharp events, the sound-or-cut entry rule with a shift of emphasis, and "under the whole cut" with a sequence plus chosen gaps. Evals owed.
+
 ### C-20261103-9 · 2026-11-03 · Sound tests point at the askwright page
 - because: user request; T-20261103-1 (0/3: the hub-only rule was missed when this skill handled the request)
 - files: SKILL.md

@@ -88,6 +88,8 @@ drop, breakdown, build, drop, outro in 16/32-bar blocks.
 
 Eight-bar sentence: state a short idea twice over the tonic in 4 bars, then 4 bars that break it up and speed up the chords into a cadence (Open Music Theory, sentence).
 
+Contrast in the words too: a chorus differs from the verse in line count, length or rhyme from its first line, a bridge in structure and subject. v-v-ch-v-v-ch and three identical verse-chorus systems feel long; prefer the ending with a bridge above, or AABA, for three ideas (Pattison ch. 20, 22, 23).
+
 ## Motif development
 
 A motif is 2-7 notes with a recognisable rhythm. Develop it: repeat, sequence (higher or lower),
@@ -137,7 +139,7 @@ After DeSantis ch. 31-32, 63, 66-75 and Oltheten, *Mixing With Impact* (2018) 3.
   (fewer parts, fewer notes, shorter tails). It is easier to hear what is wrong than to imagine
   what is missing.
 - Sections contrast by who plays, not by overall level: a dark bass-and-melody verse against a
-  brighter chorus.
+  brighter chorus. Lyric form is a second lever (Form).
 - Blur the seams: let a part enter a beat early, run past the boundary or drop out just before it;
   a fill peaks just before the downbeat.
 - Two families of form. Song form: verse tension, chorus release, a bridge unlike both. Layering
@@ -173,6 +175,6 @@ After DeSantis ch. 31-32, 63, 66-75 and Oltheten, *Mixing With Impact* (2018) 3.
 
 ## Density and register (for judging)
 
-3-5 focal elements at once. Bass below about 200 Hz, harmony 200 Hz-2 kHz, lead 1-4 kHz, sparkle
+3-5 focal elements at once (unmeasured; Senior, *Mixing Secrets*, ch. 7 says about three). Bass below about 200 Hz, harmony 200 Hz-2 kHz, lead 1-4 kHz, sparkle
 above 5 kHz. Same register and same rhythm = masking. A good track has at least two density
 levels. Under dialogue or busy game sound effects, keep the 1-4 kHz lead sparse.

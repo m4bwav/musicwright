@@ -10,6 +10,11 @@ Cadence, borrowed-chord and sentence notes, from round-two reading; see the RESE
 
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-3 · 2026-11-06 · Pattison: lyrics by stress, section jobs, stability table
+- because: R-20261106-5
+- files: SKILL.md (step 4), references/vocabulary.md (Space and placement list, Lyrics that sing), references/theory.md (Form, Arrangement, Density and register)
+- Replaces "read aloud" with stresses marked in writing, adds word jobs and a table, notes Senior's three beside 3-5.
+
 ### C-20261103-9 · 2026-11-03 · Sound tests point at the askwright page
 - because: user request; T-20261103-1 (0/3: the hub-only rule was missed when this skill handled the request)
 - files: SKILL.md

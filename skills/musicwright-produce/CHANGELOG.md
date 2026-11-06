@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-3 · 2026-11-06 · Katz and Senior: clipping, encoded peaks, section moves, comparisons
+- because: R-20261106-3
+- files: SKILL.md (Steps 1, 1b, 3, 4), references/mixing.md (Moves, AI renders, Bass to mono, Referencing a take, Scripted checks), references/loudness.md (loudnorm details)
+- Rewrites the source-clipping fix, the monobass claim and the FLAT move; adds the rest as lines. No numbers in loudness.json or mw.py changed.
+
 ### C-20261106-2 · 2026-11-06 · Mixing Secrets: reverb jobs, premixed audio, referencing
 - because: user request (book distillation, everscout downtempo beat)
 - files: references/mixing.md (Moves; Reverb and delay by job; A render is premixed audio; Referencing a take; Arrangement density)

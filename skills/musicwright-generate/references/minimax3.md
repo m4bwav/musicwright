@@ -23,7 +23,7 @@ A continuous timeline with no hard stops until the very end:
 0:18-0:50: ...
 ```
 
-Lyrics: stressed syllables on strong beats, each line read aloud at the tempo first
+Lyrics: stressed syllables marked in writing and placed on strong beats; stresses set the bars
 (musicwright-compose: vocabulary.md). One block about every 15 s, `[intro]`, `[instrumental]`, `[interlude]`, `[bridge]`,
 `[outro]`, each with a short parenthesised performance note, e.g. `[instrumental]` newline
 `(the main theme appears: a soft lead synth)`.

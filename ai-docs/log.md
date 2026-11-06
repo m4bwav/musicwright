@@ -283,3 +283,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] listen | SFT pair and YuE2 cover answered
 - Pack recipe added as an option; rendered seed 5101 through mw.py, same audio as the heard take. Pair sides were not randomised: pack was B both times. YuE2 cover kept with a faint vocal. 0.1.13.
+
+## [2026-11-06] books | round 4: Karlin, Katz, Senior, Pattison applied
+- Apply-now items only, on books-round4-b. Checked on the source: Pattison's rhyme scale matches the book's figure; Katz has no "13 dB", which is arithmetic from the presets on his method (p. 255). Owed items in HANDOFF. Score evals not re-run. PR 94 merged during the work and already held Senior 1 and most of 3 and 6, so those are not repeated.

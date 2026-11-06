@@ -26,7 +26,7 @@ number, an example they can hear.
 2. Use and genre → tempo range (ambient 60-80, card and strategy beds 80-110, combat 130-170).
 3. Form: verse-chorus for songs, through-composed for film, A-B-A'-C for game loops (never one
    8-bar loop), 2-4 bars of section per tag.
-4. Instruments by register and colour (ranges in theory.md), 3-5 focal parts at once.
+4. Instruments by register and colour (ranges in theory.md), 3-5 focal parts at once (sources differ: theory.md).
 5. Words: build the caption from [references/vocabulary.md](references/vocabulary.md): genre +
    era/production + instruments + mood + vocal or "instrumental" + structure hint.
 6. A reference track or artist: fill the five reference fields in vocabulary.md (sound, harmony,

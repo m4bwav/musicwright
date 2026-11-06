@@ -24,7 +24,8 @@ and BELOW-RANGE with `--lowest C4` when the brief names a solo instrument. Flags
 for, not whether it is good; how often each fired on 78 real AI renders is in
 [references/mixing.md](references/mixing.md). `mw.py compare take.wav ref.wav` sets a take beside
 a reference the user owns ("why does mine sound smaller?"); use the reference for the idea, never
-to copy its spectrum.
+to copy its spectrum. Cut the biggest section from both with `mw.py edit` first; use two or three
+lossless, lightly limited references, and say so when one's PLR is far below the take's (Senior ch. 4).
 
 ## Step 1b: compare at one loudness
 
@@ -34,6 +35,13 @@ Impact* 5.3). Before a listener ranks takes or judges a fix, write matched copie
 `--blind` names them take_A, take_B in a shuffled order and keeps the key in a file you open only
 after the ranking; `--as phone` (mono, 300 Hz-6 kHz) and `--as quiet` (20 dB down) are the small
 speaker and low-level checks. A sound test goes on an askwright page, not in chat, when `mw.py doctor` reports `askwright` (hub Step 3).
+
+When asking for a judgement, give times for the loudest and quietest passages, read by eye from
+`mw.py sheet`, since harshness shows at the loudest. The listener sets the volume once and plays each
+passage through rather than switching quickly (Katz ch. 4, 19). Before delivery, ask for one full
+play-through with no screen and a snag list; fix only those that hold across `--as phone`,
+`--as quiet` and normal, unless that one check is the destination. Compare the final with the
+untouched take on blind `preview` copies, because a chain of fixes can end up worse (Senior ch. 19).
 
 ## Step 2: pick the destination preset
 
@@ -51,20 +59,35 @@ balance against SFX in the engine's mixer. Sources and caveats: [references/loud
 
 ## Step 3: fix, then master last
 
-Order: trim and fade (`mw.py edit`), then any repair, then loudness (`mw.py master`).
+Order: trim and fade (`mw.py edit`), then any repair, then loudness (`mw.py master`). If no flag
+fires and the listener has no complaint, apply the destination gain only: no EQ, no repair (Katz ch. 4).
 
 - Silence at the end (common in AI renders): `mw.py edit <in> --end <t> --fade-out 2-4 --out <out>`.
+  Put `--end` after the audible decay ends (read `mw.py sheet`) and make the fade longer than the decay
+  left; never fade across a ringing tail to reach a length. When trimming a head, keep the sound before
+  the first attack and fade in briefly (Katz ch. 3).
 - Too quiet or too loud: `mw.py master <in> --preset <p> --out <out>`. It runs two-pass loudnorm,
   linear when possible, resamples to 48 kHz and reports before and after. "dynamic" in the result
-  means the target needed more headroom than the file had and dynamics were changed: say so,
-  or choose a lower target.
-- Clipping or harsh peaks in the source: a lower target, or a gentle limiter in a DAW; never
-  stack more compression on AI output, which is usually already dense.
+  means the target needed more headroom than the file had and dynamics were changed: say so and
+  ask the listener about pumping, softer drums, muddy bass and lifted tails (Senior ch. 19), or choose
+  a lower target. `linear` needs a PLR of at most true-peak target minus LUFS target: 13 dB for
+  `streaming`, 14.5 `web-video`, 15 `apple`, 17 `game-music`. Above that prefer the lower target;
+  unused headroom is no fault (Katz ch. 17).
+- Clipping in the source: a lower target only prevents new overs after encoding and removes nothing
+  already in the render; a limiter is no repair and can sound worse (Katz ch. 16). Re-roll, or use a
+  declipper in a DAW. Harsh peaks: the EQ moves below. Never stack more compression on AI output,
+  which is usually already dense.
 - LOW-WIDE: `mw.py monobass <in> --out <out>` folds the lows to mono under a 160 Hz crossover
-  (`--hz 200` for a fully mono low end up to about 120 Hz) and leaves everything above alone.
-- FLAT on a piece that should build, or everything equally bright: with stems, give sections
-  1-3 dB of contrast (`mw.py mix <stems> --automate 2:0=-3,58=-3,60=0`) and darken the background
-  stems while the lead stays bright (`--shelves 0,-4,-3`). Recipes in
+  (`--hz 200` for a fully mono low end up to about 120 Hz) and keeps the stereo above the split.
+  A crossover can colour the sound: have a listener compare result and input on `preview` copies (Senior ch. 19).
+- Any filter (`monobass`, `--shelves`, EQ) can raise peaks, even a cut: measure again before delivery (Katz ch. 16, 18).
+- FLAT on a piece that should build, or everything equally bright: a build needs a drop before it.
+  With stems, in order: mute or lower stems ahead of the peak, darken background stems while the lead
+  stays bright (`--shelves 0,-4,-3`), then 1-3 dB section moves (`mw.py mix <stems> --automate
+  2:0=-3,58=-3,60=0`). With no stems, `mw.py mix take.wav --automate 1:...` rides the whole render and
+  leaves transients alone: the last resort. Lower in the quieter bars before a loud entry, never during
+  a build, ramping over several seconds; level moves survive a `linear` master and may not survive a
+  `dynamic` one (Katz ch. 5, Senior ch. 19). Recipes in
   [references/mixing.md](references/mixing.md) "AI renders".
 - Muddy (250-500 Hz), harsh (2-5 kHz), dull (nothing above 16 kHz) without stems: describe it and
   suggest EQ moves from [references/mixing.md](references/mixing.md); the agent cannot judge by ear.
@@ -81,6 +104,8 @@ Order: trim and fade (`mw.py edit`), then any repair, then loudness (`mw.py mast
   silence: measured +1,728 samples when the gapless tag is missing).
 - Never upsample AI output to look better; it does not add detail.
 - Convert with `mw.py edit <in> --out <name>.<ext>` (codec from the extension).
+- Run `mw.py measure` on the OGG, MP3 or M4A too, since lossy coding can raise peaks. At 0 dBTP or
+  above, lower the source and re-encode rather than add a limiter (Katz ch. 16).
 
 ## Step 5: report and record
 

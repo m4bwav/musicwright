@@ -27,5 +27,8 @@ listen to or upload, -14 LUFS and -1 dBTP is the safe single target.
 - It resamples to 192 kHz internally: always add `-ar 48000` (or the source rate) on output.
 - Two passes with the measured values and `linear=true` apply one static gain. When the target
   needs more true-peak headroom than the file has, it falls back to dynamic mode: check
-  `normalization_type` in the second pass (mw.py reports it).
+  `normalization_type` in the second pass (mw.py reports it). So `linear` needs a PLR (true peak
+  minus LUFS) of at most true-peak target minus LUFS target: 13 dB for `streaming`, 14.5 `web-video`,
+  15 `apple`, 17 `game-music`. This is arithmetic from the presets, on the method in Katz ch. 17; it is
+  necessary, not sufficient, since steady tones also go dynamic. Unused headroom is no fault.
 - pyloudnorm agrees with ffmpeg within 0.1 LU.

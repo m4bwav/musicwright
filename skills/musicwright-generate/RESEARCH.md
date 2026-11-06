@@ -62,6 +62,13 @@ Best sources: model cards and repos, vendor pricing and terms pages, court and r
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261106-6 · 2026-11-06 · Pattison against the syllable-matching note
+- Summary: Pattison, *Writing Better Lyrics* ch. 14, 18 says syllables between stresses barely matter and unmatched line lengths carry meaning, against upstream's matching lines within 1-2 syllables. Untested on either side. minimax3.md now says to mark stresses in writing, since an agent cannot read aloud.
+- Track: practice
+- Sources: the book, by chapter
+- Magnitude: 1
+- Applied: references/acestep.md (Lyrics field), references/minimax3.md
+
 ### R-20261017-6 · 2026-10-18 · Lego on base checkpoints: DCW, base against XL, percussion over free time
 - Summary: (1) On ACE-Step servers that force DCW on, lego on a base checkpoint returns noise (issue #1259); PRs #1273 and #1282 resolve DCW from the model config and expose `dcw_enabled` in the API, so mw.py sends `dcw_enabled: false` for base-only tasks and the server should be at or after commit ca1e85f. (2) After the fix, lego on the 2B base returns the new part alone and centres on the source's tonal centre (the flute source sat in D although A minor was asked for). It does not answer in the rests: the part is about as loud in the lead's rests as under its notes, follows the lead's dynamics and plays on into the lead's silent tail. Ducking the part under the lead (`duck --stem`, ratio 3, threshold 0.02, attack 80 ms, release 700 ms) moved it about 4-5 dB toward the rests (`mw.py answer`: -4.8 dB to -0.4 dB for the kept seed). mw.py's REST route reproduced a direct-API take for the same seed. (3) XL base with `ACESTEP_OFFLOAD_TO_CPU=true` on a 16 GB card: 530 s for three 60 s takes including the load, peak 13.5 GB; one of its three seeds held a single tone for the whole take. 2B base: 16-25 s per 60 s take, peak 7.5 GB. (4) Percussion lego over a free-time solo invents its own grid: with bpm 66 in the metadata one seed held a steady 66 bpm, one was gridded at another tempo, one was sparse; without bpm it chose 83-112 bpm. No take followed the lead's note onsets better than chance (`mw.py pulse` reads the solo as no pulse). A beat under a free-time take needs a tempo-locked base (re-render the lead at a fixed bpm) or accents placed on phrases. (5) A listener kept both the plain and the ducked mix of the 2B base seed 8101 (the ducked one best) over the other seeds and over a part rendered without the source (which pulled in a bass and rhythm section or ignored the lead's breaths).
 - Track: testing

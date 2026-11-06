@@ -6,6 +6,16 @@ ask-sft-pair: the owner preferred the pack clearly on seed 5101 and slightly on 
 
 Still waiting on the owner: Sweet's stinger change (below). Its "ask-yue2cover and ask-sft-pair" line is done.
 
+### Owed from books
+
+Karlin, Katz, Senior and Pattison apply-now items are in, unreleased. Each below needs calibration or a listener:
+
+- Karlin 5, 7, 8: do models obey under-speech texture words; build, cut and silence and hard-out fade lengths; a thin voice needing support in its range.
+- Katz 8: one level for every cue flattens contrast (blind test, `master --shared-gain`). Katz 9: `loop` writes 16-bit undithered WAV. Katz 10-13: OVER-LIMITED at 10, forte gap, clip times, fade curve.
+- Senior 9-14: quiet double, pad mid, drop chorus by stem mutes, notch one note, vary the fourth repeat, familiarity warning.
+- Pattison 7, 8: do models follow lyric form (the bar mapping depends on it), then a stable or unstable decision in the brief.
+- Also owed: re-run musicwright-score evals (its decisions changed).
+
 ## SFT pack installed, books applied (2026-11-06)
 
 The owner told a session to install ComfyUI-AceStep_SFT, and it is in D:/ComfyUI/custom_nodes at the audited commit 3e802ea, with soundfile and librosa added to the ComfyUI venv (a dry run showed additions only). ComfyUI was restarted on 8199; the nodes register. comfyui_layerstyle reports IMPORT FAILED for a missing `segment_anything`; the install did not cause it, and it was left alone.
