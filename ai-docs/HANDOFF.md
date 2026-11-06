@@ -2,7 +2,7 @@
 
 ## Research round two queued (2026-11-05)
 
-Owner's request: a full second research round, worked through the continue prompt. The plan and order are under "Round two" in [research/05-sources-to-mine.md](research/05-sources-to-mine.md), groups 7 to 12. Group 7 done 2026-11-05 (R-20261105-1). Owed: next is group 8 (ComfyUI music). Group 12 waits on the owner, who is seeing which books can be obtained; check the books folder in each session. Evergreen refreshes from 2026-11-15 go first once due. Progress lines go here as each pass ends.
+Owner's request: a full second research round, worked through the continue prompt. The plan and order are under "Round two" in [research/05-sources-to-mine.md](research/05-sources-to-mine.md), groups 7 to 12. Group 7 done 2026-11-05 (R-20261105-1). Group 8 done 2026-11-05 (R-20261105-2). Candidates, unbuilt: YuE2 melody cover in `mw.py gen` (1.29 GB SheetSage2 download); a blind pair with the ComfyUI-AceStep_SFT pack, which needs the owner's approval to install. Owed: next is group 9 (Reddit). Group 12 waits on the owner, who is seeing which books can be obtained; check the books folder in each session. Evergreen refreshes from 2026-11-15 go first once due. Progress lines go here as each pass ends.
 
 ## Round-two listening applied (2026-11-04)
 

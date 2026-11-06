@@ -167,3 +167,14 @@ Read: 13 of the 70 most-commented issues (400 listed), 11 of 112 discussions, DC
 - Discussions #1256, #1364: rights questions unanswered by maintainers. The repository LICENSE, two model cards and the Space LICENSE are MIT with no output clause; the clause the askers quote was not found, and may sit somewhere not read. Noted in licences.md.
 - ALT_VAE.md: ScragVAE, an MIT community VAE selectable on the Python route. Discussion #1366: latent-init reference in ComfyUI matches the cover denoise route. No change; ScragVAE is a listening-test candidate. Discussion #1372 is a vendor's demo: skipped. Issue #1280: the maintainer says the project is still maintained; latest tagged release v0.1.8, 2026-05-18, against commits since.
 - Not read: the remaining issues, mostly install, LoRA and GPU reports; LoRA training is outside the skill.
+
+### R-20261105-2 · 2026-11-05 · Round two, group 8: ComfyUI music
+
+Read: docs.comfy.org ACE-Step 1.5 page and blog post (first part of each, mostly launch claims); templates audio_ace_step1_5_xl_sft and _xl_base, audio_yue2_music_cover, audio_stable_audio_3_medium, audio_minimax_music_3; READMEs of ace-step/ACE-Step-ComfyUI and jeankassio/ComfyUI-AceStep_SFT (first part plus a keyword scan); descriptions of the two most-downloaded Civitai workflows through its API.
+
+- Recipes against templates: steps, shift, sampler and encoder settings match for MiniMax, Stable Audio and YuE2. The ACE-Step `acestep-xl-sft` differences (cfg 4.5, er_sde) are deliberate; `-classic` is the template. XL base template cfg is 6, the extract recipe 7: not tested, no change.
+- YuE2 cover through SheetSage2 (1.29 GB encoder) answers the melody complaint in R-20261105-1. Build candidate for `mw.py gen`; needs the download and a listening test.
+- Stable Audio 3 reprompt template gives a caption shape: into models.md. May bear on its missed calm brief; untested.
+- ComfyUI-AceStep_SFT (MIT) claims closer parity with the official pipeline: the official silence latent instead of core's approximation, a float32 schedule, APG guidance, `lm_codes_strength`. Its own checks are bit-identity and speed, not quality. Installing runs downloaded code, so it waits on the owner; a blind pair against `acestep-xl-sft` would decide it.
+- ACE-Step-ComfyUI is a client for a cloud or local server, not native nodes: not useful beside the current route.
+- Civitai descriptions gave no settings with evidence. OpenArt and RunComfy answered but were not read; comfyworkflows.com did not respond.

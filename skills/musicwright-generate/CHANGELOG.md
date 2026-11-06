@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261105-2 · 2026-11-05 · YuE2 melody route, Stable Audio 3 caption shape
+- because: R-20261105-2
+- files: references/acestep.md (Audio as input), references/models.md (Stable Audio 3 captions)
+
+Points at a route that keeps a melody and gives the template's caption order; neither has been run or heard here.
+
 ### C-20261105-1 · 2026-11-05 · ACE-Step community reports
 - because: R-20261105-1
 - files: references/acestep.md (Caption, Lyrics, Parameters, Audio as input), references/acestep-rest.md (Start and check), references/licences.md (Model terms)

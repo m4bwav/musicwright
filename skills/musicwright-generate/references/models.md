@@ -60,3 +60,7 @@ ungated): Stable Audio 3 Medium, 8 steps lcm/simple cfg 1, a 60 s take in 9 s, e
 8.5 GB VRAM, -14.7 LUFS and +0.1 dBTP (master before use). A listener kept one take of each on 2026-11-03, so both are recipes
 (`stable-audio3-medium`, `yue2-3b-int8`). Still unmeasured: any side-by-side listening test of ACE-Step against
 MiniMax, or between these models.
+
+## Stable Audio 3 captions
+
+ComfyUI's template expands short ideas into one sentence in this order: genre and adjectives, main instruments, supporting layers, rhythm and percussion, mood woven in, then `BPM: X. Length: Y seconds`. It has separate versions for music, instrument, SFX and one-shot. Follow that shape by hand; not yet compared here by ear.

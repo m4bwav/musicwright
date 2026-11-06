@@ -257,3 +257,6 @@ Append-only. Newest last.
 
 ## [2026-11-05] research | round two group 7, ACE-Step community
 - 13 issues, 11 discussions, DCW.md read; Tutorial, Musician's Guide and INFERENCE.md keyword-scanned. Seven report notes in acestep.md; unanswered rights question in licences.md, where the licence files read are plain MIT (R-20261105-1).
+
+## [2026-11-05] research | round two group 8, ComfyUI music
+- Official templates match the recipes. YuE2 melody cover and the SFT node pack are candidates, not built (R-20261105-2).
