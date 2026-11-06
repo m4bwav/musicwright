@@ -280,3 +280,6 @@ Append-only. Newest last.
 - Pack at 3e802ea, plus soundfile and librosa; ComfyUI restarted. Stop ComfyUI.bat fails from Git Bash through cmd //c because of the space in its name; stop by the listener's PID.
 - Pair in Music/sft-pair, unheard. Harmony field: unscaled chroma under log1p flattened every bin and read 0 changes; the unit test caught it.
 - Intro join: the cut at S jumped 0.17-0.58 at the seam on real takes, the cut at S+L at most 0.024. Sweet's stinger reversal held for the owner.
+
+## [2026-11-06] listen | SFT pair and YuE2 cover answered
+- Pack recipe added as an option; rendered seed 5101 through mw.py, same audio as the heard take. Pair sides were not randomised: pack was B both times. YuE2 cover kept with a faint vocal. 0.1.13.

@@ -188,6 +188,13 @@ Read through RSS, top of month and year: r/comfyui, r/StableDiffusion and r/Loca
 - Mixing and game-audio feeds: common questions already covered by the produce and game skills. No new numbers; no skill change.
 - Everscout: no beat covers AI music. See HANDOFF.
 
+### R-20261106-2 · 2026-11-06 · Listener answers: SFT pack pair, YuE2 cover
+
+- SFT pack against `acestep-xl-sft`, same model, seeds 5101 and 5102, one caption, clips matched at -16 LUFS: the pack clearly on 5101 ("A is close but its not as good and stops early"), slightly on 5102. The agent's prior was no difference. Limits: the pack was side B both times, so a side bias is not ruled out, and pack and core settings differ, so the cause is not isolated.
+- Early stops are measured too: recipe takes fall to about -35 LUFS or lower before 60 s; pack takes run to the end without a fade (last tenth -19.5 and -14.2 LUFS).
+- `mw.py gen --recipe acestep-xl-sft-pack --seeds 5101` decoded to the same audio (MD5) as the heard pack take, so the recipe reproduces it.
+- YuE2 cover: "tune carries over and it sounds good" for the better of two takes (which one was not asked), against a guess of tune carried but weak. The 0.96 score match predicted the tune, not the quality. Vocals were barely audible, a faint female chorus, though the brief asked for a female vocal. Unexplored: raising the vocal.
+
 ### R-20261105-4 · 2026-11-05 · Round two, group 10: prompt guides
 
 Read through a fetch tool's extraction, not raw text, except the SKILL.md: stability.ai/guides/stable-audio-3-prompt-guide, docs.comfy.org/tutorials/audio/yue2/yue2, raw.githubusercontent.com/ace-step/ACE-Step-1.5/main/.claude/skills/acestep-songwriting/SKILL.md, the deAPI ACE-Step guide (promotional; left out, and its 19 languages conflict with the 50+ in acestep.md, not resolved). No community MiniMax Music 3 prompt guide found. Notes into models.md and acestep.md.
