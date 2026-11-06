@@ -55,3 +55,6 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - Magnitude: n/a (initial)
 - Applied: C-20261017-1
 
+### R-20261105-4 · 2026-11-05 · Round two, group 10: spotting
+
+artofcomposing.com/how-to-spot-a-film and web.pdx.edu/~jnewton/assignments/60nt_no_one_trains/index.html, through a fetch tool's extraction: tempo search for hits, into spotting.md. Music Theory 21c film chapter: covered.

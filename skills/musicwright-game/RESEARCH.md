@@ -70,3 +70,6 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - Magnitude: n/a (initial)
 - Applied: C-20261017-1
 
+### R-20261105-4 · 2026-11-05 · Round two, group 10: adaptive music
+
+abratabia.com/web-game-audio/dynamic-game-music.php, opinion only: state-change delay into adaptive.md. ModDB and Construct tutorials returned 403, not read. Music Theory 21c game chapter: covered.

@@ -23,6 +23,8 @@ that must stay quiet.
 - Fitting after rendering: cut or repeat at bar lines; time-stretch up to about ±5% before it
   sounds processed.
 
+With several hits, try tempos in 0.25 bpm steps around the felt tempo, count how many frames each hit misses the nearest beat, and weight the critical hits. Changing one bar's meter (3/4, 5/4) can put a hit on a downbeat. From one practitioner and one course handout.
+
 ## Movements
 
 Render each movement a few seconds longer than its slot (short renders often fade early), pick

@@ -61,3 +61,4 @@ Round one was shallow: several sites had nothing, Reddit was one top-of-month re
 - 2026-11-05: group 7, ACE-Step community (R-20261105-1 in the generate RESEARCH.md: 13 issues, 11 discussions, DCW.md read; Tutorial, Musician's Guide and INFERENCE.md keyword-scanned only). Seven notes in acestep.md, one in licences.md. Next: group 8.
 - 2026-11-05: group 8, ComfyUI music (R-20261105-2 in the generate RESEARCH.md: official templates and two node-pack READMEs read; OpenArt and RunComfy not read, comfyworkflows.com no response). Recipes match the templates. Next: group 9.
 - 2026-11-05: group 9, Reddit (R-20261105-3: nine subs active, titles filtered, about 15 bodies read, no comments in RSS). One stale row fixed. Next: group 10.
+- 2026-11-05: groups 10 and 11 (R-20261105-4 in the generate, score, game, compose and produce RESEARCH.md). Open Music Theory v2 blocked (403), v1 read instead. Round two is done except group 12, books, none on disk.

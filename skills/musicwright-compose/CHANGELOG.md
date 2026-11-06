@@ -2,7 +2,13 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+Entry shape: `### C-20261105-9 · 2026-11-05 · Cadence, borrowed-chord and sentence notes
+- because: R-20261105-4
+- files: references/theory.md (Progressions, Form)
+
+Cadence, borrowed-chord and sentence notes, from round-two reading; see the RESEARCH entry for how strong each source is.
+
+### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261103-9 · 2026-11-03 · Sound tests point at the askwright page
 - because: user request; T-20261103-1 (0/3: the hub-only rule was missed when this skill handled the request)
