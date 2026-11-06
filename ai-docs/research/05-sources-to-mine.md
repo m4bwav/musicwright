@@ -58,3 +58,4 @@ Round one was shallow: several sites had nothing, Reddit was one top-of-month re
 - 2026-11-03: Ableton Learning Music (covered by theory.md) and Soundfly (403, skipped) (R-20261103-5 in the compose RESEARCH.md, no skill change). Next: Coursera music-production syllabi, Kaggle Learn (audio), which ends group 6.
 
 - 2026-11-03: Coursera syllabi (Berklee capstone, Malachi mixing course: covered) and Kaggle Learn (no audio course) (R-20261103-6 in the compose RESEARCH.md, no skill change). Group 6 done; all groups mined unless the list grows.
+- 2026-11-05: group 7, ACE-Step community (R-20261105-1 in the generate RESEARCH.md: 13 issues, 11 discussions, DCW.md read; Tutorial, Musician's Guide and INFERENCE.md keyword-scanned only). Seven notes in acestep.md, one in licences.md. Next: group 8.

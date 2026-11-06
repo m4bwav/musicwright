@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261105-1 · 2026-11-05 · ACE-Step community reports
+- because: R-20261105-1
+- files: references/acestep.md (Caption, Lyrics, Parameters, Audio as input), references/acestep-rest.md (Start and check), references/licences.md (Model terms)
+
+Adds what users and the maintainer report on captions, chords, endings, keyscale and cover, marked as reports and untried here, plus an unanswered rights question.
+
 ### C-20261104-1 · 2026-11-04 · Second-round listening: extract leak, recipe notes
 - because: user request (listening page ask-round2, four answers; decisions 2026-11-04-listening-round2)
 - files: SKILL.md route table; references acestep.md, acestep-rest.md; hub references/recipes.json
