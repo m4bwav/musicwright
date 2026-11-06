@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-4 · 2026-11-06 · Cover: what a score cannot say about keeping the tune
+- because: everscout ai-music distillation of Müller, Fundamentals of Music Processing (sec. 7.3, 8.2)
+- files: references/acestep.md (cover notes)
+- Ear stays the test: chroma scores read harmony and carry no per-pair threshold, and pitch tracking is weak on dense mixes.
+
 ### C-20261106-3 · 2026-11-06 · Lyrics: opposing view on matched lengths
 - because: R-20261106-6
 - files: references/acestep.md (Lyrics field), references/minimax3.md (Lyrics)
