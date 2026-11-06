@@ -27,6 +27,17 @@ Already covered by earlier passes (research 01 to 03): Demucs, Essentia, Magenta
 5. Books, most relevant first: Müller, *Fundamentals of Music Processing*; Farnell, *Designing Sound*; Nierhaus, *Algorithmic Composition*; Dean (ed.), *The Oxford Handbook of Computer Music*; Zölzer, *Digital Audio Signal Processing*; Dodge, *Computer Music*; Foster, *Generative Deep Learning*. Low value for this plugin: Müller and Guido, Géron, Petzold's *Code*.
 6. Courses (Coursera, Kaggle Learn, Soundfly, Ableton Learning Music): skim the syllabus for any check or technique the skills lack; do not take them.
 
+## Round two (queued 2026-11-05, owner's request)
+
+Round one was shallow: several sites had nothing, Reddit was one top-of-month read of two subs, and most books were judged from contents lists. Round two goes deeper, in this order, a few sources per session. Same rules: findings as R- entries, skill changes only for real gaps, each source marked done below with what was actually read. "Not found" or "blocked" is recorded as that, never as "no gaps".
+
+7. ACE-Step community: GitHub issues and discussions on the ACE-Step 1.5 repository (settings, failures, fixes), then its docs and tutorials.
+8. ComfyUI music: workflows and tutorials for ACE-Step, Stable Audio and YuE2, ComfyUI's own docs and blog, community workflow sites; compare with the recipes and `comfy_nodes`.
+9. Reddit through RSS at the pace above, top of the month and top of the year where the feed allows: r/comfyui, r/StableDiffusion, r/LocalLLaMA (music threads), r/SunoAI and r/udiomusic again (prompt craft), r/mixingmastering, r/audioengineering, r/GameAudio, r/WeAreTheMusicMakers. Check each sub exists and is active; drop dead ones. Then see whether an everscout beat already covers AI music. If none does, set the case out for the owner in HANDOFF; do not create one unasked.
+10. Tutorial sites, found afresh by search instead of from the old list: prompt and lyric-tag guides for local models, game-audio sites on loops and adaptive music, film-scoring and mastering tutorials. Prefer sites showing settings and results over sponsored roundups.
+11. Free textbooks: Open Music Theory for compose; anything else open found during 10.
+12. Books the owner obtains, through readwright and the books process in the owner's private notes. Wanted, in order: Muller, *Fundamentals of Music Processing* (settles the chord, DTW and HPSS candidates); Phillips, *A Composer's Guide to Game Music*; Sweet, *Writing Interactive Music for Video Games*; Karlin and Wright, *On the Track*; Katz, *Mastering Audio*; Senior, *Mixing Secrets for the Small Studio*; Pattison, *Writing Better Lyrics*. Waits on the owner; do what is on disk and carry on without the rest. Never download a pirated copy.
+
 ## Done
 
 - 2026-11-02: torchaudio, Demucs, librosa (R-20261102-1 in the produce RESEARCH.md: `uvx demucs` needs `--with numpy`). Next in group 1: Hugging Face transformers audio docs, Essentia, MidiTok, AudioCraft, Stable Audio API.

@@ -1,5 +1,9 @@
 # Handoff
 
+## Research round two queued (2026-11-05)
+
+Owner's request: a full second research round, worked through the continue prompt. The plan and order are under "Round two" in [research/05-sources-to-mine.md](research/05-sources-to-mine.md), groups 7 to 12. Owed: next is group 7 (ACE-Step community). Group 12 waits on the owner, who is seeing which books can be obtained; check the books folder in each session. Evergreen refreshes from 2026-11-15 go first once due. Progress lines go here as each pass ends.
+
 ## Round-two listening applied (2026-11-04)
 
 The owner answered all of ask-round2. Rulings: [decisions/2026-11-04-listening-round2.md](decisions/2026-11-04-listening-round2.md). Released as 0.1.11; the wiki stays at 0.1.10, as only notes changed. Optional listening is finished and nothing is owed. Next dated work: evergreen refreshes from 2026-11-15, generate first. No retry of the Stable Audio caption was asked for or rendered; do it only when someone needs that route for a calm brief. Rechecked after the release, same day: unchanged; another continue session has nothing to do before 2026-11-15.
