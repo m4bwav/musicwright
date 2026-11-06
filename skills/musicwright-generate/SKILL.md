@@ -16,10 +16,12 @@ Check what can run here first: `mw.py doctor` lists `recipes_runnable`. Then:
 | Job | First choice | Why |
 |---|---|---|
 | Instrumental 30 s to 4 min (beds, themes, solos, cues) | `acestep-xl-sft` (ComfyUI) | MIT, commercial outputs, best local quality, about 1.5 min per 3 min |
+| Second opinion on an instrumental, or a take fades before the asked length | `acestep-xl-sft-pack` (needs ComfyUI-AceStep_SFT) | one listener preferred it on two seeds of one caption, blind, 2026-11-06; its takes end without a fade, so add your own ending; text to music only |
 | Fast drafts, many seeds | `acestep-rest` (2B turbo) | a 60 s take in about 22 s once warm |
 | Cover, repaint a time range, one part out of a mix | ComfyUI first: `mw.py gen --task cover` or `repaint` on acestep-xl-sft, `--task extract` on acestep-xl-base | each preferred or rated mostly clean by one listener on one source, 2026-11-03, one slight leak in the extract drums; needs the plugin's comfy_nodes |
 | Extend, lego, complete | ACE-Step REST tasks | REST only ([references/acestep-rest.md](references/acestep-rest.md)) |
 | Song with sung lyrics | `acestep-xl-sft` with lyrics, then `minimax-music3` as a second opinion | MiniMax needs product attribution and disclosure |
+| New style and lyrics over a recording's tune | `mw.py gen --recipe yue2-3b-int8 --task cover --src` | one listener: tune carried, sounded good, vocal faint; one source, 2026-11-06; companies need a licence |
 | Lyrics-led song with an editable score | `yue2-3b-int8` (ComfyUI native) | about 8.5 GB; saves the ABC score; companies need a licence |
 | Loops and SFX, licensed training data, very fast drafts | `stable-audio3-medium` (ComfyUI native) | 60 s in 9 s on 16 GB; free under USD 1M revenue; no vocals |
 | Hosted, paid | Lyria 3.5 (USD 0.08 a song, SynthID), ElevenLabs Music (USD 0.15 a minute) | check plan terms for film and games |

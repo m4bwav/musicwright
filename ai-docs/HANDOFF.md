@@ -1,5 +1,11 @@
 # Handoff
 
+## Listener answers acted on, 0.1.13 (2026-11-06)
+
+ask-sft-pair: the owner preferred the pack clearly on seed 5101 and slightly on 5102, so `acestep-xl-sft-pack` is a recipe, not the default. The pack was side B both times (ask-spec did not randomise), settings differ, and its takes run to the end without a fade. Changing the default would need a wider blind test with randomised sides, several captions and an ending check. ask-yue2cover: tune carried and sounded good, female vocal barely audible; raising the vocal is unexplored. Details in musicwright-generate R-20261106-2.
+
+Still waiting on the owner: Sweet's stinger change (below). Its "ask-yue2cover and ask-sft-pair" line is done.
+
 ## SFT pack installed, books applied (2026-11-06)
 
 The owner told a session to install ComfyUI-AceStep_SFT, and it is in D:/ComfyUI/custom_nodes at the audited commit 3e802ea, with soundfile and librosa added to the ComfyUI venv (a dry run showed additions only). ComfyUI was restarted on 8199; the nodes register. comfyui_layerstyle reports IMPORT FAILED for a missing `segment_anything`; the install did not cause it, and it was left alone.

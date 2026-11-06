@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.12"
+VERSION = "0.1.14"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1848,7 +1848,26 @@ def graph_yue2(r, caption, lyrics, seed, duration, bpm, key, prefix, overrides):
     }, p
 
 
-GRAPHS = {"acestep15": graph_acestep, "minimax3": graph_minimax3, "stableaudio3": graph_stableaudio3, "yue2": graph_yue2}
+def graph_acestep_sft_pack(r, caption, lyrics, seed, duration, bpm, key, prefix, overrides):
+    """ACE-Step through the ComfyUI-AceStep_SFT custom nodes (APG guidance, the pack's own samplers)."""
+    p = dict(r["params"])
+    p.update(overrides)
+    return {
+        "1": {"class_type": "AceStepSFTModelLoader", "inputs": {
+            "diffusion_model": p["unet"], "text_encoder_1": p["clip1"], "text_encoder_2": p["clip2"], "vae_name": p["vae"]}},
+        "2": {"class_type": "AceStepSFTTextEncode", "inputs": {
+            "clip": ["1", 1], "caption": caption, "lyrics": lyrics or "[Instrumental]", "instrumental": not lyrics, "seed": seed,
+            "duration": float(duration), "bpm": bpm or p.get("bpm", 90), "timesignature": str(p.get("timesignature", "4")),
+            "language": p.get("language", "en"), "keyscale": key or p.get("keyscale", "C major")}},
+        "3": {"class_type": "AceStepSFTGenerate", "inputs": {
+            "model": ["1", 0], "positive": ["2", 0], "negative": ["2", 1], "vae": ["1", 2], "seed": seed,
+            "steps": p["steps"], "cfg": p["cfg"], "sampler_name": p["sampler"], "scheduler": p["scheduler"], "denoise": 1.0,
+            "duration": float(duration), "infer_method": p["infer_method"], "guidance_mode": p["guidance_mode"], "shift": p["shift"]}},
+        "4": {"class_type": "AceStepSFTSaveAudio", "inputs": {"audio": ["3", 5], "filename_prefix": prefix, "format": "flac"}},
+    }, p
+
+
+GRAPHS = {"acestep15": graph_acestep, "acestep-sft-pack": graph_acestep_sft_pack, "minimax3": graph_minimax3, "stableaudio3": graph_stableaudio3, "yue2": graph_yue2}
 COMFY_TASKS = ("cover", "repaint", "extract")
 
 
@@ -1918,6 +1937,15 @@ def need_repaint_node(host, node="AudioLatentRepaintMask"):
                       "and restart ComfyUI, or use --recipe acestep-rest")
 
 
+def need_pack_node(host, node, pack):
+    """A recipe that runs on a third-party node pack says so before it queues anything."""
+    try:
+        http(host + "/object_info/" + node, timeout=10)[node]
+    except (urllib.error.URLError, OSError, ValueError, KeyError):
+        raise MwError(f"{host} has no {node} node; this recipe needs {pack} (optional, installing it is your call), "
+                      "or use --recipe acestep-xl-sft")
+
+
 def pick_comfy(hosts, needed_model):
     """First reachable host that has the model; returns (host, info) or raises."""
     tried = []
@@ -1972,6 +2000,8 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
         host, q = hosts[0], None
     else:
         host, q = pick_comfy(hosts, r["params"].get("unet") or r["params"]["checkpoint"])
+        if r.get("needs_node"):
+            need_pack_node(host, r["needs_node"], r.get("needs_pack", "its custom node pack"))
     ov = json.loads(a.set) if a.set else {}
     for k in ("cfg", "steps", "sampler", "scheduler", "shift"):
         v = getattr(a, k, None)
@@ -2005,7 +2035,7 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
             raise MwError(f"ComfyUI rejected the graph: {json.dumps(resp['node_errors'])[:600]}")
         jobs.append({"seed": s, "prompt_id": resp["prompt_id"]})
     notes = {}
-    if r["graph"] == "acestep15":
+    if r["graph"] in ("acestep15", "acestep-sft-pack"):
         filled = [f"{k} {v}" for k, given, v in (("bpm", a.bpm, recipe_used.get("bpm", 90)),
                                                   ("key", a.key, recipe_used.get("keyscale", "C major"))) if not given]
         if filled:
@@ -2340,8 +2370,19 @@ def cmd_doctor(a):
     except (urllib.error.URLError, OSError, ValueError) as ex:
         rep["acestep_rest"] = {"host": rh, "up": False, "error": type(ex).__name__}
     have = {m for h in hosts for m in h.get("music_models", [])}
+    def has_node(node):
+        for h in hosts:
+            if h.get("up"):
+                try:
+                    if node in http(h["host"] + "/object_info/" + node, timeout=10):
+                        return True
+                except (urllib.error.URLError, OSError, ValueError):
+                    pass
+        return False
     rep["recipes_runnable"] = [k for k, r in recipes().items()
-                               if (r["route"] == "comfy" and (r["params"].get("unet") or r["params"]["checkpoint"]) in have) or (r["route"] == "rest" and rep["acestep_rest"]["up"])]
+                               if (r["route"] == "comfy" and (r["params"].get("unet") or r["params"]["checkpoint"]) in have
+                                   and (not r.get("needs_node") or has_node(r["needs_node"])))
+                               or (r["route"] == "rest" and rep["acestep_rest"]["up"])]
     return rep
 
 

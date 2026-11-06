@@ -25,6 +25,31 @@
    "timing": "about 80-100 s per 180 s track on a 16 GB RTX 5060 Ti once loaded; peaks about 12.9 GB VRAM",
    "source": "listener-approved batches (bright melodic electronica with flute leads, 2026-08); cfg 7 sounded harsh to that listener, cfg 4.5 did not. The 1.7B planner sits beside the 10 GB DiT on 16 GB far better than the 4B one."
   },
+  "acestep-xl-sft-pack": {
+   "route": "comfy",
+   "graph": "acestep-sft-pack",
+   "needs_node": "AceStepSFTGenerate",
+   "needs_pack": "the ComfyUI-AceStep_SFT custom nodes (MIT; audited at commit 3e802ea)",
+   "model": "ACE-Step 1.5 XL SFT (MIT)",
+   "use": "second opinion on an instrumental, or when acestep-xl-sft fades out before the asked length. Text to music only; no cover or repaint.",
+   "params": {
+    "unet": "acestep_v1.5_xl_sft_bf16.safetensors",
+    "clip1": "qwen_0.6b_ace15.safetensors",
+    "clip2": "qwen_1.7b_ace15.safetensors",
+    "vae": "ace_1.5_vae.safetensors",
+    "shift": 3.0,
+    "steps": 50,
+    "cfg": 7.0,
+    "sampler": "jkass_quality",
+    "scheduler": "ace_step",
+    "infer_method": "ode",
+    "guidance_mode": "apg",
+    "timesignature": "4",
+    "language": "en"
+   },
+   "timing": "about 40-45 s per 60 s take on a 16 GB RTX 5060 Ti once loaded",
+   "source": "one listener, blind pairs against acestep-xl-sft, two seeds of one flute caption, 2026-11-06: preferred this clearly once and slightly once. Not the default: the sample is small, the pack was always side B, and these takes end without a fade."
+  },
   "acestep-xl-sft-classic": {
    "route": "comfy",
    "graph": "acestep15",
@@ -137,7 +162,7 @@
     "scheduler": "sgm_uniform"
    },
    "timing": "90 s asked, 78 s returned in 33 s, about 8.5 GB VRAM on a 16 GB card; peaks reached +0.1 dBTP, so master before use",
-   "source": "ComfyUI bundled template. Kept by a listener 2026-11-03: one take, a folk ballad with lyrics, seed 3401. Second take through mw.py gen, seed 4102, also kept 2026-11-04"
+   "source": "ComfyUI bundled template. Kept by a listener 2026-11-03: one take, a folk ballad with lyrics, seed 3401. Second take through mw.py gen, seed 4102, also kept 2026-11-04. Melody cover (--task cover): one listener said the tune carries over and it sounds good, better of two takes, seeds 4301 and 4302, 2026-11-06; the requested female vocal was barely audible"
   },
   "acestep-rest": {
    "route": "rest",
