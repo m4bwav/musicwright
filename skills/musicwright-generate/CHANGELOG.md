@@ -1,20 +1,20 @@
+# Changelog: musicwright-generate
+
+Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
+
+Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+
 ### C-20261106-1 · 2026-11-06 · YuE2 melody cover in mw.py gen
 - because: user request, R-20261105-2
 - files: references/acestep.md
 
 The YuE2 cover route now runs through `mw.py gen`; no listener verdict yet.
 
-# Changelog: musicwright-generate
-
-Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
-
-Entry shape: `### C-20261105-9 · 2026-11-05 · Official prompting notes for YuE2, Stable Audio 3 and ACE-Step vocals
+### C-20261105-9 · 2026-11-05 · Official prompting notes for YuE2, Stable Audio 3 and ACE-Step vocals
 - because: R-20261105-4
 - files: references/models.md, references/acestep.md
 
 Official prompting notes for YuE2, Stable Audio 3 and ACE-Step vocals, from round-two reading; see the RESEARCH entry for how strong each source is.
-
-### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261105-3 · 2026-11-05 · YuE2 memory figure corrected
 - because: R-20261105-3

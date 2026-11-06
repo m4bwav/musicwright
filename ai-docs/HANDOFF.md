@@ -1,5 +1,9 @@
 # Handoff
 
+## Group 12 books started (2026-11-06)
+
+The owner's copies are listed in Ai/books/plugin-learnings/music-round4-PROGRESS.md (14 books, 7 wanted plus 7 extras). Notes exist for Muller, Phillips and Sweet and none is applied yet. Next: apply those three, then read the next books. Muller's reading rejects chord labels, DTW and HPSS as analyze checks; apply it as a new R- entry superseding R-20261103-1. Sweet's stinger change (play immediately and neutral by default, quantised by choice) reverses current guidance, so ask the owner before applying it. An AI-music everscout beat exists, read-only, first scan not run; public Reddit RSS is announced to end 2026-11-13.
+
 ## Owner's answers, 2026-11-06
 
 Wanted books are listed for the owner in Ai/books/music-wanted-books.md. YuE2 melody cover is built (Unreleased; takes yue2cover_s4301 and s4302 in Ai/Music/hw-checks); act on askwright set hw-checks/ask-yue2cover, then release. An everscout beat for AI music was approved. ComfyUI-AceStep_SFT was approved and its code audited at commit 3e802ea (network only for a Civitai LoRA lookup and a Hugging Face analyzer download; silence_latent.pt holds tensors only), but the session permission check refused the install. Once the owner has installed it: blind pair against acestep-xl-sft, same seeds and caption.
