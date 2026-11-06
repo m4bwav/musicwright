@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## Unreleased
+
+- Research round two, group 7: acestep.md gains ACE-Step community reports on captions, chords, endings, keyscale and cover; licences.md notes an unanswered rights question.
+
 ## 0.1.11 (2026-11-04)
 
 - Second-round listening: recipe source notes record that Stable Audio 3 can miss a calm brief, a second kept YuE2 take and the preferred MiniMax Music 3 seed. The extract docs mention one slight leak in the drums. No setting changed.

@@ -13,7 +13,7 @@
 
 | Model | Commercial use of outputs | Conditions |
 |---|---|---|
-| ACE-Step 1.5 (MIT) | yes | README warns about stylistic similarity; check originality, disclose AI use |
+| ACE-Step 1.5 (MIT) | yes | README warns about stylistic similarity; check originality, disclose AI use. Users ask about a "proof of human creation" output clause (discussions #1256, #1364, no maintainer answer by 2026-11-05); the repository, model cards and Space licence read that day are plain MIT without it. Check again before a commercial release |
 | MiniMax Music 3 | yes under USD 20M revenue | show "MiniMax-Music3" in the product UI; disclose AI content |
 | YuE2 | individuals yes, companies need a licence | CC BY-NC 4.0 weights with a creator permission |
 | Stable Audio 3 | yes under USD 1M revenue | Stability Community Licence; Enterprise above |

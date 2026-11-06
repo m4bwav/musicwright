@@ -254,3 +254,6 @@ Append-only. Newest last.
 
 ## [2026-11-05] plan | research round two queued
 - Owner asked for deeper research after a review showed round one was shallow on sites, Reddit and books. Groups 7 to 12 in research/05-sources-to-mine.md; continue prompt updated.
+
+## [2026-11-05] research | round two group 7, ACE-Step community
+- 13 issues, 11 discussions, DCW.md read; Tutorial, Musician's Guide and INFERENCE.md keyword-scanned. Seven report notes in acestep.md; unanswered rights question in licences.md, where the licence files read are plain MIT (R-20261105-1).

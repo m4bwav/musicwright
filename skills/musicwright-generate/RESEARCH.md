@@ -156,3 +156,14 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 
 - Towards Data Science: the music and audio pieces found are 2023-2024 explainers (Landschoot's audio diffusion intro and Tiny Audio Diffusion, a MusicLM overview); nothing on current models. No change.
 - Synthtopia: AI items are instruments and synth tools (SPIN on MusicGen, Combobulator, sonicLAB Fundamental 4.1 with text-to-preset and an MCP server, MicroMusic), not music generators. No change; group 4 blogs done.
+
+### R-20261105-1 · 2026-11-05 · Round two, group 7: ACE-Step community
+
+Read: 13 of the 70 most-commented issues (400 listed), 11 of 112 discussions, DCW.md and the start of ALT_VAE.md, and keyword scans (not full reads) of Tutorial.md, the Musician's Guide and INFERENCE.md.
+
+- Issues #424, #677: planner rewrites captions; #1277: no chord control; #972, discussions #1250, #1252: cover does not keep a melody. Into acestep.md.
+- Discussion #1268 (one user's A/B day, 1-3 runs per condition, Apple Silicon): static harmony on EDM captions, keyscale clearing clashes, duration padding. Into acestep.md as reports, untested here. Also, not added: `use_adg` is implemented for xl-sft though docs say base only; INFERENCE.md gives shift both ways for sft, and seeds outweighed it; `retake_seed` with `retake_variance` 0.3 explores near a good seed. Candidates if the REST route needs them; `--set` can already pass them.
+- Issues #1259, #1288, #1299: noise from sft and base through ACE-Step's own pipeline is DCW, fixed by #1273 and #1282. ComfyUI was unaffected. Fits the ComfyUI-first ruling.
+- Discussions #1256, #1364: rights questions unanswered by maintainers. The repository LICENSE, two model cards and the Space LICENSE are MIT with no output clause; the clause the askers quote was not found, and may sit somewhere not read. Noted in licences.md.
+- ALT_VAE.md: ScragVAE, an MIT community VAE selectable on the Python route. Discussion #1366: latent-init reference in ComfyUI matches the cover denoise route. No change; ScragVAE is a listening-test candidate. Discussion #1372 is a vendor's demo: skipped. Issue #1280: the maintainer says the project is still maintained; latest tagged release v0.1.8, 2026-05-18, against commits since.
+- Not read: the remaining issues, mostly install, LoRA and GPU reports; LoRA training is outside the skill.

@@ -15,7 +15,7 @@ curl http://127.0.0.1:8001/health        # models_initialized false until the fi
   127.0.0.1 --port 8001` for lego, complete and extract (the planner is off for source tasks, so skip
   loading it); add `ACESTEP_OFFLOAD_TO_CPU=true` for `acestep-v15-xl-base` on 16 GB.
 - Source tasks on base checkpoints need a server at or after commit ca1e85f (PRs #1273 and #1282):
-  older servers force DCW on and base models then return noise (issue #1259). mw.py sends
+  older servers force DCW on and base and sft models then return noise (issues #1259, #1288, #1299). mw.py sends
   `dcw_enabled: false` for these tasks; an older server ignores the field, so update the checkout.
 - The Gradio UI (port 7860) is a separate process and does not serve this API.
 - The first `/release_task` loads the models inside the request (about 2.5 min on a 16 GB card):
