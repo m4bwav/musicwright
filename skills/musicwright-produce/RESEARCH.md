@@ -57,6 +57,13 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - Magnitude: 0 (candidates only)
 - Applied: none
 
+### R-20261106-1 · 2026-11-06 · Müller's book read; supersedes R-20261103-1 on what to build
+- Summary: the owner's copy of *Fundamentals of Music Processing* 2nd ed. was read for one question, with a local test on real renders. Chord labels as a check: no (best F about 0.74 on one catalogue, a one-triad answer scores 0.551). Harmonic change rate: yes, reported, not flagged, since it needs no correct label. DTW cost as a follows-the-source score: no (no threshold in the book; a shuffled self at 0.083 overlapped unrelated pairs at 0.079). HPSS: no. Local alignment for cover against source stays a spike until a real cover set exists. R-20261103-1 said no copy was on disk and called chords the one to build; both are now out of date.
+- Track: practice
+- Sources: Müller 2nd ed., notes in Ai/books/plugin-learnings/music-round4-muller.md
+- Magnitude: 1 (new report field)
+- Applied: C-20261106-1
+
 ### R-20261103-1 · 2026-11-03 · Müller, Fundamentals of Music Processing, through the FMP notebooks (sources pass 12)
 - Summary: no copy of the book on disk, so the free FMP notebooks (the book's companion, text CC BY-NC-SA 4.0, libfmp code MIT) stood in. mw.py already covers C4 structure (Foote checkerboard novelty in `analyze --sections`), C5's key half (chroma template correlation) and C6 onsets and tempo (`pulse`, adaptive threshold since 0.1.6). Not covered: C5 chord recognition (chroma templates plus HMM smoothing; would let a check say whether a take follows the asked progression), C3 DTW alignment (take against a rendered MIDI sketch), C8 harmonic/percussive separation. None is a wrong statement in the skills, so no skill change; chord recognition is the one worth building if a cue ever needs its progression checked (librosa has the pieces, libfmp is MIT).
 - Track: practice

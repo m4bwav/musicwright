@@ -766,7 +766,41 @@ def cmd_mix(a):
 ANALYZE_READING = ("pointers for what to listen to, not verdicts. tuning cents are against A440, one value per 10 s window; "
                    "spread_cents is the 10th-90th percentile range (bends, vibrato and pitch effects raise it), trend_cents the "
                    "last third against the first; repetition.share is the part of the track that repeats an 8 s block heard "
-                   "earlier (reported, not flagged: a listener heard a bed at 0.98 as less stuck than one at 0.13); sections come from timbre and harmony changes (4/4 assumed for bars; tempo can be doubled or halved)")
+                   "earlier (reported, not flagged: a listener heard a bed at 0.98 as less stuck than one at 0.13); harmony says how often the chords move (changes_per_min, longest_span_s, top2_share), uncalibrated and not flagged: a low rate names a one-chord take but suits an ambient bed, and it does not say which chords; sections come from timbre and harmony changes (4/4 assumed for bars; tempo can be doubled or halved)")
+
+
+def harmony_of(y, sr, np, librosa):
+    """How often the harmony moves: 24 triads, log chroma, a sticky Viterbi. Labels are too unreliable to print (Mueller 5.3, 5.4)."""
+    hop = 2048
+    if len(y) < 4 * hop:
+        return None
+    tune = float(librosa.estimate_tuning(y=y, sr=sr))
+    c = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=hop, tuning=tune, norm=None)
+    energy = c.sum(axis=0)
+    voiced = energy > energy.max() * 1e-3 if energy.max() > 0 else np.zeros(c.shape[1], dtype=bool)
+    if voiced.sum() < 8:
+        return None
+    c = np.log1p(100 * c[:, voiced] / energy.max())  # scale first, or compression flattens every bin
+    c = c / (np.linalg.norm(c, axis=0) + 1e-9)
+    t = np.zeros((12, 24))
+    for r in range(12):
+        t[[r, (r + 4) % 12, (r + 7) % 12], r] = 1  # major
+        t[[r, (r + 3) % 12, (r + 7) % 12], r + 12] = 1  # minor
+    t = t / np.linalg.norm(t, axis=0)
+    prob = np.maximum(t.T @ c, 1e-3)
+    prob = prob / prob.sum(axis=0, keepdims=True)
+    stay = 0.9
+    trans = np.full((24, 24), (1 - stay) / 23)
+    np.fill_diagonal(trans, stay)
+    path = librosa.sequence.viterbi(prob, trans)
+    per_s = sr / hop
+    minutes = len(path) / per_s / 60
+    moves = np.flatnonzero(np.diff(path))
+    edges = np.concatenate(([0], moves + 1, [len(path)]))
+    counts = np.bincount(path, minlength=24)
+    return {"changes_per_min": round(float(len(moves) / minutes), 1),
+            "longest_span_s": round(float(np.diff(edges).max() / per_s), 1),
+            "top2_share": round(float(np.sort(counts)[-2:].sum() / len(path)), 2)}
 
 
 def tuning_of(y, sr, np, librosa):
@@ -876,6 +910,7 @@ def cmd_analyze(a):
                "onset_strength_mean": round(float(onset.mean()), 3),
                "note": "tempo can come back doubled or halved; key estimates on modal or pentatonic music often name the relative major/minor"}
         row["tuning"] = tuning_of(y, sr, np, librosa)
+        row["harmony"] = harmony_of(y, sr, np, librosa)
         row["repetition"], cuts = structure_of(y, sr, np, librosa, want)
         if cuts is not None:
             if len(beat_s):  # move each inner boundary to the nearest beat

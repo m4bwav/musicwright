@@ -20,9 +20,13 @@ effects, not tire the player, and import cleanly. Script: `<this folder>/../musi
   rest, victory, defeat, stingers. Lengths and conventions: [references/adaptive.md](references/adaptive.md).
 - A turn-based or card game runs for hours: fatigue is the enemy. Prefer 2-4 min loops with A/B
   variation, several tracks per area, no hook every 20 s, a sparse 1-4 kHz range for SFX, and
-  silence between fights.
+  silence between fights. An action game does the reverse: a simpler track carries through a lull.
 - One main theme reused across menu, map, boss and victory (different tempo, mode, instruments)
-  makes the set feel authored. Keep the motif's notes in the brief (musicwright-compose).
+  makes the set feel authored. Keep the motif's notes in the brief (musicwright-compose). Fragments
+  as background figures and its chords with no melody tire less. A timbre that means one character
+  or a success stays out of other cues.
+- Build the main theme and most-heard tracks first; bosses and cutscenes last. Which technique, and
+  a table of transitions between states: [references/interactive.md](references/interactive.md).
 - Decide the tempo and bars per loop now. Loop length in seconds = bars x beats per bar x 60 / bpm
   (at 96 bpm in 4/4, 32 bars = 80 s).
 
@@ -66,8 +70,10 @@ musicwright-generate's references/licences.md on the store page.
 ## Rules
 
 - No MP3 anywhere in the loop chain: its padding adds a gap.
-- No fades or silence inside a loop file.
-- Every music file of one game at one loudness; balance against SFX in the engine mixer.
+- No whole-mix fade or silence at a loop's edges or boundary. Composed rests mid-loop are fine.
+- A loop has no standout moment unless it recurs.
+- Every music file of one game at one loudness; balance against SFX in the engine mixer. Stems of
+  one piece keep their relative levels: one gain for all, never a master per stem.
 - Layers of one piece share length, tempo and key: render them from one take (stems) or one
   seed, never from separate unrelated renders.
 
@@ -75,7 +81,8 @@ musicwright-generate's references/licences.md on the store page.
 
 - [references/loops.md](references/loops.md): loop math, crossfade method, seam check, intro plus loop, layers from stems.
 - [references/unity.md](references/unity.md): import settings, looping, PlayScheduled stitching, mixer snapshots.
-- [references/adaptive.md](references/adaptive.md): cue list and lengths, cues from a level plan, horizontal and vertical techniques, FMOD and Wwise terms.
+- [references/adaptive.md](references/adaptive.md): cue list and lengths, game genres, loop types, cues from a level plan, horizontal and vertical techniques, FMOD and Wwise terms.
+- [references/interactive.md](references/interactive.md): choosing a technique, transitions, stinger kinds, layer design and fades, repetition, an implementation check.
 
 ## Maintenance
 

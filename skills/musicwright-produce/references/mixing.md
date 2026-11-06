@@ -81,7 +81,7 @@ levels. Under dialogue or busy SFX: no busy 1-4 kHz lead.
 | mono compatibility | `mixcheck` `mono_fold_db`; by hand, fold with `dualmono=true` so a mono-safe file reads 0 | more than 3 dB lost (MONO-LOSS) |
 | phase | `mixcheck` `correlation` (mid against side energy; agrees with `aphasemeter`) | below 0 (cancellation); 0.3-0.9 is normal stereo |
 | tempo and key | `mw.py analyze` | far from the brief (beware double or half tempo) |
-| tuning, repetition | `mw.py analyze` (librosa; table below) | any flag: listen for it |
+| tuning, repetition, harmonic change | `mw.py analyze` (librosa; table below) | any flag: listen for it |
 | spectrum | `mw.py sheet` | hard ceiling, holes, a constant whine |
 | loop seam | `mw.py seam` | ratio over about 3, or a level jump over 3 dB |
 
@@ -121,4 +121,5 @@ Window spread (`spread_cents`) is not flagged: bends, vibrato and pitch effects 
 `repetition.share` is reported, not flagged (it was REPEATS at 0.9, on 5/111, all 10-minute beds):
 in a blind pair a bed at 0.98 sounded slightly less repetitive than one at 0.13, and both only
 middling. The share finds a steady texture, not a bed that feels stuck (L-005).
+`harmony` is reported, not flagged, and uncalibrated: changes per minute, the longest one-chord span and the share of the two commonest chords. A low rate can name a take stuck on one chord (generate's acestep.md) but suits an ambient bed; 0.3 changes a minute appeared on a 10-minute bed. It prints no chord names: the best recognizer in Müller's book reaches F about 0.74 on one rock catalogue, and one fixed triad can score 0.55 (R-20261106-1).
 Sections (`--sections`) found 85% of known boundaries in spliced real renders (compose L-003).

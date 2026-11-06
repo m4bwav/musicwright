@@ -4,12 +4,18 @@
 
 1. Whole bars: samples = bars x beats per bar x 60 / bpm x sample rate. At 120 bpm in 4/4 at 48 kHz,
    8 bars = 768,000 samples. `mw.py loop --bars --bpm` computes it.
-2. Musical flow: the end leads back to the start (same chord, or a dominant into it).
+2. Musical flow: the end leads back to the start (same chord, or a dominant into it), with the same
+   instruments, volume and tempo. Reverse any palette change before the loop point. Nothing stands out
+   unless it recurs. Joins that hide well: a vamp at both ends, a phrase's second half at the start and
+   first half at the end, one progression split across the join.
 3. Technical seam: crossfade the tail past the loop end into the head (best for AI audio with
-   reverb), or cut both ends at rising zero crossings (sparse material only).
-4. No fade-in, fade-out or silence inside the loop file.
+   reverb), or cut both ends at rising zero crossings (sparse single loops only: a snap changes the
+   length, so synchronized layers drift further apart each pass; the slope must match too).
+4. No audible fade of the whole mix and no silence at the file edges or loop boundary. Composed rests
+   mid-loop are fine, and a fade of a few samples at each end of a sparse hard cut is fine.
 5. Test: `mw.py seam` (ratio 2 or less is clean; a hard cut on a test tone scored 80, the
-   crossfaded loop 0.9), then have someone listen to it three times through.
+   crossfaded loop 0.9), on the encoded file you ship as well as the WAV, then have someone listen to
+   it three times through.
 
 ## How `mw.py loop` builds it
 
@@ -23,21 +29,31 @@ contains the tail. Equal-power (`qsin`) fades.
 - Skip the intro swell: the first 5-15 s of an AI take is often a build.
 - Prefer a downbeat. In the sheet, drum stripes give the beat spacing; at a known bpm, beats fall
   every 60 / bpm seconds from the first strong stripe.
+- Transients hide a seam; legato exposes it. Prefer a start on a percussive hit, avoid a crash or long
+  note crossing the point. Rhythmic takes loop easily; an ambient take that fails needs a longer
+  crossfade rather than another start.
+- Cut every loop of a set at the same musical place.
+- A wrapped tail has no source on the first pass, so it can read as dissonance when the end and start
+  chords differ. Matching pitch and instrument at both ends cures it.
 - Try two or three starts and keep the best seam score; then ask a person.
 
 ## Intro then loop
 
-Unity cannot play an intro once and then loop from file metadata. Ship two files: `intro.wav`
-(ends exactly where the loop begins) and `loop.wav`, and stitch them with `PlayScheduled`
-(unity.md). Make both from one take: `mw.py edit <take> --end <S> --out intro.wav` and
-`mw.py loop <take> --start <S> --bars N --bpm B --out loop.wav`. Note the intro then has no
-crossfade into the loop: start the loop on a clear downbeat.
+Unity cannot play an intro once and then loop from file metadata. Ship two files, `intro.wav` and
+`loop.wav`, and stitch them with `PlayScheduled` (unity.md). Make both from one take, with L the loop
+length in seconds: `mw.py loop <take> --start <S> --bars N --bpm B --out loop.wav`, then
+`mw.py edit <take> --end <S+L> --out intro.wav`. The loop file opens on the take's own audio at S+L
+crossfading into S, so the join with an intro cut there is continuous and the first pass is the
+untouched take. An intro cut at S instead hits the loop's fading-in head and foreign tail. It costs
+one pass of file size.
 
 ## Layers from one piece
 
 Vertical layering needs stems that share length and tempo: separate one master take with Demucs
 or RoFormer (musicwright-produce references/stems.md), then cut every stem with the same
-`--start --bars --bpm --xfade`. Check each stem's seam.
+`--start --bars --bpm --xfade`. Check each stem's seam. **Never master stems one by one:** loudness
+normalisation breaks their balance. Master the full mix, take that gain from `mw.py measure` before and
+after, and apply the one gain to every stem. Design rules for layers: interactive.md.
 
 ## Engines and tags
 

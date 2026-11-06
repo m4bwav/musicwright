@@ -40,4 +40,4 @@ current track's start time and bpm, schedule the new source there and fade the o
 
 Route music to an AudioMixer group. Snapshots handle states (explore, combat, paused); duck music
 under dialogue or important SFX with a send to a ducking effect. Without middleware this is
-enough for a card or strategy game.
+enough for a card or strategy game. Set snapshot transition times from the fade rule in interactive.md: in over 0.5-1.5 s, out over 3-5 s.

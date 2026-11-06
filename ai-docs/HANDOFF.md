@@ -1,5 +1,19 @@
 # Handoff
 
+## SFT pack installed, books applied (2026-11-06)
+
+The owner told a session to install ComfyUI-AceStep_SFT, and it is in D:/ComfyUI/custom_nodes at the audited commit 3e802ea, with soundfile and librosa added to the ComfyUI venv (a dry run showed additions only). ComfyUI was restarted on 8199; the nodes register. comfyui_layerstyle reports IMPORT FAILED for a missing `segment_anything`; the install did not cause it, and it was left alone.
+
+Blind pair rendered in Ai/Music/sft-pair: askwright set `sft-pair/ask` (`ask.py serve` it if down). Unanswered. After the answers, open the keys and numbers_after_answer.md, which name the routes. Add the pack to mw.py as a recipe only if the listener favours it clearly, since it adds a dependency.
+
+Applied from the books: Muller (harmonic change rate in `analyze`; R-20261106-1 supersedes R-20261103-1), and Phillips and Sweet in musicwright-game (new references/interactive.md, intro join fix proven on real takes). All under Unreleased.
+
+Waiting on the owner:
+- Sweet's stinger change: play immediately and neutral by default, quantise by choice. It reverses "quantised to the beat" in adaptive.md, which is unchanged.
+- ask-yue2cover and ask-sft-pair, then a release.
+
+Owed, not built, all need calibration or a listener before any flag: `seam` chord comparison of the two ends and a landmark check (Phillips 2, 3); run `seam` on OGG to confirm the new checklist line works; a shared-gain option for stems if one is wanted (Sweet 1, the doc rule is in); middleware terms after checking live Wwise and FMOD docs (Sweet 20); Muller 2-6 and 8 (`--sketch`, `tempo_local`, thumbnail numbers, `compare --follows`, transposition-invariant share, spectral flux in `pulse`). Next books: Karlin and Wright, then the tracker's order.
+
 ## Group 12 books started (2026-11-06)
 
 The owner's copies are listed in Ai/books/plugin-learnings/music-round4-PROGRESS.md (14 books, 7 wanted plus 7 extras). Notes exist for Muller, Phillips and Sweet and none is applied yet. Next: apply those three, then read the next books. Muller's reading rejects chord labels, DTW and HPSS as analyze checks; apply it as a new R- entry superseding R-20261103-1. Sweet's stinger change (play immediately and neutral by default, quantised by choice) reverses current guidance, so ask the owner before applying it. An AI-music everscout beat exists, read-only, first scan not run; public Reddit RSS is announced to end 2026-11-13.

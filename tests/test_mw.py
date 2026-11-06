@@ -1791,6 +1791,22 @@ class AnalyzeMusic(unittest.TestCase):
     def codes(self, row):
         return [f["code"] for f in row["flags"]]
 
+    def test_harmony_rate(self):
+        a = str(TMP / "audio")
+        def triad(f):
+            return "+".join(f"0.15*sin(2*PI*{f}*pow(2,{n}/12)*t)" for n in (0, 4, 7))
+        moving = lavfi("aevalsrc='if(lt(mod(t,8),2)," + triad(261.63) + ",if(lt(mod(t,8),4)," + triad(349.23)
+                       + ",if(lt(mod(t,8),6)," + triad(392.0) + "," + triad(220.0) + ")))':s=22050:d=40", f"{a}/moving.wav")
+        drone = lavfi("aevalsrc='" + triad(261.63) + "':s=22050:d=40", f"{a}/drone.wav")
+        code, d = run("analyze", moving, drone)
+        self.assertEqual(code, 0, d)
+        m, g = d["files"]
+        self.assertAlmostEqual(m["harmony"]["changes_per_min"], 30, delta=6)
+        self.assertLess(m["harmony"]["longest_span_s"], 4)
+        self.assertEqual(g["harmony"]["changes_per_min"], 0)
+        self.assertEqual(g["harmony"]["top2_share"], 1)
+        self.assertEqual(g["flags"], [])
+
     def test_offset_and_gap(self):
         code, d = run("analyze", FX["tone"], self.sharp)
         self.assertEqual(code, 0, d)

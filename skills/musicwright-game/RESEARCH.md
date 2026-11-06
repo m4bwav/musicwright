@@ -73,3 +73,10 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 ### R-20261105-4 · 2026-11-05 · Round two, group 10: adaptive music
 
 abratabia.com/web-game-audio/dynamic-game-music.php, opinion only: state-change delay into adaptive.md. ModDB and Construct tutorials returned 403, not read. Music Theory 21c game chapter: covered.
+
+### R-20261106-1 · 2026-11-06 · Phillips and Sweet
+- Summary: *A Composer's Guide to Game Music* and *Writing Interactive Music for Video Games*, both 2014, read for the game skill; numbers are one author's. New: technique chooser, transitions, stinger kinds, layer design and fades, loop types, genre conventions, an implementation check. Local test of the intro join on two real takes at two starts: cutting at S jumped 0.17-0.58 against a typical sample step near 0.01 and missed the take by about 2 dB of error over the first 50 ms; cutting at S+L jumped 0.006-0.024 with error about -29 dB. Listening not done.
+- Track: practice
+- Sources: notes in Ai/books/plugin-learnings/music-round4-phillips.md and music-round4-sweet.md
+- Magnitude: 2 (bug fix and a new reference)
+- Applied: C-20261106-1
