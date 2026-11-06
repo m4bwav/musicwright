@@ -1,3 +1,9 @@
+### C-20261106-1 · 2026-11-06 · YuE2 melody cover in mw.py gen
+- because: user request, R-20261105-2
+- files: references/acestep.md
+
+The YuE2 cover route now runs through `mw.py gen`; no listener verdict yet.
+
 # Changelog: musicwright-generate
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
