@@ -10,6 +10,11 @@ Cadence, borrowed-chord and sentence notes, from round-two reading; see the RESE
 
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-4 · 2026-11-06 · Polyphonic transcription is a sketch
+- because: R-20261106-8
+- files: references/notation.md (Transcribe a recording)
+- SKILL.md already says a transcription is a draft, so only the polyphonic caveat is added.
+
 ### C-20261106-3 · 2026-11-06 · Pattison: lyrics by stress, section jobs, stability table
 - because: R-20261106-5
 - files: SKILL.md (step 4), references/vocabulary.md (Space and placement list, Lyrics that sing), references/theory.md (Form, Arrangement, Density and register)

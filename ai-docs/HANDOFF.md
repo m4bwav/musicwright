@@ -8,12 +8,16 @@ Still waiting on the owner: Sweet's stinger change (below). Its "ask-yue2cover a
 
 ### Owed from books
 
-Karlin, Katz, Senior and Pattison apply-now items are in, unreleased. Each below needs calibration or a listener:
+Karlin, Katz, Senior, Pattison, Braddock, Lerch and Waddell apply-now items are in, released (0.1.16 for the last three). Each below needs calibration or a listener:
 
 - Karlin 5, 7, 8: do models obey under-speech texture words; build, cut and silence and hard-out fade lengths; a thin voice needing support in its range.
 - Katz 8: one level for every cue flattens contrast (blind test, `master --shared-gain`). Katz 9: `loop` writes 16-bit undithered WAV. Katz 10-13: OVER-LIMITED at 10, forte gap, clip times, fade curve.
 - Senior 9-14: quiet double, pad mid, drop chorus by stem mutes, notch one note, vary the fourth repeat, familiarity warning.
 - Pattison 7, 8: do models follow lyric form (the bar mapping depends on it), then a stable or unstable decision in the brief.
+- Braddock 6-10: LUFS flattening contrast (second source for Katz 8), fade curve blind pair, `mw.py diff` residual, a DC fix, re-fading a render's own fade.
+- Lerch 4, 5: `analyze --bpm` tempo prior (confirm librosa's `start_bpm`), key from head and tail as a second vote.
+- Waddell 3: top roll-off before low-bitrate MP3 (blind pair).
+- Disagreements, kept as they are: ceiling -1 dBTP against -0.3 (Waddell, Taylor, Bektas; the destinations here are lossy); streaming target -14 against -11 or louder to avoid Spotify's limiter (Braddock) and -14 to -7 (Taylor); long-fade curve `qsin` against Katz's S-shape and Braddock's log then cosine; BS.1770 against RMS and the ear (Braddock; Lerch backs BS.1770). Tables in the owner's book notes, music-round4-braddock.md.
 - Also owed: re-run musicwright-score evals (its decisions changed).
 
 ## SFT pack installed, books applied (2026-11-06)

@@ -48,6 +48,13 @@ Best sources: theory texts and pedagogy sites, library docs, the MCP server repo
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261106-8 · 2026-11-06 · Lerch on polyphonic transcription
+- Summary: One evaluation scored 0.5-0.7 on one dataset and 0.2-0.5 on another; he judges it not reliable enough for general transcription (7.3.5.3).
+- Track: subject
+- Sources: Lerch, *An Introduction to Audio Content Analysis*, 2nd ed. (2023)
+- Magnitude: minor
+- Applied: C-20261106-4
+
 ### R-20261106-5 · 2026-11-06 · Pattison read; Senior on focal elements
 - Summary: Pattison, *Writing Better Lyrics* 2nd ed.: stresses, not syllables, set a line's bars (ch. 14, 16, 18); five levers of stable and unstable sections (ch. 18-21); the rhyme scale, perfect, family, additive and subtractive, assonance, consonance, checked on the book's own figure (ch. 4, 18); verse, chorus and bridge jobs (ch. 6, 7, 9, 20, 22, 23). One teacher's analysis, nothing measured, nothing on AI vocals. Whether models follow lyric form is owed a test. Senior ch. 7 says about three points of interest against the plugin's unsourced 3-5; both unmeasured, so the number stands and the disagreement is noted.
 - Track: subject

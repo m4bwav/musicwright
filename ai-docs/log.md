@@ -286,3 +286,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] books | round 4: Karlin, Katz, Senior, Pattison applied
 - Apply-now items only, on books-round4-b. Checked on the source: Pattison's rhyme scale matches the book's figure; Katz has no "13 dB", which is arithmetic from the presets on his method (p. 255). Owed items in HANDOFF. Score evals not re-run. PR 94 merged during the work and already held Senior 1 and most of 3 and 6, so those are not repeated.
+
+## [2026-11-06] books | round 4: Braddock, Lerch, Waddell applied
+- Apply-now items, on books-round4-c; 0.1.16. Spotify's page confirmed the Loud limiter figures. Transcribe's draft caveat existed, so only polyphony was added. SKILL.md and mixing.md stayed green by trimming wording. Evals not re-run: wording only. Owed items in HANDOFF.

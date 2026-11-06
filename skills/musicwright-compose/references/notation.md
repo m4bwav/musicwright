@@ -77,7 +77,7 @@ mw.py transcribe band.wav --engine basic-pitch --out notes/band.mid --to musicxm
 - On a free-time take the rhythm is a guess against `--bpm`. Check `mw.py pulse` first.
 - Measured on a 41 s breathy solo flute: where both engines heard a note, they agreed on the
   pitch 72% of the time and on the pitch class 81%. Treat a transcription as a draft to read and
-  fix in MuseScore, then render it back and compare by ear.
+  fix in MuseScore, then render it back and compare by ear. Polyphonic results are weaker: one evaluation scored 0.2-0.7 by dataset (Lerch 7.3.5.3), so several notes at once give a sketch to correct, not a score.
 - Not covered: drum transcription (the usual model, ADTOF, is non-commercial), guitar audio
   straight to tab (models exist in papers; no maintained code found), piano-specific models.
 

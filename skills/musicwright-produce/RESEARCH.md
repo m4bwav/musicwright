@@ -50,6 +50,13 @@ Best sources: standards bodies, platform help pages, ffmpeg docs; practitioner b
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261106-7 · 2026-11-06 · Braddock, Waddell and Lerch read; Spotify page rechecked
+- Summary: Normalisation is not universal, so a louder master is not always merely turned down (Braddock ch. 14). The mix beating the master at matched level points at the last dynamic or low-end change (ch. 14). Fades after dynamics (Braddock ch. 4, Waddell ch. 10); lossy from the highest-resolution file (Braddock ch. 16, Waddell ch. 2, 12); rate conversion can create intersample peaks and asymmetry is not DC (Waddell ch. 7). Structure scores about 50-70% pairwise F (Lerch 9.7.3.3); the 85% here is recall on splices. Spotify's page confirms Loud -11, a limiter at -1 dB sample values, 5 ms attack, 100 ms decay, and no normalisation on the web player and third-party devices; a -14 master with PLR over 10 dB therefore reaches it (arithmetic). Open disagreements are in ai-docs/HANDOFF.md.
+- Track: subject
+- Sources: Braddock, *Audio Mastering*; Waddell, *Complete Audio Mastering* (2013); Lerch, *An Introduction to Audio Content Analysis*, 2nd ed. (2023); https://support.spotify.com/us/artists/article/loudness-normalization/
+- Magnitude: minor
+- Applied: C-20261106-4
+
 ### R-20261106-3 · 2026-11-06 · Katz and Senior read
 - Summary: Katz, *Mastering Audio* 3rd ed.: lowering level does not remove clipping in the file, and a limiter can sound worse (ch. 16); filters and lossy coding can raise peaks (ch. 16, 18); section moves go before the loud entry, never during a build (ch. 5); tails and heads (ch. 3); judge at the loudest passage (ch. 4). Senior, *Mixing Secrets*: several lossless, lightly limited references (ch. 4); side effects of loudness processing, buildups beyond level and a consumer play-through (ch. 19); crossovers can colour. Practitioner opinion, nothing tested on AI renders. The PLR limits for `linear` (13 dB for `streaming` and so on) are not in Katz: they are arithmetic from loudness.json on his target-plus-PLR method (p. 255 read on the page image). On synthetic files `master --preset streaming` went dynamic at PLR 14.9 and linear at 7.5. Preset numbers unchanged. The premixed-render, referencing and three-points lines came in with 0.1.14 and are not repeated.
 - Track: practice
