@@ -289,3 +289,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] books | round 4: Braddock, Lerch, Waddell applied
 - Apply-now items, on books-round4-c; 0.1.16. Spotify's page confirmed the Loud limiter figures. Transcribe's draft caveat existed, so only polyphony was added. SKILL.md and mixing.md stayed green by trimming wording. Evals not re-run: wording only. Owed items in HANDOFF.
+
+## [2026-11-06] test | score evals re-run
+- 18/18 on 0.1.16, T-20261106-1. EVAL_MASTER takes an absolute path to the main clone; the harness's default master folder no longer exists.

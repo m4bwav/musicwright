@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261106-1 · 2026-11-06 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=clone, three runs per case), plugin musicwright@mark-local 0.1.16 · Windows 11 dev machine · 18/18
+- Re-run because the 0.1.14 to 0.1.16 book notes changed the skill's decisions (treatment, gaps, entries and exits, hit tolerance, too-low check). Triggers 6/6; decoys 6/6 (menu loop to musicwright-game each time, video edit to editwright once and no skill twice); action-1 3/3 on `mw.py join` in the trace, no Skill call since a clone holds the script; outcome-1 3/3 (128, shows the formula).
+- Not graded: whether answers use the new guidance. The suite has no case for it.
+- led to: none
+
 ### T-20261102-2 · 2026-11-02 · headless claude -p (vault eval-harness run_evals.py, EVAL_MODE=baseline: fixtures-only folder with the files the prompt names under tests/fixtures, musicwright@mark-local disabled and absent from every init) · Windows 11 dev machine · baseline only, three runs per action case
 - Baseline: action-1 0/3.
 - led to: none

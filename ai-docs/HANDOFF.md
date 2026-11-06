@@ -1,5 +1,9 @@
 # Handoff
 
+## Score evals re-run (2026-11-06)
+
+musicwright-score 18/18 on 0.1.16 (T-20261106-1). The agent has nothing left to do before the evergreen refreshes from 2026-11-15 (generate first). Every owed item below needs the owner or a listener; the one decision is Sweet's stinger change. Next-session prompt unchanged.
+
 ## Listener answers acted on, 0.1.13 (2026-11-06)
 
 ask-sft-pair: the owner preferred the pack clearly on seed 5101 and slightly on 5102, so `acestep-xl-sft-pack` is a recipe, not the default. The pack was side B both times (ask-spec did not randomise), settings differ, and its takes run to the end without a fade. Changing the default would need a wider blind test with randomised sides, several captions and an ending check. ask-yue2cover: tune carried and sounded good, female vocal barely audible; raising the vocal is unexplored. Details in musicwright-generate R-20261106-2.
@@ -18,7 +22,6 @@ Karlin, Katz, Senior, Pattison, Braddock, Lerch and Waddell apply-now items are 
 - Lerch 4, 5: `analyze --bpm` tempo prior (confirm librosa's `start_bpm`), key from head and tail as a second vote.
 - Waddell 3: top roll-off before low-bitrate MP3 (blind pair).
 - Disagreements, kept as they are: ceiling -1 dBTP against -0.3 (Waddell, Taylor, Bektas; the destinations here are lossy); streaming target -14 against -11 or louder to avoid Spotify's limiter (Braddock) and -14 to -7 (Taylor); long-fade curve `qsin` against Katz's S-shape and Braddock's log then cosine; BS.1770 against RMS and the ear (Braddock; Lerch backs BS.1770). Tables in the owner's book notes, music-round4-braddock.md.
-- Also owed: re-run musicwright-score evals (its decisions changed).
 
 ## SFT pack installed, books applied (2026-11-06)
 
