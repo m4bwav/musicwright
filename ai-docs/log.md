@@ -266,3 +266,6 @@ Append-only. Newest last.
 
 ## [2026-11-05] research, release | round two groups 10 and 11, 0.1.12
 - Seven notes from official guides, one practitioner and open textbooks, each marked by strength (R-20261105-4). Round two done except books.
+
+## [2026-11-06] check | continue session, nothing owed
+- No wanted book on disk, owner candidates unanswered, no open PRs, CI green, 0.1.12 installed. Next dated work: evergreen refreshes from 2026-11-15, generate first.
