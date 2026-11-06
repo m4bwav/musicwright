@@ -55,6 +55,8 @@ serene, spacious, contemplative, instrumental
 - How much section tags steer is disputed: they helped 3-minute instrumentals, but did not shape
   a 48 s mood arc or a 2-minute loudness curve. Shape short cues in post.
 
+- Upstream's songwriting skill lists vocal tags such as `[whispered]`, `[falsetto]`, `[raspy vocal]`, `[harmonies]`, says uppercase lines sing harder and parentheses mark background vocals, and keeps matching lines within 1-2 syllables. No results shown; not tried here.
+
 ## Parameters (ComfyUI graph)
 
 | Node / field | Default (`acestep-xl-sft`) | Effect |

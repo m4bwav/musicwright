@@ -263,3 +263,6 @@ Append-only. Newest last.
 
 ## [2026-11-05] research | round two group 9, Reddit
 - Nine subs by RSS, no comments available. YuE2 row corrected; no other gap. AI-music beat case set out in HANDOFF (R-20261105-3).
+
+## [2026-11-05] research, release | round two groups 10 and 11, 0.1.12
+- Seven notes from official guides, one practitioner and open textbooks, each marked by strength (R-20261105-4). Round two done except books.

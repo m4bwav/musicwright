@@ -46,6 +46,8 @@ Phrygian or harmonic minor for hostile factions.
 - Flamenco: i-bVII-bVI-V. Jazz/lo-fi: ii7-V7-Imaj7, turnaround I-vi-ii-V. Blues: 12-bar.
 - Ambient: one or two chords changing every 4-8 bars over a drone.
 
+A phrase ending on V stays open; V-I closes it. Chords borrowed from the parallel mode (bVI in major, a major tonic ending a minor piece) add colour without changing key; only a cadence confirms a new key (Open Music Theory, cadences and mixture).
+
 ## Tempo (bpm)
 
 ACE-Step guidance: 60-80 slow, 90-120 mid, 130-180 fast; extremes unstable. Ambient 60-80 or
@@ -83,6 +85,8 @@ Verse-chorus: Intro, V1, (Pre), Chorus, V2, (Pre), Chorus, Bridge, Chorus, Outro
 or 16 bars (at 120 bpm in 4/4 one bar is 2 s). AABA: four 8-bar sections. Through-composed: no
 repeats, follows the story (most film cues). Game loop: A-B-A'-C and back. EDM: intro, build,
 drop, breakdown, build, drop, outro in 16/32-bar blocks.
+
+Eight-bar sentence: state a short idea twice over the tonic in 4 bars, then 4 bars that break it up and speed up the chords into a cadence (Open Music Theory, sentence).
 
 ## Motif development
 

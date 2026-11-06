@@ -99,3 +99,6 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - Magnitude: n/a (initial)
 - Applied: C-20261017-1
 
+### R-20261105-4 · 2026-11-05 · Round two, group 10: mastering
+
+sageaudio.com/articles/how-to-limit-your-master and masteringthemix.com/blogs/learn/advanced-limiting-techniques disagree on true-peak detection and show no tests; no tested limiter comparison found. No change.

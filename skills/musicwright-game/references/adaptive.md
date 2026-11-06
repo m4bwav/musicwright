@@ -55,6 +55,8 @@ After Rogers, *Level Up!* (Levels 4, 10, 13 and 17).
   they line up again only after hours (23 x 37 x 41 s is almost 10 h). Keep them in one key and without a
   beat, since a pulse would drift between layers (DeSantis ch. 37).
 
+- Wait 1-3 s in a new game state before switching music, so brief changes do not flip it (one author's advice, untested).
+
 ## Middleware terms
 
 - **Wwise**: Music Switch Container (chooses by State or Switch), Music Playlist Container,

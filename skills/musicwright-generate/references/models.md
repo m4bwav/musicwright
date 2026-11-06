@@ -64,3 +64,9 @@ MiniMax, or between these models.
 ## Stable Audio 3 captions
 
 ComfyUI's template expands short ideas into one sentence in this order: genre and adjectives, main instruments, supporting layers, rhythm and percussion, mood woven in, then `BPM: X. Length: Y seconds`. It has separate versions for music, instrument, SFX and one-shot. Follow that shape by hand; not yet compared here by ear.
+
+`TrackType: Music`, `Instrument` or `SFX` selects the output type (Stability's guide); whether the local ComfyUI route honours it is untested. In the same guide, audio-to-audio `init_noise_level` runs from 0.3 (almost no change) to 0.9 (large change), and inpainting works better on a large section first, since a very small one may ignore the prompt.
+
+## YuE2 prompting
+
+From ComfyUI's YuE2 page. Musical directions go in Style; Lyrics holds only sung words. Long prompts shrink the song budget (25 tokens per second): if audio cuts off, raise Max Duration, or shorten the prompt if the log says the budget was reduced. A notation warning means raising `max_abc_tokens`. For covers, keep line lengths and syllable counts near the original.

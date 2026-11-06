@@ -2,11 +2,12 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## Unreleased
+## 0.1.12 (2026-11-05)
 
 - Research round two, group 7: acestep.md gains ACE-Step community reports on captions, chords, endings, keyscale and cover; licences.md notes an unanswered rights question.
 - Research round two, group 8: the YuE2 melody-cover route and the Stable Audio 3 caption shape.
 - Research round two, group 9: corrected the YuE2 memory figure in models.md.
+- Research round two, groups 10 and 11: prompting notes for YuE2, Stable Audio 3 and ACE-Step vocals; tempo search for hits; a delay before state changes; cadence, borrowed-chord and sentence notes.
 
 ## 0.1.11 (2026-11-04)
 

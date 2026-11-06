@@ -104,3 +104,6 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 - Magnitude: n/a (initial)
 - Applied: C-20261017-1
 
+### R-20261105-4 · 2026-11-05 · Round two, group 11: open textbooks
+
+Open Music Theory v1 (openmusictheory.github.io, CC BY-SA): form, singer/songwriter schema, lament, mixture, cadences, sentence, through a fetch tool's extraction. Cadences, mixture and the sentence into theory.md; the rest covered. v2 at viva.pressbooks.pub returned 403 and was not compared. Modulation page 404. Music Theory 21c (tobyrush.com/book, CC BY-NC-SA) contents skimmed.

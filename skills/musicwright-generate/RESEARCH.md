@@ -187,3 +187,7 @@ Read through RSS, top of month and year: r/comfyui, r/StableDiffusion and r/Loca
 - models.md still said YuE2 was unmeasured at 24 GB, though int8 was measured here on 2026-11-02: corrected.
 - Mixing and game-audio feeds: common questions already covered by the produce and game skills. No new numbers; no skill change.
 - Everscout: no beat covers AI music. See HANDOFF.
+
+### R-20261105-4 · 2026-11-05 · Round two, group 10: prompt guides
+
+Read through a fetch tool's extraction, not raw text, except the SKILL.md: stability.ai/guides/stable-audio-3-prompt-guide, docs.comfy.org/tutorials/audio/yue2/yue2, raw.githubusercontent.com/ace-step/ACE-Step-1.5/main/.claude/skills/acestep-songwriting/SKILL.md, the deAPI ACE-Step guide (promotional; left out, and its 19 languages conflict with the 50+ in acestep.md, not resolved). No community MiniMax Music 3 prompt guide found. Notes into models.md and acestep.md.
