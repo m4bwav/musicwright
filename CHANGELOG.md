@@ -4,6 +4,7 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 
 ## Unreleased
 
+- musicwright-produce: mixing.md gains reverb and delay by job, a render treated as premixed audio, and a referencing order, from Senior, *Mixing Secrets* (2nd ed.).
 - `mw.py analyze` reports `harmony` (changes per minute, longest one-chord span, top-two share), not flagged and uncalibrated.
 - musicwright-game: fixed the intro-then-loop recipe. Cut the intro at S+L, not at S: on real takes the old cut jumped 0.17-0.58 at the join against a typical step near 0.01; the new one stays within about two steps. Stems now get one gain, never a master each.
 - musicwright-game: new references/interactive.md (choosing a technique, transitions, stinger kinds, layers, repetition, an implementation check), plus cue rows, game genres and loop types in adaptive.md, from Phillips and Sweet.
