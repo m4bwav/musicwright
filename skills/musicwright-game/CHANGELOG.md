@@ -8,6 +8,11 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · State-change delay before switch
 
 State-change delay before switching music, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261106-1 · 2026-11-06 · Phillips and Sweet applied; intro join fixed
+- because: R-20261106-1
+- files: SKILL.md, references/adaptive.md, loops.md, unity.md, interactive.md (new)
+- Added and narrowed as the notes rank. Not applied: Sweet's immediate stingers, which reverse current guidance and wait on the owner. Not built yet: a chord check at the seam, a landmark check, `seam` tested on OGG.
+
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261023-3 · 2026-10-23 · Seam ratio wording matches the code

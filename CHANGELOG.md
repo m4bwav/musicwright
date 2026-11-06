@@ -4,6 +4,9 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 
 ## Unreleased
 
+- `mw.py analyze` reports `harmony` (changes per minute, longest one-chord span, top-two share), not flagged and uncalibrated.
+- musicwright-game: fixed the intro-then-loop recipe. Cut the intro at S+L, not at S: on real takes the old cut jumped 0.17-0.58 at the join against a typical step near 0.01; the new one stays within about two steps. Stems now get one gain, never a master each.
+- musicwright-game: new references/interactive.md (choosing a technique, transitions, stinger kinds, layers, repetition, an implementation check), plus cue rows, game genres and loop types in adaptive.md, from Phillips and Sweet.
 - `mw.py gen --recipe yue2-3b-int8 --task cover`: sings new style and lyrics over a melody SheetSage2 transcribes from the source. No listener verdict yet.
 
 ## 0.1.12 (2026-11-05)
