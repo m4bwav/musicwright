@@ -272,3 +272,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] build | YuE2 melody cover
 - `gen --task cover` on yue2-3b-int8, two takes unheard. SFT pack install refused by the permission check.
+
+## [2026-11-06] books | round 4 started
+- Notes for Muller, Phillips, Sweet; tracker in the books folder. Generate CHANGELOG repaired.
