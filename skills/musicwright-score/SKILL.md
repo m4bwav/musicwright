@@ -12,20 +12,25 @@ the music stem it asks for and lets that plugin mix.
 ## Step 1: spot the cut
 
 Watch or read the cut and write a cue list in `brief.md`: for each cue its start and end (seconds),
-purpose (emotion, tension, transition), the hits that must land (a reveal, a cut, a door slam),
-and what it must not do (fight dialogue, give away a twist). Cue names 1M1, 1M2. Entries and exits
-matter as much as content: enter under a sound or a cut, exit on a hit or let it ring out.
+purpose (emotion, tension, transition), treatment (`play through`, `phrase` or `hit`), the hits
+that must land (a reveal, a cut, a door slam), and what it must not do (fight dialogue, give away a
+twist). Cue names 1M1, 1M2. Name where music stays out and why (realism, a line that must land,
+saving the next entry), and settle this before rendering: it sets how many movements you need.
+Enter at a shift of emphasis (dialogue, camera, action, reaction), on a cut or between cuts, soft or
+accented; exit at the next shift, tail under the next line, or go hard out on action and tension.
 Method: [references/spotting.md](references/spotting.md).
 
 ## Step 2: one score, in movements
 
-- Prefer one continuous score under the whole cut over separate music per shot: per-shot music
-  re-attacks at every cut and sounds broken. Render the video without its own music when the
+- Across a sequence, prefer one continuous score over separate music per shot: per-shot music
+  re-attacks at every cut and sounds broken. Keep the gaps the cue list names; a director's standing
+  preference for unbroken music wins. Render the video without its own music when the
   video tool offers that.
 - One caption holds one colour. A cue that travels (dread → dawn → triumph) is rendered as
   movements, each with its own caption, key and length, a few seconds longer than its slot.
-- Tempo for hits: bpm = 60 x beats / seconds between hits (7.5 s for 16 beats → 128 bpm); a hit
-  may land within one frame (42 ms at 24 fps). Generated music cannot be told where hits are:
+- Tempo for hits: bpm = 60 x beats / seconds between hits (7.5 s for 16 beats → 128 bpm); aim within
+  2 frames (83 ms at 24 fps) on sharp events, softer moments need less, and if it must miss, miss
+  late. Generated music cannot be told where hits are:
   choose the bpm, then cut at bar lines.
 - Period or classical films: name period instruments and forms in the caption (musicwright-compose
   vocabulary.md); "gentle, tender" pulls a modern sound.
@@ -51,6 +56,8 @@ let the director listen (on an askwright page when `mw.py doctor` reports `askwr
 - Dialogue: duck the music 6-12 dB while people speak (attack 30-80 ms, release 250-700 ms):
   `mw.py duck out/score.wav --under <video or dialogue> --out <out.mp4 or out.wav>`. It remuxes
   the video when the output is a video file. Tune by ear; no standard depth exists.
+- Too low also fails: make `mw.py preview --as phone` and `--as quiet` copies of the mix and ask the
+  director whether the words are clear and the music still does its job.
 - Master the final mix (or the music stem, if a film plugin mixes) to `web-video` (-16 LUFS,
   -1.5 dBTP) for the web, `broadcast` for EBU delivery.
 

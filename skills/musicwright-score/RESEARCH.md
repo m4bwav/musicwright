@@ -7,8 +7,8 @@ Topic: Scoring to picture: spotting, hit maths, movements, ducking, temp tracks.
 ## Current understanding
 
 - Spot first: cue list with starts, ends, hits and what music must not do (R-221).
-- Hits land when bpm = 60 x beats / seconds; tolerance about one frame (R-222).
-- One caption holds one colour: render movements and join on hit points; per-shot music re-attacks at cuts, so one continuous score is preferred.
+- Hits land when bpm = 60 x beats / seconds; aim within 2 frames on sharp events, miss late (R-20261106-4, replacing one frame, R-222).
+- One caption holds one colour: render movements and join on hit points; per-shot music re-attacks at cuts, so a sequence stays continuous, with deliberate gaps from the cue list (R-20261106-4).
 - Ducking has no standard: 6-12 dB, attack 30-80 ms, release 250-700 ms as a start (R-223).
 - Temp tracks are analysed into descriptors, never uploaded as references unless owned (R-224).
 
@@ -47,6 +47,13 @@ Best sources: practitioner scoring texts, delivery specs, tool docs. Noisy: SEO 
 ## Findings log
 
 Newest first. `Track` is subject, tooling, practice, or testing.
+
+### R-20261106-4 · 2026-11-06 · Karlin and Wright read
+- Summary: Karlin and Wright, *On the Track* 2nd ed.: experts see a two-frame error, one frame is very hard to see, errors show only on sharp events, and late beats early (ch. 8); start at a shift of emphasis and exit at the next, with tail or hard out (ch. 4); gaps are structure (ch. 4, 10); play through, phrase or hit (ch. 10); texture under speech, voice-over strictest (ch. 10); too low is also a failure (ch. 19); what the director likes in a temp (ch. 3). The authors' general rule, no study cited, 20 years old, orchestral sessions; untested on AI output. Replaces the one-frame tolerance and the sound-or-cut entry rule.
+- Track: practice
+- Sources: the book, by chapter
+- Magnitude: 2 (changes what the skill decides)
+- Applied: SKILL.md Steps 1, 2, 4; references/spotting.md
 
 ### R-20261017-1 · 2026-10-17 · Scoring, first pass
 - Summary: Spotting, hit maths, ducking rules of thumb, temp tracks: ai-docs/research/03-music-fundamentals.md R-221 to R-224. Lessons from earlier film work on this setup: a continuous score beats per-section music; movements with their own captions carry a mood arc that one caption cannot.

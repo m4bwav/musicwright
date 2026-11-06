@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-3 · 2026-11-06 · Lyrics: opposing view on matched lengths
+- because: R-20261106-6
+- files: references/acestep.md (Lyrics field), references/minimax3.md (Lyrics)
+- Records Pattison's disagreement with the upstream note and drops "read aloud".
+
 ### C-20261106-2 · 2026-11-06 · SFT pack recipe; YuE2 cover verdict
 - because: listener answers ask-sft-pair and ask-yue2cover, R-20261106-2
 - files: SKILL.md (job table), RESEARCH.md, ../musicwright/references/recipes.json, ../musicwright/scripts/mw.py

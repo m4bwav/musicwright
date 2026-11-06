@@ -18,6 +18,7 @@ sensitive; harshness 2-5k) · sibilance 5-8k · air 10-16k.
 - Compression exists to steady a balance: if a part sits at one fader position, leave it alone (Senior ch. 9).
 - Reverb: pre-delay 10-30 ms; rooms intimate, 2-4 s halls epic; little on bass and kick. Name the job first (table below).
 - Stereo: kick, bass and lead centred; below about 100-150 Hz mono.
+- A low cut set in the dense section may fail where the part is exposed: recheck it there (Senior ch. 19).
 - AI output: gentle EQ, a limiter, loudness normalisation. It is usually dense already: add no
   compression.
 
@@ -65,7 +66,7 @@ A stereo render has the problem of a sample from a finished record: it was made 
 
 ## Referencing a take
 
-Senior calls this what actually teaches mixing (ch. 4, 19.2-19.3). The agent cannot hear, so it sets up the comparison and the listener answers. Make loudness-matched copies (`mw.py preview`, `mw.py compare`), judge the side effects and not the level gain, and ask in this order: overall tone; level and dynamics of the main parts; tone of the main parts; reverb and delay length and level; stereo image. Compare the loudest section first, since it should be the peak. Do not match a reference's spectrum curve: mixes differ by key and arrangement. If most references have less in one region (say 300-500 Hz), try a cut there. Last pass: a written snag list after a night's rest, the whole track, eyes off the displays.
+Senior calls this what actually teaches mixing (ch. 4, 19.2-19.3). The agent cannot hear, so it sets up the comparison and the listener answers. Make loudness-matched copies (`mw.py preview`, `mw.py compare`), judge the side effects and not the level gain, and ask in this order: overall tone; level and dynamics of the main parts; tone of the main parts; reverb and delay length and level; stereo image. Compare the loudest section first, since it should be the peak, using lossless, lightly limited references; a heavily limited one differs by processing. Do not match a reference's spectrum curve: mixes differ by key and arrangement. If most references have less in one region (say 300-500 Hz), try a cut there. Last pass: a written snag list after a night's rest, the whole track, eyes off the displays.
 
 ## AI renders: what goes wrong and what to run
 
@@ -75,7 +76,7 @@ Oltheten, *Mixing With Impact* (2018) and DeSantis, *Making Music* (2015).
 
 | You see | Do |
 |---|---|
-| FLAT, or sections that do not contrast | sections with their own density in the prompt (musicwright-compose); with stems, 1-3 dB of section moves on chosen stems: `mw.py mix drums.wav bass.wav other.wav --automate 1:0=-3,58=-3,60=0`; never raise the whole level instead |
+| FLAT, or sections that do not contrast | sections with their own density in the prompt (musicwright-compose); a build needs a drop before it, so with stems mute or lower them ahead of the peak, darken them, then 1-3 dB of section moves: `mw.py mix drums.wav bass.wav other.wav --automate 1:0=-3,58=-3,60=0`; with no stems `mw.py mix take.wav --automate 1:...` rides the render, the last resort. Lower before a loud entry, never during a build. Level moves may not survive a `dynamic` master (Katz ch. 5, Senior ch. 19) |
 | everything equally bright, no depth | pick the foreground part; darken the rest with `--shelves 0,-4,-3` (one value per stem, 3 kHz corner) and give only the darkened stems a short shared reverb in a DAW; reverb reads as depth only against something dry and close |
 | BRIGHT (2-5 kHz most of the time) | listen for fatigue at a moderate level; lower the stem that owns the band (usually vocals or "other"), or lower cfg on the next render |
 | MUDDY | cut 250-500 Hz on the pad or keys, not the bass; ask the next prompt for fewer sustained low-mid parts |
@@ -90,7 +91,9 @@ Bass to mono: `mw.py monobass in.wav --out out.wav` splits at 160 Hz with a Link
 crossover, keeps the high part's stereo and puts the low part of the mid signal in both channels.
 On four real renders with wide lows the low-end correlation went from -0.46, -0.1, 0.07 and 0.41 to
 0.88-1.0 (0.96-1.0 at `--hz 200`). Bass that is purely out of phase cancels in mono and is gone
-afterwards, which is what a mono speaker would play anyway.
+afterwards, which is what a mono speaker would play anyway. A crossover can colour the sound near
+the split, and side changes shift the apparent balance, so have a listener compare result and input
+on `preview` copies (Senior ch. 19).
 
 ## Arrangement density
 
@@ -102,9 +105,10 @@ levels. Under dialogue or busy SFX: no busy 1-4 kHz lead. Senior's stricter test
 | Check | How | Flag when |
 |---|---|---|
 | loudness, LRA, true peak | `mw.py measure` (ebur128) | off the preset; TP above -1 |
+| encoded deliverable | `mw.py measure` on the OGG, MP3 or M4A; any filter or codec can raise peaks (Katz ch. 16, 18) | TP at 0 or above: lower the source, re-encode |
 | mix balance and stereo | `mw.py mixcheck` (one ffmpeg pass; table below) | any flag: listen for it |
 | clipping | `astats` peak level and flat factor (in `mw.py measure`) | peak at 0 dBFS with a high flat factor (a +30 dB clipped test jumped from 8.4 to 41.3) |
-| silence | `silencedetect` (in `mw.py measure`) | over 0.2 s at the start, over 1 s at the end of a one-shot, any in a loop |
+| silence | `silencedetect` (in `mw.py measure`) | over 0.2 s at the start, over 1 s at the end of a one-shot, any in a loop; cut after the audible decay, not across it (Katz ch. 3) |
 | DC offset | `astats` DC offset | absolute value over 0.001 |
 | mono compatibility | `mixcheck` `mono_fold_db`; by hand, fold with `dualmono=true` so a mono-safe file reads 0 | more than 3 dB lost (MONO-LOSS) |
 | phase | `mixcheck` `correlation` (mid against side energy; agrees with `aphasemeter`) | below 0 (cancellation); 0.3-0.9 is normal stereo |
