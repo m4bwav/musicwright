@@ -356,6 +356,20 @@ class GenDryRun(unittest.TestCase):
                       "--out", TMP / "gen_out", "--dry-run")
         self.assertEqual(d["ignored"], ["bpm"])
 
+    def test_yue2_cover_transcribes_the_melody(self):
+        src = TMP / "yue_src.flac"
+        src.write_bytes(b"x")
+        code, d = self.gen("yue2-3b-int8", "--lyrics", "[Verse] la", "--task", "cover", "--src", src)
+        g = d["jobs"][0]["graph"]
+        self.assertEqual(self.node(g, "SheetSage2AudioToABC")["inputs"]["mode"], "melody")
+        music = self.node(g, "YuE2GenerateMusic")["inputs"]
+        self.assertEqual((music["abc"], music["mode"]), (["2", 0], "melody"))
+        self.assertNotIn("YuE2GenerateABC", {n["class_type"] for n in g.values()})
+        code, d = self.gen("yue2-3b-int8", "--lyrics", "[Verse] la", "--task", "cover", "--src", src, "--strength", "0.5")
+        self.assertIn("do not apply", d["error"])
+        code, d = self.gen("yue2-3b-int8", "--lyrics", "[Verse] la", "--task", "repaint", "--src", src)
+        self.assertFalse(d["ok"])
+
     def test_yue2_needs_lyrics_and_saves_its_score(self):
         code, d = run("gen", "--recipe", "yue2-3b-int8", "--caption", "x", "--out", TMP / "gen_err", "--dry-run")
         self.assertIn("lyrics", d["error"])

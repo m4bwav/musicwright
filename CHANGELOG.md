@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## Unreleased
+
+- `mw.py gen --recipe yue2-3b-int8 --task cover`: sings new style and lyrics over a melody SheetSage2 transcribes from the source. No listener verdict yet.
+
 ## 0.1.12 (2026-11-05)
 
 - Research round two, group 7: acestep.md gains ACE-Step community reports on captions, chords, endings, keyscale and cover; licences.md notes an unanswered rights question.
