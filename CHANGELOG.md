@@ -2,7 +2,7 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## Unreleased
+## 0.1.15 (2026-11-06)
 
 - musicwright-score: hits aim within 2 frames on sharp events and miss late; cues enter at a shift of emphasis and may tail or go hard out; the cue list records treatment and where music stays out; a low-level check after ducking (Karlin and Wright).
 - musicwright-produce: corrects the fix for clipping in a source and the `monobass` claim; measure encoded files; section moves on a whole render, placed before the loud entry; the PLR that `linear` needs; tails and heads; reference use; a final play-through (Katz, Senior).
