@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261105-3 · 2026-11-05 · YuE2 memory figure corrected
+- because: R-20261105-3
+- files: references/models.md (Full songs)
+
+The row still gave the stated 24 GB after a measurement here.
+
 ### C-20261105-2 · 2026-11-05 · YuE2 melody route, Stable Audio 3 caption shape
 - because: R-20261105-2
 - files: references/acestep.md (Audio as input), references/models.md (Stable Audio 3 captions)

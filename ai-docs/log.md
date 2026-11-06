@@ -260,3 +260,6 @@ Append-only. Newest last.
 
 ## [2026-11-05] research | round two group 8, ComfyUI music
 - Official templates match the recipes. YuE2 melody cover and the SFT node pack are candidates, not built (R-20261105-2).
+
+## [2026-11-05] research | round two group 9, Reddit
+- Nine subs by RSS, no comments available. YuE2 row corrected; no other gap. AI-music beat case set out in HANDOFF (R-20261105-3).

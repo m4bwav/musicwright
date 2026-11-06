@@ -178,3 +178,12 @@ Read: docs.comfy.org ACE-Step 1.5 page and blog post (first part of each, mostly
 - ComfyUI-AceStep_SFT (MIT) claims closer parity with the official pipeline: the official silence latent instead of core's approximation, a float32 schedule, APG guidance, `lm_codes_strength`. Its own checks are bit-identity and speed, not quality. Installing runs downloaded code, so it waits on the owner; a blind pair against `acestep-xl-sft` would decide it.
 - ACE-Step-ComfyUI is a client for a cloud or local server, not native nodes: not useful beside the current route.
 - Civitai descriptions gave no settings with evidence. OpenArt and RunComfy answered but were not read; comfyworkflows.com did not respond.
+
+### R-20261105-3 · 2026-11-05 · Round two, group 9: Reddit
+
+Read through RSS, top of month and year: r/comfyui, r/StableDiffusion and r/LocalLLaMA (music search), r/SunoAI, r/udiomusic, r/mixingmastering, r/audioengineering, r/GameAudio, r/WeAreTheMusicMakers. All active. 718 entries; titles filtered, about 15 post bodies read. RSS carries no comments, so advice in replies was not seen, and several posts were link-only. Three yearly feeds needed a slower retry after HTTP 429.
+
+- YuE2 is the month's most-posted local music model: several free studios and node packs, with an editable score, separate music and sound seeds, your own MIDI or score, and lyrics sung as written. All are makers' claims. It supports building the melody-cover candidate in R-20261105-2.
+- models.md still said YuE2 was unmeasured at 24 GB, though int8 was measured here on 2026-11-02: corrected.
+- Mixing and game-audio feeds: common questions already covered by the produce and game skills. No new numbers; no skill change.
+- Everscout: no beat covers AI music. See HANDOFF.
