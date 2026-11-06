@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-4 · 2026-11-06 · Braddock, Waddell, Lerch: normalisation, final against take, fades, encoding
+- because: R-20261106-7
+- files: SKILL.md (Steps 1b, 3, 4; Rules; References), references/mixing.md (AI renders, Scripted checks, analyze flags), references/loudness.md (below the table)
+- Rewrites the OVER-LIMITED row, which held only where normalisation is on; adds the rest as clauses and trims wording to stay green. No preset or ceiling changed.
+
 ### C-20261106-3 · 2026-11-06 · Katz and Senior: clipping, encoded peaks, section moves, comparisons
 - because: R-20261106-3
 - files: SKILL.md (Steps 1, 1b, 3, 4), references/mixing.md (Moves, AI renders, Bass to mono, Referencing a take, Scripted checks), references/loudness.md (loudnorm details)

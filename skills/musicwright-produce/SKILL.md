@@ -41,7 +41,7 @@ When asking for a judgement, give times for the loudest and quietest passages, r
 passage through rather than switching quickly (Katz ch. 4, 19). Before delivery, ask for one full
 play-through with no screen and a snag list; fix only those that hold across `--as phone`,
 `--as quiet` and normal, unless that one check is the destination. Compare the final with the
-untouched take on blind `preview` copies, because a chain of fixes can end up worse (Senior ch. 19).
+untouched take on blind `preview` copies, because a chain of fixes can end up worse (Senior ch. 19). If the take wins, suspect the last dynamic or low-end change first (Braddock ch. 14).
 
 ## Step 2: pick the destination preset
 
@@ -62,7 +62,7 @@ balance against SFX in the engine's mixer. Sources and caveats: [references/loud
 Order: trim and fade (`mw.py edit`), then any repair, then loudness (`mw.py master`). If no flag
 fires and the listener has no complaint, apply the destination gain only: no EQ, no repair (Katz ch. 4).
 
-- Silence at the end (common in AI renders): `mw.py edit <in> --end <t> --fade-out 2-4 --out <out>`.
+- Silence at the end: `mw.py edit <in> --end <t> --fade-out 2-4 --out <out>`.
   Put `--end` after the audible decay ends (read `mw.py sheet`) and make the fade longer than the decay
   left; never fade across a ringing tail to reach a length. When trimming a head, keep the sound before
   the first attack and fade in briefly (Katz ch. 3).
@@ -80,7 +80,7 @@ fires and the listener has no complaint, apply the destination gain only: no EQ,
 - LOW-WIDE: `mw.py monobass <in> --out <out>` folds the lows to mono under a 160 Hz crossover
   (`--hz 200` for a fully mono low end up to about 120 Hz) and keeps the stereo above the split.
   A crossover can colour the sound: have a listener compare result and input on `preview` copies (Senior ch. 19).
-- Any filter (`monobass`, `--shelves`, EQ) can raise peaks, even a cut: measure again before delivery (Katz ch. 16, 18).
+- Any filter (`monobass`, `--shelves`, EQ) or later rate conversion can raise peaks, even a cut: measure again before delivery (Katz ch. 16, 18).
 - FLAT on a piece that should build, or everything equally bright: a build needs a drop before it.
   With stems, in order: mute or lower stems ahead of the peak, darken background stems while the lead
   stays bright (`--shelves 0,-4,-3`), then 1-3 dB section moves (`mw.py mix <stems> --automate
@@ -91,7 +91,7 @@ fires and the listener has no complaint, apply the destination gain only: no EQ,
   [references/mixing.md](references/mixing.md) "AI renders".
 - Muddy (250-500 Hz), harsh (2-5 kHz), dull (nothing above 16 kHz) without stems: describe it and
   suggest EQ moves from [references/mixing.md](references/mixing.md); the agent cannot judge by ear.
-- Fades: before `master` when it reports `linear`; after it when it reports `dynamic`, because
+- Fades: before `master` when it reports `linear`; after it when it reports `dynamic` or after any DAW compressor or limiter, because
   level-dependent processing changes how a fade sounds (after DeSantis, *Making Music* 75).
 - For a human mastering engineer: `mw.py master <in> --peak -6 --out <out>` (gain only, peaks at
   -6 dBFS, no limiter, source rate). `master` also prints the preset's `lra_hint`.
@@ -103,7 +103,7 @@ fires and the listener has no complaint, apply the destination gain only: no EQ,
 - OGG Vorbis (q6) for engines; MP3 only for distribution, never for loops (encoder padding adds
   silence: measured +1,728 samples when the gapless tag is missing).
 - Never upsample AI output to look better; it does not add detail.
-- Convert with `mw.py edit <in> --out <name>.<ext>` (codec from the extension).
+- Convert with `mw.py edit <in> --out <name>.<ext>` (codec from the extension), from the 24-bit or float master, never a 16-bit or lossy copy.
 - Run `mw.py measure` on the OGG, MP3 or M4A too, since lossy coding can raise peaks. At 0 dBTP or
   above, lower the source and re-encode rather than add a limiter (Katz ch. 16).
 
@@ -115,7 +115,7 @@ Add it to `music.json` deliverables (hub references/contract.md). A lesson worth
 
 ## Rules
 
-- Measure before and after every change; never claim an improvement without the numbers.
+- Never claim an improvement without before and after numbers.
 - Never let a listener compare copies at different loudness: preview them matched first.
 - Master last, once. Re-mastering a mastered file stacks artefacts.
 - Keep the original take untouched in `takes/`; write results to `out/`.
@@ -123,10 +123,10 @@ Add it to `music.json` deliverables (hub references/contract.md). A lesson worth
 
 ## References
 
-- [references/loudness.md](references/loudness.md): targets by destination with sources, loudnorm details.
-- [references/mixing.md](references/mixing.md): frequency map, EQ, compression, reverb and stereo rules, scripted QC checks.
-- [references/ffmpeg.md](references/ffmpeg.md): tested ffmpeg recipes for everything mw.py does and a few it does not.
-- [references/stems.md](references/stems.md): Demucs and RoFormer separation, and when to use them.
+- [references/loudness.md](references/loudness.md): targets by destination, loudnorm details.
+- [references/mixing.md](references/mixing.md): frequency map, mix moves, scripted checks.
+- [references/ffmpeg.md](references/ffmpeg.md): tested ffmpeg recipes.
+- [references/stems.md](references/stems.md): Demucs and RoFormer separation.
 
 ## Maintenance
 

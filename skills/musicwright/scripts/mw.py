@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.15"
+VERSION = "0.1.16"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -766,7 +766,7 @@ def cmd_mix(a):
 ANALYZE_READING = ("pointers for what to listen to, not verdicts. tuning cents are against A440, one value per 10 s window; "
                    "spread_cents is the 10th-90th percentile range (bends, vibrato and pitch effects raise it), trend_cents the "
                    "last third against the first; repetition.share is the part of the track that repeats an 8 s block heard "
-                   "earlier (reported, not flagged: a listener heard a bed at 0.98 as less stuck than one at 0.13); harmony says how often the chords move (changes_per_min, longest_span_s, top2_share), uncalibrated and not flagged: a low rate names a one-chord take but suits an ambient bed, and it does not say which chords; sections come from timbre and harmony changes (4/4 assumed for bars; tempo can be doubled or halved)")
+                   "earlier (reported, not flagged: a listener heard a bed at 0.98 as less stuck than one at 0.13); harmony says how often the chords move (changes_per_min, longest_span_s, top2_share), uncalibrated and not flagged: a low rate names a one-chord take but suits an ambient bed, and it does not say which chords; sections come from timbre and harmony changes (4/4 assumed for bars); tempo can be doubled or halved, may be wrong on one file in ten or more even past that, and means little on rubato")
 
 
 def harmony_of(y, sr, np, librosa):
@@ -1064,7 +1064,7 @@ def cmd_pulse(a):
     return {"ok": True, "files": rows,
             "reading": "steady: a beat a percussion part can lock to (tempo_bpm may be doubled or halved); "
                        "weak or none: free time, so place accents on phrases or re-render on a fixed tempo rather than adding a beat. "
-                       "a track that builds from a quiet intro: rerun with --threshold adaptive, the global one misses the quiet hits. grid_deviation near grid_chance means the onsets ignore the grid; ioi_cv above about 0.8 is rubato or phrase-led; onset_rise_db under 1 means no hits at all"}
+                       "a track that builds from a quiet intro: rerun with --threshold adaptive, the global one misses the quiet hits. grid_deviation near grid_chance means the onsets ignore the grid; ioi_cv above about 0.8 is rubato or phrase-led; onset_rise_db under 1 means no hits at all; vibrato and tremolo can make false onsets"}
 
 
 def parse_shape(spec, dur):

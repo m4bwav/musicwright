@@ -1,7 +1,7 @@
 # Mixing rules of thumb and scripted checks
 
 The agent cannot hear; use these to describe a problem the listener reports, or to suggest a
-fix to try in a DAW. Practitioner sources (e.g. Mike Senior, Mixing Secrets for the Small Studio).
+fix to try in a DAW. Practitioner sources.
 
 ## Frequency map
 
@@ -43,7 +43,7 @@ sensitive; harshness 2-5k) · sibilance 5-8k · air 10-16k.
 
 ## Reverb and delay by job
 
-One reverb does five jobs at once and they fight. Pick the job, then the settings (Senior, *Mixing Secrets*, 2nd ed. 2018, ch. 16-17).
+One reverb does five jobs at once. Pick the job, then the settings (Senior, *Mixing Secrets*, 2nd ed. 2018, ch. 16-17).
 
 | Job | Preset | Pre-delay | Use |
 |---|---|---|---|
@@ -66,7 +66,7 @@ A stereo render has the problem of a sample from a finished record: it was made 
 
 ## Referencing a take
 
-Senior calls this what actually teaches mixing (ch. 4, 19.2-19.3). The agent cannot hear, so it sets up the comparison and the listener answers. Make loudness-matched copies (`mw.py preview`, `mw.py compare`), judge the side effects and not the level gain, and ask in this order: overall tone; level and dynamics of the main parts; tone of the main parts; reverb and delay length and level; stereo image. Compare the loudest section first, since it should be the peak, using lossless, lightly limited references; a heavily limited one differs by processing. Do not match a reference's spectrum curve: mixes differ by key and arrangement. If most references have less in one region (say 300-500 Hz), try a cut there. Last pass: a written snag list after a night's rest, the whole track, eyes off the displays.
+Senior ch. 4, 19.2-19.3. The agent sets up the comparison; the listener answers. Make loudness-matched copies (`mw.py preview`, `mw.py compare`), judge the side effects and not the level gain, and ask in this order: overall tone; level and dynamics of the main parts; tone of the main parts; reverb and delay length and level; stereo image. Compare the loudest section first, since it should be the peak, using lossless, lightly limited references; a heavily limited one differs by processing. Do not match a reference's spectrum curve: mixes differ by key and arrangement. If most references have less in one region (say 300-500 Hz), try a cut there. Last pass: a written snag list after a night's rest, the whole track, eyes off the displays.
 
 ## AI renders: what goes wrong and what to run
 
@@ -82,7 +82,7 @@ Oltheten, *Mixing With Impact* (2018) and DeSantis, *Making Music* (2015).
 | MUDDY | cut 250-500 Hz on the pad or keys, not the bass; ask the next prompt for fewer sustained low-mid parts |
 | LOW-WIDE | `mw.py monobass` (below) |
 | MONO-LOSS | the mix plays quieter and thinner on a phone or a mono speaker: check with `mw.py preview --as phone`; re-roll if it must work there |
-| OVER-LIMITED | master to the destination preset without more limiting; a louder master is turned down by streaming services and only sounds duller |
+| OVER-LIMITED | master to the preset without more limiting; a normalising service only turns a louder master down, but some players do not normalise, so confirm the destination |
 | BELOW-RANGE on a solo brief | a drone or bass the instrument cannot play: re-roll the seed |
 | hiss or "radio static" in the highs (users report it on Suno v6 renders) | a light FFT denoise before mastering: `ffmpeg -i in.wav -af "afftdn=nr=7:nf=-50:tn=1" out.wav` (about 7 dB at most, noise floor tracked); on a sine plus 5 kHz+ pink noise it took the band from -55.9 to -60.9 dB and left the tone at -21.2/-21.3 dB; listen for swirly artefacts and back off `nr` if they appear |
 | a louder take keeps winning | rank on `mw.py preview` copies |
@@ -109,7 +109,7 @@ levels. Under dialogue or busy SFX: no busy 1-4 kHz lead. Senior's stricter test
 | mix balance and stereo | `mw.py mixcheck` (one ffmpeg pass; table below) | any flag: listen for it |
 | clipping | `astats` peak level and flat factor (in `mw.py measure`) | peak at 0 dBFS with a high flat factor (a +30 dB clipped test jumped from 8.4 to 41.3) |
 | silence | `silencedetect` (in `mw.py measure`) | over 0.2 s at the start, over 1 s at the end of a one-shot, any in a loop; cut after the audible decay, not across it (Katz ch. 3) |
-| DC offset | `astats` DC offset | absolute value over 0.001 |
+| DC offset | `astats` DC offset | absolute value over 0.001; a lopsided wave alone is not DC |
 | mono compatibility | `mixcheck` `mono_fold_db`; by hand, fold with `dualmono=true` so a mono-safe file reads 0 | more than 3 dB lost (MONO-LOSS) |
 | phase | `mixcheck` `correlation` (mid against side energy; agrees with `aphasemeter`) | below 0 (cancellation); 0.3-0.9 is normal stereo |
 | tempo and key | `mw.py analyze` | far from the brief (beware double or half tempo) |
@@ -133,7 +133,7 @@ threshold sits where a minority fires; they are heuristics, not verdicts.
 | LOW-WIDE | correlation under 0.7 below 120 Hz | 14/78 | fixed by `monobass` |
 | BELOW-RANGE | with `--lowest NOTE`: energy a whole tone under the note above -15 dB against the whole | 1/3 flute solos | the take a listener rejected for "bass a flute can't make" read -4.0; the two kept takes -25.1 and -33.3 |
 
-Not built: sibilance spikes (no vocal material to calibrate on) and a codec-ceiling check (the
+Not built: sibilance spikes (no vocal material) and a codec-ceiling check (the
 sheet shows it).
 
 ## analyze flags and how often they fire
@@ -154,4 +154,4 @@ Window spread (`spread_cents`) is not flagged: bends, vibrato and pitch effects 
 in a blind pair a bed at 0.98 sounded slightly less repetitive than one at 0.13, and both only
 middling. The share finds a steady texture, not a bed that feels stuck (L-005).
 `harmony` is reported, not flagged, and uncalibrated: changes per minute, the longest one-chord span and the share of the two commonest chords. A low rate can name a take stuck on one chord (generate's acestep.md) but suits an ambient bed; 0.3 changes a minute appeared on a 10-minute bed. It prints no chord names: the best recognizer in Müller's book reaches F about 0.74 on one rock catalogue, and one fixed triad can score 0.55 (R-20261106-1).
-Sections (`--sections`) found 85% of known boundaries in spliced real renders (compose L-003).
+Sections (`--sections`) found 85% of known boundaries in spliced real renders (compose L-003): recall on splices; published real-structure scores are about 50-70% pairwise F (Lerch).

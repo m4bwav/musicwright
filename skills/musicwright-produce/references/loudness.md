@@ -21,6 +21,8 @@ Game and film targets describe the whole mix. A single music asset for a game is
 consistently (the `game-music` preset, -18 LUFS) and balanced in the engine. For one track to
 listen to or upload, -14 LUFS and -1 dBTP is the safe single target.
 
+Spotify's Loud mode raises a -14 master by 3 dB into a limiter set at -1 dB (sample values; 5 ms attack, 100 ms decay; page checked 2026-11-06). So a -14, -1 dBTP master with a PLR over 10 dB gets limited there, and that mode is not a clean check. Its web player and third-party devices do not normalise at all.
+
 ## loudnorm details (verified 2026-10-17)
 
 - Defaults are I=-24, LRA=7, TP=-2: always set them.

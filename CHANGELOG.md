@@ -2,6 +2,11 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.16 (2026-11-06)
+
+- musicwright-produce: corrects OVER-LIMITED (a louder master is only turned down where a player normalises); why a final can lose to the take; fades after any DAW dynamics; encode from the 24-bit or float master; rate conversion can raise peaks; Spotify Loud limits a -14 master with PLR over 10 dB; asymmetry is not DC; what the 85% section figure means (Braddock, Waddell, Lerch).
+- `mw.py analyze` and `pulse` readings: how far to trust a tempo, and false onsets from vibrato. musicwright-compose: polyphonic transcription is a sketch (Lerch).
+
 ## 0.1.15 (2026-11-06)
 
 - musicwright-score: hits aim within 2 frames on sharp events and miss late; cues enter at a shift of emphasis and may tail or go hard out; the cue list records treatment and where music stays out; a low-level check after ducking (Karlin and Wright).
