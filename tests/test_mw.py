@@ -292,9 +292,12 @@ class GenDryRun(unittest.TestCase):
                     for j in d["jobs"]:
                         g = j["graph"]
                         self.check_links(g)
-                        want = {"acestep15": self.ACE_NODES, "minimax3": self.MINIMAX_NODES,
+                        want = {"acestep15": self.ACE_NODES, "acestep-sft-pack": self.SFT_PACK_NODES, "minimax3": self.MINIMAX_NODES,
                                 "stableaudio3": self.SA3_NODES, "yue2": self.YUE2_NODES}[r["graph"]]
                         self.assertEqual({n["class_type"] for n in g.values()}, want)
+                        if r["graph"] == "acestep-sft-pack":
+                            self.assertEqual(self.node(g, "AceStepSFTSaveAudio")["inputs"]["filename_prefix"], f"musicwright/dry_take_s{j['seed']}")
+                            continue
                         ks = self.node(g, "KSampler")["inputs"]
                         self.assertEqual(ks["seed"], j["seed"])
                         for k_graph, k_recipe in (("cfg", "cfg"), ("steps", "steps"), ("sampler_name", "sampler"), ("scheduler", "scheduler")):
@@ -334,6 +337,25 @@ class GenDryRun(unittest.TestCase):
         self.assertEqual(self.node(g, "DualCLIPLoader")["inputs"]["clip_name2"], "planner.safetensors")
         self.assertEqual(self.node(g, "EmptyAceStep1.5LatentAudio")["inputs"]["seconds"], 60.0)
         self.assertEqual(d["params"]["cfg"], 3.5)
+
+    SFT_PACK_NODES = {"AceStepSFTModelLoader", "AceStepSFTTextEncode", "AceStepSFTGenerate", "AceStepSFTSaveAudio"}
+
+    def test_sft_pack_graph(self):
+        code, d = self.gen("acestep-xl-sft-pack", "--bpm", "96", "--key", "D major", "--set", '{"steps": 20}')
+        self.assertEqual(code, 0)
+        g = d["jobs"][0]["graph"]
+        self.check_links(g)
+        te = self.node(g, "AceStepSFTTextEncode")["inputs"]
+        self.assertEqual((te["bpm"], te["keyscale"], te["duration"], te["instrumental"]), (96, "D major", 60.0, True))
+        gen = self.node(g, "AceStepSFTGenerate")["inputs"]
+        self.assertEqual((gen["cfg"], gen["steps"], gen["guidance_mode"], gen["seed"]), (7.0, 20, "apg", 11))
+        code, r = self.gen("acestep-xl-sft-pack", "--task", "repaint", "--src", __file__)
+        self.assertEqual(code, 1)
+
+    def test_sft_pack_needs_its_node(self):
+        with self.assertRaises(mw.MwError) as e:
+            mw.need_pack_node("http://127.0.0.1:9", "AceStepSFTGenerate", "the pack")
+        self.assertIn("no AceStepSFTGenerate node", str(e.exception))
 
     def test_instrumental_default_and_files(self):
         cap = TMP / "caption.txt"
@@ -1477,7 +1499,7 @@ class FakeHost:
         host = self
         self.wav = wav_bytes
         self.prompts, self.tasks, self.fail, self.pending = [], [], False, set()
-        self.nodes = {"AudioLatentRepaintMask"}
+        self.nodes = {"AudioLatentRepaintMask", "AceStepSFTGenerate"}
         comfy = [r["params"] for r in mw.recipes().values() if r["route"] == "comfy"]
         unets = sorted({p["unet"] for p in comfy if "unet" in p})
         checkpoints = sorted({p["checkpoint"] for p in comfy if "checkpoint" in p})
@@ -1620,7 +1642,7 @@ class GenAgainstFakeHost(unittest.TestCase):
             code, r = run("gen", "--task", "repaint", "--src", FX["tone"], "--start", "2", "--caption", "x",
                           "--seeds", "5", "--host", self.fake.url, "--out", TMP / "gen_repaint")
         finally:
-            self.fake.nodes = {"AudioLatentRepaintMask"}
+            self.fake.nodes = {"AudioLatentRepaintMask", "AceStepSFTGenerate"}
         self.assertEqual(code, 1, r)
         self.assertIn("custom_nodes", r["error"])
 

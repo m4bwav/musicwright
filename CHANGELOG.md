@@ -2,8 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## Unreleased
+## 0.1.13 (2026-11-06)
 
+- New recipe `acestep-xl-sft-pack`, through the optional ComfyUI-AceStep_SFT nodes: one listener preferred it blind on two seeds of one caption. Not the default. `gen` and `doctor` check for its node.
+- The YuE2 melody cover now has a listener verdict: the tune carried over and it sounded good, with a faint vocal.
 - `mw.py analyze` reports `harmony` (changes per minute, longest one-chord span, top-two share), not flagged and uncalibrated.
 - musicwright-game: fixed the intro-then-loop recipe. Cut the intro at S+L, not at S: on real takes the old cut jumped 0.17-0.58 at the join against a typical step near 0.01; the new one stays within about two steps. Stems now get one gain, never a master each.
 - musicwright-game: new references/interactive.md (choosing a technique, transitions, stinger kinds, layers, repetition, an implementation check), plus cue rows, game genres and loop types in adaptive.md, from Phillips and Sweet.
