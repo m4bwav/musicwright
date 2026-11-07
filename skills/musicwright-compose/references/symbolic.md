@@ -27,6 +27,16 @@ long note from the same pitch struck again, and has no room for dynamics. Use th
 above (start, end, pitch, velocity) whenever a part has triplets, repeated same-pitch notes or
 dynamics; a grid is fine for straight drum patterns (same source).
 
+## Generating notes by rule (Collins 2010, untested here)
+
+Rules are worth trying when a model will not obey or a piece must vary on each run. These come from Collins, *Introduction to Computer Music*, sec. 8.3 and 9.4 to 9.6.
+
+- Markov chain over notes: a low order wanders and a high order quotes the source. Order three to four is the book's reported trade-off. A small source needs a lower order, and a token with no onward transition needs a jump or a relaxed match.
+- Random source: white noise sounds unrelated, a random walk (Brownian) sounds too tied to the last note, and 1/f sits between them. The book presents 1/f as a baseline, not a guarantee of good music.
+- Repetition and change: music sits between constant surprise and constant repeat, across several timescales. Vary one parameter while another repeats.
+- Performance: small random timing jitter is the quick fix for a stiff sequence, and rules fitted by trying them and listening go further. Very fine timing tends to be heard as expression, not as rhythm.
+- Keep the hand edits: record which outputs were picked and changed, because that human choice is part of the method when judging it.
+
 ## Models that write notes
 
 - YuE2's ABC layer: generate or edit the melody and chord plan as ABC, then render audio (ComfyUI

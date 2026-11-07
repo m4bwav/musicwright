@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.21 (2026-11-07)
+
+- musicwright-compose: rule-based note generation in `references/symbolic.md`.
+
 ## 0.1.20 (2026-11-07)
 
 - musicwright-compose: root movement, voicing, modes over a drone and additive rhythm in `references/theory.md`; period electronic sound vocabulary in `references/vocabulary.md`.
