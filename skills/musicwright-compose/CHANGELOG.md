@@ -2,7 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-20261105-9 · 2026-11-05 · Cadence, borrowed-chord and sentence notes
+Entry shape: `### C-20261107-1 · 2026-11-07 · Period electronic sound by mechanism; song-form failure mode
+- because: book distillation, Manning, Electronic and Computer Music (everscout ai-music beat)
+- files: references/vocabulary.md (Period electronic sound, Failure modes)
+
+### C-20261105-9 · 2026-11-05 · Cadence, borrowed-chord and sentence notes
 - because: R-20261105-4
 - files: references/theory.md (Progressions, Form)
 
