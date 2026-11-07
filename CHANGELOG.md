@@ -4,7 +4,7 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 
 ## Unreleased
 
-- The hub's `references/cli.md` lists `diff`, `seam --chords`, `analyze --bpm` and `key_ends`, and `loop --bits`, which 0.1.18 added without it, and `master --shared-gain` from 0.1.17; `tests/check_skills.py` now fails when a command is missing there.
+- The hub's `references/cli.md` lists `curve`, `diff`, `seam --chords`, `analyze --bpm` and `key_ends`, and `loop --bits`, which 0.1.18 added without it, and `master --shared-gain` from 0.1.17; `tests/check_skills.py` now fails when a command is missing there.
 
 ## 0.1.19 (2026-11-07)
 
