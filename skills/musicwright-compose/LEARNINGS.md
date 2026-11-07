@@ -6,6 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-004 · 2026-11-06 · mw.py render drops MIDI pan
+- Trigger: 2026-11-06, a four-part MIDI with CC10 pans rendered through `mw.py render` measured correlation 1.0; the same file straight through fluidsynth.exe measured 0.91.
+- Hypothesis: render reads MIDI into notes and programs and rewrites it (write_midi), so controllers are lost.
+- Rule: for a panned MIDI arrangement, run FluidSynth directly (`-ni -F out.wav -r 48000 -g 0.7 <sf2> <mid>`) until render keeps controllers; retire this when it does.
+- Evidence: mw.py mixcheck on both renders, Blackberry Blossom, 2026-11-06
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-06
+
 ### L-003 · 2026-10-23 · Give the section count when you know it
 - Trigger: on 24 composites spliced from real renders, novelty peaks alone found 65% to 72% of the splices within 3 s; clustering with the count given found 85%. The automatic count came out about 0.7 sections high.
 - Hypothesis: a novelty threshold picks the count badly on renders whose texture changes inside a section; clustering places boundaries well once the count is right.
