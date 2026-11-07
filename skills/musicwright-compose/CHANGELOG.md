@@ -4,6 +4,10 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261107-5 · 2026-11-07 · Prediction is not quality; audio by matching
+- because: book distillation, Dean (ed.), The Oxford Handbook of Computer Music (everscout ai-music beat)
+- files: references/symbolic.md (Generating notes by rule; Audio by matching). Book claims, untested here.
+
 ### C-20261107-4 · 2026-11-07 · Generating notes by rule
 - because: book distillation, Collins, Introduction to Computer Music (everscout ai-music beat)
 - files: references/symbolic.md (Generating notes by rule). Markov order, noise sources, repetition against change, simple performance timing; book claims, untested here.

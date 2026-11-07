@@ -2,6 +2,11 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.22 (2026-11-07)
+
+- musicwright: rules for judging takes with several listeners in `references/listening.md`.
+- musicwright-compose: audio by matching in `references/symbolic.md`.
+
 ## 0.1.21 (2026-11-07)
 
 - musicwright-compose: rule-based note generation in `references/symbolic.md`.

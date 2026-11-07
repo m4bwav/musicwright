@@ -84,6 +84,16 @@ Any test that needs ears, whether a take ranking, a blind pair, a recipe check o
 3. `ask.py serve <dir>/ask --detach`, give the person the link, and stop before anything that depends on their ears.
 4. `ask.py read <dir>/ask`, then record each answer with `mw.py verdict`, in their words. The ledger and the studio stay the record taste is built from; the page is where the test was asked. `status` can still show answered questions as open, so go by `read`.
 
+## Judging takes with several listeners (Oxford Handbook of Computer Music, ch. 18, 19, 23; untested here)
+
+A one-line reaction cannot be compared with the next one. When more than one person will judge:
+
+- Do not ask which take is human. That primes people against AI and does not say why. Ask for a rating or a preference, and do not mention how the takes were made.
+- Have each judge rate alone, on two or three named aspects, each take against the rest of the set, in an order shuffled per judge.
+- Check that judges agree before using an average. If they do not, the average means little.
+- Use listeners who know the style when the question is style. Specialists told imitation from the original best in the study the book cites.
+- Keep the set small. Each take must be heard in turn, and fine rankings are hard to give.
+
 ## Checks a script can add
 
 Built: mono compatibility and phase (`mw.py mixcheck`), loop seam (`mw.py seam`). Still by hand

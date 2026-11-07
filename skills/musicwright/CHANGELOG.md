@@ -4,6 +4,10 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261107-2 · 2026-11-07 · Judging takes with several listeners
+- because: book distillation, Dean (ed.), The Oxford Handbook of Computer Music (everscout ai-music beat)
+- files: references/listening.md (Judging takes with several listeners). Book claims, untested here.
+
 ### C-20261107-1 · 2026-11-07 · CLI reference catches up with 0.1.18
 - because: found while updating the wiki; the reference is where the hub looks a command up
 - files: references/cli.md
