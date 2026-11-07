@@ -37,6 +37,16 @@ Rules are worth trying when a model will not obey or a piece must vary on each r
 - Performance: small random timing jitter is the quick fix for a stiff sequence, and rules fitted by trying them and listening go further. Very fine timing tends to be heard as expression, not as rhythm.
 - Keep the hand edits: record which outputs were picked and changed, because that human choice is part of the method when judging it.
 
+Better prediction is not a better piece: in one study (Oxford Handbook of Computer Music, ch. 19) sixteen judges rated Bach's chorale melodies about 6 and generated ones about 3, and the system best at predicting unseen melodies scored no clear gain. It covers one style and statistical models of pitch, so take the warning, not the numbers: judge by listening, not by a model's fit.
+
+## Audio by matching (same book, ch. 20, untested here)
+
+Soundspotting cuts a source library into segments and, for each piece of a target, joins the closest one. It keeps the target's music and the source's sound, the split a cover or timbre reference is after.
+
+- Match on features tied to hearing, or the result sounds random. In the book's system, low cepstral coefficients select for timbre and high ones for pitch.
+- Segment length is the trade-off: at 0.01 s the source vanishes, and from about 0.25 s it is recognisable but matches get worse. A larger library wins matches back.
+- Only use source audio the user owns or has licensed.
+
 ## Models that write notes
 
 - YuE2's ABC layer: generate or edit the melody and chord plan as ABC, then render audio (ComfyUI
