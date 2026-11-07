@@ -76,6 +76,9 @@ After DeSantis, *Making Music* ch. 30, 37, 39-40, 42 and 47.
   and use ghost notes that lead into the downbeat. An offset is heard only against a part that holds still.
 - Choose what fills the space between notes: true silence (dry, short, surgical sounds) or a steady
   bed of noise and ambience (dub techno, downtempo). Say which in the caption, since models default to a wash.
+- A found sound does one of two jobs: an audible signpost to a place, or a hidden layer blended under an
+  instrument where their energy overlaps. One with its own movement (a stream) can set the form instead of
+  being chopped to the grid (Murphy, *Ears to the Ground*, ch. 1, 11; artists' reports).
 - Breadth before depth: sketch many rough parts or takes while ideas come, judging whether the notes
   are right, and polish later. For renders, fish several short seeds before refining any one.
 
