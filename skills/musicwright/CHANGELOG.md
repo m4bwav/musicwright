@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-2 · 2026-11-06 · Boundary with sfxwright recorded
+- because: user request
+- files: SKILL.md (before Step 1)
+- Notes, key or tempo stay here; single hits and non-musical stingers go to sfxwright. Measured 2026-11-06 on 4 prompts, not yet heard.
+
 ### C-20261106-1 · 2026-11-06 · Tempo and pulse readings; transcribe row
 - because: musicwright-produce R-20261106-7, Lerch 9.3.3.3 and 9.5.1.3 (onsets F about 60-90%, tempo above 90% with half and double forgiven); musicwright-compose R-20261106-8
 - files: scripts/mw.py (ANALYZE_READING, pulse reading), references/cli.md (transcribe)

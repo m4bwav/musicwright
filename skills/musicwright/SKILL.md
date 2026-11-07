@@ -16,6 +16,8 @@ studio folder, and lists the recipes that can run here. Commands: [references/cl
 
 Spoken voices and a voice's identity record belong to the voicewright plugin when installed (`voices.json`); songs and singing generation stay here.
 
+Anything with notes, key or tempo stays here. Single hits and non-musical stingers go to the sfxwright plugin when installed (`sounds.json`); without it, this plugin's steps are unchanged. Line measured 2026-11-06 on 4 prompts, not yet heard.
+
 ## Step 1: the brief (ask only what you cannot infer)
 
 - **Use**: `game-loop`, `game-cue` (stinger, victory), `film-cue`, `listening`, `song` (vocals).
