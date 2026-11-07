@@ -155,3 +155,5 @@ in a blind pair a bed at 0.98 sounded slightly less repetitive than one at 0.13,
 middling. The share finds a steady texture, not a bed that feels stuck (L-005).
 `harmony` is reported, not flagged, and uncalibrated: changes per minute, the longest one-chord span and the share of the two commonest chords. A low rate can name a take stuck on one chord (generate's acestep.md) but suits an ambient bed; 0.3 changes a minute appeared on a 10-minute bed. It prints no chord names: the best recognizer in Müller's book reaches F about 0.74 on one rock catalogue, and one fixed triad can score 0.55 (R-20261106-1).
 Sections (`--sections`) found 85% of known boundaries in spliced real renders (compose L-003): recall on splices; published real-structure scores are about 50-70% pairwise F (Lerch).
+
+`mw.py diff BEFORE AFTER --out diff.wav` writes what a master or edit changed, so it can be heard. Both files must start together. Level is matched first unless `--raw`.

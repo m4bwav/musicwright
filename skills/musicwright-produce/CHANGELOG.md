@@ -4,6 +4,10 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-90 · 2026-11-06 · mw.py diff
+- because: user request (askwright set ask-owner-nov6b)
+- files: references/mixing.md
+
 ### C-20261106-5 · 2026-11-06 · `master --shared-gain`: one gain across cues
 - because: R-20261106-8, Katz and Braddock on flattened contrast (R-20261106-3, R-20261106-7)
 - files: SKILL.md (Step 2), references/loudness.md (new section)
