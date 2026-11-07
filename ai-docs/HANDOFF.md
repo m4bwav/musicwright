@@ -1,5 +1,9 @@
 # Handoff
 
+## Owed items put to the owner (2026-11-06, last)
+
+Askwright set Ai/Music/ask-owner-nov6b, five questions: blind pairs, model-behaviour tests, mw.py additions, the streaming preset, the learned score. `ask.py read` it next session (`ask.py serve` if down); act on the answers, and take unpicked items off the owed lists where the question says so.
+
 ## Rechecked after the wiki (2026-11-06, last)
 
 A continue session found no new agent work: no open pull requests, main CI green, 120 tests, checks green, budget yellow as before, no evergreen unit due until 2026-11-15 (generate). The books' owed items all need calibration or a listener. Removed the idle worktree musicwright-vw (PR #81 merged). musicwright-wt-sfx (branch sfxwright-note) was edited minutes earlier by another session and was left alone. Do not rerun this prompt before 2026-11-15 unless a listener or the owner has new answers.
