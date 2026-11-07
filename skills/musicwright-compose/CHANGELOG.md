@@ -4,6 +4,10 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261107-3 · 2026-11-07 · Root movement, voicing, extended chords, modes over a drone, additive rhythm, stepped arpeggios
+- because: book distillation, Hewitt, Music Theory for Computer Musicians (everscout ai-music beat)
+- files: references/theory.md (Root movement, voicing and extended chords; Modes as intervals over a drone; Rhythm and groove)
+
 ### C-20261107-2 · 2026-11-07 · Period electronic sound by mechanism; song-form failure mode
 - because: book distillation, Manning, Electronic and Computer Music (everscout ai-music beat)
 - files: references/vocabulary.md (Period electronic sound, Failure modes)
