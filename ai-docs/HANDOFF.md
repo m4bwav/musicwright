@@ -1,5 +1,9 @@
 # Handoff
 
+## Wiki at 0.1.17 (2026-11-06, later)
+
+Wiki republished from 0.1.10 to 0.1.17 (wiki commits 437b2e1 and 775e7ca, 17 pages, live check clean), rerun on Windows and on static ffmpeg 7.0.2 in WSL, 119 tests. New cases: `master --shared-gain`, the pack recipe, YuE2 cover. The run found one bug, the pack's misleading cover refusal, fixed under Unreleased; the wiki's Commands page describes the old wording until the next release, so correct that sentence then. The largest SKILL.md (produce) reads 2,502 tokens on a tag clone, 2 over green, recorded as yellow on the Development page. The Linux run needs a script file in WSL: a Windows PATH with parentheses breaks an inline `bash -lc`. Nothing else is owed by the agent. Next dated work: evergreen refreshes from 2026-11-15, generate first. All else needs a listener or the owner.
+
 ## SFT wide test answered, 0.1.17 (2026-11-06, late)
 
 Rulings: [decisions/2026-11-06-sft-wide-and-shared-gain.md](decisions/2026-11-06-sft-wide-and-shared-gain.md). Default unchanged; pack recommended for calm and combat; `mw.py master --shared-gain` built and released in 0.1.17. Side B was the pack and the kept-differences side every time, by chance; the decision records it. This closes Katz 8 and Braddock's LUFS-flattening item below, as far as one pair can. Owed: the wiki is behind on `--shared-gain` (republish with the next real rerun, as the earlier sections describe). Next dated work: evergreen refreshes from 2026-11-15, generate first. Everything else owed needs a listener or the owner. Stale empty folders musicwright-wt-* removed; prune any others once idle.

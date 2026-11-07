@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## Unreleased
+
+- `gen --recipe acestep-xl-sft-pack --task cover` (or any source task) now says the pack does text to music only and names the recipes that can; the old refusal said ACE-Step recipes do covers in ComfyUI.
+
 ## 0.1.17 (2026-11-06)
 
 - `mw.py master a b c --shared-gain`: one gain for several files, no limiter, so the level differences between cues are kept (a blind pair slightly favoured this).
