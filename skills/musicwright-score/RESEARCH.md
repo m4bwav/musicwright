@@ -65,3 +65,6 @@ Newest first. `Track` is subject, tooling, practice, or testing.
 ### R-20261105-4 · 2026-11-05 · Round two, group 10: spotting
 
 artofcomposing.com/how-to-spot-a-film and web.pdx.edu/~jnewton/assignments/60nt_no_one_trains/index.html, through a fetch tool's extraction: tempo search for hits, into spotting.md. Music Theory 21c film chapter: covered.
+
+### R-20261107-1 · 2026-11-07 · Blind test: texture words for music under speech
+Owner's blind answers, set model-tests-nov7, seeds 6301 and 6302, beds levelled to -24 LUFS under the same voice. Plain caption clearly less in the way on 6301, words slightly on 6302. Not reliable, so removed. Across both pages 8 of the 9 two-way picks other than 'no difference' went to side B, which a listener with no lean does about 4% of the time, so any result that sat on side B counts for less.

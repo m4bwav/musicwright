@@ -58,9 +58,11 @@ each hit point. A 2 s equal-power crossfade suits a mood change; use 0.5-1 s for
   the ear is slow to settle again (after Oltheten, *Mixing With Impact* 5.4). Check every cue that
   plays under speech with `mw.py mixcheck`: BRIGHT or a high `presence_db` means it competes with
   the voice; pick another take or duck it.
-- Caption cues under speech positively: smooth legato, sustained, mid register, even dynamics, simple.
-  Voice-over needs the strictest treatment, with no lips to help (Karlin and Wright ch. 10). Whether
-  models obey is untested.
+- Do not count on caption words to clear a cue for speech. ACE-Step XL with smooth legato, sustained,
+  mid register, even dynamics, simple, against the same caption without them, blind on two seeds: the
+  plain take got in the way clearly less on one, the worded take slightly less on the other. Listen
+  with the voice in. Voice-over needs the strictest treatment, with no lips to help (Karlin and
+  Wright ch. 10).
 - Too low also fails: music needs enough level to do its job. After `duck`, check `mw.py preview
   --as phone` and `--as quiet` copies of the mix, and ask whether the words are clear and the music
   still works (Karlin and Wright ch. 19).

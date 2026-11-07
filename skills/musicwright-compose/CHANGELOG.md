@@ -8,6 +8,12 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · Cadence, borrowed-chord and sent
 
 Cadence, borrowed-chord and sentence notes, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261107-1 · 2026-11-07 · Under-speech words removed; lyric form test recorded
+- because: R-20261107-1
+- files: references/vocabulary.md (opening list, Lyrics that sing)
+
+The under-speech caption line failed its blind test and is gone. The bar-mapping note now says what the lyric form test showed and did not.
+
 ### C-20261106-1 · 2026-11-06 · Found sound as signpost or hidden layer
 - because: user request (book distilled into a beat); Murphy, Ears to the Ground (2024), artists' reports, untested
 - files: references/theory.md

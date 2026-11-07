@@ -317,3 +317,7 @@ Append-only. Newest last.
 
 ## [2026-11-07] test | blind pages rendered, learned score closed
 - Sets blind-pairs-nov7 and model-tests-nov7 served; no answers yet. Score recheck beat chance on no axis. ffmpeg curve=log found to be a cliff, not a log fade. Details in HANDOFF.
+
+## [2026-11-07] decide | blind pairs and model tests answered; 0.1.19
+- qsin 4 of 4; under-speech words failed and removed; drop chorus not adopted; roll-off and lyric form kept with weak evidence; side-B lean recorded. See decisions/2026-11-07-blind-pairs-and-model-tests.md.
+## [2026-11-07] index | rebuilt (11 entries)

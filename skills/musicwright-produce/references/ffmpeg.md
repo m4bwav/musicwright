@@ -37,5 +37,14 @@ ffmpeg -i a.wav -i b.wav -filter_complex "acrossfade=d=2:c1=qsin:c2=qsin" ab.wav
 ffmpeg -i in.wav -af "atempo=1.03" out.wav
 ```
 
-`afade`'s default curve is linear (`tri`); `qsin` gives equal-power fades. sox equivalents exist
+`afade`'s default curve is linear (`tri`); `qsin` gives equal-power fades. Use it for fade-outs too:
+in a blind test at 3 s and 15 s on two pieces, one listener picked `qsin` all four times over `hsin`
+and faster-falling log shapes. ffmpeg's `curve=log` is not a log fade: a fade-out is still at -3.2 dB
+at 97% of its length.
+
+For 128 kbps MP3, a top roll-off before encoding was favoured on both pieces tried (clearly on combat,
+slightly on a fiddle tune), one blind pair each; a small test, so listen on the piece in hand:
+`ffmpeg -i in.wav -af "lowpass=f=14000:p=2,lowpass=f=14000:p=2" -c:a libmp3lame -b:a 128k out.mp3`
+
+sox equivalents exist
 (`sox in.wav -n stats`, `sox in.wav -n spectrogram`) but were not run here.
