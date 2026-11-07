@@ -2,7 +2,13 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+Entry shape: `### C-20261107-2 · 2026-11-07 · Stretch, varispeed and formant notes
+- because: book distillation, Roads, The Computer Music Tutorial 2e (everscout ai-music beat)
+- files: references/ffmpeg.md (time-stretch note)
+
+Added the book's failure modes as a short check; not tested on generated audio.
+
+### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261107-1 · 2026-11-07 · Fade curve and pre-MP3 roll-off, from blind pairs
 - because: R-20261107-1

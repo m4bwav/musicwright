@@ -2,6 +2,11 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.24 (2026-11-07)
+
+- musicwright-produce: stretch, varispeed and formant notes in `references/ffmpeg.md`.
+- musicwright-compose: half and double tempo, quantized triplets in `references/notation.md`.
+
 ## 0.1.23 (2026-11-07)
 
 - `mw.py` VERSION matches the plugin again; 0.1.22 shipped with the old number.

@@ -75,6 +75,10 @@ mw.py transcribe band.wav --engine basic-pitch --out notes/band.mid --to musicxm
   tones. So mw.py drops notes more than `--gate` dB (default 35) under the loud passages and
   outside `--lowest`/`--highest`. Set the range to the instrument's real range.
 - On a free-time take the rhythm is a guess against `--bpm`. Check `mw.py pulse` first.
+- A tempo reading at half or double the felt tempo is ambiguity, not an error: the same tune
+  fits 2/4 or 4/4 at another tempo. Snapping to a fine grid can garble triplets and expressive
+  timing (even swap which note is longer), so expect to fix rhythms by hand (Roads, The Computer
+  Music Tutorial 2e, ch. 35).
 - Measured on a 41 s breathy solo flute: where both engines heard a note, they agreed on the
   pitch 72% of the time and on the pitch class 81%. Treat a transcription as a draft to read and
   fix in MuseScore, then render it back and compare by ear. Polyphonic results are weaker: one evaluation scored 0.2-0.7 by dataset (Lerch 7.3.5.3), so several notes at once give a sketch to correct, not a score.

@@ -37,6 +37,8 @@ ffmpeg -i a.wav -i b.wav -filter_complex "acrossfade=d=2:c1=qsin:c2=qsin" ab.wav
 ffmpeg -i in.wav -af "atempo=1.03" out.wav
 ```
 
+Stretching: `atempo` changes length and keeps pitch. A speed change (`asetrate`, varispeed) moves pitch and length together, so a tempo-matched take made that way is also in a new key. After a stretch, listen to the drum hits: smeared or doubled attacks, or a washy, distant sound, mean the stretch went too far. Shifting a vocal's pitch by resampling moves its formants too (chipmunk up, giant down); small shifts pass, and damage grows fast toward an octave. From Roads, The Computer Music Tutorial 2e, ch. 31; not measured on generated music.
+
 `afade`'s default curve is linear (`tri`); `qsin` gives equal-power fades. Use it for fade-outs too:
 in a blind test at 3 s and 15 s on two pieces, one listener picked `qsin` all four times over `hsin`
 and faster-falling log shapes. ffmpeg's `curve=log` is not a log fade: a fade-out is still at -3.2 dB
