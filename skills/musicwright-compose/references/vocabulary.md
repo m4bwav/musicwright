@@ -55,8 +55,19 @@ caption. For period or classical cues name period instruments and forms ("string
 pizzicato cello, harpsichord continuo, baroque suite", "romantic-era orchestra, low strings,
 solo piano") and drop modern production words.
 
+## Period electronic sound
+
+Name the mechanism rather than an artist; these are period facts (Manning, *Electronic and Computer Music* ch. 9), and whether a given model honours them is untested.
+
+- Echo and space: tape echo with irregular repeats, uneven spring reverb, plate reverb.
+- Movement: Hammond organ tremolo (7 to 11 Hz), phasing, tape flanging, wah filter sweep.
+- Edge and length: fuzz guitar, limiter sustain, legato organ-like guitar.
+- Early keyboards: Mellotron tape strings, string synthesizer, electric piano, analog sequencer.
+- Roots by method: disco with analog synth lines in place of orchestra; hip-hop with short looped record breaks and scratching; ambient with no obtrusive beat; Detroit-style techno with synth strings and drum machine.
+
 ## Failure modes
 
+- Plausible bar to bar is not song form. A 1950 note-to-note statistical machine failed on exactly this (Manning p. 88), so listen across sections, not to one good passage.
 - Conflicting styles fuse badly: put contrast in time.
 - Caption and sections disagree: the model follows neither well.
 - Over-stacked tags get sung as lyrics in vocal tracks.
