@@ -2,7 +2,9 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-20261107-1 · 2026-11-07 · Period electronic sound by mechanism; song-form failure mode
+Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+
+### C-20261107-2 · 2026-11-07 · Period electronic sound by mechanism; song-form failure mode
 - because: book distillation, Manning, Electronic and Computer Music (everscout ai-music beat)
 - files: references/vocabulary.md (Period electronic sound, Failure modes)
 
@@ -24,7 +26,6 @@ The under-speech caption line failed its blind test and is gone. The bar-mapping
 
 One line on the two jobs of a found sound and letting its movement set the form.
 
-### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261106-4 · 2026-11-06 · Polyphonic transcription is a sketch
 - because: R-20261106-8
