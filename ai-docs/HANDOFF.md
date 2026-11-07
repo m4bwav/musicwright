@@ -1,5 +1,9 @@
 # Handoff
 
+## Owner's four answers (2026-11-06, night)
+
+Set Ai/Music/ask-owner-nov6. Stingers now play at once by default (applied; Sweet's question is closed). YuE2 vocal level waits for a project that needs a sung cover. In progress: wider SFT blind test (Ai/Music/sft-wide: 3 captions, seeds 5201 and 5202, both recipes, random sides, ending check) and the shared-level pair; rendering queues behind other ComfyUI work. A page follows; default changes only if the listener favours the pack across captions and its endings are acceptable.
+
 ## Rechecked, one note unreleased (2026-11-06, evening)
 
 A continue session found no new agent work: no open pull requests, all listening sets answered, no book left unread, 0.1.16 tagged, next evergreen refresh 2026-11-15 (generate). PR #98 (cover notes from Müller, packaged file) merged without a version bump; it is under Unreleased in CHANGELOG.md and ships with the next release, since one reference sentence does not need its own. Worktrees musicwright-wt-mixsecrets and musicwright-wt-muller sit on merged branches; left in place because the second merged minutes earlier and may still be in use, so remove them once idle. Still the one owner decision: Sweet's stinger change.
