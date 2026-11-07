@@ -54,8 +54,8 @@ untouched take on blind `preview` copies, because a chain of fixes can end up wo
 | `game-console-mix` / `game-mobile-mix` | -24 / -18 | -1 | the whole game mix, not a single file |
 | `broadcast` / `broadcast-us` | -23 / -24 | -1 / -2 | EBU R128 / ATSC A/85 |
 
-Game targets apply to the whole mix: master all music files of one game to one level and
-balance against SFX in the engine's mixer. Sources and caveats: [references/loudness.md](references/loudness.md).
+Game targets apply to the whole mix: one level for a game's music, or one gain to keep calm under
+combat (`mw.py master a b c --shared-gain`); balance against SFX in the engine. Sources and caveats: [references/loudness.md](references/loudness.md).
 
 ## Step 3: fix, then master last
 

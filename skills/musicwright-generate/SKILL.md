@@ -16,7 +16,7 @@ Check what can run here first: `mw.py doctor` lists `recipes_runnable`. Then:
 | Job | First choice | Why |
 |---|---|---|
 | Instrumental 30 s to 4 min (beds, themes, solos, cues) | `acestep-xl-sft` (ComfyUI) | MIT, commercial outputs, best local quality, about 1.5 min per 3 min |
-| Second opinion on an instrumental, or a take fades before the asked length | `acestep-xl-sft-pack` (needs ComfyUI-AceStep_SFT) | one listener preferred it on two seeds of one caption, blind, 2026-11-06; its takes end without a fade, so add your own ending; text to music only |
+| Calm or combat instrumental when the pack is installed, a second opinion, or a take fades before the asked length | `acestep-xl-sft-pack` (needs ComfyUI-AceStep_SFT) | in blind pairs, 2026-11-06, one listener preferred it on calm and combat and not on town; takes can stop early, so check the ending; text to music only |
 | Fast drafts, many seeds | `acestep-rest` (2B turbo) | a 60 s take in about 22 s once warm |
 | Cover, repaint a time range, one part out of a mix | ComfyUI first: `mw.py gen --task cover` or `repaint` on acestep-xl-sft, `--task extract` on acestep-xl-base | each preferred or rated mostly clean by one listener on one source, 2026-11-03, one slight leak in the extract drums; needs the plugin's comfy_nodes |
 | Extend, lego, complete | ACE-Step REST tasks | REST only ([references/acestep-rest.md](references/acestep-rest.md)) |

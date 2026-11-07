@@ -31,7 +31,7 @@
    "needs_node": "AceStepSFTGenerate",
    "needs_pack": "the ComfyUI-AceStep_SFT custom nodes (MIT; audited at commit 3e802ea)",
    "model": "ACE-Step 1.5 XL SFT (MIT)",
-   "use": "second opinion on an instrumental, or when acestep-xl-sft fades out before the asked length. Text to music only; no cover or repaint.",
+   "use": "calm or combat instrumentals when the pack is installed, a second opinion on any instrumental, or when acestep-xl-sft fades out before the asked length. Text to music only; no cover or repaint.",
    "params": {
     "unet": "acestep_v1.5_xl_sft_bf16.safetensors",
     "clip1": "qwen_0.6b_ace15.safetensors",
@@ -48,7 +48,7 @@
     "language": "en"
    },
    "timing": "about 40-45 s per 60 s take on a 16 GB RTX 5060 Ti once loaded",
-   "source": "one listener, blind pairs against acestep-xl-sft, two seeds of one flute caption, 2026-11-06: preferred this clearly once and slightly once. Not the default: the sample is small, the pack was always side B, and these takes end without a fade."
+   "source": "one listener, blind pairs against acestep-xl-sft, two seeds of one flute caption, 2026-11-06: preferred this clearly once and slightly once. Wider blind pairs the same day, three captions and two seeds each: calm slightly and clearly, combat clearly twice, town no difference and acestep-xl-sft slightly. Not the default: it did not win across captions, takes on both routes stopped early, it adds a dependency, and it was side B in all eight pairs (the wider sides were drawn at random and fell that way)."
   },
   "acestep-xl-sft-classic": {
    "route": "comfy",

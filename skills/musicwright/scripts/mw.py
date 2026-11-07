@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.16"
+VERSION = "0.1.17"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -380,8 +380,40 @@ def master_peak(src, a):
             "warnings": [], "next": "hand this to the mastering engineer with the reference and the destination; do not master it again here"}
 
 
+def master_shared(files, a, name, ti, tp):
+    """One gain for every file, so the differences between cues survive: the loudest lands on the target unless a peak would pass the ceiling."""
+    if len(files) < 2:
+        raise MwError("--shared-gain needs two or more files")
+    before = [measure_file(f) for f in files]
+    if any(m["lufs_i"] is None or m["true_peak_dbtp"] is None for m in before):
+        raise MwError("a file is silent or too short to measure; --shared-gain needs a loudness and a peak from each")
+    by_level = ti - max(m["lufs_i"] for m in before)
+    by_peak = tp - max(m["true_peak_dbtp"] for m in before)
+    g = round(min(by_level, by_peak), 2)
+    od = Path(a.out) if a.out else None
+    if od:
+        od.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for f, m in zip(files, before):
+        dst = (od or f.parent) / f"{f.stem}_shared.wav"
+        ffmpeg(["-y", "-i", str(f), "-af", f"volume={g}dB", "-ar", str(a.rate)] + out_codec(dst) + [str(dst)])
+        after = measure_file(dst)
+        rows.append({"out": str(dst.resolve()), "before_lufs": m["lufs_i"], "after": {k: after[k] for k in ("lufs_i", "true_peak_dbtp", "lra", "duration_s", "sample_rate")}})
+    warn = []
+    if by_peak < by_level:
+        warn.append(f"the loudest file sits {round(by_level - by_peak, 1)} LU under the target because a peak would pass {tp} dBTP; no limiter is used, so limit that file first if it must reach the target")
+    return {"ok": True, "mode": "shared-gain", "preset": name, "target": {"lufs": ti, "true_peak": tp}, "gain_db": g, "files": rows,
+            "reading": "one gain for all, so the level differences between these files are kept; the engine or film mix still balances them against everything else",
+            "warnings": warn}
+
+
 def cmd_master(a):
-    src = need_file(a.input)
+    files = [need_file(f) for f in a.input]
+    if len(files) > 1 and not a.shared_gain:
+        raise MwError("master takes one file; for several, add --shared-gain")
+    if a.shared_gain and a.peak is not None:
+        raise MwError("--shared-gain sets its gain from loudness; it cannot be combined with --peak")
+    src = files[0]
     pr = presets()
     if a.preset is not None and a.preset not in pr:
         raise MwError(f"unknown preset {a.preset}; choose from {', '.join(sorted(pr))}")
@@ -392,6 +424,8 @@ def cmd_master(a):
         return master_peak(src, a)
     ti = a.lufs if a.lufs is not None else p["lufs"]
     tp = a.tp if a.tp is not None else p["true_peak"]
+    if a.shared_gain:
+        return master_shared(files, a, name, ti, tp)
     dst = out_file(a.out) if a.out else src.with_name(f"{src.stem}_{name}.wav")
     before = measure_file(src)
     first, mode = loudnorm_two_pass(src, dst, ti, tp, a.lra, a.rate)
@@ -2457,8 +2491,9 @@ def build_parser():
     s.add_argument("--measure", action="store_true", help="also measure each take")
     s.set_defaults(fn=cmd_sheet)
 
-    s = sub.add_parser("master", help="two-pass loudness normalisation to a preset")
-    s.add_argument("input")
+    s = sub.add_parser("master", help="two-pass loudness normalisation to a preset; --shared-gain gives several files one gain")
+    s.add_argument("input", nargs="+")
+    s.add_argument("--shared-gain", action="store_true", help="several files, one gain and no limiter, so their level differences are kept; the loudest lands on the target and --out is a folder")
     s.add_argument("--preset", help="loudness preset (default streaming; with only --lufs/--tp the result is named custom)")
     s.add_argument("--lufs", type=float)
     s.add_argument("--tp", type=float)

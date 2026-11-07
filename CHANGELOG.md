@@ -2,8 +2,11 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## Unreleased
+## 0.1.17 (2026-11-06)
 
+- `mw.py master a b c --shared-gain`: one gain for several files, no limiter, so the level differences between cues are kept (a blind pair slightly favoured this).
+- musicwright-generate: the SFT pack is recommended for calm and combat instrumentals after a wider blind test, and stays off the default.
+- musicwright-game: stingers play at once by default, quantising by choice. musicwright-compose: `render` drops MIDI pan.
 - musicwright-generate: a chroma or alignment score cannot settle whether a cover kept the tune; judge by ear (Müller).
 
 ## 0.1.16 (2026-11-06)

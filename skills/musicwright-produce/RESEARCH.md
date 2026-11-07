@@ -50,6 +50,10 @@ Best sources: standards bodies, platform help pages, ffmpeg docs; practitioner b
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261106-8 · 2026-11-06 · Blind pair: one level or one gain across three cues
+
+One listener, blind, levels matched overall (LRA 2.5 equal, 8.6 kept), calm, combat and town renders 20 s each with raw levels -18.7, -11.6, -13.6 LUFS. Slightly preferred the side keeping those differences, with no note. Slight, one pair, one cue order, not played in a game. The tested side used one gain plus a light limiter at 0.89; `master --shared-gain` uses gain only.
+
 ### R-20261106-7 · 2026-11-06 · Braddock, Waddell and Lerch read; Spotify page rechecked
 - Summary: Normalisation is not universal, so a louder master is not always merely turned down (Braddock ch. 14). The mix beating the master at matched level points at the last dynamic or low-end change (ch. 14). Fades after dynamics (Braddock ch. 4, Waddell ch. 10); lossy from the highest-resolution file (Braddock ch. 16, Waddell ch. 2, 12); rate conversion can create intersample peaks and asymmetry is not DC (Waddell ch. 7). Structure scores about 50-70% pairwise F (Lerch 9.7.3.3); the 85% here is recall on splices. Spotify's page confirms Loud -11, a limiter at -1 dB sample values, 5 ms attack, 100 ms decay, and no normalisation on the web player and third-party devices; a -14 master with PLR over 10 dB therefore reaches it (arithmetic). Open disagreements are in ai-docs/HANDOFF.md.
 - Track: subject

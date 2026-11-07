@@ -48,7 +48,8 @@ ending", never "epic finale"), WAV or FLAC only.
   means another start point, a longer crossfade, or another take.
 - The loop must also flow musically (the last bar leads back to the first chord). Only a person
   can judge that: ask them to play it three times through and listen at the seams.
-- Master after looping, to the `game-music` preset, so every track in the game sits at one level:
+- Master after looping, to the `game-music` preset, so every track sits at one level (or, to keep
+  calm below combat, give them one gain with `master --shared-gain`; see musicwright-produce):
   `mw.py master out/<name>_loop.wav --preset game-music --out out/<name>_loop_master.wav`. Re-run
   `mw.py seam` on the mastered file.
 
