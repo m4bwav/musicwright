@@ -71,3 +71,7 @@ Reading:
 - Limits: few pairs, and one verdict per pair. This rules out using it here; it does not test SongEval on full songs with vocals, which is its own target.
 
 Install notes, if anyone reruns it: the published requirements do not run as written on Windows. Pin `torchaudio==2.7.0` (an unpinned 2.11 fails to load against torch 2.7.0 with WinError 127) and `transformers==4.50.3` (5.x fails in MuQ with `'EasyDict' object has no attribute '_attn_implementation'`). The test folder was deleted afterwards.
+
+## Recheck on all blind picks: not adopted (2026-11-07)
+
+Owner's request: once more, adopt only if it predicts their picks. Audiobox (four axes) and SongEval (five) scored the files as heard, on the CPU. Agreements with the 11 two-way picks ranged from 6 to 7 (best p=0.549, exact sign test); on the 4 clear picks, Audiobox CU and PQ got 4 of 4 (p=0.125, the lowest four pairs can give), and those two fell to 7 and 6 of 11 overall and 3 of 5 on the same-seed route pairs. Nine axes, no multiple-comparison correction, and the pack was side B in all clear pairs, so a side or route effect cannot be separated. No score beats chance. Closed: it stays out of mw.py and the take loop.
