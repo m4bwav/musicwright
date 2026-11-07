@@ -711,6 +711,11 @@ class Master(unittest.TestCase):
         self.assertLessEqual(d["files"][1]["after"]["true_peak_dbtp"], -5.8)
         self.assertIn("under the target", d["warnings"][0])
 
+    def test_gen_sft_pack_refuses_source_tasks(self):
+        code, d = run("gen", "--recipe", "acestep-xl-sft-pack", "--task", "cover", "--src", FX["tone"], "--caption", "x", "--dry-run")
+        self.assertEqual(code, 1)
+        self.assertIn("text to music only", d["error"])
+
     def test_master_shared_gain_refusals(self):
         for args, text in ((["master", FX["tone"], FX["bed"]], "--shared-gain"),
                            (["master", FX["tone"], "--shared-gain"], "two or more"),

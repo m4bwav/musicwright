@@ -2223,6 +2223,8 @@ def check_task(a, r):
             raise MwError("--task cover needs --src, the audio to work from")
         a.src = need_file(a.src)
         return
+    if r.get("graph") == "acestep-sft-pack":
+        raise MwError(f"{a.recipe} does text to music only; for --task {task} use --recipe acestep-xl-sft in ComfyUI or acestep-rest")
     if r["route"] != "rest" and not (r.get("graph") == "acestep15" and task in COMFY_TASKS):
         raise MwError(f"--task {task} runs on the ACE-Step REST server; use --recipe acestep-rest (in ComfyUI the ACE-Step recipes do cover and repaint, acestep-xl-base does extract)")
     if r["route"] != "rest" and task == "extract" and "extract" not in r.get("tasks", ()):
