@@ -48,6 +48,34 @@ Phrygian or harmonic minor for hostile factions.
 
 A phrase ending on V stays open; V-I closes it. Chords borrowed from the parallel mode (bVI in major, a major tonic ending a minor piece) add colour without changing key; only a cadence confirms a new key (Open Music Theory, cadences and mixture).
 
+## Root movement, voicing and extended chords
+
+After Hewitt, *Music Theory for Computer Musicians* (2008), ch. 13, 18, 23.
+
+- A progression is heard through its roots; the same chord inverted does not progress. Three moves between triads:
+  by a fourth (one shared note, the strongest pull, can run as a cycle), by a third (two shared notes, smooth, little
+  contrast), by a second (no shared note, most contrast, least smooth). Pick the move for the job, then voice it.
+- Doubling: double the root and fifth first, since they carry the chord's identity. Closed spacing is dense, open
+  spacing spreads over the register. Hold shared notes across a change so the parts move as lines.
+- Thinning extended chords: an eleventh needs root, third, seventh and eleventh, and the natural eleventh clashes with
+  the third, so raise it (the Lydian colour). A thirteenth needs root, seventh and thirteenth; leave out the third or
+  raise the eleventh. Dense harmony stays legible over clear root movement.
+- Ambient pads can sit on two or three thirteenth chords; a single held chord with notes moved between registers can
+  carry eight bars.
+
+## Modes as intervals over a drone
+
+After Hewitt ch. 20, 22; a mode's colour comes from each note's interval against a held tonic, so exotic scales and
+modes often work better as melody over a drone than as chord changes. Signature moves: Dorian i-IV (Dm-G),
+Mixolydian I-v (G-Dm, F between), Lydian with a flat seventh is the overtone scale. Hewitt ties Phrygian to Goa and
+psytrance and Locrian to hard techno and drum and bass loops, where no tonic chord is needed. Forum reports back Phrygian in
+psytrance but also tonic-only lines; the Locrian link is unconfirmed, so judge it by ear.
+
+Hewitt's feeling words are one listener's catalogue: rising semitone low in the basses as threat, rising minor sixth as
+angst, rising major sixth as content, wide leaps as excitement. Sharp keys as bright and flat keys as dark is musicians'
+lore he himself hedges: no listening test turned up, and in equal temperament transposing changes only register. Put mood
+in mode and instrument words, not in the choice of key.
+
 ## Tempo (bpm)
 
 ACE-Step guidance: 60-80 slow, 90-120 mid, 130-180 fast; extremes unstable. Ambient 60-80 or
@@ -79,6 +107,11 @@ After DeSantis, *Making Music* ch. 30, 37, 39-40, 42 and 47.
 - A found sound does one of two jobs: an audible signpost to a place, or a hidden layer blended under an
   instrument where their energy overlaps. One with its own movement (a stream) can set the form instead of
   being chopped to the grid (Murphy, *Ears to the Ground*, ch. 1, 11; artists' reports).
+- Additive rhythm: build a bar from cells of 2 and 3 short beats. 3+3+3+3+2+2 fills sixteen sixteenths of 4/4; 3+3+2+3+2 makes 13/8
+  (Hewitt ch. 14). Cross-rhythm: three against two, as in drum and bass sixteenth triplets on tambourine over straight hats (ch. 7).
+- Arpeggios: a 5, 7 or 11-step pattern against a 4/4 bar lands different notes on the strong beats, which makes an inner tune.
+  Set the rhythm on one note first, then add the pitches. Passing notes go on weak beats (ch. 24).
+- Motifs for a bass or lead start from the rhythm; then choose the intervals (ch. 10).
 - Breadth before depth: sketch many rough parts or takes while ideas come, judging whether the notes
   are right, and polish later. For renders, fish several short seeds before refining any one.
 
