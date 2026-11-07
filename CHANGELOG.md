@@ -2,7 +2,7 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## Unreleased
+## 0.1.18 (2026-11-06)
 
 - `mw.py diff A B --out F`: writes what changed between two aligned versions as audio, level-matched unless `--raw`, with the residual in dB.
 - `mw.py seam --chords`: compares the notes in a loop's last and first second. Reported only, with no threshold until it is calibrated.
