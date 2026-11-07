@@ -2,7 +2,7 @@
 
 ## Owner's four answers (2026-11-06, night)
 
-Set Ai/Music/ask-owner-nov6. Stingers now play at once by default (applied; Sweet's question is closed). YuE2 vocal level waits for a project that needs a sung cover. In progress: wider SFT blind test (Ai/Music/sft-wide: 3 captions, seeds 5201 and 5202, both recipes, random sides, ending check) and the shared-level pair; rendering queues behind other ComfyUI work. A page follows; default changes only if the listener favours the pack across captions and its endings are acceptable.
+Set Ai/Music/ask-owner-nov6. Stingers now play at once by default (applied; Sweet's question is closed). YuE2 vocal level waits for a project that needs a sung cover. Wider SFT blind test and shared-level pair are rendered: askwright set Ai/Music/sft-wide/ask, seven blind questions (`ask.py serve` it if down; `ask.py read` for answers). Keys and numbers_after_answer.md stay closed until it is answered. Default changes only if the listener favours the pack across captions and its endings are acceptable. Level pair: raw cues differ by 7 LU (-18.7, -11.6, -13.6), one side keeps that with one gain, the other sets each to -18 LUFS; if the first wins, add a shared-gain option to `mw.py master` (none exists yet).
 
 ## Rechecked, one note unreleased (2026-11-06, evening)
 
