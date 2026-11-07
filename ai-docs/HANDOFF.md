@@ -1,5 +1,9 @@
 # Handoff
 
+## Rechecked after the wiki (2026-11-06, last)
+
+A continue session found no new agent work: no open pull requests, main CI green, 120 tests, checks green, budget yellow as before, no evergreen unit due until 2026-11-15 (generate). The books' owed items all need calibration or a listener. Removed the idle worktree musicwright-vw (PR #81 merged). musicwright-wt-sfx (branch sfxwright-note) was edited minutes earlier by another session and was left alone. Do not rerun this prompt before 2026-11-15 unless a listener or the owner has new answers.
+
 ## Wiki at 0.1.17 (2026-11-06, later)
 
 Wiki republished from 0.1.10 to 0.1.17 (wiki commits 437b2e1 and 775e7ca, 17 pages, live check clean), rerun on Windows and on static ffmpeg 7.0.2 in WSL, 119 tests. New cases: `master --shared-gain`, the pack recipe, YuE2 cover. The run found one bug, the pack's misleading cover refusal, fixed under Unreleased; the wiki's Commands page describes the old wording until the next release, so correct that sentence then. The largest SKILL.md (produce) reads 2,502 tokens on a tag clone, 2 over green, recorded as yellow on the Development page. The Linux run needs a script file in WSL: a Windows PATH with parentheses breaks an inline `bash -lc`. Nothing else is owed by the agent. Next dated work: evergreen refreshes from 2026-11-15, generate first. All else needs a listener or the owner.

@@ -308,3 +308,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] wiki | republished at 0.1.17
 - 0.1.10 to 0.1.17, Windows and WSL reruns, live clean. Verify script now clears MUSICWRIGHT_FLUIDSYNTH and friends, which leaked a local path into `doctor`. Pack cover refusal fixed under Unreleased.
+
+## [2026-11-06] check | continue session after the wiki
+- No new agent work; next dated work is the 2026-11-15 refresh. Idle worktree musicwright-vw removed. Details in HANDOFF.
