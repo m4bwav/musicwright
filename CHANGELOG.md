@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.23 (2026-11-07)
+
+- `mw.py` VERSION matches the plugin again; 0.1.22 shipped with the old number.
+
 ## 0.1.22 (2026-11-07)
 
 - musicwright: rules for judging takes with several listeners in `references/listening.md`.
