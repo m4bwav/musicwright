@@ -324,3 +324,6 @@ Append-only. Newest last.
 
 ## [2026-11-07] wiki | updated to 0.1.19
 - New commands and options run on Windows and added; older outputs still say 0.1.17, and the pages say so. No Linux rerun. references/cli.md had missed 0.1.17 and 0.1.18 options; fixed, with a check for missing commands.
+
+## [2026-11-07] fix | v0.1.20 release repaired
+- Manual release had blocked the workflow; deleted the record, kept the tag, reran: zip attached. Changelog section added, AGENTS.md rule added.
