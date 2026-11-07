@@ -19,7 +19,7 @@ mw.py render song.musicxml --program flute --transpose -2 --out out/song.flac
 | ABC (`.abc`, or text with X: and K:) | ABC 2.1 notes, accidentals and key signatures with modes, lengths, rests, ties, chords `[CEG]`, broken rhythm `>` `<`, tuplets `(3`, repeats `|: :|` with endings `[1 [2`, voices `V:`, `%%MIDI program`, inline fields, chord symbols (`--chords` plays them) | grace notes, lyrics, decorations as sound, `%%` directives other than MIDI program |
 | ASCII tab (`.txt`) | 4 to 8 string lines (`e|--0--3--|`), multi-digit frets, labelled tunings, bar lines; `--tuning` for others (dropd, dadgad, openg, bass, bass5, guitar7, ukulele, or `E2,A2,D3,G3,B3,E4`) | rhythm (tabs carry none: the usual gap between notes counts as an eighth note unless `--tab-step` says), bends and slides as pitch changes |
 | MusicXML (`.musicxml`, `.xml`, `.mxl`) | partwise scores: parts with their MIDI programs, chords, backup and forward (several voices), ties, repeats and endings, tempo marks | timewise scores, grace and cue notes |
-| MIDI (`.mid`) | format 0 and 1, tempo map, time and key signature, programs, the drum channel | SMPTE timing |
+| MIDI (`.mid`) | format 0 and 1, tempo map, time and key signature, programs, the drum channel | SMPTE timing, pan and other controllers (the render is mono; for stereo, run the .mid through FluidSynth directly) |
 | Guitar Pro | not read: open it in MuseScore (free) or TuxGuitar and export MusicXML | |
 
 Sound:
