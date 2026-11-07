@@ -193,11 +193,22 @@ def check_links_and_text():
             problems.append(f"{rel(f)}: AI attribution {a.group(0)!r}")
 
 
+def check_cli_reference():
+    """Every mw.py command has a row in the hub's command reference."""
+    hub = os.path.join(ROOT, "skills", "musicwright")
+    code = open(os.path.join(hub, "scripts", "mw.py"), encoding="utf-8").read()
+    table = open(os.path.join(hub, "references", "cli.md"), encoding="utf-8").read()
+    for name in re.findall(r'sub\.add_parser\("([a-z]+)"', code):
+        if not re.search(r"^\| `" + name + r"\b", table, re.M):
+            problems.append(f"references/cli.md: no row for mw.py {name}")
+
+
 if __name__ == "__main__":
     names = check_skills()
     check_json()
     check_data()
     check_links_and_text()
+    check_cli_reference()
     if problems:
         print(f"{len(problems)} problem(s):")
         for p in problems:

@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261107-1 · 2026-11-07 · CLI reference catches up with 0.1.18
+- because: found while updating the wiki; the reference is where the hub looks a command up
+- files: references/cli.md
+
+Adds diff, seam --chords, analyze --bpm and key_ends, loop --bits.
+
 ### C-20261106-2 · 2026-11-06 · Boundary with sfxwright recorded
 - because: user request
 - files: SKILL.md (before Step 1)

@@ -321,3 +321,6 @@ Append-only. Newest last.
 ## [2026-11-07] decide | blind pairs and model tests answered; 0.1.19
 - qsin 4 of 4; under-speech words failed and removed; drop chorus not adopted; roll-off and lyric form kept with weak evidence; side-B lean recorded. See decisions/2026-11-07-blind-pairs-and-model-tests.md.
 ## [2026-11-07] index | rebuilt (11 entries)
+
+## [2026-11-07] wiki | updated to 0.1.19
+- New commands and options run on Windows and added; older outputs still say 0.1.17, and the pages say so. No Linux rerun. references/cli.md had missed 0.1.17 and 0.1.18 options; fixed, with a check for missing commands.
