@@ -10,7 +10,7 @@ Cadence, borrowed-chord and sentence notes, from round-two reading; see the RESE
 
 ### C-20261107-1 · 2026-11-07 · Under-speech words removed; lyric form test recorded
 - because: R-20261107-1
-- files: references/vocabulary.md (Words that work, Lyrics that sing)
+- files: references/vocabulary.md (opening list, Lyrics that sing)
 
 The under-speech caption line failed its blind test and is gone. The bar-mapping note now says what the lyric form test showed and did not.
 
