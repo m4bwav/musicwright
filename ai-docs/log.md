@@ -304,3 +304,4 @@ Append-only. Newest last.
 
 ## [2026-11-06] decide | SFT wide test and level pair answered; 0.1.17
 - Default unchanged, pack recommended for calm and combat, `master --shared-gain` built (real cues: spread of 7.1 LU kept exactly). Side B was the pack in every pair by chance; keys checked against the audio. See decisions/2026-11-06-sft-wide-and-shared-gain.md.
+## [2026-11-06] index | rebuilt (9 entries)
