@@ -314,3 +314,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] decide | owner picked all owed items; five mw.py additions built
 - Set ask-owner-nov6b. diff, seam --chords, analyze --bpm and key_ends, loop dither and --bits; 124 tests. Pairs, model tests and score recheck owed, see HANDOFF.
+
+## [2026-11-07] test | blind pages rendered, learned score closed
+- Sets blind-pairs-nov7 and model-tests-nov7 served; no answers yet. Score recheck beat chance on no axis. ffmpeg curve=log found to be a cliff, not a log fade. Details in HANDOFF.

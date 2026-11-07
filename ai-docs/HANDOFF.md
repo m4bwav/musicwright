@@ -1,5 +1,16 @@
 # Handoff
 
+## Blind pages out, score closed (2026-11-07)
+
+Items 1 and 2 below are rendered and waiting on the listener; item 3 is closed. Do not change skills until the answers are in.
+
+- Item 1, askwright set Ai/Music/blind-pairs-nov7/ask, eight clips: fade curve at 3 s and 15 s on two pieces, 128 kbps MP3 with and without a 14 kHz roll-off on two pieces, drop chorus on two songs. Keys in that folder's keys.json; open only after answers. Build scripts beside it.
+- Item 2, askwright set Ai/Music/model-tests-nov7/ask, six clips: lyric form (acestep-xl-sft, seeds 6101 and 6102, form A 4-3-4-3 with a shorter chorus shape, B 4-4-4-4, C uneven) and texture words under speech (seeds 6301, 6302). A failed test removes the advice from the skills. `ask.py read` each; `ask.py serve` if down.
+- ffmpeg's `curve=log` is not a log fade: a fade-out is still at -3.2 dB at 97% of its length, which is a cliff. The test uses a constant-dB `volume` expression (dblog) at 3 s, and a slow shoulder then log (slowlog) at 15 s, against qsin and hsin. Any `edit --fade-curve` must not map "log" to ffmpeg's name.
+- Texture numbers do not settle it: seed 6302 lost onsets and gained range with the words (onset strength 0.98 to 0.46), seed 6301 went the other way on onsets (0.43 to 0.60). The listener decides.
+- Item 3 closed: Audiobox and SongEval, rerun on 11 two-way picks, beat chance on no axis ([research/04-learned-quality-score.md](research/04-learned-quality-score.md)). Not adopted.
+- After the answers: rulings in a decision entry, skill edits, release, then the wiki (Commands still holds the old pack refusal wording; 0.1.18's commands are not on it).
+
 ## Owner picked every owed item (2026-11-06, last)
 
 Answers: [decisions/2026-11-06-owed-items-all-picked.md](decisions/2026-11-06-owed-items-all-picked.md). This supersedes "nothing owed" in the sections below; the agent has work again.
