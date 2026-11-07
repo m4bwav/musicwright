@@ -8,6 +8,12 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · Cadence, borrowed-chord and sent
 
 Cadence, borrowed-chord and sentence notes, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261106-1 · 2026-11-06 · Found sound as signpost or hidden layer
+- because: user request (book distilled into a beat); Murphy, Ears to the Ground (2024), artists' reports, untested
+- files: references/theory.md
+
+One line on the two jobs of a found sound and letting its movement set the form.
+
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261106-4 · 2026-11-06 · Polyphonic transcription is a sketch
