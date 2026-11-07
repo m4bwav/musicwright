@@ -4,6 +4,8 @@
 
 Items 1 and 2 below are answered and applied: [decisions/2026-11-07-blind-pairs-and-model-tests.md](decisions/2026-11-07-blind-pairs-and-model-tests.md). The owner's picks leaned to side B; the decision records how that weakens the roll-off and lyric results.
 
+Released as 0.1.19 and installed. Wiki updated to 0.1.19 (commit 992d5ba): only new commands and options were run, on Windows, with no Linux rerun; older outputs still say 0.1.17 and the pages say so. references/cli.md had missed curve, diff and several options; fixed under Unreleased with a check in tests/check_skills.py, shipping with the next release.
+
 Next dated work: evergreen refreshes from 2026-11-15, generate first. No listener or owner question is open. Do not rerun this prompt before 2026-11-15 unless there are new answers.
 
 
