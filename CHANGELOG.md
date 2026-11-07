@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## Unreleased
+
+- musicwright-generate: a chroma or alignment score cannot settle whether a cover kept the tune; judge by ear (Müller).
+
 ## 0.1.16 (2026-11-06)
 
 - musicwright-produce: corrects OVER-LIMITED (a louder master is only turned down where a player normalises); why a final can lose to the take; fades after any DAW dynamics; encode from the 24-bit or float master; rate conversion can raise peaks; Spotify Loud limits a -14 master with PLR over 10 dB; asymmetry is not DC; what the 85% section figure means (Braddock, Waddell, Lerch).
