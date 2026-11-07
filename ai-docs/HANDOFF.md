@@ -1,5 +1,11 @@
 # Handoff
 
+## 0.1.20 release repaired (2026-11-07, later still)
+
+v0.1.20 had been created by hand before its tag's workflow ran, so the workflow failed and the release had no zip. The release record was deleted, the tag kept, and the workflow rerun: it passed and attached musicwright-0.1.20.zip. The root changelog gained its missing 0.1.20 section, and AGENTS.md now forbids the manual step. The wiki stays at 0.1.19, since 0.1.20 changed no commands. Merged worktree and branches for lit/manning and lit/hewitt removed.
+
+Next dated work is unchanged: evergreen refreshes from 2026-11-15, generate first. No listener or owner question is open. Do not rerun this prompt before 2026-11-15 unless there are new answers.
+
 ## Blind answers applied, 0.1.19 (2026-11-07, later)
 
 Items 1 and 2 below are answered and applied: [decisions/2026-11-07-blind-pairs-and-model-tests.md](decisions/2026-11-07-blind-pairs-and-model-tests.md). The owner's picks leaned to side B; the decision records how that weakens the roll-off and lyric results.
