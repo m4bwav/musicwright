@@ -36,7 +36,16 @@ jobs:
         run: brew install ffmpeg
       - name: ffmpeg (Windows, Chocolatey)
         if: runner.os == 'Windows'
-        run: choco install ffmpeg -y --no-progress
+        # The Chocolatey feed fails now and then while choco still exits 0, so test for ffmpeg itself.
+        run: |
+          foreach ($try in 1..5) {
+            choco install ffmpeg -y --no-progress
+            if (Get-Command ffmpeg -ErrorAction SilentlyContinue) { exit 0 }
+            $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine')
+            if (Get-Command ffmpeg -ErrorAction SilentlyContinue) { exit 0 }
+            Start-Sleep -Seconds (30 * $try)
+          }
+          exit 1
       - name: ffmpeg is on PATH
         run: ffmpeg -hide_banner -version
       - name: skills, companions, manifests, links and text guards
