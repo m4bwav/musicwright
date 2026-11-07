@@ -292,3 +292,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] test | score evals re-run
 - 18/18 on 0.1.16, T-20261106-1. EVAL_MASTER takes an absolute path to the main clone; the harness's default master folder no longer exists.
+
+## [2026-11-06] check | continue session
+- No new agent work. PR #98 added to Unreleased with no bump. Owner decision still open: Sweet's stinger change. Details in HANDOFF.
