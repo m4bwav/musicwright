@@ -195,6 +195,12 @@ Read through RSS, top of month and year: r/comfyui, r/StableDiffusion and r/Loca
 - Mixing and game-audio feeds: common questions already covered by the produce and game skills. No new numbers; no skill change.
 - Everscout: no beat covers AI music. See HANDOFF.
 
+### R-20261106-7 · 2026-11-06 · Wider blind test of the SFT pack
+
+`acestep-xl-sft` against `acestep-xl-sft-pack`, three captions and two seeds, 60 s, levels matched, one listener. Calm: pack slightly and clearly (the other route had "a slight background note/noise"). Combat: pack clearly twice (the other route "too repetitive", "a little harsh"; it also measured about 2 LU louder with peaks to +0.4 dBTP before matching). Town: no difference, then the other route slightly (both "a little tinny"). Endings: both calm pairs "stop early"; a town take stopped a couple of seconds short. Numbers agree: pack calm 5202 ends with 9.25 s of silence, and three of the other calm takes hold gaps starting between 51 and 55 s.
+
+Caveat: the pack was side B in all six pairs, and the shared-level pair kept its given order too. Seeds came from os.urandom, the shuffle is fair (49% swaps in 2,000 draws) and correlation with the sources confirmed the keys (1.0 against about 0), so this was chance, about 1 in 128, but an order effect cannot be ruled out. The listener did not always pick B and gave concrete reasons.
+
 ### R-20261106-2 · 2026-11-06 · Listener answers: SFT pack pair, YuE2 cover
 
 - SFT pack against `acestep-xl-sft`, same model, seeds 5101 and 5102, one caption, clips matched at -16 LUFS: the pack clearly on 5101 ("A is close but its not as good and stops early"), slightly on 5102. The agent's prior was no difference. Limits: the pack was side B both times, so a side bias is not ruled out, and pack and core settings differ, so the cause is not isolated.

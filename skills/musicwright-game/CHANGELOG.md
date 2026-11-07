@@ -8,6 +8,12 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · State-change delay before switch
 
 State-change delay before switching music, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261106-3 · 2026-11-06 · Mastering step names the shared-gain choice
+- because: musicwright-produce R-20261106-8
+- files: SKILL.md (loop mastering step)
+
+Offers one gain across cues beside one level.
+
 ### C-20261106-2 · 2026-11-06 · Stingers play at once by default
 - because: user request (askwright ask-owner-nov6), R-20261106-3
 - files: references/adaptive.md (cue table, Techniques), references/unity.md

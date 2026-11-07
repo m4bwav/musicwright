@@ -695,6 +695,30 @@ class Master(unittest.TestCase):
                 self.assertLessEqual(abs(run("measure", dst)[1]["files"][0]["lufs_i"] - target), 1.0)
                 self.assertEqual(d["after"]["sample_rate"], 48000)
 
+    def test_master_shared_gain_keeps_differences(self):
+        quiet = stereo("0.05*sin(2*PI*440*t)", "0.05*sin(2*PI*440*t)", "sg_quiet.wav")
+        loud = stereo("0.3*sin(2*PI*440*t)", "0.3*sin(2*PI*440*t)", "sg_loud.wav")
+        src = [mw.measure_file(p)["lufs_i"] for p in (quiet, loud)]
+        code, d = run("master", quiet, loud, "--shared-gain", "--lufs", "-24", "--tp", "-1", "--out", TMP / "shared")
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["mode"], "shared-gain")
+        got = [f["after"]["lufs_i"] for f in d["files"]]
+        self.assertAlmostEqual(got[1], -24, delta=0.3)  # the loudest lands on the target
+        self.assertAlmostEqual(got[1] - got[0], src[1] - src[0], delta=0.2)  # the difference survives
+        self.assertEqual(d["warnings"], [])
+        code, d = run("master", quiet, loud, "--shared-gain", "--lufs", "-6", "--tp", "-6", "--out", TMP / "shared2")
+        self.assertEqual(code, 0, d)  # a peak ceiling holds the gain down, with no limiter
+        self.assertLessEqual(d["files"][1]["after"]["true_peak_dbtp"], -5.8)
+        self.assertIn("under the target", d["warnings"][0])
+
+    def test_master_shared_gain_refusals(self):
+        for args, text in ((["master", FX["tone"], FX["bed"]], "--shared-gain"),
+                           (["master", FX["tone"], "--shared-gain"], "two or more"),
+                           (["master", FX["tone"], FX["bed"], "--shared-gain", "--peak", "-6"], "--peak")):
+            code, d = run(*args)
+            self.assertFalse(d["ok"], args)
+            self.assertIn(text, d["error"])
+
     def test_master_overrides_and_default_name(self):
         code, d = run("master", FX["tone220"], "--preset", "web-video", "--lufs", "-20", "--tp", "-2", "--rate", "44100")
         self.assertEqual(code, 0, d)

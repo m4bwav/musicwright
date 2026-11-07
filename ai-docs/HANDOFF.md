@@ -1,5 +1,9 @@
 # Handoff
 
+## SFT wide test answered, 0.1.17 (2026-11-06, late)
+
+Rulings: [decisions/2026-11-06-sft-wide-and-shared-gain.md](decisions/2026-11-06-sft-wide-and-shared-gain.md). Default unchanged; pack recommended for calm and combat; `mw.py master --shared-gain` built and released in 0.1.17. Side B was the pack and the kept-differences side every time, by chance; the decision records it. This closes Katz 8 and Braddock's LUFS-flattening item below, as far as one pair can. Owed: the wiki is behind on `--shared-gain` (republish with the next real rerun, as the earlier sections describe). Next dated work: evergreen refreshes from 2026-11-15, generate first. Everything else owed needs a listener or the owner. Stale empty folders musicwright-wt-* removed; prune any others once idle.
+
 ## Owner's four answers (2026-11-06, night)
 
 Set Ai/Music/ask-owner-nov6. Stingers now play at once by default (applied; Sweet's question is closed). YuE2 vocal level waits for a project that needs a sung cover. Wider SFT blind test and shared-level pair are rendered: askwright set Ai/Music/sft-wide/ask, seven blind questions (`ask.py serve` it if down; `ask.py read` for answers). Keys and numbers_after_answer.md stay closed until it is answered. Default changes only if the listener favours the pack across captions and its endings are acceptable. Level pair: raw cues differ by 7 LU (-18.7, -11.6, -13.6), one side keeps that with one gain, the other sets each to -18 LUFS; if the first wins, add a shared-gain option to `mw.py master` (none exists yet).
@@ -23,10 +27,10 @@ Still waiting on the owner: Sweet's stinger change (below). Its "ask-yue2cover a
 Karlin, Katz, Senior, Pattison, Braddock, Lerch and Waddell apply-now items are in, released (0.1.16 for the last three). Each below needs calibration or a listener:
 
 - Karlin 5, 7, 8: do models obey under-speech texture words; build, cut and silence and hard-out fade lengths; a thin voice needing support in its range.
-- Katz 8: one level for every cue flattens contrast (blind test, `master --shared-gain`). Katz 9: `loop` writes 16-bit undithered WAV. Katz 10-13: OVER-LIMITED at 10, forte gap, clip times, fade curve.
+- Katz 9: `loop` writes 16-bit undithered WAV. Katz 10-13: OVER-LIMITED at 10, forte gap, clip times, fade curve.
 - Senior 9-14: quiet double, pad mid, drop chorus by stem mutes, notch one note, vary the fourth repeat, familiarity warning.
 - Pattison 7, 8: do models follow lyric form (the bar mapping depends on it), then a stable or unstable decision in the brief.
-- Braddock 6-10: LUFS flattening contrast (second source for Katz 8), fade curve blind pair, `mw.py diff` residual, a DC fix, re-fading a render's own fade.
+- Braddock 7-10: fade curve blind pair, `mw.py diff` residual, a DC fix, re-fading a render's own fade.
 - Lerch 4, 5: `analyze --bpm` tempo prior (confirm librosa's `start_bpm`), key from head and tail as a second vote.
 - Waddell 3: top roll-off before low-bitrate MP3 (blind pair).
 - Disagreements, kept as they are: ceiling -1 dBTP against -0.3 (Waddell, Taylor, Bektas; the destinations here are lossy); streaming target -14 against -11 or louder to avoid Spotify's limiter (Braddock) and -14 to -7 (Taylor); long-fade curve `qsin` against Katz's S-shape and Braddock's log then cosine; BS.1770 against RMS and the ear (Braddock; Lerch backs BS.1770). Tables in the owner's book notes, music-round4-braddock.md.

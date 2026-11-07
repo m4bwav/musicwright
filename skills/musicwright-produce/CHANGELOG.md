@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-5 · 2026-11-06 · `master --shared-gain`: one gain across cues
+- because: R-20261106-8, Katz and Braddock on flattened contrast (R-20261106-3, R-20261106-7)
+- files: SKILL.md (Step 2), references/loudness.md (new section)
+
+A blind pair slightly favoured keeping the level differences between cues, which by the owner's earlier condition adds the option. Evidence is one pair, so one level remains allowed.
+
 ### C-20261106-4 · 2026-11-06 · Braddock, Waddell, Lerch: normalisation, final against take, fades, encoding
 - because: R-20261106-7
 - files: SKILL.md (Steps 1b, 3, 4; Rules; References), references/mixing.md (AI renders, Scripted checks, analyze flags), references/loudness.md (below the table)

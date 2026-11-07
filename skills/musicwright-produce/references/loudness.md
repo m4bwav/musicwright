@@ -34,3 +34,7 @@ Spotify's Loud mode raises a -14 master by 3 dB into a limiter set at -1 dB (sam
   15 `apple`, 17 `game-music`. This is arithmetic from the presets, on the method in Katz ch. 17; it is
   necessary, not sufficient, since steady tones also go dynamic. Unused headroom is no fault.
 - pyloudnorm agrees with ffmpeg within 0.1 LU.
+
+## One level or one gain across cues
+
+Setting every cue to the same LUFS flattens the contrast between them (Katz, Braddock). `mw.py master a b c --shared-gain --preset game-music --out dir` gives all of them one gain and no limiter, so the loudest lands on the target and the rest stay where they were against it; if a peak would pass the ceiling the gain stops there and the reply says so. Evidence: one blind pair, one listener, 2026-11-06, three cues differing by 7 LU, slightly favoured the kept differences (R-20261106-8). Nobody tested it in a game, so neither way is the rule yet. A cue far quieter than the rest may drop under the sound effects; check it in the engine.

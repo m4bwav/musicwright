@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261106-5 · 2026-11-06 · SFT pack: wider blind test; recommended for calm and combat, still not the default
+- because: R-20261106-7
+- files: SKILL.md (model table), ../musicwright/references/recipes.json (acestep-xl-sft-pack)
+
+The owner's rule was to change the default only if the pack won across captions with acceptable endings. It won calm and combat, not town, and takes on both routes stopped early.
+
 ### C-20261106-4 · 2026-11-06 · Cover: what a score cannot say about keeping the tune
 - because: everscout ai-music distillation of Müller, Fundamentals of Music Processing (sec. 7.3, 8.2)
 - files: references/acestep.md (cover notes)
