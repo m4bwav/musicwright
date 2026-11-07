@@ -195,9 +195,9 @@ def check_links_and_text():
 
 def check_cli_reference():
     """Every mw.py command has a row in the hub's command reference."""
-    hub = ROOT / "skills" / "musicwright"
-    code = (hub / "scripts" / "mw.py").read_text(encoding="utf-8")
-    table = (hub / "references" / "cli.md").read_text(encoding="utf-8")
+    hub = os.path.join(ROOT, "skills", "musicwright")
+    code = open(os.path.join(hub, "scripts", "mw.py"), encoding="utf-8").read()
+    table = open(os.path.join(hub, "references", "cli.md"), encoding="utf-8").read()
     for name in re.findall(r'sub\.add_parser\("([a-z]+)"', code):
         if not re.search(r"^\| `" + name + r"\b", table, re.M):
             problems.append(f"references/cli.md: no row for mw.py {name}")
