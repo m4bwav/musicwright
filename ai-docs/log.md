@@ -298,3 +298,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] decide | owner's four answers
 - askwright set Ai/Music/ask-owner-nov6, all matching the agent's guess: stingers immediate by default (applied), shared-level blind pair wanted, wider SFT blind test wanted (3 captions, 2 seeds), YuE2 vocal waits for a project needing a sung cover.
+
+## [2026-11-06] fix | Windows CI and a bad merge
+- PR #100 merged with two red Windows jobs because the merge script ignored the check result; a process slip. The cause was the Chocolatey feed failing while choco exits 0, not the change (docs only; 117 tests pass locally). The Windows install step now retries and tests for ffmpeg. Merge scripts must gate on the checks' exit code.
