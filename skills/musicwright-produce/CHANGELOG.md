@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261107-1 · 2026-11-07 · Fade curve and pre-MP3 roll-off, from blind pairs
+- because: R-20261107-1
+- files: references/ffmpeg.md (fades, roll-off note)
+
+Keeps qsin and warns about ffmpeg curve=log; adds the roll-off command with the size of its evidence. No --fade-curve option is needed.
+
 ### C-20261106-90 · 2026-11-06 · mw.py diff
 - because: user request (askwright set ask-owner-nov6b)
 - files: references/mixing.md

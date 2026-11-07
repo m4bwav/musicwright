@@ -8,6 +8,12 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · Tempo search for several hits
 
 Tempo search for several hits, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261107-1 · 2026-11-07 · Under-speech caption advice replaced
+- because: R-20261107-1
+- files: references/spotting.md (Ducking under dialogue)
+
+Blind test failed, so the advice to caption cues with texture words is replaced by the result. Evals do not cover this sentence and were not re-run.
+
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261106-3 · 2026-11-06 · Karlin and Wright: hit tolerance, entries and exits, treatment, gaps

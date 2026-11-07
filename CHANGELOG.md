@@ -2,6 +2,12 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.19 (2026-11-07)
+
+- musicwright-score and musicwright-compose: the advice to caption cues under speech with texture words is removed after it failed a blind test.
+- musicwright-compose: the lyric form note now gives its blind result, a weak one.
+- musicwright-produce: keep `qsin` for fade-outs, `curve=log` is not a log fade, and a 14 kHz roll-off before 128 kbps MP3 with the size of its evidence.
+
 ## 0.1.18 (2026-11-06)
 
 - `mw.py diff A B --out F`: writes what changed between two aligned versions as audio, level-matched unless `--raw`, with the residual in dB.

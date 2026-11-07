@@ -24,7 +24,6 @@ structure hint**. Tempo and key go in their own fields when the model has them.
   string pad; soft low drums". Dry and close against wet and far is how a mix shows
   depth, and the words models know for it.
 - **Low end, beat-driven**: tight short kick, offbeat bass, bass between the kicks.
-- **Under speech**: smooth legato, sustained, mid register, even dynamics, simple (musicwright-score spotting.md; untested on models).
 
 ## Describing a reference without naming the artist
 
@@ -70,7 +69,10 @@ solo piano") and drop modern production words.
 Mark the stressed syllables in writing and place them on beats 1 and 3 or on the longer notes. A
 line that fights the natural stress of its words sounds forced in a sung take (DeSantis ch. 54).
 Stresses set the bars: 4-3-4-3 fills 8 bars, 4-4 fills 4 (Pattison ch. 14, 16). ACE-Step's 6-10
-syllables a line is a model note. No model has been tested on the bar mapping.
+syllables a line is a model note. One blind test on ACE-Step XL, two seeds: against uneven lines,
+even 4-3-4-3 lines sat no better on one seed and slightly better on the other; that form's shorter
+chorus stood out slightly more than an even 4-4 chorus on both. A weak lever. The bar mapping itself
+was not measured.
 
 Each verse develops a new idea; the chorus sums up and repeats word for word, in no fixed tense or
 person where possible. Important words and the title go in first and last lines, and the last verse

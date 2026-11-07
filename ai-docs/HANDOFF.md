@@ -1,5 +1,12 @@
 # Handoff
 
+## Blind answers applied, 0.1.19 (2026-11-07, later)
+
+Items 1 and 2 below are answered and applied: [decisions/2026-11-07-blind-pairs-and-model-tests.md](decisions/2026-11-07-blind-pairs-and-model-tests.md). The owner's picks leaned to side B; the decision records how that weakens the roll-off and lyric results.
+
+Next dated work: evergreen refreshes from 2026-11-15, generate first. No listener or owner question is open. Do not rerun this prompt before 2026-11-15 unless there are new answers.
+
+
 ## Blind pages out, score closed (2026-11-07)
 
 Items 1 and 2 below are rendered and waiting on the listener; item 3 is closed. Do not change skills until the answers are in.
