@@ -80,3 +80,10 @@ abratabia.com/web-game-audio/dynamic-game-music.php, opinion only: state-change 
 - Sources: notes in Ai/books/plugin-learnings/music-round4-phillips.md and music-round4-sweet.md
 - Magnitude: 2 (bug fix and a new reference)
 - Applied: C-20261106-1
+
+### R-20261106-3 · 2026-11-06 · Stinger timing: owner's ruling on Sweet
+- Finding: stingers usually play at once because waiting can make the signal late; unsynchronized ones stay neutral (pentatonic or unpitched) since the chord underneath is unknown. Synchronized ones mostly belong to music games and need an engine that knows the beat. One book's view, not a test.
+- Track: practice
+- Sources: Sweet, MS 10, pp. 240-242, notes in Ai/books/plugin-learnings/music-round4-sweet.md; owner's answer in askwright set ask-owner-nov6
+- Magnitude: 2 (reverses a default)
+- Applied: C-20261106-2

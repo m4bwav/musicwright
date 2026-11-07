@@ -11,7 +11,7 @@
 | Ambient / exploration | 3-6 min or generative | sparse, slow harmonic rhythm |
 | Mystery | loop or one-shot | the first time the player enters a new place; unresolved, sparse |
 | Shop / rest | 1-2 min | warm, light |
-| Stinger | 1-8 s | in the bed's key, or neutral percussion; quantised to the beat. Kinds: interactive.md |
+| Stinger | 1-8 s | neutral (pentatonic or unpitched) and played at once by default; in the bed's key and quantised by choice. Kinds: interactive.md |
 | Warning | a stinger or a layer | a hazard ahead or enemies about to arrive; marks a new enemy's first appearance |
 | Victory / defeat | 5-20 s | victory resolves (often bVI-bVII-I); defeat falls |
 | Villain motif | a phrase, not a track | the antagonist's own few notes, woven into any cue where they appear |
@@ -95,7 +95,9 @@ Which to use, transitions, stinger kinds, layer fades and a flip-flop guard: [in
   boundaries (next bar, next beat, a cue point), with transition segments or stingers.
 - **Vertical layering**: stems of one piece in sync; game state fades layers (drums when enemies
   appear, brass when health is low). Same length, tempo and key for every stem.
-- **Stingers**: short phrases over or between music on events, quantised to the beat.
+- **Stingers**: short phrases over or between music on events. Play at once when the event must be felt
+  now, which is the usual case, with neutral content because the chord underneath is unknown. Quantise
+  in music-driven games, or when the engine knows the beat and a short delay is acceptable.
 - **One parameter**: a 0-1 intensity or threat value drives layers and switches.
 - **Layers by subtraction**: render or write the fullest version first and take the quieter
   intensity layers from it (stems of that one take), so every layer shares key, tempo and length
