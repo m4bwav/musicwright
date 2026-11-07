@@ -311,3 +311,6 @@ Append-only. Newest last.
 
 ## [2026-11-06] check | continue session after the wiki
 - No new agent work; next dated work is the 2026-11-15 refresh. Idle worktree musicwright-vw removed. Details in HANDOFF.
+
+## [2026-11-06] decide | owner picked all owed items; five mw.py additions built
+- Set ask-owner-nov6b. diff, seam --chords, analyze --bpm and key_ends, loop dither and --bits; 124 tests. Pairs, model tests and score recheck owed, see HANDOFF.

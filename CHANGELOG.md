@@ -4,6 +4,10 @@ Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG
 
 ## Unreleased
 
+- `mw.py diff A B --out F`: writes what changed between two aligned versions as audio, level-matched unless `--raw`, with the residual in dB.
+- `mw.py seam --chords`: compares the notes in a loop's last and first second. Reported only, with no threshold until it is calibrated.
+- `mw.py analyze --bpm N` passes an expected tempo to librosa as `start_bpm`; `analyze` also reports `key_ends`, the key of the head and the tail.
+- `mw.py loop` dithers its 16-bit WAV (triangular) and takes `--bits 24`.
 - `gen --recipe acestep-xl-sft-pack --task cover` (or any source task) now says the pack does text to music only and names the recipes that can; the old refusal said ACE-Step recipes do covers in ComfyUI.
 
 ## 0.1.17 (2026-11-06)

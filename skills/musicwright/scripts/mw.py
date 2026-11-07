@@ -559,8 +559,88 @@ def seam_score(path):
             "level_jump_db": level_jump_db, "verdict": verdict}
 
 
+def chroma_of(samples, rate):
+    """12 pitch-class energies by Goertzel over C2 to B5; stdlib, enough to compare two short windows."""
+    out = [0.0] * 12
+    n = len(samples)
+    for midi in range(36, 84):
+        w = 2 * math.pi * 440.0 * 2 ** ((midi - 69) / 12) / rate
+        k = 2 * math.cos(w)
+        s1 = s2 = 0.0
+        for v in samples:
+            s1, s2 = v + k * s1 - s2, s1
+        out[midi % 12] += max(0.0, s1 * s1 + s2 * s2 - k * s1 * s2) / max(1, n)
+    return out
+
+
+def seam_chords(path, seconds=1.0):
+    """Pitch-class match of a loop's last and first seconds. Reported, not judged: no calibrated threshold yet."""
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_"))
+    try:
+        wav = tmpd / "c.wav"
+        ffmpeg(["-y", "-i", str(need_file(path)), "-ac", "1", "-ar", "8000", "-c:a", "pcm_s16le", str(wav)])
+        L, rate, _ = read_pcm16(wav)
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
+    n = min(int(seconds * rate), len(L) // 2)
+    if n < 800:
+        raise MwError("file too short for a chord comparison")
+    head, tail = chroma_of(L[:n], rate), chroma_of(L[-n:], rate)
+    dot = sum(x * y for x, y in zip(head, tail))
+    norm = math.sqrt(sum(x * x for x in head) * sum(y * y for y in tail))
+    top = lambda c: [KEY_NAMES[i] for i in sorted(range(12), key=lambda i: -c[i])[:3]]
+    return {"similarity": round(dot / norm, 3) if norm else None, "tail_pitches": top(tail), "head_pitches": top(head),
+            "window_s": round(n / rate, 2), "note": "uncalibrated: a low value means the ends use different notes, which can still be a good chord change; judge by ear"}
+
+
 def cmd_seam(a):
-    return {"ok": True, "files": [seam_score(f) for f in a.files]}
+    rows = [seam_score(f) for f in a.files]
+    if a.chords:
+        for r in rows:
+            r["chords"] = seam_chords(r["file"])
+    return {"ok": True, "files": rows}
+
+
+def cmd_diff(a):
+    """What changed between two aligned versions: writes b minus a (level-matched unless --raw) as audio."""
+    pa, pb = need_file(a.a), need_file(a.b)
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_diff_"))
+    try:
+        bufs = []
+        for i, p in enumerate((pa, pb)):
+            raw = tmpd / f"{i}.f32"
+            ffmpeg(["-y", "-i", str(p), "-ac", "2", "-ar", str(a.rate), "-f", "f32le", "-c:a", "pcm_f32le", str(raw)])
+            b = array("f")
+            b.frombytes(raw.read_bytes())
+            if sys.byteorder == "big":
+                b.byteswap()
+            bufs.append(b)
+        x, y = bufs
+        n = min(len(x), len(y))
+        if not n:
+            raise MwError("nothing to compare: a file decoded empty")
+        xy = sum(x[i] * y[i] for i in range(n))
+        xx = sum(x[i] * x[i] for i in range(n))
+        yy = sum(y[i] * y[i] for i in range(n))
+        gain = 1.0 if a.raw or not yy else xy / yy
+        out = array("f", (y[i] * gain - x[i] for i in range(n)))
+        rr = sum(v * v for v in out)
+        res_db = round(10 * math.log10(rr / xx), 2) if rr > 0 and xx > 0 else None
+        if sys.byteorder == "big":
+            out.byteswap()
+        rawout = tmpd / "o.f32"
+        rawout.write_bytes(out.tobytes())
+        dst = out_file(a.out)
+        codec = ["-c:a", "pcm_s24le"] if dst.suffix.lower() == ".wav" else out_codec(dst)
+        ffmpeg(["-y", "-f", "f32le", "-ar", str(a.rate), "-ac", "2", "-i", str(rawout)] + codec + [str(dst)])
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
+    res = {"ok": True, "out": str(dst.resolve()), "residual_db": res_db, "gain_applied_db": round(20 * math.log10(abs(gain)), 2) if gain else None,
+           "length_gap_s": round(abs(len(x) - len(y)) / 2 / a.rate, 3),
+           "reading": "residual_db is the difference's energy against the first file; null means identical. The files must start together: an offset makes this read loud whatever changed."}
+    if res["length_gap_s"] > 0.01:
+        res["warning"] = "the files differ in length, so they may not be aligned; compared the shared part only"
+    return res
 
 
 def cmd_loop(a):
@@ -609,7 +689,9 @@ def cmd_loop(a):
             out_buf.byteswap()
         raw_out.write_bytes(out_buf.tobytes())
         dst = out_file(a.out)
-        codec = ["-c:a", "pcm_s16le"] if dst.suffix.lower() == ".wav" else out_codec(dst)
+        # float to 16-bit gets triangular dither; 24-bit needs none (Katz)
+        wav16 = ["-af", "aresample=osf=s16:dither_method=triangular", "-c:a", "pcm_s16le"]
+        codec = (["-c:a", "pcm_s24le"] if a.bits == 24 else wav16) if dst.suffix.lower() == ".wav" else out_codec(dst)
         samples = nbody
         loop_tags = ["-metadata", "LOOPSTART=0", "-metadata", f"LOOPLENGTH={samples}"]
         # an .ogg --out with --ogg is tagged in this pass; re-encoding it onto itself would fail
@@ -929,11 +1011,18 @@ def cmd_analyze(a):
     rows = []
     for f in a.files:
         y, sr = librosa.load(str(need_file(f)), sr=None, mono=True)
-        tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
+        tempo, beats = librosa.beat.beat_track(y=y, sr=sr, start_bpm=a.bpm) if a.bpm else librosa.beat.beat_track(y=y, sr=sr)
         beat_s = librosa.frames_to_time(beats, sr=sr)
         chroma = librosa.feature.chroma_cqt(y=y, sr=sr).mean(axis=1)
         cands = sorted(((float(np.corrcoef(np.roll(p, k), chroma)[0, 1]), names[k] + (" major" if mj else " minor"))
                         for mj, p in ((1, maj), (0, mnr)) for k in range(12)), reverse=True)
+
+        def key_in(seg):
+            c = librosa.feature.chroma_cqt(y=seg, sr=sr).mean(axis=1)
+            return max(((float(np.corrcoef(np.roll(p, k), c)[0, 1]), names[k] + (" major" if mj else " minor"))
+                        for mj, p in ((1, maj), (0, mnr)) for k in range(12)))[1]
+        part = int(min(15.0, len(y) / sr / 3) * sr)
+        key_ends = {"head": key_in(y[:part]), "tail": key_in(y[-part:])} if part >= sr * 3 else None
         onset = librosa.onset.onset_strength(y=y, sr=sr)
         bpm = float(np.atleast_1d(tempo)[0])
         y = librosa.resample(y, orig_sr=sr, target_sr=22050) if sr != 22050 else y  # the rate the new measures were calibrated at
@@ -943,6 +1032,10 @@ def cmd_analyze(a):
                "key_margin": round(cands[0][0] - cands[1][0], 3), "runner_up_relation": key_relation(cands[0][1], cands[1][1]),
                "onset_strength_mean": round(float(onset.mean()), 3),
                "note": "tempo can come back doubled or halved; key estimates on modal or pentatonic music often name the relative major/minor"}
+        if a.bpm:
+            row["tempo_prior_bpm"] = a.bpm
+        if key_ends:
+            row["key_ends"] = dict(key_ends, agree_with_whole=[k for k in ("head", "tail") if key_ends[k] == row["key"]])
         row["tuning"] = tuning_of(y, sr, np, librosa)
         row["harmony"] = harmony_of(y, sr, np, librosa)
         row["repetition"], cuts = structure_of(y, sr, np, librosa, want)
@@ -2534,11 +2627,21 @@ def build_parser():
     s.add_argument("--xfade", type=float, default=1.5)
     s.add_argument("--rate", type=int, default=48000)
     s.add_argument("--ogg", action="store_true", help="also write an OGG with LOOPSTART/LOOPLENGTH tags")
+    s.add_argument("--bits", type=int, choices=[16, 24], default=16, help="WAV depth: 16 is dithered, 24 needs no dither")
     s.set_defaults(fn=cmd_loop)
 
     s = sub.add_parser("seam", help="score a loop seam")
     s.add_argument("files", nargs="+")
+    s.add_argument("--chords", action="store_true", help="also compare the notes in the last and first second (uncalibrated)")
     s.set_defaults(fn=cmd_seam)
+
+    s = sub.add_parser("diff", help="write what changed between two aligned versions as audio")
+    s.add_argument("a")
+    s.add_argument("b")
+    s.add_argument("--out", required=True)
+    s.add_argument("--raw", action="store_true", help="no level match before subtracting")
+    s.add_argument("--rate", type=int, default=48000)
+    s.set_defaults(fn=cmd_diff)
 
     s = sub.add_parser("duck", help="duck music under dialogue or a video's sound")
     s.add_argument("music")
@@ -2570,6 +2673,7 @@ def build_parser():
     s = sub.add_parser("analyze", help="tempo, key, tuning, repetition and sections (librosa)")
     s.add_argument("files", nargs="+", help="with several files, each after the first also reports its tuning gap from the first")
     s.add_argument("--sections", nargs="?", const="0", help="also find section boundaries: alone for an automatic count, a number, or the tags joined by | to name them")
+    s.add_argument("--bpm", type=float, help="expected tempo: librosa's start_bpm, a prior that fights doubled or halved readings")
     s.set_defaults(fn=cmd_analyze)
 
     s = sub.add_parser("pulse", help="is there a beat? onsets, IOI spread, autocorrelation, grid fit (stdlib)")

@@ -8,6 +8,10 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · State-change delay before switch
 
 State-change delay before switching music, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261106-90 · 2026-11-06 · seam --chords and loop --bits
+- because: user request (askwright set ask-owner-nov6b)
+- files: references/loops.md
+
 ### C-20261106-3 · 2026-11-06 · Mastering step names the shared-gain choice
 - because: musicwright-produce R-20261106-8
 - files: SKILL.md (loop mastering step)

@@ -1914,5 +1914,59 @@ class AnalyzeMusic(unittest.TestCase):
         self.assertNotIn("sections", d["files"][0])
 
 
+def run_ok(*argv):
+    return run(*argv)[1]
+
+
+class OwnerPicks20261106(unittest.TestCase):
+    def _tone(self, name, expr, dur=6):
+        out = TMP / name
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", f"aevalsrc='{expr}':s=48000:d={dur}", str(out)], check=True)
+        return out
+
+    @NEEDS_FFMPEG
+    def test_seam_chords_tell_same_notes_from_different(self):
+        same = self._tone("c_same.wav", "0.3*sin(2*PI*440*t)")
+        other = self._tone("c_other.wav", "if(lt(t,3),0.3*sin(2*PI*440*t),0.3*sin(2*PI*311.13*t))")
+        a = run_ok("seam", str(same), str(other), "--chords")["files"]
+        self.assertGreater(a[0]["chords"]["similarity"], 0.95)
+        self.assertLess(a[1]["chords"]["similarity"], 0.5)
+        self.assertEqual(a[0]["chords"]["head_pitches"][0], "A")
+
+    @NEEDS_FFMPEG
+    def test_diff_identical_after_gain_and_finds_an_added_tone(self):
+        a = self._tone("d_a.wav", "0.3*sin(2*PI*440*t)")
+        quiet = self._tone("d_q.wav", "0.15*sin(2*PI*440*t)")
+        add = self._tone("d_add.wav", "0.3*sin(2*PI*440*t)+0.1*sin(2*PI*1000*t)")
+        low = run_ok("diff", str(a), str(quiet), "--out", str(TMP / "d1.wav"))
+        self.assertTrue(low["residual_db"] is None or low["residual_db"] < -40)
+        self.assertAlmostEqual(low["gain_applied_db"], 6.0, delta=0.2)
+        hi = run_ok("diff", str(a), str(add), "--out", str(TMP / "d2.wav"))
+        self.assertGreater(hi["residual_db"], -20)
+        raw = run_ok("diff", str(a), str(quiet), "--out", str(TMP / "d3.wav"), "--raw")
+        self.assertAlmostEqual(raw["residual_db"], -6.0, delta=0.3)
+
+    @NEEDS_FFMPEG
+    def test_loop_bits(self):
+        src = self._tone("l_src.wav", "0.3*sin(2*PI*440*t)", 8)
+        for bits, codec in ((16, "pcm_s16le"), (24, "pcm_s24le")):
+            out = TMP / f"l{bits}.wav"
+            d = run_ok("loop", str(src), "--out", str(out), "--bits", str(bits), "--xfade", "0.5")
+            self.assertTrue(d["ok"])
+            self.assertEqual(mw.probe(out)["codec"], codec)
+            self.assertEqual(d["seam"]["verdict"], "clean")
+
+    @NEEDS_FFMPEG
+    def test_analyze_bpm_and_key_ends(self):
+        try:
+            import librosa  # noqa: F401
+        except ImportError:
+            self.skipTest("librosa not installed")
+        src = self._tone("k.wav", "0.3*sin(2*PI*440*t)", 12)
+        d = run_ok("analyze", str(src), "--bpm", "90")["files"][0]
+        self.assertEqual(d["tempo_prior_bpm"], 90)
+        self.assertIn("head", d["key_ends"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

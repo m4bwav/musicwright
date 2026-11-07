@@ -67,3 +67,5 @@ the buffer length equals the rendered loop's sample count; any extra samples are
 One maker shipped a gapless 21 s AAC loop this way in Chrome (2026-10-29, RESEARCH R-20261029-1).
 For loops synthesised in code, mix notes into a circular buffer so tails wrap into the head, and run
 reverb and filters over two passes for the same reason.
+
+`mw.py seam FILE --chords` also compares the notes in the last and first second. It is uncalibrated: a low similarity can still be a good chord change, so use it to choose what to listen to. `mw.py loop --bits 24` writes 24-bit WAV; the default 16-bit is dithered.

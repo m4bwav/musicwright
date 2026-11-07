@@ -1,5 +1,19 @@
 # Handoff
 
+## Owner picked every owed item (2026-11-06, last)
+
+Answers: [decisions/2026-11-06-owed-items-all-picked.md](decisions/2026-11-06-owed-items-all-picked.md). This supersedes "nothing owed" in the sections below; the agent has work again.
+
+Built, under Unreleased and not yet released: `mw.py diff`, `seam --chords`, `analyze --bpm` (librosa's `start_bpm`, confirmed in 1.0.0), `key_ends` in `analyze`, dithered 16-bit and `--bits 24` in `loop`. Tested on synthetic audio; `seam --chords` also ran on one real take (similarity 0.46). Nothing is calibrated, so no flags or thresholds, and none is proven useful on real music beyond that.
+
+Owed next, in order:
+1. Three blind pairs with randomised sides (draw them, do not fix them): long-fade curve (qsin, S-shape, log then cosine), top roll-off before low-bitrate MP3, drop chorus by stem mutes. No GPU. One askwright page.
+2. Model tests on ACE-Step, on a free GPU: does it follow lyric form; does it obey texture words for music under speech. Short blind page. A failed test removes the advice from the skills.
+3. Recheck the learned score once on the judged takes (ask.py answers across Ai/Music sets). Adopt only if it predicts the owner's picks.
+4. Release once items 1 to 3 have landed, then republish the wiki (Commands also still holds the old pack refusal wording).
+
+Streaming stays at -14 LUFS: closed. Evergreen refreshes still start 2026-11-15, generate first.
+
 ## Owed items put to the owner (2026-11-06, last)
 
 Askwright set Ai/Music/ask-owner-nov6b, five questions: blind pairs, model-behaviour tests, mw.py additions, the streaming preset, the learned score. `ask.py read` it next session (`ask.py serve` if down); act on the answers, and take unpicked items off the owed lists where the question says so.
