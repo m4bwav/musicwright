@@ -63,6 +63,7 @@ Name the mechanism rather than an artist; these are period facts (Manning, *Elec
 - Movement: Hammond organ tremolo (7 to 11 Hz), phasing, tape flanging, wah filter sweep.
 - Edge and length: fuzz guitar, limiter sustain, legato organ-like guitar.
 - Early keyboards: Mellotron tape strings, string synthesizer, electric piano, analog sequencer.
+- Synth voice (Wilson, *Make: Analog Synthesizers* ch. 3): saw bright and buzzy, square hollow, narrow pulse nasal, triangle mellow, sine pure; slow pulse-width modulation for a thick drifting pad from one oscillator; resonant filter sweep; stepped random sample-and-hold bleeps; ring-modulated bell tones; hard-sync lead.
 - Roots by method: disco with analog synth lines in place of orchestra; hip-hop with short looped record breaks and scratching; ambient with no obtrusive beat; Detroit-style techno with synth strings and drum machine.
 
 ## Failure modes
