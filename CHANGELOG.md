@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.25 (2026-11-07)
+
+- musicwright-compose: synth voice caption words in `references/vocabulary.md`.
+
 ## 0.1.24 (2026-11-07)
 
 - musicwright-produce: stretch, varispeed and formant notes in `references/ffmpeg.md`.
