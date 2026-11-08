@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.26 (2026-11-07)
+
+- musicwright-compose: rendering notes with a synth or SoundFont, velocity and register as timbre, legato as one envelope, in `references/symbolic.md`.
+
 ## 0.1.25 (2026-11-07)
 
 - musicwright-compose: synth voice caption words in `references/vocabulary.md`.
