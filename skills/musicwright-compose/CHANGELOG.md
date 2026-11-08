@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261107-8 · 2026-11-07 · Expressive rendering of notes
+- because: book distillation, Boulanger (ed.), The Csound Book ch. 6 (Beck) and ch. 7 (Dobson) (everscout ai-music beat)
+- files: references/symbolic.md (Rendering notes so they do not sound flat)
+
+Velocity should move brightness as well as level, register and pitch should change attack and decay, and a solo line wants one envelope with pitch steps; also a listening check for AI takes. Untested here.
+
 ### C-20261107-7 · 2026-11-07 · Synth voice words for captions
 - because: book distillation, Wilson, Make: Analog Synthesizers ch. 3 (everscout downtempo beat)
 - files: references/vocabulary.md (Period electronic sound)

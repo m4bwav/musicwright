@@ -27,6 +27,17 @@ long note from the same pitch struck again, and has no room for dynamics. Use th
 above (start, end, pitch, velocity) whenever a part has triplets, repeated same-pitch notes or
 dynamics; a grid is fine for straight drum patterns (same source).
 
+## Rendering notes so they do not sound flat (Csound Book 2000, untested here)
+
+A rendered part sounds dull when only its level follows the dynamics. From Boulanger (ed.), *The Csound Book*, ch. 6 (Beck, acoustic viability) and ch. 7 (Dobson, legato):
+
+- Velocity changes timbre, not just level: a harder note is brighter. Map velocity to filter cutoff, FM index or a brighter layer as well as to gain; in a SoundFont, pick one with velocity layers.
+- Register changes timbre and timing: low notes start slower and ring longer, high notes speak fast and die sooner. Scale attack and release by pitch, and let a loud note attack faster and ring longer than a soft one.
+- The attack is where instruments differ most: a short noisy, pitch-wobbly onset (the initial transient) and a vibrato that grows over the note do more for realism than a better steady tone.
+- A solo melody under a slur is one note with pitch steps: one attack at the start, one release at the end. Use mono or legato mode with a short glide, or overlap the notes slightly; separate retriggered notes sound like a keyboard.
+- Distance comes from the dry to reverb ratio and some high cut on the far parts; see musicwright-produce mixing.md for the reverb itself.
+- Judging an AI take: ask for a soft then a loud passage and listen for whether it gets brighter, not only louder.
+
 ## Generating notes by rule (Collins 2010, untested here)
 
 Rules are worth trying when a model will not obey or a piece must vary on each run. These come from Collins, *Introduction to Computer Music*, sec. 8.3 and 9.4 to 9.6.
