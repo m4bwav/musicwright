@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.27 (2026-11-09)
+
+- musicwright-score: spotting fields, film palette and hit style, from Hill's Scoring the Screen, in `references/spotting.md`.
+
 ## 0.1.26 (2026-11-07)
 
 - musicwright-compose: rendering notes with a synth or SoundFont, velocity and register as timbre, legato as one envelope, in `references/symbolic.md`.
