@@ -327,3 +327,6 @@ Append-only. Newest last.
 
 ## [2026-11-07] fix | v0.1.20 release repaired
 - Manual release had blocked the workflow; deleted the record, kept the tag, reran: zip attached. Changelog section added, AGENTS.md rule added.
+
+## [2026-11-09] learn | Hill, Scoring the Screen (round 5 track 27)
+- score: `says:`, `knows:`, throughline before rendering, film palette from the sound world, integrated vs stinger hits, overspotting, temp knock-off trap, Bordwell cutting rhythm. compose theory: contextual harmony, film signs. Docs only; no mw.py check (thresholds untested). No version bump.

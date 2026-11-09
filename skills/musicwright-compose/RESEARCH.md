@@ -124,3 +124,6 @@ Open Music Theory v1 (openmusictheory.github.io, CC BY-SA): form, singer/songwri
 
 ### R-20261107-1 · 2026-11-07 · Blind model tests: lyric form and under-speech words
 Owner's blind answers, set model-tests-nov7, ACE-Step XL SFT route, seeds 6101 and 6102 (lyric form), 6301 and 6302 (beds). Uneven against 4-3-4-3, words on the beat: no difference, then 4-3-4-3 slightly. Even 4-4 chorus against that form's shorter chorus, chorus contrast: the shorter chorus slightly, twice. Under-speech words: plain clearly less in the way on 6301, words slightly on 6302, so the words are not reliable; removed under the rule set before the test. The lyric form advice stays, marked weak: every favoured take sat on side B. Across both pages 8 of the 9 two-way picks other than 'no difference' went to side B, which a listener with no lean does about 4% of the time, so any result that sat on side B counts for less. This tests the listener's sense of fit and contrast, not whether stresses land on the mapped bars.
+
+### R-20261109-1 · 2026-11-09 · Hill, Scoring the Screen: contextual harmony and film signs
+Andy Hill, *Scoring the Screen* (2017), ch. 11 (p. 306-313): common-tone, cadence-free triad chains as the interior drama sound; ch. 3 (p. 49-50): horn fifth, falling minor third, oboe, low-woodwind tritone as Western film signs. Caption words untested on any model.
