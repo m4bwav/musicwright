@@ -56,7 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.27"
+VERSION = "0.1.28"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -2344,8 +2344,38 @@ def check_task(a, r):
         a.duration = probe(a.src)["duration_s"]
 
 
+TAGGABLE = (".flac", ".ogg", ".opus")
+
+
+def tag_take(f, meta, seed, take_id):
+    """Write provenance into a FLAC/OGG take as Vorbis comments, keeping its other tags (loop tags too).
+
+    Idea from Plenio Music Production System (Apache-2.0), which stores the release record inside the FLAC.
+    WAV and MP3 are skipped (the ledger still holds the row). Returns the tags written, or None."""
+    f = Path(f)
+    if f.suffix.lower() not in TAGGABLE:
+        return None
+    tags = {"MUSICWRIGHT_TAKE": take_id, "MUSICWRIGHT_RECIPE": meta.get("recipe"), "MUSICWRIGHT_MODEL": meta.get("model"),
+            "MUSICWRIGHT_SEED": seed, "COMMENT": meta.get("caption"), "LYRICS": meta.get("lyrics"),
+            "ENCODED_BY": f"musicwright {VERSION}"}
+    tags = {k: str(v) for k, v in tags.items() if v not in (None, "")}
+    tmp = f.with_name(f.stem + ".tagging" + f.suffix)
+    args = ["-y", "-i", str(f), "-map", "0", "-map_metadata", "0", "-c", "copy"]
+    for k, v in tags.items():
+        args += ["-metadata", f"{k}={v}"]
+    try:
+        ffmpeg(args + [str(tmp)])
+        os.replace(tmp, f)
+    except (MwError, OSError):
+        tmp.unlink(missing_ok=True)
+        return None
+    return tags
+
+
 def take_row(f, t, meta):
     """Measure a downloaded take and build its ledger row from the gen settings in meta."""
+    if tag_take(f, meta, t["seed"], f.stem):
+        t["tagged"] = True
     m = measure_file(f)
     t["file"] = str(f.resolve())
     t["measure"] = {k: m[k] for k in ("duration_s", "lufs_i", "true_peak_dbtp", "tail_silence_s", "warnings")}
