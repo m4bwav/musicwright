@@ -10,6 +10,12 @@ Added the book's failure modes as a short check; not tested on generated audio.
 
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261109-1 · 2026-11-09 · Tagging section
+- because: user request (technique harvest, Plenio Music Production System, Apache-2.0, idea only)
+- files: references/ffmpeg.md (Tagging)
+
+Documents the provenance comments mw.py gen writes and how to read them back without losing loop tags.
+
 ### C-20261107-1 · 2026-11-07 · Fade curve and pre-MP3 roll-off, from blind pairs
 - because: R-20261107-1
 - files: references/ffmpeg.md (fades, roll-off note)

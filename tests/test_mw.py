@@ -840,6 +840,24 @@ class Loop(unittest.TestCase):
         self.assertEqual(t.get("LOOPLENGTH"), str(4 * 48000))
         self.assertAlmostEqual(run("measure", dst)[1]["files"][0]["duration_s"], 4.0, delta=0.01)
 
+    def test_gen_provenance_tags_keep_loop_tags(self):
+        dst = TMP / "loop_prov.ogg"
+        code, d = run("loop", FX["tone220"], "--out", dst, "--bars", "2", "--bpm", "120", "--ogg")
+        self.assertEqual(code, 0, d)
+        meta = {"recipe": "acestep-xl-sft", "model": "ace-step-1.5-xl", "caption": "slow harp, 70 bpm", "lyrics": "[verse] la la"}
+        w = mw.tag_take(dst, meta, 4102, "harp_s4102")
+        self.assertEqual(w["MUSICWRIGHT_SEED"], "4102")
+        t = tags(dst)
+        self.assertEqual((t.get("MUSICWRIGHT_RECIPE"), t.get("MUSICWRIGHT_TAKE"), t.get("COMMENT")),
+                         ("acestep-xl-sft", "harp_s4102", "slow harp, 70 bpm"))
+        self.assertIn("la la", t.get("LYRICS", ""))
+        self.assertEqual((t.get("LOOPSTART"), t.get("LOOPLENGTH")), ("0", str(4 * 48000)))
+        flac = TMP / "prov.flac"
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", "1", str(flac)], check=True)
+        mw.tag_take(flac, meta, 7, "silent_s7")
+        self.assertEqual(tags(flac).get("MUSICWRIGHT_MODEL"), "ace-step-1.5-xl")
+        self.assertIsNone(mw.tag_take(FX["tone220"], meta, 7, "wav"))  # WAV is left alone
+
     def test_window_loop_and_errors(self):
         dst = TMP / "loop_window.wav"
         code, d = run("loop", FX["tone220"], "--out", dst, "--start", "1", "--end", "7", "--xfade", "1")

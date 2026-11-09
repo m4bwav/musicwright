@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261109-1 · 2026-11-09 · gen tags FLAC/OGG takes with their provenance
+- because: user request (technique harvest, Plenio Music Production System, Apache-2.0, idea only)
+- files: scripts/mw.py (tag_take, take_row); tests/test_mw.py (test_gen_provenance_tags_keep_loop_tags)
+
+A stray take file now names its recipe, model, seed, caption, lyrics and ledger take id; WAV and MP3 are left alone.
+
 ### C-20261107-2 · 2026-11-07 · Judging takes with several listeners
 - because: book distillation, Dean (ed.), The Oxford Handbook of Computer Music (everscout ai-music beat)
 - files: references/listening.md (Judging takes with several listeners). Book claims, untested here.

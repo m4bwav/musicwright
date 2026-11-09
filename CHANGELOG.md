@@ -2,6 +2,12 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.28 (2026-11-09)
+
+- musicwright: `mw.py gen` writes provenance into FLAC and OGG takes as Vorbis comments (recipe, model, seed, caption, lyrics, take id), keeping loop tags. Idea from Plenio Music Production System (Apache-2.0).
+- musicwright-produce: tagging section in `references/ffmpeg.md`.
+- musicwright-score: timed-lyrics note in RESEARCH.md.
+
 ## 0.1.27 (2026-11-09)
 
 - musicwright-score: spotting fields, film palette and hit style, from Hill's Scoring the Screen, in `references/spotting.md`.

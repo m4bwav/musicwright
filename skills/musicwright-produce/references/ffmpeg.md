@@ -50,3 +50,15 @@ slightly on a fiddle tune), one blind pair each; a small test, so listen on the 
 
 sox equivalents exist
 (`sox in.wav -n stats`, `sox in.wav -n spectrogram`) but were not run here.
+
+## Tagging
+
+`mw.py gen` writes a take's provenance into FLAC, OGG and Opus takes as Vorbis comments, so a file copied out of its project still names how it was made: `MUSICWRIGHT_TAKE` (the ledger's take id), `MUSICWRIGHT_RECIPE`, `MUSICWRIGHT_MODEL`, `MUSICWRIGHT_SEED`, `COMMENT` (the caption), `LYRICS` and `ENCODED_BY`. WAV and MP3 takes are not tagged; the ledger holds their row. Idea from Plenio Music Production System (Apache-2.0), which stores its release record inside the FLAC.
+
+```bash
+# add or change tags without re-encoding; -map_metadata 0 keeps the existing ones (LOOPSTART/LOOPLENGTH too)
+ffmpeg -y -i in.ogg -map 0 -map_metadata 0 -c copy -metadata MUSICWRIGHT_SEED=4102 out.ogg
+ffprobe -v error -show_entries format_tags:stream_tags -of json take.flac   # FLAC keeps tags on the format, OGG on the stream
+```
+
+ffmpeg folds a `DESCRIPTION` tag into `COMMENT` when writing Ogg (ffmpeg 9.0.1, 2026-11-09), so the caption goes in `COMMENT`. ffmpeg cannot write onto its own input: write a temporary file and replace.
