@@ -18,7 +18,11 @@ twist). Cue names 1M1, 1M2. Name where music stays out and why (realism, a line 
 saving the next entry), and settle this before rendering: it sets how many movements you need.
 Enter at a shift of emphasis (dialogue, camera, action, reaction), on a cut or between cuts, soft or
 accented; exit at the next shift, tail under the next line, or go hard out on action and tension.
-Method: [references/spotting.md](references/spotting.md).
+Give every cue a `says:` line, what the music tells the audience that picture and dialogue do not
+(inner state, subtext, what is coming); a `says:` that restates the image is redundant, so rewrite
+it or leave the scene unscored. Add `knows:` (`same`, `audience ahead`, `audience behind`) and mark
+each hit `integrated` or `stinger`. Before rendering, sketch the scene's tension over time and keep
+it as the `mw.py curve --shape` target. Method: [references/spotting.md](references/spotting.md).
 
 ## Step 2: one score, in movements
 
@@ -32,6 +36,9 @@ Method: [references/spotting.md](references/spotting.md).
   2 frames (83 ms at 24 fps) on sharp events, softer moments need less, and if it must miss, miss
   late. Generated music cannot be told where hits are:
   choose the bpm, then cut at bar lines.
+- One `palette:` per film in `brief.md` (instrument families, harmonic colour, density,
+  attitude), taken partly from the cut's own sound world (machinery, crickets, wind): every cue
+  caption draws from it, and a cue that leaves it says why.
 - Period or classical films: name period instruments and forms in the caption (musicwright-compose
   vocabulary.md); "gentle, tender" pulls a modern sound.
 

@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261109-1 · 2026-11-09 · From Hill, Scoring the Screen
+- because: R-20261109-1
+- files: references/theory.md (Root movement, voicing and extended chords)
+
+Contextual harmony and four Western film signs added. Evals not re-run.
+
 ### C-20261107-8 · 2026-11-07 · Expressive rendering of notes
 - because: book distillation, Boulanger (ed.), The Csound Book ch. 6 (Beck) and ch. 7 (Dobson) (everscout ai-music beat)
 - files: references/symbolic.md (Rendering notes so they do not sound flat)

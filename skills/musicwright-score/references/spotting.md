@@ -8,6 +8,7 @@ One line per cue:
 1M1  0.0-24.0  hit; dread: low strings and piano, slow; must not compete with the opening voice-over
      hits: 11.5 (cut to the wreck), 24.0 (sunrise: hand over to 1M2)
 1M2  24.0-38.0 play through; dawn: lighter strings and winds, D major
+     says: she has decided to stay (the picture only shows a sunrise); knows: same
 1M3  38.0-46.0 phrase; resolve: flute and trumpets; ring out under the title
 no music: 46.0-52.0, the closing line must land
 ```
@@ -26,6 +27,23 @@ Rules (Karlin and Wright, *On the Track*, ch. 4, 10):
 - The first and last seconds are the most noticed. Name the hits that must land and the moments
   that must stay quiet.
 
+Cue function (Hill, *Scoring the Screen*, ch. 3 and 11):
+
+- `says:` what the cue adds that picture and dialogue do not: a character's inner state, subtext,
+  what is coming, the nature of the world. Music cannot show objects, only the feeling behind them.
+  "Sad scene, sad music" restates the image: rewrite it, or leave the scene unscored. Hill's rule is
+  a critic's ideal and Karlin and Wright allow plain mood support, so treat redundancy as a warning.
+- `knows:` `same`, `audience ahead` or `audience behind`. The same shot of a stranger is scored
+  plainly, as sinister, or neutral with a hint of a trap, depending on what the audience knows. An
+  `audience ahead` cue names a tension device in its caption (low register, dissonance, a pulse),
+  not only the character's mood.
+- Throughline: before rendering, watch the scene and sketch its tension over time; write it as the
+  `mw.py curve --shape` target. A cue that stays flat while the scene turns (surprise, realisation,
+  grief) fails the drama.
+- Palette: one per film in `brief.md`. List the cut's dominant sounds first (ask the film or sfx
+  plugin for its sound list) and carry one or two into the score as timbre or pulse (a ticking
+  ostinato, cricket-like pizzicato, wind-like woodwind flurries). Score the film, not the scene.
+
 ## Tempo and hits
 
 - First ask whether a tempo fits the emotion, the dialogue and the cutting rhythm: the search below
@@ -37,6 +55,17 @@ Rules (Karlin and Wright, *On the Track*, ch. 4, 10):
   late: about 100 ms early reads as wrong. A general rule from Karlin and Wright ch. 8, no study cited.
 - Fitting after rendering: cut or repeat at bar lines; time-stretch up to about ±5% before it
   sounds processed.
+
+Hit style (Hill ch. 13-14): mark each hit `integrated` (played by an instrument already in the
+texture: a pizzicato answering a knock) or `stinger` (an effect laid on top). Prefer integrated;
+many stingers on small actions read as mickey-mousing. With generated audio, integrated means
+picking a take whose own accent falls on the hit (the tempo search below); a stinger is an overlaid
+sound from sfxwright. In a `play through` cue under cross-cut action, hit the story turns, not every
+cut.
+
+Cutting rhythm (Bordwell, *Film Art*, p. 282): picture and music tempos need not match, and cuts
+can land on phrases rather than beats (about one cut per 5 s over a fast track). Decide whether the
+cutting follows the beat, the bar or the phrase before matching cuts to the grid.
 
 With several hits, try tempos in 0.25 bpm steps around the felt tempo, count how many frames each hit misses the nearest beat, and weight the critical hits. Changing one bar's meter (3/4, 5/4) can put a hit on a downbeat. From one practitioner and one course handout.
 
@@ -74,3 +103,7 @@ tempts copying. Analyse it (`mw.py analyze --sections` for tempo, key and where 
 and write a caption from the descriptors. Ask what the director likes and dislikes in it, usually one
 instrument or feeling, and caption from that. Do not use it as an audio reference unless the user
 owns it or has a licence.
+
+Knock-off trap (Hill ch. 11): one famous temp piece pulls every new cue towards a copy of it.
+Describe the temp's function (`says:`, throughline, palette), not its surface, and check with
+`mw.py analyze` that the final take does not match it on tempo, key and lead instrument all at once.

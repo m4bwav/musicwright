@@ -62,6 +62,13 @@ After Hewitt, *Music Theory for Computer Musicians* (2008), ch. 13, 18, 23.
   raise the eleventh. Dense harmony stays legible over clear root movement.
 - Ambient pads can sit on two or three thirteenth chords; a single held chord with notes moved between registers can
   carry eight bars.
+- Contextual harmony (Hill, *Scoring the Screen*, ch. 11): triads linked by common tones and stepwise voice leading,
+  related to each other rather than to a key, with no dominant-to-tonic cadence, read as interior, unresolved,
+  elegiac. For notated or MIDI work; a caption can only ask for it loosely (`unresolved, no final cadence, drifting
+  triads`, untested).
+- Western film signs (Hill ch. 3; conventions, not universals): rising fifth on horn = a call to action; falling
+  minor third = a calling figure; solo oboe = a turn to the plaintive; low-woodwind tritone = threat the character
+  cannot see.
 
 ## Modes as intervals over a drone
 

@@ -68,3 +68,6 @@ artofcomposing.com/how-to-spot-a-film and web.pdx.edu/~jnewton/assignments/60nt_
 
 ### R-20261107-1 · 2026-11-07 · Blind test: texture words for music under speech
 Owner's blind answers, set model-tests-nov7, seeds 6301 and 6302, beds levelled to -24 LUFS under the same voice. Plain caption clearly less in the way on 6301, words slightly on 6302. Not reliable, so removed. Across both pages 8 of the 9 two-way picks other than 'no difference' went to side B, which a listener with no lean does about 4% of the time, so any result that sat on side B counts for less.
+
+### R-20261109-1 · 2026-11-09 · Hill, Scoring the Screen; Bordwell, Film Art (rhythm)
+Andy Hill, *Scoring the Screen* (Hal Leonard, 2017), ch. 3, 11, 13, 14: a cue should say what picture and dialogue do not (p. 303, 311); scoring depends on what the audience knows (p. 47); throughline as tension over time (p. 316-317); one palette for the film, taken from its sound world (p. 312); integrated hits over added stingers (p. 376, 343); temp knock-offs (p. 304-305). Bordwell and Thompson, *Film Art*, p. 282: cuts can land on phrases, picture and music tempos need not match. A critic's and a textbook's positions, no measurements; the reader's numeric thresholds were not adopted. Notes: books/plugin-learnings/round5/hill-scoring-the-screen.md.
