@@ -2,6 +2,12 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
+### C-20261110-1 · 2026-11-10 · Lyric-timing install test
+- because: R-20261110-1
+- files: RESEARCH.md
+
+Measured result for the timed-lyrics note: faster-whisper on the full mix for words, Demucs vocal stem to snap starts (~0.9 s early). Documentation only; evals not re-run.
+
 Entry shape: `### C-20261109-1 · 2026-11-09 · From Hill, Scoring the Screen
 - because: R-20261109-1
 - files: SKILL.md (Step 1, Step 2), references/spotting.md (Spotting notes, Tempo and hits, Temp tracks)

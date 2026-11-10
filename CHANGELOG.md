@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.29 (2026-11-10)
+
+- musicwright-score: lyric-timing install test in RESEARCH.md (whisper on the full mix, Demucs stem to snap line starts).
+
 ## 0.1.28 (2026-11-09)
 
 - musicwright: `mw.py gen` writes provenance into FLAC and OGG takes as Vorbis comments (recipe, model, seed, caption, lyrics, take id), keeping loop tags. Idea from Plenio Music Production System (Apache-2.0).
