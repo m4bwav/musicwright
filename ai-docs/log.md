@@ -330,3 +330,7 @@ Append-only. Newest last.
 
 ## [2026-11-09] learn | Hill, Scoring the Screen (round 5 track 27)
 - score: `says:`, `knows:`, throughline before rendering, film palette from the sound world, integrated vs stinger hits, overspotting, temp knock-off trap, Bordwell cutting rhythm. compose theory: contextual harmony, film signs. Docs only; no mw.py check (thresholds untested). No version bump.
+
+## 2026-11-11, works-with docs
+
+README "Works with" section and a wiki Works-With page now say what crosses each way between musicwright and its partner plugins, and why the pair helps. Taken from the partner mentions in each plugin's skills.
