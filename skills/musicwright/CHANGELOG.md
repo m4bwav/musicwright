@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261110-1 · 2026-11-10 · harvest.json: technique-harvest targets for this unit
+- because: user request 2026-11-10: plugins store their own technique-harvest targets (evergreen 1.1.0 harvest.json)
+- files: harvest.json (new)
+- Data file only; no skill text or version changed.
+
 ### C-20261109-1 · 2026-11-09 · gen tags FLAC/OGG takes with their provenance
 - because: user request (technique harvest, Plenio Music Production System, Apache-2.0, idea only)
 - files: scripts/mw.py (tag_take, take_row); tests/test_mw.py (test_gen_provenance_tags_keep_loop_tags)
