@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "targets": [
+    {
+      "kind": "reddit",
+      "sub": "MediaSynthesis",
+      "weight": "low",
+      "keep": "AI music technique posts"
+    },
+    {
+      "kind": "reddit",
+      "sub": "StableDiffusion",
+      "weight": "low",
+      "keep": "audio model posts only"
+    },
+    {
+      "kind": "reddit",
+      "sub": "LocalLLaMA",
+      "weight": "low",
+      "keep": "open audio and music model releases only"
+    }
+  ]
+}
