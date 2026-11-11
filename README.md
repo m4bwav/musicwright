@@ -119,6 +119,20 @@ CI (`.github/workflows/tests.yml`) on Linux, macOS and Windows: `tests/check_ski
 limits, companions, manifests, relative links, public-safety guards), `tests/test_mw.py` (every command on
 synthetic audio, no network), and `scripts/budget.py` (what every session loads and the installed size stay green).
 
+## Works with
+
+Every partner is optional. The plugins share files, not code.
+
+- [sfxwright](https://github.com/m4bwav/sfxwright): single hits and non-musical stings go there, and anything with notes, key or tempo stays here. Each plugin does the half it is built for, and nothing gets made twice.
+- [voicewright](https://github.com/m4bwav/voicewright): spoken voices and a voice's identity live in its `voices.json`, and singing is generated here. A singer then sounds like the same character who speaks.
+- [cinewright](https://github.com/m4bwav/cinewright): cinewright plans and cuts the film, and `musicwright-score` spots it and fits the music to the cut, landing hits on beats. Sound design and dialogue stay with cinewright.
+- [askwright](https://github.com/m4bwav/askwright): takes go on a blind, loudness-matched listening page, because the louder take otherwise wins.
+- [grindwright](https://github.com/m4bwav/grindwright): the music lane of a long game or film project, worked between other jobs.
+- [madnesswright](https://github.com/m4bwav/madnesswright): a scene's design one-pager becomes the cue list, so music follows the level instead of genre defaults.
+- [everscout](https://github.com/m4bwav/everscout): the `ai-music` beat and its book notes feed refreshes.
+
+More on the wiki's [Works with](https://github.com/m4bwav/musicwright/wiki/Works-With) page.
+
 ## Privacy
 
 musicwright has no server and collects nothing. `mw.py` runs on your machine and only talks to the network when a
