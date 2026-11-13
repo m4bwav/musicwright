@@ -50,6 +50,13 @@ Best sources: Unity manual and issue tracker, middleware docs and courses, Steam
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261113-1 · 2026-11-13 · Game audio strategy: layers, transitions
+- Finding: vertical layers change density only; tempo, key or urgency changes call for horizontal switching. Stems are ordered sparse to dense with an all-on clarity check. Intro stingers stay open, outros resolve, switches land on the next bar. Also noted, not built: playtests often find too much music, so plan silence in the cue list; balance a mix before any bus compression. A stem RMS-order check in mw.py was left out (would not fit cleanly). Book rules, unverified by our tools.
+- Track: practice
+- Sources: Zdanowicz and Bambrick, *The Game Audio Strategy Guide* (2020), ch. 8-9
+- Magnitude: 1
+- Applied: C-20261113-1
+
 ### R-20261029-1 · 2026-10-29 · Practice: code-synthesised loop, gapless AAC on the web
 - Track: practice
 - A web puzzle dev had Claude Code synthesise a 21 s loop in Node (four chords at 92 BPM, each instrument a function of time), mixing into a circular buffer so tails wrap to the start (no click), rendering three candidates in about 1.5 s, checking clipping and equal loudness by numbers, and checking that Chrome decodes the AAC to exactly the rendered sample count, which kept the WebAudio loop gapless. A person chose the winner by ear. Single maker report, not tested here.

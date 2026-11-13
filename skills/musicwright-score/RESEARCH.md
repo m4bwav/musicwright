@@ -48,6 +48,13 @@ Best sources: practitioner scoring texts, delivery specs, tool docs. Noisy: SEO 
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261113-1 · 2026-11-13 · Ducking: critical vs background dialogue
+- Finding: duck music only under lines the player must hear; a narrow music cut around 1.7-3 kHz can clear speech. Book rule, unverified by our tools.
+- Track: practice
+- Sources: Zdanowicz and Bambrick, *The Game Audio Strategy Guide* (2020), ch. 8
+- Magnitude: 1
+- Applied: C-20261113-1
+
 ### R-20261106-4 · 2026-11-06 · Karlin and Wright read
 - Summary: Karlin and Wright, *On the Track* 2nd ed.: experts see a two-frame error, one frame is very hard to see, errors show only on sharp events, and late beats early (ch. 8); start at a shift of emphasis and exit at the next, with tail or hard out (ch. 4); gaps are structure (ch. 4, 10); play through, phrase or hit (ch. 10); texture under speech, voice-over strictest (ch. 10); too low is also a failure (ch. 19); what the director likes in a temp (ch. 3). The authors' general rule, no study cited, 20 years old, orchestral sessions; untested on AI output. Replaces the one-frame tolerance and the sound-or-cut entry rule.
 - Track: practice

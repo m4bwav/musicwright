@@ -2,6 +2,11 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.30 (2026-11-13)
+
+- musicwright-game: layers add density only (go horizontal for tempo, key or urgency), sparse-to-dense layer order with an all-on check, open intro stingers and next-bar switches. From Zdanowicz and Bambrick, *The Game Audio Strategy Guide*.
+- musicwright-score: duck under critical lines only, with a narrow 1.7-3 kHz music cut.
+
 ## 0.1.29 (2026-11-10)
 
 - musicwright-score: lyric-timing install test in RESEARCH.md (whisper on the full mix, Demucs stem to snap line starts).

@@ -8,6 +8,10 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · State-change delay before switch
 
 State-change delay before switching music, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261113-1 · 2026-11-13 · Layers carry density only; sparse-to-dense order; open intro, resolved outro
+- because: R-20261113-1
+- files: references/interactive.md (Layers, Transitions)
+
 ### C-20261106-90 · 2026-11-06 · seam --chords and loop --bits
 - because: user request (askwright set ask-owner-nov6b)
 - files: references/loops.md
