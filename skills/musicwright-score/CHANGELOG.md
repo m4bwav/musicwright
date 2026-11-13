@@ -2,6 +2,10 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
+### C-20261113-1 · 2026-11-13 · Critical vs background dialogue when ducking
+- because: R-20261113-1
+- files: references/spotting.md (Ducking)
+
 ### C-20261110-1 · 2026-11-10 · Lyric-timing install test
 - because: R-20261110-1
 - files: RESEARCH.md

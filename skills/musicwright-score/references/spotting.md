@@ -92,6 +92,7 @@ each hit point. A 2 s equal-power crossfade suits a mood change; use 0.5-1 s for
   plain take got in the way clearly less on one, the worded take slightly less on the other. Listen
   with the voice in. Voice-over needs the strictest treatment, with no lips to help (Karlin and
   Wright ch. 10).
+- Sort lines into critical (story, instructions, anything the player must hear) and background (barks, crowd chatter). Duck only under critical lines; a narrow cut on the music around 1.7-3 kHz while they play can clear the words without a big level drop (Zdanowicz and Bambrick, book rule, unverified).
 - Too low also fails: music needs enough level to do its job. After `duck`, check `mw.py preview
   --as phone` and `--as quiet` copies of the mix, and ask whether the words are clear and the music
   still works (Karlin and Wright ch. 19).
