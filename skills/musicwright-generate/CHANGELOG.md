@@ -4,12 +4,6 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
-### C-20261113-2 · 2026-11-13 · LoRA into ComfyUI
-- because: user request (slide LoKr run)
-- files: SKILL.md (Prompts that work, one instrument), references/models.md (Teaching a model one instrument)
-
-Train on the model you load with; `mw.py lora convert` and `gen --lora`; measured Side-Step facts.
-
 ### C-20261113-1 · 2026-11-13 · Teaching a model one instrument
 - because: R-20261113-1, user request
 - files: SKILL.md (Step 2), references/models.md (new section)
