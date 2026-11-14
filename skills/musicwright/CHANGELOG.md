@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261114-1 · 2026-11-14 · mw.py envelopes for music-driven visuals
+- because: user request 2026-11-14 (per-frame band envelopes live in mw.py so visual plugins call it, not their own copy)
+- files: scripts/envelopes.py (new), scripts/mw.py (envelopes), references/cli.md (envelopes row)
+- New command; SKILL.md text unchanged, so no eval rerun.
+
 ### C-20261110-1 · 2026-11-10 · harvest.json: technique-harvest targets for this unit
 - because: user request 2026-11-10: plugins store their own technique-harvest targets (evergreen 1.1.0 harvest.json)
 - files: harvest.json (new)

@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.34 (2026-11-14)
+
+- `mw.py envelopes <audio> --fps N --bands critical|N --json out`: per-frame band energies on critical-band edges (a 4x longer frame for the bands under 200 Hz), 200 ms loudness, onsets, beats and chroma, for music-driven visuals; refuses MP3 unless `--allow-mp3`. Stdlib, with the FFT sped up by NumPy when present. Tests: a sine sweep lights the bands in order, silence stays at zero, click-track beats land within one frame at 30 fps.
+
 ## 0.1.33 (2026-11-14)
 
 - musicwright-produce: mixing.md notes roughness from layers inside one critical band and thin quiet playback; ffmpeg.md says stretch stems, not the full mix (Loy, Musimathics; book rules).
