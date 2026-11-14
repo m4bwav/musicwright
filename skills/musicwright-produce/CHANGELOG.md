@@ -8,6 +8,12 @@ Entry shape: `### C-20261107-2 · 2026-11-07 · Stretch, varispeed and formant n
 
 Added the book's failure modes as a short check; not tested on generated audio.
 
+### C-20261114-1 · 2026-11-14 · Roughness, quiet playback, stretch stems
+- because: book distillation, Loy, Musimathics vols. 1-2 (R-20261114-1)
+- files: references/mixing.md (one line), references/ffmpeg.md (one sentence)
+
+Book rules, untested on generated audio.
+
 ### C-20261113-1 · 2026-11-13 · Rubber Band for pitch shifts
 - because: user request (slide guitar study, ai-docs/research/2026-11-13-slide-guitar-study.md)
 - files: references/ffmpeg.md (Stretching)
