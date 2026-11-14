@@ -2015,5 +2015,76 @@ class OwnerPicks20261106(unittest.TestCase):
         self.assertIn("head", d["key_ends"])
 
 
+def _write_st(path, tensors, meta=None):
+    """Tiny stdlib .safetensors writer: tensors = {name: shape}, data zero-filled F32."""
+    head, pos = {}, 0
+    for k, shape in tensors.items():
+        n = 4
+        for d in shape:
+            n *= d
+        head[k] = {"dtype": "F32", "shape": shape, "data_offsets": [pos, pos + n]}
+        pos += n
+    if meta:
+        head["__metadata__"] = meta
+    hb = json.dumps(head).encode()
+    with open(path, "wb") as f:
+        f.write(len(hb).to_bytes(8, "little"))
+        f.write(hb)
+        f.write(b"\0" * pos)
+
+
+class Lora(unittest.TestCase):
+    def setUp(self):
+        self.d = Path(tempfile.mkdtemp())
+        _write_st(self.d / "unet.safetensors", {
+            "decoder.layers.0.self_attn.q_proj.weight": [8, 6],
+            "decoder.condition_embedder.weight": [6, 6],
+            "decoder.condition_embedder.bias": [6]})
+
+    def tearDown(self):
+        shutil.rmtree(self.d, ignore_errors=True)
+
+    def run_lora(self, action, src, out=None):
+        return mw.cmd_lora(argparse.Namespace(action=action, src=str(src), unet=str(self.d / "unet.safetensors"), out=out))
+
+    def test_sidestep_lokr_converts_to_comfy_names(self):
+        src = self.d / "lokr_weights.safetensors"
+        _write_st(src, {"lycoris_layers_0_self_attn_q_proj.lokr_w1": [2, 2], "lycoris_layers_0_self_attn_q_proj.lokr_w2": [4, 3],
+                        "lycoris_layers_0_self_attn_q_proj.alpha": [], "lycoris_condition_embedder.lokr_w1": [2, 3],
+                        "lycoris_condition_embedder.lokr_w2": [3, 2]}, {"algo": "lokr"})
+        rep = self.run_lora("convert", src, str(self.d / "out.safetensors"))
+        self.assertTrue(rep["ok"], rep)
+        keys = set(mw.st_shapes(self.d / "out.safetensors"))
+        self.assertIn("decoder.layers.0.self_attn.q_proj.lokr_w1", keys)
+        self.assertIn("decoder.layers.0.self_attn.q_proj.alpha", keys)
+        self.assertIn("decoder.condition_embedder.lokr_w2", keys)
+        head, _ = mw.st_read(self.d / "out.safetensors")
+        self.assertEqual(head["__metadata__"]["musicwright_base_model"], "unet.safetensors")
+
+    def test_other_model_size_is_refused(self):
+        src = self.d / "small.safetensors"
+        _write_st(src, {"lycoris_layers_0_self_attn_q_proj.lokr_w1": [2, 2], "lycoris_layers_0_self_attn_q_proj.lokr_w2": [2, 2]})
+        rep = self.run_lora("convert", src)
+        self.assertFalse(rep["ok"])
+        self.assertTrue(rep["shape_mismatch"])
+        self.assertFalse((self.d / "small_comfy.safetensors").exists())
+
+    def test_peft_lora_names_match(self):
+        src = self.d / "peft.safetensors"
+        _write_st(src, {"base_model.model.layers.0.self_attn.q_proj.lora_A.weight": [4, 6],
+                        "base_model.model.layers.0.self_attn.q_proj.lora_B.weight": [8, 4]})
+        self.assertTrue(self.run_lora("check", src)["ok"])
+
+    def test_gen_lora_rewires_model_users(self):
+        r = mw.recipes()["acestep-xl-sft"]
+        g, _ = mw.graph_acestep(r, "c", None, 1, 10, None, None, "p", {})
+        g = mw.add_loras(g, ["a.safetensors:0.7", "b.safetensors"])
+        self.assertEqual(g["lora1"]["inputs"]["model"], ["1", 0])
+        self.assertEqual(g["lora1"]["inputs"]["strength_model"], 0.7)
+        self.assertEqual(g["lora2"]["inputs"]["model"], ["lora1", 0])
+        self.assertEqual(g["lora2"]["inputs"]["strength_model"], 1.0)
+        self.assertEqual(g["4"]["inputs"]["model"], ["lora2", 0])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)
