@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.33 (2026-11-14)
+
+- musicwright-produce: mixing.md notes roughness from layers inside one critical band and thin quiet playback; ffmpeg.md says stretch stems, not the full mix (Loy, Musimathics; book rules).
+
 ## 0.1.32 (2026-11-13)
 
 - `mw.py gen --lora FILE[:STRENGTH]` (repeatable) chains LoraLoaderModelOnly nodes after the model loader of any ComfyUI recipe.

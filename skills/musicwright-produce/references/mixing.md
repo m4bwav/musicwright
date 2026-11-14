@@ -18,6 +18,7 @@ sensitive; harshness 2-5k) · sibilance 5-8k · air 10-16k.
 - Compression exists to steady a balance: if a part sits at one fader position, leave it alone (Senior ch. 9).
 - Reverb: pre-delay 10-30 ms; rooms intimate, 2-4 s halls epic; little on bass and kick. Name the job first (table below).
 - Stereo: kick, bass and lead centred; below about 100-150 Hz mono.
+- Rough or grating stacks: two layers whose main partials fall a small part of a critical band apart (about 100 Hz wide low down, near a third of an octave higher) beat as roughness; retune, thin or move one. A mix that sounds thin at low volume is equal-loudness, not EQ: judge balance at a moderate level (Loy, *Musimathics* vol. 1, ch. 6; book rule, unverified).
 - A low cut set in the dense section may fail where the part is exposed: recheck it there (Senior ch. 19).
 - AI output: gentle EQ, a limiter, loudness normalisation. It is usually dense already: add no
   compression.
