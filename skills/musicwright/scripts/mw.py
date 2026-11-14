@@ -42,6 +42,7 @@ import math
 import os
 import re
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
@@ -57,7 +58,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.31"
+VERSION = "0.1.32"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -2143,6 +2144,108 @@ def comfy_outputs(entry):
     return files
 
 
+def parse_loras(specs):
+    """--lora NAME[:STRENGTH] -> [(name, strength)]; the strength defaults to 1.0."""
+    out = []
+    for spec in specs or []:
+        name, _, st = spec.rpartition(":") if ":" in spec else (spec, "", "")
+        if not name:
+            name, st = st, ""
+        try:
+            out.append((name, float(st) if st else 1.0))
+        except ValueError:
+            raise MwError(f"--lora wants NAME or NAME:STRENGTH, got {spec}")
+    return out
+
+
+def add_loras(g, loras):
+    """Chain LoraLoaderModelOnly nodes after the graph's model loader and rewire its MODEL users."""
+    if not loras:
+        return g
+    src = next((k for k, n in g.items() if n["class_type"] in ("UNETLoader", "CheckpointLoaderSimple")), None)
+    if src is None:
+        raise MwError("--lora: this graph has no UNETLoader or CheckpointLoaderSimple to hang the LoRA on")
+    prev, ids = [src, 0], []
+    for i, (name, st) in enumerate(loras):
+        nid = f"lora{i + 1}"
+        g[nid] = {"class_type": "LoraLoaderModelOnly", "inputs": {"model": prev, "lora_name": name, "strength_model": st}}
+        ids.append(nid)
+        prev = [nid, 0]
+    for k, n in g.items():
+        if k in ids:
+            continue
+        for key, v in n["inputs"].items():
+            if v == [src, 0]:
+                n["inputs"][key] = prev
+    return g
+
+
+def st_header(path):
+    """Read a .safetensors header (standard library only)."""
+    with open(path, "rb") as f:
+        n = struct.unpack("<Q", f.read(8))[0]
+        h = json.loads(f.read(n))
+    meta = h.pop("__metadata__", {}) or {}
+    return h, meta
+
+
+def cmd_lora_check(a):
+    """Check that a LoRA/LoKr adapter's keys and shapes fit a ComfyUI diffusion model, optionally copy it to loras/."""
+    need_file(a.adapter)
+    need_file(a.unet)
+    ad, meta = st_header(a.adapter)
+    base, _ = st_header(a.unet)
+    prefix = "diffusion_model."
+    if not any(k.startswith("decoder.") for k in base):
+        raise MwError("--unet does not look like an ACE-Step 1.5 diffusion model (no decoder.* keys)")
+    mods = {}
+    for k, v in ad.items():
+        stem, _, part = k.rpartition(".")
+        mods.setdefault(stem, {})[part] = v["shape"]
+    lookup = {}
+    for k in base:
+        if k.startswith("decoder.") and k.endswith(".weight"):
+            mod = k[len("decoder."):-len(".weight")]
+            lookup["lycoris_" + mod.replace(".", "_")] = k
+            lookup["base_model.model." + mod] = k
+    matched, missing, bad = 0, [], []
+    for stem, parts in mods.items():
+        target = lookup.get(stem)
+        if target is None:
+            missing.append(stem)
+            continue
+        want = base[target]["shape"]
+        if "lokr_w1" in parts and "lokr_w2" in parts:
+            w1, w2 = parts["lokr_w1"], parts["lokr_w2"]
+            got = [w1[0] * w2[0], w1[1] * w2[1]]
+        elif "lora_A.weight" in parts or "lora_down" in parts:
+            dn = parts.get("lora_A.weight") or parts.get("lora_down")
+            up = parts.get("lora_B.weight") or parts.get("lora_up")
+            got = [up[0], dn[1]] if up else None
+        else:
+            got = None
+        if got is not None and got != want[:2]:
+            bad.append({"module": stem, "adapter": got, "model": want})
+        else:
+            matched += 1
+    rep = {"ok": not missing and not bad, "adapter": str(Path(a.adapter).resolve()), "unet": str(Path(a.unet).resolve()),
+           "format": meta.get("format"), "algo": meta.get("algo"), "modules": len(mods), "matched": matched,
+           "missing": missing[:10], "missing_count": len(missing), "shape_mismatch": bad[:5], "shape_mismatch_count": len(bad)}
+    if bad:
+        rep["hint"] = "shapes differ: the adapter was trained on another ACE-Step 1.5 size (turbo/base 2B vs XL); load it on the DiT it was trained on"
+    elif missing:
+        rep["hint"] = "keys ComfyUI will not map; it loads the rest and logs 'lora key not loaded' for these"
+    if a.install and rep["ok"]:
+        dst = Path(a.install) / (slug(a.name) + ".safetensors" if a.name else Path(a.adapter).name)
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(a.adapter, dst)
+        rep["installed"] = str(dst.resolve())
+        rep["use"] = f"mw.py gen ... --lora {dst.name}:1.0, or a LoraLoaderModelOnly node after the UNETLoader"
+    elif a.install:
+        rep["installed"] = None
+    return rep
+
+
 def gen_comfy(a, r, seeds, caption, lyrics, outdir):
     hosts = comfy_hosts(a.host)
     if a.dry_run:
@@ -2173,6 +2276,7 @@ def gen_comfy(a, r, seeds, caption, lyrics, outdir):
     for s in seeds:
         prefix = f"musicwright/{slug(a.name)}_s{s}"
         g, recipe_used = GRAPHS[r["graph"]](r, caption, lyrics, s, a.duration, a.bpm, a.key, prefix, ov)
+        g = add_loras(g, parse_loras(getattr(a, "lora", None)))
         if a.task:
             a.recipe_params = recipe_used if r.get("graph") == "yue2" else {}
             g = source_graph(g, a.task, audio, a)
@@ -2619,8 +2723,16 @@ def build_parser():
     s.add_argument("--timeout", type=int, default=3600)
     s.add_argument("--no-wait", action="store_true", help="ComfyUI: queue the jobs, log them as queued and return")
     s.add_argument("--collect", metavar="DIR", help="fetch, measure and log the finished --no-wait jobs in DIR's ledger")
+    s.add_argument("--lora", action="append", metavar="NAME[:STRENGTH]", help="ComfyUI: LoRA/LoKr file in models/loras, strength default 1.0; repeat to stack")
     s.add_argument("--dry-run", action="store_true", help="print the graph or payload, submit nothing")
     s.set_defaults(fn=cmd_gen)
+
+    s = sub.add_parser("lora-check", help="check a LoRA/LoKr adapter's keys and shapes against an ACE-Step 1.5 ComfyUI model; --install copies it to loras/")
+    s.add_argument("adapter", help=".safetensors adapter, e.g. Side-Step's lokr_weights.safetensors")
+    s.add_argument("--unet", required=True, help="the ComfyUI diffusion model file it should load on")
+    s.add_argument("--install", metavar="DIR", help="copy it here when it fits (ComfyUI models/loras)")
+    s.add_argument("--name", help="file name for --install, e.g. the trigger word")
+    s.set_defaults(fn=cmd_lora_check)
 
     s = sub.add_parser("measure", help="loudness, peaks, silences")
     s.add_argument("files", nargs="+")

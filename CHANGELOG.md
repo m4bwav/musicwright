@@ -2,6 +2,12 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.32 (2026-11-13)
+
+- `mw.py gen --lora FILE[:STRENGTH]` (repeatable) chains LoraLoaderModelOnly nodes after the model loader of any ComfyUI recipe.
+- `mw.py lora-check`: checks an ACE-Step 1.5 LoRA/LoKr adapter (e.g. Side-Step's LyCORIS LoKr) against a ComfyUI DiT by key and shape, and `--install` copies it to models/loras.
+- musicwright-generate: references/style-lora.md (train with Side-Step, licence tags, native ComfyUI route) and an API-format turbo + LoRA workflow.
+
 ## 0.1.31 (2026-11-13)
 
 - `mw.py render`: tab slides (`/`, a backslash, `s`) and vibrato (`~`) play as one pluck with a pitch-bend glide on their own MIDI channel, with RPN 0 bend range +-12; the built-in synth plays them with a plucked-string model, and `--slide-engine string` uses that model under FluidSynth too.

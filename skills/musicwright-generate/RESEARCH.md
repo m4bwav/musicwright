@@ -215,3 +215,10 @@ Read through a fetch tool's extraction, not raw text, except the SKILL.md: stabi
 ### R-20261113-1 · 2026-11-13 · Teaching a model one instrument
 - sources: https://github.com/ACE-Step/ACE-Step-1.5 ; https://arxiv.org/abs/2602.00744 ; https://github.com/Stability-AI/stable-audio-tools ; https://github.com/facebookresearch/audiocraft/blob/main/docs/MUSICGEN.md ; https://arxiv.org/abs/2503.11562 ; https://adp.library.ucsb.edu/index.php/resources/detail/516
 - ACE-Step 1.5 has LoRA training (8 songs, about 1 h on a 3090, 12 GB listed), reference audio and repaint; Stable Audio Open fine-tunes through stable-audio-tools; MusicGen-melody conditions on chroma (CC BY-NC); DDSP needs 30-60 min of mono data. US recordings published 1925 entered the public domain on 2026-01-01. Detail: ai-docs/research/2026-11-13-slide-guitar-study.md.
+
+### R-20261113-2 · 2026-11-13 · ACE-Step 1.5 LoKr adapters in ComfyUI
+- ComfyUI `comfy/lora.py` (`model_lora_keys_unet`, ACEStep15 branch, local checkout read 2026-11-13) maps `base_model.model.<module>` and `lycoris_<module with _>` onto `diffusion_model.decoder.<module>.weight`; `comfy/weight_adapter` includes LoKr. Side-Step LoKr files use `lycoris_layers_N_..._proj` keys with `lokr_w1`, `lokr_w2`, `alpha`: all 272 modules matched the turbo DiT by name and Kronecker shape; 0 fit the XL SFT file (hidden 2560 vs 2048).
+- The ACE-Step 1.5 turbo checkpoint `model.safetensors` has the same key set as ComfyUI's repackaged XL files (decoder, encoder, tokenizer, detokenizer, null_condition_emb), and ComfyUI's UNETLoader lists it.
+- ACE-Step docs/en/API.md: turbo `inference_steps` 1-20, recommended 8; `shift` affects base models only.
+- Measured Side-Step run (turbo, LoKr dim 64, alpha 128, ~100 clips): ~8.9 GB VRAM, ~2 min per epoch on a 16 GB RTX 5060 Ti.
+- Magnitude: minor (new route, no changed claim).

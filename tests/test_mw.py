@@ -280,6 +280,45 @@ class GenDryRun(unittest.TestCase):
                 if isinstance(v, list):
                     self.assertIn(v[0], graph, f"node {nid} input {k} links to missing node {v[0]}")
 
+    def test_gen_lora_chains_after_the_unet(self):
+        code, d = self.gen("acestep-xl-sft", "--lora", "style_a.safetensors:0.8", "--lora", "style_b.safetensors")
+        self.assertEqual(code, 0, d)
+        g = d["jobs"][0]["graph"]
+        self.check_links(g)
+        self.assertEqual(g["lora1"]["inputs"], {"model": ["1", 0], "lora_name": "style_a.safetensors", "strength_model": 0.8})
+        self.assertEqual(g["lora2"]["inputs"]["model"], ["lora1", 0])
+        self.assertEqual(g["lora2"]["inputs"]["strength_model"], 1.0)
+        self.assertEqual(self.node(g, "ModelSamplingAuraFlow")["inputs"]["model"], ["lora2", 0])
+        code, d = self.gen("acestep-xl-sft", "--lora", "bad:x")
+        self.assertNotEqual(code, 0)
+
+    def test_lora_check_matches_keys_and_shapes(self):
+        import struct
+
+        def st(path, tensors, meta=None):
+            h = {k: {"dtype": "BF16", "shape": shp, "data_offsets": [0, 0]} for k, shp in tensors.items()}
+            if meta:
+                h["__metadata__"] = meta
+            b = json.dumps(h).encode()
+            Path(path).write_bytes(struct.pack("<Q", len(b)) + b)
+        base = TMP / "lc_unet.safetensors"
+        st(base, {"decoder.layers.0.cross_attn.q_proj.weight": [2048, 2048], "encoder.x.weight": [4, 4]})
+        good = TMP / "lc_good.safetensors"
+        st(good, {"lycoris_layers_0_cross_attn_q_proj.alpha": [], "lycoris_layers_0_cross_attn_q_proj.lokr_w1": [32, 32],
+                  "lycoris_layers_0_cross_attn_q_proj.lokr_w2": [64, 64]}, {"format": "lycoris", "algo": "lokr"})
+        code, d = run("lora-check", good, "--unet", base, "--install", TMP / "lc_loras", "--name", "My Style")
+        self.assertEqual(code, 0, d)
+        self.assertTrue(d["ok"])
+        self.assertEqual(d["matched"], 1)
+        self.assertTrue(Path(d["installed"]).exists())
+        bad = TMP / "lc_bad.safetensors"
+        st(bad, {"lycoris_layers_0_cross_attn_q_proj.lokr_w1": [32, 32], "lycoris_layers_0_cross_attn_q_proj.lokr_w2": [80, 64],
+                 "lycoris_nowhere.lokr_w1": [1, 1], "lycoris_nowhere.lokr_w2": [1, 1]})
+        code, d = run("lora-check", bad, "--unet", base)
+        self.assertFalse(d["ok"])
+        self.assertEqual(d["shape_mismatch_count"], 1)
+        self.assertEqual(d["missing_count"], 1)
+
     def test_every_recipe_dry_runs(self):
         for name, r in mw.recipes().items():
             with self.subTest(recipe=name):
