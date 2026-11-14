@@ -349,3 +349,5 @@ README "Works with" section and a wiki Works-With page now say what crosses each
 - Built 0.1.32: `gen --lora`, `lora-check` (with `--install`), tests for both, references/style-lora.md, workflows/acestep15-turbo-lora.api.json (R-20261113-2).
 - Verified: unit tests, lora-check on the real adapter, ComfyUI object_info lists the copied DiT and LoRA. Owed: a real render with the LoRA (the GPU was busy training) and a listener's strength sweep; cfg 1.0 for turbo is unjudged.
 
+
+## [2026-11-14] update | README Works with: fractalwright (new public plugin), mirroring its own section
