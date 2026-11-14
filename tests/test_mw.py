@@ -2054,5 +2054,51 @@ class OwnerPicks20261106(unittest.TestCase):
         self.assertIn("head", d["key_ends"])
 
 
+@NEEDS_FFMPEG
+class Envelopes(unittest.TestCase):
+    def env(self, path, *extra):
+        dst = TMP / (Path(path).stem + "_env.json")
+        code, d = run("envelopes", path, "--fps", "30", "--json", dst, *extra)
+        self.assertEqual(code, 0, d)
+        return d, json.loads(dst.read_text(encoding="utf-8"))
+
+    def test_sine_sweep_lights_bands_in_order(self):
+        src = lavfi(f"aevalsrc='0.5*sin(2*PI*40*(exp(t*5.2983/6)-1)*6/5.2983)':s={RATE}:d=6", TMP / "audio" / "sweep.wav")
+        _, d = self.env(src)
+        self.assertEqual(d["frames"], 180)
+        self.assertEqual(len(d["energy"][0]), len(d["bands"]))
+        self.assertTrue(any(b["frame_ms"] > 100 for b in d["bands"]), d["bands"][:3])  # the sub-bass long frame
+        dom = [max(range(len(r)), key=lambda i: d["energy_db"][f][i]) for f, r in enumerate(d["energy"])][3:-3]
+        self.assertEqual(dom, sorted(dom), dom)
+        self.assertGreaterEqual(dom[-1] - dom[0], 12)
+
+    def test_silence_is_flat(self):
+        src = lavfi(f"anullsrc=r={RATE}:cl=mono:d=2", TMP / "audio" / "silence.wav")
+        _, d = self.env(src)
+        self.assertEqual(d["frames"], 60)
+        self.assertTrue(all(v == 0.0 for r in d["energy"] for v in r))
+        self.assertEqual(d["onsets"], [])
+        self.assertEqual(d["beats"], [])
+        self.assertTrue(all(v == 0.0 for v in d["loudness"]))
+
+    def test_click_track_beats_within_one_frame(self):
+        s, d = self.env(FX["clicks"], "--bands", "8")
+        self.assertEqual(len(d["bands"]), 8)
+        self.assertAlmostEqual(d["tempo_bpm"], 120, delta=2)
+        self.assertGreaterEqual(len(d["beats"]), 20, d["beats"])
+        for b in d["beats"]:
+            self.assertLessEqual(abs(b - round(b * 2) / 2), 1 / 30 + 1e-6, d["beats"])
+        self.assertEqual(len(d["chroma"][0]), 12)
+
+    def test_mp3_is_refused_unless_allowed(self):
+        mp3 = TMP / "audio" / "tone_env.mp3"
+        ff("-i", FX["tone"], "-t", "2", "-c:a", "libmp3lame", mp3)
+        code, d = run("envelopes", mp3, "--fps", "10")
+        self.assertEqual(code, 1)
+        self.assertIn("MP3", d["error"])
+        code, d = run("envelopes", mp3, "--fps", "10", "--allow-mp3")
+        self.assertEqual(code, 0, d)
+        self.assertTrue(d["warnings"])
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

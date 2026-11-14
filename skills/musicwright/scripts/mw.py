@@ -58,7 +58,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.33"
+VERSION = "0.1.34"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1194,6 +1194,53 @@ def cmd_pulse(a):
             "reading": "steady: a beat a percussion part can lock to (tempo_bpm may be doubled or halved); "
                        "weak or none: free time, so place accents on phrases or re-render on a fixed tempo rather than adding a beat. "
                        "a track that builds from a quiet intro: rerun with --threshold adaptive, the global one misses the quiet hits. grid_deviation near grid_chance means the onsets ignore the grid; ioi_cv above about 0.8 is rubato or phrase-led; onset_rise_db under 1 means no hits at all; vibrato and tremolo can make false onsets"}
+
+
+def _decode_f32(path, rate, tmpd, tag):
+    raw = tmpd / f"{tag}.f32"
+    ffmpeg(["-y", "-i", str(path), "-ac", "1", "-ar", str(rate), "-f", "f32le", "-c:a", "pcm_f32le", str(raw)])
+    b = array("f")
+    b.frombytes(raw.read_bytes())
+    if sys.byteorder == "big":
+        b.byteswap()
+    return b
+
+
+def cmd_envelopes(a):
+    """Per-frame band energies, 200 ms loudness, onsets, beats and chroma for driving visuals."""
+    import envelopes as env
+    p = need_file(a.file)
+    if a.fps <= 0 or a.fps > 240:
+        raise MwError("--fps must be between 1 and 240")
+    warnings = []
+    codec = (probe(p).get("codec") or "").lower()
+    if p.suffix.lower() == ".mp3" or codec == "mp3":
+        if not a.allow_mp3:
+            return {"ok": False, "command": "envelopes", "error": "refusing to measure an MP3: its encoder delay shifts every time and its lowpass empties the top bands",
+                    "fix": "measure the WAV or FLAC master, or pass --allow-mp3 to measure it anyway"}
+        warnings.append("measured an MP3: times run late by the encoder delay (about 25 ms) and bands above about 16 kHz are empty")
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_env_"))
+    try:
+        main = _decode_f32(p, a.rate, tmpd, "m")
+        low = _decode_f32(p, a.rate // 4, tmpd, "l")
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
+    if not len(main):
+        raise MwError("the file decoded empty")
+    d = env.compute(main, a.rate, low, a.rate // 4, a.fps, a.bands)
+    d["source"] = str(p.resolve())
+    d["musicwright"] = VERSION
+    d["warnings"] = warnings
+    res = {"ok": True, "frames": d["frames"], "fps": a.fps, "duration_s": d["duration_s"], "bands": len(d["bands"]),
+           "onsets": len(d["onsets"]), "beats": len(d["beats"]), "tempo_bpm": d["tempo_bpm"], "warnings": warnings}
+    if a.json:
+        dst = out_file(a.json)
+        dst.write_text(json.dumps(d, separators=(",", ":")), encoding="utf-8")
+        res["out"] = str(dst.resolve())
+    else:
+        res["envelopes"] = d
+    return res
+
 
 
 def parse_shape(spec, dur):
@@ -2845,6 +2892,15 @@ def build_parser():
     s.add_argument("--threshold", choices=["global", "adaptive"], default="global",
                    help="adaptive: a moving-median onset threshold, for tracks whose level changes (a quiet intro, a build)")
     s.set_defaults(fn=cmd_pulse)
+
+    s = sub.add_parser("envelopes", help="per-frame band energies, 200 ms loudness, onsets, beats and chroma for visuals (stdlib)")
+    s.add_argument("file")
+    s.add_argument("--fps", type=int, default=30)
+    s.add_argument("--bands", default="critical", help="'critical' (Bark edges) or a number of log-spaced bands")
+    s.add_argument("--json", help="write the envelopes here; without it they are printed")
+    s.add_argument("--rate", type=int, default=22050, help="analysis sample rate (sub-bass runs at a quarter of it)")
+    s.add_argument("--allow-mp3", action="store_true", help="measure an MP3 anyway (refused by default)")
+    s.set_defaults(fn=cmd_envelopes)
 
     s = sub.add_parser("curve", help="rank takes against a target loudness shape (film cues)")
     s.add_argument("files", nargs="+")
