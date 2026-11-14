@@ -342,3 +342,10 @@ README "Works with" section and a wiki Works-With page now say what crosses each
 - Docs: compose notation.md Slides and vocabulary.md slide words; generate models.md Teaching a model one instrument (R-20261113-1); produce ffmpeg.md Rubber Band note; hub LEARNINGS L-guitar-slide-bends marked fixed. sfxwright edit.md gained a Rubber Band note; voicewright does no pitch shifting, skipped.
 - Budget stays yellow (installed 702 KB), as before.
 
+## 2026-11-13 (style LoRA in ComfyUI)
+
+- Owner's request: make the ACE-Step 1.5 LoRA/LoKr adapters trained with Side-Step usable from ComfyUI.
+- Finding: no key conversion needed. ComfyUI's lora.py maps `lycoris_<decoder module>` for ACEStep15 and has a LoKr adapter; a Side-Step LoKr matched all 272 modules of the turbo DiT. It fits none of the XL files (hidden 2560 vs 2048), so the turbo DiT must be in ComfyUI; the ACE-Step checkout's turbo model.safetensors has the ComfyUI key layout and UNETLoader lists it.
+- Built 0.1.32: `gen --lora`, `lora-check` (with `--install`), tests for both, references/style-lora.md, workflows/acestep15-turbo-lora.api.json (R-20261113-2).
+- Verified: unit tests, lora-check on the real adapter, ComfyUI object_info lists the copied DiT and LoRA. Owed: a real render with the LoRA (the GPU was busy training) and a listener's strength sweep; cfg 1.0 for turbo is unjudged.
+

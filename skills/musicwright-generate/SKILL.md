@@ -55,6 +55,8 @@ Model details, VRAM and licences: [references/models.md](references/models.md) a
 - **One instrument the model does badly** (slide guitar): try the tags in compose's vocabulary.md, then a
   reference clip or repaint, then a LoRA; source stems from mixes with Demucs `htdemucs_6s`. Routes and rights:
   [references/models.md](references/models.md) (Teaching a model one instrument).
+  Train a style LoRA with Side-Step and load it in ComfyUI (`mw.py lora-check`, `gen --lora`):
+  [references/style-lora.md](references/style-lora.md).
 - Full rules, examples and the vocabulary: [references/acestep.md](references/acestep.md) and
   musicwright-compose's references/vocabulary.md.
 
@@ -120,6 +122,7 @@ repeat; three movements of about 3 min crossfaded hold up better.
 - [references/acestep-rest.md](references/acestep-rest.md): the REST server, launch, payloads, cover, repaint, extract.
 - [references/hosted.md](references/hosted.md): Lyria, ElevenLabs, Suno, Udio, Mureka: routes, prices, terms.
 - [references/licences.md](references/licences.md): output rights, disclosure lines, platform rules.
+- [references/style-lora.md](references/style-lora.md): train a style LoRA (Side-Step), check it, use it in ComfyUI.
 
 ## Maintenance
 
