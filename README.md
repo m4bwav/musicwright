@@ -130,6 +130,7 @@ Every partner is optional. The plugins share files, not code.
 - [grindwright](https://github.com/m4bwav/grindwright): the music lane of a long game or film project, worked between other jobs.
 - [madnesswright](https://github.com/m4bwav/madnesswright): a scene's design one-pager becomes the cue list, so music follows the level instead of genre defaults.
 - [everscout](https://github.com/m4bwav/everscout): the `ai-music` beat and its book notes feed refreshes.
+- [fractalwright](https://github.com/m4bwav/fractalwright): per-frame band levels and beats from musicwright drive fractalwright's audio-reactive fractal visuals.
 
 More on the wiki's [Works with](https://github.com/m4bwav/musicwright/wiki/Works-With) page.
 
