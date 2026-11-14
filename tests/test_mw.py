@@ -1457,6 +1457,35 @@ class NotationCommands(unittest.TestCase):
         self.assertAlmostEqual(d["measure"]["duration_s"], 12.0 + 1.5, delta=0.1)  # 24 beats at 120 + the release tail
         self.assertGreater(mean_volume(dst, 0.5, 11), -40)
 
+    def test_render_tab_slides_glide_on_one_pluck(self):
+        """Tab / \\ and ~ become one sustained note with a pitch-bend glide, RPN 0 = +-12, on its own channel."""
+        N = mw.notation
+        sc = N.parse_tab((FIXTURES / "slide.txt").read_text(), bpm=90)
+        slide = [t for t in sc.tracks if t.name == "tab slide"][0]
+        self.assertEqual(len(slide.notes), 4)  # 7/9 and 9\\7 glide instead of re-plucking
+        self.assertEqual(slide.notes[0].slide_in, -2)
+        self.assertEqual(slide.notes[1].glide, [(0.25, 2)])
+        self.assertEqual(slide.notes[3].glide, [(0.25, -2)])
+        self.assertTrue(slide.notes[2].vib)
+        curve = N.bend_curve(slide.notes[1], 60 / 90)
+        self.assertGreater(max(v for _, v in curve), 2.0)  # overshoots the target
+        self.assertAlmostEqual(curve[-1][1], 2.0, delta=0.35)  # and settles on it
+        mid = TMP / "nt" / "slide.mid"
+        mid.parent.mkdir(parents=True, exist_ok=True)
+        N.write_midi(sc, mid)
+        data = mid.read_bytes()
+        ch = 1  # the slide track follows the plain tab track
+        self.assertIn(bytes([0xB0 | ch, 101, 0, 0, 0xB0 | ch, 100, 0]), data)
+        self.assertIn(bytes([0xB0 | ch, 6, 12]), data)
+        self.assertGreater(data.count(bytes([0xE0 | ch])), 50)  # a bend curve, not a single jump
+        self.assertEqual(data.count(bytes([0x90 | ch])), 4)  # four plucks, not six
+        dst = TMP / "nt" / "slide.wav"
+        code, d = run("render", FIXTURES / "slide.txt", "--bpm", "90", "--synth", "builtin", "--slide-engine", "string",
+                      "--out", dst)
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["slides"], {"notes": 4, "bend_range": 12, "engine": "string"})
+        self.assertGreater(mean_volume(dst, 0.0, 2.0), -45)
+
     def test_render_tab_transposed_flac_and_errors(self):
         dst = TMP / "nt" / "riff.flac"
         code, d = run("render", FIXTURES / "riff.txt", "--bpm", "90", "--transpose", "-2", "--synth", "builtin", "--out", dst)

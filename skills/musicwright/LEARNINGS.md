@@ -6,6 +6,12 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-guitar-slide-bends · 2026-11-13 · `no-slide-or-bend-in-render` (fixed in 0.1.31)
+- Trigger: tab slides rendered as new plucks with no bend; a slide line faked outside the plugin (own MIDI channel, glide from up to 2 semitones on the GM +-2 range, eased-in vibrato) and a numpy string model with one pluck and a glide won a blind A/B against sampled slides, while recorded samples won for plain plucks.
+- Hypothesis: a re-pluck and the +-2 default bend range are what make sequenced slides sound fake; a continuous glide hides a synthetic pluck.
+- Rule: render slides with `mw.py render` (0.1.31+: one pluck, RPN 0 = +-12, bend curve; `--slide-engine string` for the model) and keep recorded samples for picked notes. No listener verdict on the 0.1.31 render yet.
+- Scope: skill · Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-13
+
 ### L-006 · 2026-10-25 · A workaround that changes the input must not feed the numbers it changes
 - Trigger: the 0.1.2 wiki run on static ffmpeg 7.0.2 found the padded retry reading a 3.5 s 44.1 kHz file at -9.1 LUFS against -8.9 unpadded on 9.0.1, and `duration_s` 4 for 3.5 s; the 0.1.2 retry test used a whole-second fixture, where padding adds nothing.
 - Hypothesis: the padded half second of silence falls inside gated loudness blocks and lowers the integrated value; the per-second block count rounds the length up.

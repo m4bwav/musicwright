@@ -211,3 +211,7 @@ Caveat: the pack was side B in all six pairs, and the shared-level pair kept its
 ### R-20261105-4 · 2026-11-05 · Round two, group 10: prompt guides
 
 Read through a fetch tool's extraction, not raw text, except the SKILL.md: stability.ai/guides/stable-audio-3-prompt-guide, docs.comfy.org/tutorials/audio/yue2/yue2, raw.githubusercontent.com/ace-step/ACE-Step-1.5/main/.claude/skills/acestep-songwriting/SKILL.md, the deAPI ACE-Step guide (promotional; left out, and its 19 languages conflict with the 50+ in acestep.md, not resolved). No community MiniMax Music 3 prompt guide found. Notes into models.md and acestep.md.
+
+### R-20261113-1 · 2026-11-13 · Teaching a model one instrument
+- sources: https://github.com/ACE-Step/ACE-Step-1.5 ; https://arxiv.org/abs/2602.00744 ; https://github.com/Stability-AI/stable-audio-tools ; https://github.com/facebookresearch/audiocraft/blob/main/docs/MUSICGEN.md ; https://arxiv.org/abs/2503.11562 ; https://adp.library.ucsb.edu/index.php/resources/detail/516
+- ACE-Step 1.5 has LoRA training (8 songs, about 1 h on a 3090, 12 GB listed), reference audio and repaint; Stable Audio Open fine-tunes through stable-audio-tools; MusicGen-melody conditions on chroma (CC BY-NC); DDSP needs 30-60 min of mono data. US recordings published 1925 entered the public domain on 2026-01-01. Detail: ai-docs/research/2026-11-13-slide-guitar-study.md.

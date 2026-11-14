@@ -2,6 +2,11 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.31 (2026-11-13)
+
+- `mw.py render`: tab slides (`/`, a backslash, `s`) and vibrato (`~`) play as one pluck with a pitch-bend glide on their own MIDI channel, with RPN 0 bend range +-12; the built-in synth plays them with a plucked-string model, and `--slide-engine string` uses that model under FluidSynth too.
+- musicwright-compose: slide programming rules and slide guitar prompt candidates. musicwright-generate: teaching a model one instrument (LoRA, reference and repaint, melody conditioning, timbre transfer, stems, public-domain rules). musicwright-produce: Rubber Band for pitch shifts.
+
 ## 0.1.30 (2026-11-13)
 
 - musicwright-game: layers add density only (go horizontal for tempo, key or urgency), sparse-to-dense layer order with an all-on check, open intro stingers and next-bar switches. From Zdanowicz and Bambrick, *The Game Audio Strategy Guide*.

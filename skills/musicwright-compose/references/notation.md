@@ -17,7 +17,7 @@ mw.py render song.musicxml --program flute --transpose -2 --out out/song.flac
 | Input | Read | Not read (reported, never guessed) |
 |---|---|---|
 | ABC (`.abc`, or text with X: and K:) | ABC 2.1 notes, accidentals and key signatures with modes, lengths, rests, ties, chords `[CEG]`, broken rhythm `>` `<`, tuplets `(3`, repeats `|: :|` with endings `[1 [2`, voices `V:`, `%%MIDI program`, inline fields, chord symbols (`--chords` plays them) | grace notes, lyrics, decorations as sound, `%%` directives other than MIDI program |
-| ASCII tab (`.txt`) | 4 to 8 string lines (`e|--0--3--|`), multi-digit frets, labelled tunings, bar lines; `--tuning` for others (dropd, dadgad, openg, bass, bass5, guitar7, ukulele, or `E2,A2,D3,G3,B3,E4`) | rhythm (tabs carry none: the usual gap between notes counts as an eighth note unless `--tab-step` says), bends and slides as pitch changes |
+| ASCII tab (`.txt`) | 4 to 8 string lines (`e|--0--3--|`), multi-digit frets, labelled tunings, bar lines, slides `5/7` `7\5` `5s7` `/7` and vibrato `7~` (see Slides below); `--tuning` for others (dropd, dadgad, openg, bass, bass5, guitar7, ukulele, or `E2,A2,D3,G3,B3,E4`) | rhythm (tabs carry none: the usual gap between notes counts as an eighth note unless `--tab-step` says), bends (`b`), hammer-ons and pull-offs as legato |
 | MusicXML (`.musicxml`, `.xml`, `.mxl`) | partwise scores: parts with their MIDI programs, chords, backup and forward (several voices), ties, repeats and endings, tempo marks | timewise scores, grace and cue notes |
 | MIDI (`.mid`) | format 0 and 1, tempo map, time and key signature, programs, the drum channel | SMPTE timing, pan and other controllers (the render is mono; for stereo, run the .mid through FluidSynth directly) |
 | Guitar Pro | not read: open it in MuseScore (free) or TuxGuitar and export MusicXML | |
@@ -41,6 +41,16 @@ Sound:
 Models writing ABC: benchmarks find good syntax but weak structure, so always run
 `mw.py render --check` on ABC an agent wrote. A bar that is too long or too short almost always
 means a wrong note length. Fix it before rendering.
+
+## Slides
+
+Tab slides play as one pluck that glides, not a re-pluck: the slide notes get their own track and MIDI channel, RPN 0 sets the bend range to +-12 (the General MIDI default of +-2 is why most MIDI slides fail), and a pitch-bend curve does the glide (90-320 ms, longer for wider moves), a 0.08 semitone overshoot that settles in 200 ms, and late vibrato (5 Hz, +-0.3 semitones, after 0.3 s on notes held over 0.6 s; `~` asks for it sooner). FluidSynth and sfizz honour RPN 0. A glide past 12 semitones re-plucks with a warning. Keep a slide line monophonic.
+
+- `--slide-engine midi` (default): the SoundFont plays the glide. Pick a steel or lap steel patch.
+- `--slide-engine string`: a plucked-string model plays the slide track (one pluck, glide, bar scrape), mixed under the FluidSynth render at -6 dB. The built-in synth always uses it. In one blind A/B a listener preferred this kind of model to sampled slides, while recorded samples won for plain plucks: keep samples for picking and the model for the slide line.
+- Writing slides in MIDI by hand: set RPN 0 first, one note-on per slide, approach a target from 1/8 to 1/2 semitone below over 30-80 ms, overshoot slightly and settle, vibrato late and wide (4-6 Hz, +-20 to 40 cents).
+
+Study and sources: the repository's ai-docs/research/2026-11-13-slide-guitar-study.md.
 
 ## Write notation from MIDI, ABC, MusicXML or tab
 

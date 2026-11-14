@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261113-1 · 2026-11-13 · Slides render as glides
+- because: user request; L-guitar-slide-bends in the hub's LEARNINGS
+- files: references/notation.md (Play notation or tabs, new Slides), references/vocabulary.md (new Slide guitar words)
+
+mw.py render now plays tab slides and vibrato as one pluck with a pitch-bend glide (RPN 0 = +-12) or the string model; slide programming rules and prompt candidates added. Evals not re-run (no trigger change).
+
 ### C-20261109-1 · 2026-11-09 · From Hill, Scoring the Screen
 - because: R-20261109-1
 - files: references/theory.md (Root movement, voicing and extended chords)

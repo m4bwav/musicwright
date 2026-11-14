@@ -35,6 +35,7 @@ Commands
   note     append a taste note, lesson or recipe to the studio
 """
 import argparse
+import copy
 import datetime as _dt
 import json
 import math
@@ -56,7 +57,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.30"
+VERSION = "0.1.31"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1592,6 +1593,10 @@ def cmd_render(a):
         raise MwError("--out is the MIDI file; give an audio file (.wav, .flac, .mp3, .ogg) and --midi for the MIDI")
     mid.parent.mkdir(parents=True, exist_ok=True)
     notation.write_midi(score, mid)
+    bent = [t for t in score.tracks if any(n.bent() for n in t.notes)]
+    if bent:
+        res["slides"] = {"notes": sum(1 for t in bent for n in t.notes if n.bent()), "bend_range": notation.BEND_RANGE,
+                         "engine": a.slide_engine}
     fs, sf = fluidsynth_bin(), soundfont(a.sf2)
     synth = a.synth
     if synth == "auto":
@@ -1607,8 +1612,25 @@ def cmd_render(a):
                 raise MwError("FluidSynth not found: put fluidsynth on PATH or set MUSICWRIGHT_FLUIDSYNTH")
             if not sf:
                 raise MwError("no SoundFont: pass --sf2, set MUSICWRIGHT_SOUNDFONT, or add \"soundfont\" to the studio config.json")
-            run([fs, "-ni", "-q", "-g", str(a.gain), "-r", "48000", "-F", str(raw), str(sf), str(mid)])
+            fs_mid = mid
+            if bent and a.slide_engine == "string":  # slide tracks go to the string model, the rest to FluidSynth
+                rest = copy.copy(score)
+                rest.tracks = [t for t in score.tracks if t not in bent]
+                fs_mid = tmpd / "rest.mid"
+                notation.write_midi(rest, fs_mid)
+            run([fs, "-ni", "-q", "-g", str(a.gain), "-r", "48000", "-F", str(raw), str(sf), str(fs_mid)])
             res["soundfont"] = str(sf)
+            if bent and a.slide_engine == "string":
+                only = copy.copy(score)
+                only.tracks = bent
+                sl = tmpd / "slide.wav"
+                notation.synth_wav(only, sl)
+                mixed = tmpd / "mixed.wav"
+                ffmpeg(["-y", "-i", str(raw), "-i", str(sl), "-filter_complex",
+                        "[1:a]aresample=48000,volume=0.5[s];[0:a][s]amix=inputs=2:duration=longest:normalize=0",
+                        str(mixed)])
+                raw = mixed
+                res["warnings"].append("slide line from the string model mixed under FluidSynth at -6 dB; balance it by ear")
         else:
             notation.synth_wav(score, raw)
         chain = ["-af", f"apad=pad_dur={a.tail}"] if synth == "fluidsynth" and a.tail else []
@@ -2768,6 +2790,9 @@ def build_parser():
     s.add_argument("--sf2", help="SoundFont for FluidSynth (or MUSICWRIGHT_SOUNDFONT, or soundfont in the studio config.json)")
     s.add_argument("--gain", type=float, default=1.0, help="FluidSynth gain (its default 0.2 renders quietly)")
     s.add_argument("--tail", type=float, default=1.0, help="seconds of silence added after a FluidSynth render for reverb to ring")
+    s.add_argument("--slide-engine", choices=["midi", "string"], default="midi",
+                   help="tab slides (/ \\ s) and vibrato (~): midi = pitch-bend glide in the SoundFont (bend range set to +-12); "
+                        "string = a plucked-string model that glides (always used by the built-in synth)")
     s.add_argument("--check", action="store_true", help="only read the score and report bars, notes and problems")
     score_opts(s)
     s.set_defaults(fn=cmd_render)

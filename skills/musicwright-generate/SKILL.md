@@ -52,6 +52,9 @@ Model details, VRAM and licences: [references/models.md](references/models.md) a
 - **Noise textures** (static, hiss, beeps, sonar) come out loud and harsh. Qualify them ("faint,
   distant, low in the mix") or add them afterwards.
 - **No living artists.** Describe era, instruments, production and feel instead.
+- **One instrument the model does badly** (slide guitar): try the tags in compose's vocabulary.md, then a
+  reference clip or repaint, then a LoRA; source stems from mixes with Demucs `htdemucs_6s`. Routes and rights:
+  [references/models.md](references/models.md) (Teaching a model one instrument).
 - Full rules, examples and the vocabulary: [references/acestep.md](references/acestep.md) and
   musicwright-compose's references/vocabulary.md.
 

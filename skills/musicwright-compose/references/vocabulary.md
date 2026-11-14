@@ -66,6 +66,10 @@ Name the mechanism rather than an artist; these are period facts (Manning, *Elec
 - Synth voice (Wilson, *Make: Analog Synthesizers* ch. 3): saw bright and buzzy, square hollow, narrow pulse nasal, triangle mellow, sine pure; slow pulse-width modulation for a thick drifting pad from one oscillator; resonant filter sweep; stepped random sample-and-hold bleeps; ring-modulated bell tones; hard-sync lead.
 - Roots by method: disco with analog synth lines in place of orchestra; hip-hop with short looped record breaks and scratching; ambient with no obtrusive beat; Detroit-style techno with synth strings and drum machine.
 
+## Slide guitar words
+
+Candidates from Suno users, untested on ACE-Step: "bottleneck slide guitar", "lap steel slides", "slide resonator guitar", "warm dobro slides", with a genre (delta blues, country, Hawaiian) and a role ("long gliding notes between vocal lines"). A text model's slide is a gamble; for a slide you can control, render a tab (references/notation.md, Slides).
+
 ## Failure modes
 
 - Plausible bar to bar is not song form. A 1950 note-to-note statistical machine failed on exactly this (Manning p. 88), so listen across sections, not to one good passage.

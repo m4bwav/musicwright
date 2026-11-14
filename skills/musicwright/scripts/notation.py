@@ -22,10 +22,16 @@ class NotationError(Exception):
 # ---------------------------------------------------------------- model
 
 class Note:
-    __slots__ = ("start", "dur", "pitch", "vel", "tie")
+    __slots__ = ("start", "dur", "pitch", "vel", "tie", "glide", "slide_in", "vib")
 
     def __init__(self, start, dur, pitch, vel=90, tie=False):
         self.start, self.dur, self.pitch, self.vel, self.tie = float(start), float(dur), int(pitch), int(vel), tie
+        self.glide = []  # slides held on one pluck: (beats after start, semitones from pitch)
+        self.slide_in = 0  # slide into the first note from this many semitones away (tab /7 or a backslash)
+        self.vib = False  # tab ~: vibrato asked for
+
+    def bent(self):
+        return bool(self.glide or self.slide_in or self.vib)
 
     def end(self):
         return self.start + self.dur
@@ -740,8 +746,17 @@ def parse_tab(text, tuning=None, step=None, bpm=None, program=None):
         colmap = {c: k for k, c in enumerate(keep)}
         for s, r in enumerate(rows):
             c = 0
+            mark = None
             while c < width:
                 ch = r[c]
+                if ch in "/\\s":
+                    mark = ch
+                elif ch == "~":
+                    mine = [o for o in onsets if o[1] == s]
+                    if mine:
+                        mine[-1][3] = "~"
+                elif ch == "|":
+                    mark = None
                 if ch.isdigit():
                     j = c
                     while j < width and r[j].isdigit() and j - c < 2:
@@ -750,7 +765,8 @@ def parse_tab(text, tuning=None, step=None, bpm=None, program=None):
                     if fret > 24 and j - c == 2:  # two single-digit frets side by side
                         fret, j = int(r[c]), c + 1
                     if c in colmap:
-                        onsets.append((col0 + colmap[c], s, tun[s] + fret))
+                        onsets.append([col0 + colmap[c], s, tun[s] + fret, None, mark])
+                    mark = None
                     c = j
                     continue
                 c += 1
@@ -765,17 +781,38 @@ def parse_tab(text, tuning=None, step=None, bpm=None, program=None):
         score.warnings.append(f"tab has no rhythm: each column taken as {col_beats:g} beats (the usual gap between notes = an eighth note); set --tab-step to change")
     tr = Track("tab", program if program is not None else (33 if count in (4, 5) and tun[0] < 50 else 25))
     last_on_string = {}
-    for col, s, p in sorted(onsets):
-        if s in last_on_string:
-            prev = last_on_string[s]
+    for col, s, p, vib, mark in sorted(onsets, key=lambda o: (o[0], o[1])):
+        prev = last_on_string.get(s)
+        cur = prev.pitch + (prev.glide[-1][1] if prev.glide else 0) if prev is not None else None
+        if mark and prev is not None and abs(p - cur) <= 12:  # a slide: the same pluck glides on, no new note
+            prev.glide.append((col * col_beats - prev.start, p - prev.pitch))
+            prev.vib = prev.vib or vib == "~"
+            continue
+        if mark and prev is not None:
+            score.warnings.append(f"slide of {abs(p - cur)} semitones at column {col}: more than the 12 a pitch bend reaches, re-plucked")
+        if prev is not None:
             prev.dur = min(prev.dur, col * col_beats - prev.start)
         n = Note(col * col_beats, 4.0, p, 90)
+        if mark and prev is None and mark in "/\\":
+            n.slide_in = -2 if mark == "/" else 2
+        n.vib = vib == "~"
         tr.notes.append(n)
         last_on_string[s] = n
     end = (cols[-1] + med) * col_beats
     for n in tr.notes:
-        n.dur = max(min(n.dur, end - n.start, 2.0), col_beats)
-    score.tracks.append(tr)
+        hold = (n.glide[-1][0] if n.glide else 0.0) + 2.0
+        n.dur = max(min(n.dur, end - n.start, hold), col_beats)
+    slid = [n for n in tr.notes if n.bent()]
+    if slid:  # its own track (own MIDI channel), so a bend never drags other strings along
+        tr.notes = [n for n in tr.notes if not n.bent()]
+        sl = Track("tab slide", tr.program)
+        sl.notes = slid
+        if tr.notes:
+            score.tracks.append(tr)
+        score.tracks.append(sl)
+        score.warnings.append(f"{len(slid)} slide or vibrato notes play as one pluck with a pitch-bend glide (range +-12)")
+    else:
+        score.tracks.append(tr)
     score.tempos = [(0.0, float(bpm or 100))]
     score.tuning = tun
     score.title = "tab"
@@ -1211,6 +1248,18 @@ def write_midi(score, path, tpq=480):
         if nm:
             evs.append((0, 0, b"\xff\x03" + _vlq(len(nm)) + nm))
         evs.append((0, 1, bytes([0xC0 | ch, tr.program & 0x7F])))
+        if any(n.bent() for n in tr.notes):
+            for cc, v in ((101, 0), (100, 0), (6, BEND_RANGE), (38, 0), (101, 127), (100, 127)):  # RPN 0: bend range +-12
+                evs.append((0, 1, bytes([0xB0 | ch, cc, v])))
+            for n in tr.notes:
+                if not n.bent():
+                    continue
+                spb = score.seconds(n.start + 1) - score.seconds(n.start)
+                s0 = int(round(n.start * tpq))
+                for t, semi in bend_curve(n, spb):
+                    v = max(0, min(16383, int(round(8192 + semi / BEND_RANGE * 8192))))
+                    evs.append((s0 + int(round(t / spb * tpq)), 1, bytes([0xE0 | ch, v & 0x7F, v >> 7])))
+                evs.append((max(int(round(n.end() * tpq)), s0 + 1), 1, bytes([0xE0 | ch, 0, 64])))
         for n in tr.notes:
             if n.pitch < 0 or n.pitch > 127:
                 continue
@@ -1222,6 +1271,86 @@ def write_midi(score, path, tpq=480):
     data = b"MThd" + struct.pack(">IHHH", 6, 1, len(tracks), tpq) + b"".join(tracks)
     Path(path).write_bytes(data)
     return path
+
+
+BEND_RANGE = 12
+
+
+def bend_curve(n, spb, step=0.01):
+    """A bent note's pitch path, sampled every `step` s: [(seconds after start, semitones from n.pitch)].
+    Slide rules: each glide takes 90-320 ms (longer for wider moves), overshoots by 0.08 and settles in 200 ms;
+    held stretches over 0.6 s (or marked ~) get late, eased-in vibrato, 5 Hz and +-0.3 semitones."""
+    dur = n.dur * spb
+    pts = [(0.0, float(n.slide_in))]
+    if n.slide_in:
+        sg = -1 if n.slide_in > 0 else 1
+        pts += [(0.12, 0.08 * sg), (0.32, 0.0)]
+    cur, holds, hold0 = 0.0, [], 0.32 if n.slide_in else 0.0
+    for tb, d in n.glide:
+        t = tb * spb
+        g = min(0.32, 0.09 + 0.03 * abs(d - cur))
+        sg = 1 if d > cur else -1
+        pts = [q for q in pts if q[0] < t]
+        holds.append((hold0, t))
+        pts += [(t, cur), (t + g, d + 0.08 * sg), (t + g + 0.2, float(d))]
+        cur, hold0 = float(d), t + g + 0.2
+    holds.append((hold0, dur))
+    lead = 0.15 if n.vib else 0.3
+    out, k, j = [], 0, 0
+    while k * step <= dur:
+        t = k * step
+        while j + 1 < len(pts) and pts[j + 1][0] <= t:
+            j += 1
+        if j + 1 < len(pts):
+            (ta, a), (tb2, b) = pts[j], pts[j + 1]
+            v = a + (b - a) * (t - ta) / max(tb2 - ta, 1e-9)
+        else:
+            v = pts[j][1]
+        for h0, h1 in holds:
+            if h0 <= t < h1 and (h1 - h0 > 0.6 or n.vib) and t >= h0 + lead:
+                tt = t - h0 - lead
+                v += 0.3 * min(1.0, tt / 0.5) * math.sin(2 * math.pi * 5.0 * tt)
+        out.append((round(t, 4), v))
+        k += 1
+    return out
+
+
+def string_note(buf, rate, i0, dur, pitch, vel, curve, rng, release=0.12):
+    """One plucked steel string whose pitch follows `curve` (a port of a numpy slide-guitar model: harmonics from
+    a single pluck, a bar-glide scrape that follows the pitch speed). Stdlib, so a few partials keep it quick."""
+    n = int((dur + release) * rate)
+    step = curve[1][0] - curve[0][0] if len(curve) > 1 else 0.01
+    parts = []
+    for k in range(1, 13):
+        a = abs(math.sin(k * math.pi * 0.13)) / (k ** 1.05)
+        if a > 1e-3:
+            parts.append((k * (1 + 0.00008 * k * k), a, math.exp(-(0.45 + 0.035 * k ** 1.5) / rate), rng.random() * 6.28))
+    env = [1.0] * len(parts)
+    ph = [q[3] for q in parts]
+    a0 = 0.35 * (min(127, vel + 8) / 127.0) ** 1.6
+    last = curve[0][1]
+    for i in range(n):
+        j = i0 + i
+        if j >= len(buf):
+            break
+        t = i / rate
+        ci = min(int(t / step), len(curve) - 1)
+        semi = curve[ci][1]
+        if ci + 1 < len(curve):
+            semi += (curve[ci + 1][1] - semi) * (t / step - ci)
+        f = 440.0 * 2 ** ((pitch + semi - 69) / 12.0)
+        s = 0.0
+        for q, (mul, a, dec, _) in enumerate(parts):
+            fk = f * mul
+            ph[q] += 2 * math.pi * fk / rate
+            env[q] *= dec
+            if fk < rate * 0.45:
+                s += a * env[q] * math.sin(ph[q])
+        damp = 1.0 if t < dur else max(0.0, 1 - (t - dur) / release) ** 2
+        speed = abs(semi - last) * rate
+        last = semi
+        scrape = (0.004 + 0.0025 * min(speed, 40)) * (rng.random() * 2 - 1) * (vel / 127.0)
+        buf[j] += (a0 * min(1.0, t / 0.0025) * s + scrape) * damp
 
 
 def _track_bytes(evs):
@@ -1495,6 +1624,10 @@ def synth_wav(score, path, rate=22050, tail=1.5):
                         buf[i0 + k] += amp * (rng.random() * 2 - 1) * math.exp(-k / (0.03 * rate))
                 continue
             f = 440.0 * 2 ** ((n.pitch - 69) / 12.0)
+            if n.bent():  # slides and vibrato: one pluck that glides (the string model)
+                spb = score.seconds(n.start + 1) - score.seconds(n.start)
+                string_note(buf, rate, i0, t1 - t0, n.pitch, n.vel, bend_curve(n, spb), rng)
+                continue
             if kind == "pluck":
                 period = max(2, int(rate / f))
                 ring = [rng.random() * 2 - 1 for _ in range(period)]

@@ -1,5 +1,9 @@
 # Handoff
 
+## Slide guitar, 0.1.31 (2026-11-13)
+
+Tab slides now render as glides (see [research/2026-11-13-slide-guitar-study.md](research/2026-11-13-slide-guitar-study.md)). Owed: a listener A/B of `--slide-engine midi` (SoundFont glide) against `string` on one tab; ACE-Step prompt-tag A/B for slide; then the plan's palette and LoRA steps. The main clone's uncommitted hub LEARNINGS entries from another session name private projects and must be generalised before they are committed; their `no-slide-or-bend-in-render` entry is superseded by L-guitar-slide-bends here.
+
 ## 0.1.20 release repaired (2026-11-07, later still)
 
 v0.1.20 had been created by hand before its tag's workflow ran, so the workflow failed and the release had no zip. The release record was deleted, the tag kept, and the workflow rerun: it passed and attached musicwright-0.1.20.zip. The root changelog gained its missing 0.1.20 section, and AGENTS.md now forbids the manual step. The wiki stays at 0.1.19, since 0.1.20 changed no commands. Merged worktree and branches for lit/manning and lit/hewitt removed.

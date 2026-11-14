@@ -70,3 +70,16 @@ ComfyUI's template expands short ideas into one sentence in this order: genre an
 ## YuE2 prompting
 
 From ComfyUI's YuE2 page. Musical directions go in Style; Lyrics holds only sung words. Long prompts shrink the song budget (25 tokens per second): if audio cuts off, raise Max Duration, or shorten the prompt if the log says the budget was reduced. A notation warning means raising `max_abc_tokens`. For covers, keep line lengths and syllable counts near the original.
+
+## Teaching a model one instrument
+
+Checked 2026-11-13 (R-20261113-1); none of these routes has been run here yet.
+
+- ACE-Step 1.5 LoRA: the repo's Gradio LoRA tab; its benchmark is 8 songs in about 1 hour on a 24 GB card and it lists 12 GB; a few songs suffice; captioned full mixes train fine. XL (4B) needs 12 GB with offload for inference, 20 GB recommended; LoRA VRAM on XL is not published.
+- ACE-Step reference audio (style guidance) and repaint (regenerate a span with the rest as context): place a slide phrase or steer with a slide clip. Untested for timbre.
+- Stable Audio Open: fine-tune with stable-audio-tools (`train.py --ckpt-path`); its community licence limits commercial use.
+- MusicGen-melody (1.5B, 3.3B large): text plus a melody chromagram; chroma carries pitch class, not glides; CC BY-NC 4.0.
+- Timbre transfer: RAVE/BRAVE or DDSP over a rendered line; DDSP is monophonic and wants 30-60 min of clean audio. A Karplus-Strong model alone stays a plucked synth.
+- Source audio from mixes: Demucs `htdemucs_6s` guitar stem, UVR or MVSep; no slide-specific separator. Bleed is acceptable for a LoRA or timbre model, risky for notes heard bare; sparse recordings (one guitar and a voice) separate best.
+- Rights for a style LoRA on old records: US sound recordings published before 1923 entered the public domain on 1 January 2022, and each later year enters on 1 January 100 years after publication (1925 in 2026). Check each record. Caption in generic style words, never a performer's name; keep a model trained on non-public-domain audio out of anything that may be sold, and disclose AI content where a store asks.
+- Full study with sources: the repository's ai-docs/research/2026-11-13-slide-guitar-study.md.
