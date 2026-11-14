@@ -352,3 +352,6 @@ README "Works with" section and a wiki Works-With page now say what crosses each
 
 ## [2026-11-14] update | README Works with: fractalwright (new public plugin), mirroring its own section
 ## [2026-11-14] feature | 0.1.34 mw.py envelopes (per-frame bands, 200 ms loudness, onsets, beats, chroma) for fractalwright audio visuals; stdlib FFT, NumPy only as a speed-up
+
+
+## [2026-11-14] verdict | slidesteel LoKr blind A/B: XL SFT base won 4 of 6, XL LoKr 1, none 1; all turbo arms rejected, Hawaiian (training genre) failed on all. Adapter parked; L-003, style-lora.md XL fit line, models.md note. State: Music/slide-lora/HANDOFF.md

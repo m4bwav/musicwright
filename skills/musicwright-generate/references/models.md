@@ -73,7 +73,7 @@ From ComfyUI's YuE2 page. Musical directions go in Style; Lyrics holds only sung
 
 ## Teaching a model one instrument
 
-Checked 2026-11-13 (R-20261113-1); none of these routes has been run here yet.
+Checked 2026-11-13 (R-20261113-1). The ACE-Step LoKr route was run 2026-11-14 on 51 Hawaiian steel 78s (2B turbo and XL SFT): in a blind test neither adapter beat its base; the XL SFT base was preferred (LEARNINGS L-003). The other routes are untested.
 
 - ACE-Step 1.5 LoRA: the repo's Gradio LoRA tab; its benchmark is 8 songs in about 1 hour on a 24 GB card and it lists 12 GB; a few songs suffice; captioned full mixes train fine. XL (4B) needs 12 GB with offload for inference, 20 GB recommended; LoRA VRAM on XL is not published.
 - ACE-Step reference audio (style guidance) and repaint (regenerate a span with the rest as context): place a slide phrase or steer with a slide clip. Untested for timbre.

@@ -1,6 +1,6 @@
 # Train and use a style LoRA (ACE-Step 1.5)
 
-Checked 2026-11-13 (R-20261113-2). Training measured on one run; no LoRA take has had a listener's verdict yet, so nothing here is a recipe.
+Checked 2026-11-13 (R-20261113-2). Training measured on one run. The first blind verdict (2026-11-14, LEARNINGS L-003) found the slide adapter no better than its base model, so nothing here is a recipe.
 
 ## Data and captions
 
@@ -23,7 +23,7 @@ python train.py --plain --yes fixed --checkpoint-dir ./checkpoints --model-varia
 
 ## Use it in ComfyUI (native nodes, no custom pack)
 
-ComfyUI's LoRA loader already maps `lycoris_*` and `base_model.model.*` keys onto the ACE-Step 1.5 decoder, and its weight adapters include LoKr, so no key conversion is needed. What must match is the **model size**: an adapter trained on turbo (2B, hidden 2048) does not fit the XL files (hidden 2560) and loads nothing.
+ComfyUI's LoRA loader already maps `lycoris_*` and `base_model.model.*` keys onto the ACE-Step 1.5 decoder, and its weight adapters include LoKr, so no key conversion is needed. What must match is the **model size**: an adapter trained on turbo (2B, hidden 2048) does not fit the XL files (hidden 2560) and loads nothing. An adapter trained on the XL SFT model fits `acestep_v1.5_xl_sft_bf16` in ComfyUI (360 modules matched, 2026-11-14) and runs on the acestep-xl-sft recipe.
 
 1. Put the DiT it was trained on into `models/diffusion_models`. For turbo, the checkout's `checkpoints/acestep-v15-turbo/model.safetensors` has the same key layout as the ComfyUI repackaged files and loads in UNETLoader as is (copy it as e.g. `acestep_v1.5_turbo_bf16.safetensors`, 4.8 GB).
 2. Check and install the adapter:
