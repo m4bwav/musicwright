@@ -2,11 +2,6 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
-## Unreleased
-
-- `mw.py lora check|convert`: match a LoRA or LoKr to a model by name and shape and write ComfyUI key names (ACE-Step Side-Step LoKr included); refuses an adapter trained on another model size.
-- `mw.py gen --lora FILE[:STRENGTH]`: apply LoRAs in the ComfyUI recipes through LoraLoaderModelOnly.
-
 ## 0.1.31 (2026-11-13)
 
 - `mw.py render`: tab slides (`/`, a backslash, `s`) and vibrato (`~`) play as one pluck with a pitch-bend glide on their own MIDI channel, with RPN 0 bend range +-12; the built-in synth plays them with a plucked-string model, and `--slide-engine string` uses that model under FluidSynth too.
