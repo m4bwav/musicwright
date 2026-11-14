@@ -8,6 +8,12 @@ Entry shape: `### C-20261107-2 · 2026-11-07 · Stretch, varispeed and formant n
 
 Added the book's failure modes as a short check; not tested on generated audio.
 
+### C-20261113-1 · 2026-11-13 · Rubber Band for pitch shifts
+- because: user request (slide guitar study, ai-docs/research/2026-11-13-slide-guitar-study.md)
+- files: references/ffmpeg.md (Stretching)
+
+Rubber Band R3 with --formant and pitch or time maps over resampling, Audacity or librosa. Evals not re-run.
+
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261109-1 · 2026-11-09 · Tagging section

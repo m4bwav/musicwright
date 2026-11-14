@@ -39,6 +39,8 @@ ffmpeg -i in.wav -af "atempo=1.03" out.wav
 
 Stretching: `atempo` changes length and keeps pitch. A speed change (`asetrate`, varispeed) moves pitch and length together, so a tempo-matched take made that way is also in a new key. After a stretch, listen to the drum hits: smeared or doubled attacks, or a washy, distant sound, mean the stretch went too far. Shifting a vocal's pitch by resampling moves its formants too (chipmunk up, giant down); small shifts pass, and damage grows fast toward an octave. From Roads, The Computer Music Tutorial 2e, ch. 31; not measured on generated music.
 
+For real pitch shifts use Rubber Band (the `rubberband` CLI, R3 engine `-3`), not resampling, Audacity or librosa's `pitch_shift`: `--formant` keeps a voice or instrument body in place, and `--pitchmap`/`--timemap` move or bend pitch and timing along a file (placing cut slide-guitar notes on a melody, for instance). Keep shifts within 3-4 semitones of the source. Audacity is for auditioning and manual clean-up; its scripting pipe needs the GUI open. ffmpeg's `rubberband` filter exists only in builds compiled with it.
+
 `afade`'s default curve is linear (`tri`); `qsin` gives equal-power fades. Use it for fade-outs too:
 in a blind test at 3 s and 15 s on two pieces, one listener picked `qsin` all four times over `hsin`
 and faster-falling log shapes. ffmpeg's `curve=log` is not a log fade: a fade-out is still at -3.2 dB

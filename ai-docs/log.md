@@ -334,3 +334,11 @@ Append-only. Newest last.
 ## 2026-11-11, works-with docs
 
 README "Works with" section and a wiki Works-With page now say what crosses each way between musicwright and its partner plugins, and why the pair helps. Taken from the partner mentions in each plugin's skills.
+
+## 2026-11-13 (slide guitar)
+
+- Owner's request: improve slide guitar. Study written: research/2026-11-13-slide-guitar-study.md (MIDI slide rules, prompt tags, sample instruments, free recordings, palette with Rubber Band, stems from mixes, teaching a model one instrument, public-domain rules for a style LoRA, ranked plan).
+- Built 0.1.31: tab `/`, backslash, `s` and `~` parse as glides and vibrato on one pluck; slide notes go on their own MIDI channel with RPN 0 = +-12 and a 10 ms pitch-bend curve (glide, overshoot, settle, late vibrato); the built-in synth plays them with a stdlib port of the owner's numpy string model; `--slide-engine string` mixes that model under FluidSynth. Test `test_render_tab_slides_glide_on_one_pluck`, fixture tests/fixtures/slide.txt. FluidSynth is not installed on the dev box, so the FluidSynth bend path is untested by ear; FluidSynth plays the MIDI file as written.
+- Docs: compose notation.md Slides and vocabulary.md slide words; generate models.md Teaching a model one instrument (R-20261113-1); produce ffmpeg.md Rubber Band note; hub LEARNINGS L-guitar-slide-bends marked fixed. sfxwright edit.md gained a Rubber Band note; voicewright does no pitch shifting, skipped.
+- Budget stays yellow (installed 702 KB), as before.
+

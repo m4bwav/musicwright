@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261113-1 · 2026-11-13 · Teaching a model one instrument
+- because: R-20261113-1, user request
+- files: SKILL.md (Step 2), references/models.md (new section)
+
+Routes for an instrument the model does badly (tags, reference or repaint, LoRA, timbre transfer), stem sourcing and public-domain rules for a style LoRA. Evals not re-run (no trigger change).
+
 ### C-20261106-5 · 2026-11-06 · SFT pack: wider blind test; recommended for calm and combat, still not the default
 - because: R-20261106-7
 - files: SKILL.md (model table), ../musicwright/references/recipes.json (acestep-xl-sft-pack)

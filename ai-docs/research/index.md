@@ -16,5 +16,6 @@ The first research pass for musicwright, 2026-10-17: three notes written by rese
 - [04-learned-quality-score.md](04-learned-quality-score.md): read before adding a learned quality score to take ranking; Audiobox Aesthetics on nine judged takes (2026-11-02).
 - [05-sources-to-mine.md](05-sources-to-mine.md): the owner's list of forums, sites, books, blogs and docs to mine, in order, with access limits and a done list (2026-11-02).
 - [06-acestep-node-packs.md](06-acestep-node-packs.md): ACE-Step extract node packs compared; vendor the RyanOnTheInside extract and cover guiders into comfy_nodes (2026-11-03).
+- [2026-11-13-slide-guitar-study.md](2026-11-13-slide-guitar-study.md): slide guitar from notation, models and samples; teaching a model one instrument; what 0.1.31 built (2026-11-13).
 
 Related: [../INDEX.md](../INDEX.md)
