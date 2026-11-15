@@ -355,3 +355,7 @@ README "Works with" section and a wiki Works-With page now say what crosses each
 
 
 ## [2026-11-14] verdict | slidesteel LoKr blind A/B: XL SFT base won 4 of 6, XL LoKr 1, none 1; all turbo arms rejected, Hawaiian (training genre) failed on all. Adapter parked; L-003, style-lora.md XL fit line, models.md note. State: Music/slide-lora/HANDOFF.md
+
+## 2026-11-15 · musicwright-generate evergreen refresh
+
+Quiet check (R-20261115-1); no SKILL.md change.
