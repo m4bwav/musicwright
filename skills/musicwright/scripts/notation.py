@@ -9,6 +9,7 @@ import math
 import re
 import struct
 import wave
+import zlib
 import xml.etree.ElementTree as ET
 import zipfile
 from fractions import Fraction
@@ -50,6 +51,7 @@ class Score:
         self.meter = (4, 4)
         self.key = None  # (fifths, "major"|"minor") when the source says
         self.warnings = []
+        self.bar_issues = []  # ABC: {voice, bar, beats, expected} for each inner bar whose summed lengths miss the meter
 
     def notes(self):
         return [n for t in self.tracks for n in t.notes]
@@ -440,6 +442,7 @@ def parse_abc(text, select=None):
         for i, b in enumerate(bars[1:-1], 2):  # first and last bars may be pickups
             if abs(b.length - expected) > 1e-6:
                 score.warnings.append(f"voice {st['name']} bar {i} lasts {b.length:g} beats, not {expected:g}")
+                score.bar_issues.append({"voice": st["name"], "bar": i, "beats": round(b.length, 4), "expected": expected})
         tr = Track(st["name"], programs.get(vid, 0))
         end, chords = bars_to_notes(expand_bars(bars), tr)
         all_chords.extend(chords)
@@ -1592,6 +1595,40 @@ def melody_hints(score):
                      "longest_step_run": best, "top_note_visits": sum(1 for i, v in enumerate(p) if v == max(p) and (i == 0 or p[i - 1] != v)),
                      "motif_share": motif_share, "hints": hints})
     return rows
+
+
+def piano_roll_png(score, path, px_per_beat=24, px_per_semi=4):
+    """Write a piano-roll PNG (stdlib zlib): one colour per track, grey bar lines; for a vision check of the notes."""
+    notes = score.notes()
+    if not notes:
+        raise NotationError("no notes to draw")
+    lo, hi = min(n.pitch for n in notes) - 2, max(n.pitch for n in notes) + 2
+    bar = 4.0 * score.meter[0] / score.meter[1]
+    w = min(8000, int(score.length_beats() * px_per_beat) + 2)
+    h = (hi - lo + 1) * px_per_semi
+    rows = [bytearray(b"\xff\xff\xff" * w) for _ in range(h)]
+    b = 0.0
+    while b * px_per_beat < w:
+        x = int(b * px_per_beat)
+        for r in rows:
+            r[3 * x:3 * x + 3] = b"\xbb\xbb\xbb"
+        b += bar
+    cols = [b"\x1f\x5f\xbf", b"\xcf\x4f\x1f", b"\x2f\x9f\x3f", b"\x8f\x2f\xaf", b"\x9f\x7f\x0f"]
+    for ti, t in enumerate(score.tracks):
+        c = cols[ti % len(cols)]
+        for n in t.notes:
+            x0 = min(w - 1, int(n.start * px_per_beat))
+            x1 = min(w, max(x0 + 1, int(n.end() * px_per_beat) - 1))
+            y0 = (hi - n.pitch) * px_per_semi
+            for y in range(y0, y0 + px_per_semi - 1):
+                rows[y][3 * x0:3 * x1] = c * (x1 - x0)
+
+    def chunk(tag, data):
+        return struct.pack(">I", len(data)) + tag + data + struct.pack(">I", zlib.crc32(tag + data) & 0xffffffff)
+    raw = b"".join(b"\x00" + bytes(r) for r in rows)
+    Path(path).write_bytes(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0))
+                           + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b""))
+    return {"png": str(Path(path).resolve()), "width": w, "height": h, "pitch_range": [midi_name(lo), midi_name(hi)]}
 
 
 def transpose(score, semitones):

@@ -8,6 +8,10 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · State-change delay before switch
 
 State-change delay before switching music, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261117-1 · 2026-11-17 · piro as the retro/NES chiptune route
+- because: technique harvest D3, [piropipo](https://github.com/miyo-hime/piropipo) README
+- files: references/interactive.md (new Retro and NES chiptune)
+
 ### C-20261113-1 · 2026-11-13 · Layers carry density only; sparse-to-dense order; open intro, resolved outro
 - because: R-20261113-1
 - files: references/interactive.md (Layers, Transitions)

@@ -84,3 +84,11 @@ Decide first whether it is **local** or **global**. A local stinger shares the t
 - Real-time filters: low-pass near death, high-pass on a long jump. Keep music out of 3D positioning unless it is in the world; a placed snare can be taken for gunfire.
 - Tempo states are prerendered files: two or three per state with ramp clips, and a timeout so shifts do not stack. An AI take at another bpm is a different piece, so stretch offline or use cover mode and check.
 - Rhythm-tied levels reverse the order: the music comes first, and designers get a list of accents with times and restart points on phrase boundaries.
+
+## Retro and NES chiptune
+
+For music that must obey a real chip (NES: two pulses, a triangle without volume, noise),
+[piropipo](https://github.com/miyo-hime/piropipo) (Apache-2.0, a Rust binary `piro`) compiles a grid
+format that writes every note's bar and slot, lints chip limits, reports per-bar loudness and draws a
+piano roll; `piro sfx` makes deterministic coin, jump and explosion sounds. It is a third-party binary:
+the user installs and runs it. Not yet tried here (2026-11-17, README only).
