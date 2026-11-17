@@ -57,6 +57,12 @@ K: or key signature; short passing notes pass): rules of thumb, so fix or keep t
 return in other cues, keep its notes here and use cover or repaint from one render rather than
 hoping a caption reproduces it.
 
+In ABC a note's place is the sum of every length before it, so one wrong length shifts the rest
+silently. Write one bar per line with a bar-number comment (`% bar 5`), sum each bar against the
+meter before rendering, and read `bar_lengths` in the `--check` output (every inner bar that misses;
+`--roll x.png` draws a piano roll to look at). Grid formats such as [piropipo](https://github.com/miyo-hime/piropipo)
+write each note's bar and slot, so each line checks on its own.
+
 ## Step 4: notation to audio and back
 
 ([references/notation.md](references/notation.md) has the formats, tools and limits.)

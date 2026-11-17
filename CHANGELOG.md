@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.35 (2026-11-17)
+
+- `mw.py render --check` lists `bar_lengths` (each inner ABC bar whose summed lengths miss the meter) and `--roll x.png` writes a piano-roll PNG (stdlib). musicwright-compose: sum each bar, one bar per line. musicwright-game: piro as the retro/NES chiptune route. Source: [piropipo](https://github.com/miyo-hime/piropipo).
+
 ## 0.1.34 (2026-11-14)
 
 - `mw.py envelopes <audio> --fps N --bands critical|N --json out`: per-frame band energies on critical-band edges (a 4x longer frame for the bands under 200 Hz), 200 ms loudness, onsets, beats and chroma, for music-driven visuals; refuses MP3 unless `--allow-mp3`. Stdlib, with the FFT sped up by NumPy when present. Tests: a sine sweep lights the bands in order, silence stays at zero, click-track beats land within one frame at 30 fps.

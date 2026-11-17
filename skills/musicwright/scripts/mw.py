@@ -58,7 +58,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.34"
+VERSION = "0.1.35"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1630,6 +1630,9 @@ def cmd_render(a):
     if a.check:
         res["melody"] = notation.melody_hints(score)
         res["key_fit"] = notation.key_fit(score)
+        res["bar_lengths"] = {"ok": not score.bar_issues, "bad": score.bar_issues}
+        if a.roll:
+            res["roll"] = notation.piano_roll_png(score, out_file(a.roll))
         res["next"] = ("fix the warnings (a bar that is too long or short usually means a wrong note length); melody hints are "
                        "rules of thumb for lines you wrote, not errors; then render with --out")
         return res
@@ -2962,6 +2965,7 @@ def build_parser():
                    help="tab slides (/ \\ s) and vibrato (~): midi = pitch-bend glide in the SoundFont (bend range set to +-12); "
                         "string = a plucked-string model that glides (always used by the built-in synth)")
     s.add_argument("--check", action="store_true", help="only read the score and report bars, notes and problems")
+    s.add_argument("--roll", help="with --check: also write a piano-roll PNG here for a vision check")
     score_opts(s)
     s.set_defaults(fn=cmd_render)
 

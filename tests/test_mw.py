@@ -1339,6 +1339,22 @@ WANDER = "\n".join(["X:1", "T:Random walk", "M:4/4", "L:1/16", "K:C", " ".join(
                                (3, 1, 5, 2, 7, 1, 4, 6, 2, 3, 8, 1, 5, 3, 2, 6, 4, 1, 7, 2))) + " |]", ""])
 
 
+class BarLengths(unittest.TestCase):
+    def test_short_inner_bar_is_listed_and_roll_png_written(self):
+        """render --check sums each bar (piropipo's point: one wrong length shifts every later note)."""
+        src = TMP / "shortbar.abc"
+        src.write_text("X:1\nT:Short bar\nM:4/4\nL:1/4\nQ:1/4=100\nK:C\nC D E F | G A B | c B A G | C4 |]\n", encoding="utf-8")
+        png = TMP / "roll" / "shortbar.png"
+        code, d = run("render", src, "--check", "--roll", png)
+        self.assertEqual(code, 0, d)
+        self.assertFalse(d["bar_lengths"]["ok"], d)
+        self.assertEqual([(b["bar"], b["beats"]) for b in d["bar_lengths"]["bad"]], [(2, 3.0)])
+        self.assertEqual(png.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertGreater(d["roll"]["width"], 100)
+        code, d = run("render", FIXTURES / "tune.abc", "--check")
+        self.assertTrue(d["bar_lengths"]["ok"], d["bar_lengths"])
+
+
 class MelodyHints(unittest.TestCase):
     def test_wandering_line_gets_both_hints_and_a_motif_line_none(self):
         good, bad = TMP / "ode.abc", TMP / "wander.abc"
