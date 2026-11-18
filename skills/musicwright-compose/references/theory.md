@@ -128,6 +128,7 @@ Verse-chorus: Intro, V1, (Pre), Chorus, V2, (Pre), Chorus, Bridge, Chorus, Outro
 or 16 bars (at 120 bpm in 4/4 one bar is 2 s). AABA: four 8-bar sections. Through-composed: no
 repeats, follows the story (most film cues). Game loop: A-B-A'-C and back. EDM: intro, build,
 drop, breakdown, build, drop, outro in 16/32-bar blocks.
+Small-group jazz standard: a short intro (4 or 8 bars), the head (melody once through the tune's whole form, often 32-bar AABA), solo choruses that each run the full form, the head again, an optional tag; a medley joins tunes at one tempo (Faulkner and Becker, *Do You Know...?*, ch. 1).
 
 Eight-bar sentence: state a short idea twice over the tonic in 4 bars, then 4 bars that break it up and speed up the chords into a cadence (Open Music Theory, sentence).
 

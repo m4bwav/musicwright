@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261118-1 · 2026-11-18 · Small-group jazz form
+- because: R-20261118-1
+- files: references/theory.md (Form)
+- One line: intro, head, solo choruses over the whole form, head, tag; medleys at one tempo.
+
 ### C-20261117-2 · 2026-11-17 · Vocal delivery words
 - because: R-20261117-1
 - files: references/vocabulary.md (new Vocal delivery words)
