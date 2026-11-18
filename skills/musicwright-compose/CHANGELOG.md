@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261117-2 · 2026-11-17 · Vocal delivery words
+- because: R-20261117-1
+- files: references/vocabulary.md (new Vocal delivery words)
+
+A soft-to-screaming delivery table with volume and range checks, and an effects list with style pairings. Book rule, unverified; caption words untested on any model. Evals not re-run (no trigger change).
+
 ### C-20261117-1 · 2026-11-17 · Per-bar summed-length rule
 - because: technique harvest D3, [piropipo](https://github.com/miyo-hime/piropipo) README (positions written per note so a wrong length cannot shift later bars)
 - files: SKILL.md (after the validate paragraph); hub mw.py render --check gains `bar_lengths` and `--roll`. Writing ABC now sums each bar and reads the lint.

@@ -127,3 +127,6 @@ Owner's blind answers, set model-tests-nov7, ACE-Step XL SFT route, seeds 6101 a
 
 ### R-20261109-1 · 2026-11-09 · Hill, Scoring the Screen: contextual harmony and film signs
 Andy Hill, *Scoring the Screen* (2017), ch. 11 (p. 306-313): common-tone, cadence-free triad chains as the interior drama sound; ch. 3 (p. 49-50): horn fifth, falling minor third, oboe, low-woodwind tritone as Western film signs. Caption words untested on any model.
+
+### R-20261117-1 · 2026-11-17 · Sadolin, Complete Vocal Technique: delivery steps and effects
+Cathrine Sadolin, *Complete Vocal Technique* (2012), the modes (PDF p. 82-117) and effects (p. 180-212) chapters, translated into caption words: four delivery steps by loudness and brightness with their volume and range limits, and which effects suit which steps and styles. One teaching school's classification, book rule, unverified; the caption words are untested on ACE-Step or MiniMax. Not carried: anatomy, breathing and exercises.

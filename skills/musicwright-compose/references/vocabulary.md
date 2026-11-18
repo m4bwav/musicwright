@@ -70,6 +70,32 @@ Name the mechanism rather than an artist; these are period facts (Manning, *Elec
 
 Candidates from Suno users, untested on ACE-Step: "bottleneck slide guitar", "lap steel slides", "slide resonator guitar", "warm dobro slides", with a genre (delta blues, country, Hawaiian) and a role ("long gliding notes between vocal lines"). A text model's slide is a gamble; for a slide you can control, render a tab (references/notation.md, Slides).
 
+## Vocal delivery words
+
+A voice can be sorted by how hard and bright it is, from soft to screaming. Name one step in a
+caption, never a loose word like "belted", which singers use for three different sounds. The
+teaching system's own mode names will mean nothing to a model; use the caption words. Book rule
+(Sadolin, *Complete Vocal Technique*), unverified, and untested on ACE-Step or MiniMax.
+
+| Step | Caption words | Check before you ask |
+|---|---|---|
+| Soft | soft, breathy, whispery, airy, gentle clear vocal | quiet to medium; breath only when quiet |
+| Restrained | restrained, plaintive, held-back, half-voice | medium only, never very loud or very soft |
+| Shouted | powerful, shouted, raw chest voice | loud; tops out in the upper-middle range, so a high shout is a scream |
+| Screaming | bright, sharp, screaming, piercing | loud; high notes on open "ee" and "eh" vowels |
+
+Effects sit on top of a step and fit some styles better than others:
+
+- **Air**: soft and quiet lines only. A loud breathy vocal is a studio blend, so ask for a
+  whispered double under a strong lead instead.
+- **Creak** (vocal fry, crackle): soft or restrained lines, for closeness or a voice about to break.
+- **Distortion** (rasp, grit): any step; give an amount (light, medium, heavy rasp), not just
+  "distorted". More rasp, less pitch.
+- **Growl**: jazz, R&B, gospel, blues. **Grunt** (guttural): death and black metal only.
+- **Scream**: a high note on the shouted or screaming step, bright, not a separate sound.
+- **Vibrato**: say its width and when it starts: "straight tone opening into vibrato" for pop and
+  rock, "vibrato throughout" for classical; slow songs want slow vibrato.
+
 ## Failure modes
 
 - Plausible bar to bar is not song form. A 1950 note-to-note statistical machine failed on exactly this (Manning p. 88), so listen across sections, not to one good passage.
