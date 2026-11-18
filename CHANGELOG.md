@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.36 (2026-11-17)
+
+- musicwright-compose: vocabulary.md gains Vocal delivery words, a soft-to-screaming table with volume and range checks and an effects-to-style list (Sadolin, *Complete Vocal Technique*; book rule, unverified, untested on any model).
+
 ## 0.1.35 (2026-11-17)
 
 - `mw.py render --check` lists `bar_lengths` (each inner ABC bar whose summed lengths miss the meter) and `--roll x.png` writes a piano-roll PNG (stdlib). musicwright-compose: sum each bar, one bar per line. musicwright-game: piro as the retro/NES chiptune route. Source: [piropipo](https://github.com/miyo-hime/piropipo).
