@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.37 (2026-11-18)
+
+- musicwright-compose: theory.md Form gains the small-group jazz standard routine (Faulkner and Becker, *Do You Know...?*; book rule, unverified).
+
 ## 0.1.36 (2026-11-17)
 
 - musicwright-compose: vocabulary.md gains Vocal delivery words, a soft-to-screaming table with volume and range checks and an effects-to-style list (Sadolin, *Complete Vocal Technique*; book rule, unverified, untested on any model).
