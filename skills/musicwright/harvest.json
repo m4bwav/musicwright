@@ -18,6 +18,46 @@
       "sub": "LocalLLaMA",
       "weight": "low",
       "keep": "open audio and music model releases only"
+    },
+    {
+      "kind": "github",
+      "query": "comfyui music",
+      "keep": "top 10 by stars; new entries and their owners' repos become harvest targets"
+    },
+    {
+      "kind": "github",
+      "query": "ace-step",
+      "keep": "top 10 by stars; new entries and their owners' repos become harvest targets"
+    },
+    {
+      "kind": "github",
+      "query": "music generation",
+      "keep": "top 10 by stars; new entries and their owners' repos become harvest targets"
+    },
+    {
+      "kind": "github",
+      "url": "https://github.com/ace-step/ACE-Step-1.5",
+      "keep": "comfyui-top10 harvest seed M1; new nodes, releases and the owner's (ace-step) other repos"
+    },
+    {
+      "kind": "github",
+      "url": "https://github.com/ryanontheinside/ComfyUI_RyanOnTheInside",
+      "keep": "comfyui-top10 harvest seed M2; new nodes, releases and the owner's (ryanontheinside) other repos"
+    },
+    {
+      "kind": "github",
+      "url": "https://github.com/christian-byrne/audio-separation-nodes-comfyui",
+      "keep": "comfyui-top10 harvest seed M3; new nodes, releases and the owner's (christian-byrne) other repos"
+    },
+    {
+      "kind": "github",
+      "url": "https://github.com/billwuhao/ComfyUI_ACE-Step",
+      "keep": "comfyui-top10 harvest seed M4; new nodes, releases and the owner's (billwuhao) other repos"
+    },
+    {
+      "kind": "github",
+      "url": "https://github.com/smthemex/ComfyUI_YuE",
+      "keep": "comfyui-top10 harvest seed M5; new nodes, releases and the owner's (smthemex) other repos"
     }
   ]
 }
