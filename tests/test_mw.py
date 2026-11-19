@@ -1282,6 +1282,20 @@ class FixesAndPreviews(unittest.TestCase):
         code, d = run("preview", FX["tone"], "--out", out / "quiet", "--as", "quiet", "--lufs", "-20")
         self.assertAlmostEqual(mw.measure_file(d["previews"][0]["preview"])["lufs_i"], -40, delta=0.5)
 
+    def test_reverb_tail_rings_after_the_dry_stops(self):
+        src = stereo("0.3*sin(2*PI*440*t)*lt(t,1)", "0.3*sin(2*PI*440*t)*lt(t,1)", "rv_src.wav")
+        dst, ir = TMP / "rv" / "wet.wav", TMP / "rv" / "ir.wav"
+        code, d = run("reverb", src, "--out", dst, "--seconds", "1.5", "--wet", "0.3", "--ir-out", ir)
+        self.assertEqual(code, 0, d)
+        self.assertTrue(0.6 < d["rt60_s"] < 2.0, d["rt60_s"])
+        self.assertTrue(ir.exists())
+        near, late = mean_volume(dst, 1.1, 1.3), mean_volume(dst, 2.2, 2.4)
+        self.assertGreater(near, -50)  # the tail is audible after the tone stops
+        self.assertGreater(near - late, 10)  # and it decays
+        self.assertLess(mean_volume(dst, 2.62, 2.7), -70)  # to silence, not a cut
+        code, d2 = run("reverb", src, "--out", TMP / "rv" / "again.wav", "--seconds", "1.5", "--wet", "0.3")
+        self.assertEqual(d2["rt60_s"], d["rt60_s"])  # same seed, same room
+
     def test_monobass_centres_the_lows_and_leaves_the_rest(self):
         # the bass in the left channel only (correlation 0): folded, it sits in both. Pure anti-phase bass would vanish instead
         src = stereo("0.3*sin(2*PI*60*t)+0.2*sin(2*PI*1000*t)", "0.2*sin(2*PI*1000*t)", "mb_src.wav")
@@ -1450,6 +1464,35 @@ class NotationReaders(unittest.TestCase):
         for bad in ("melody: H4", "melody: C4:0", "chords: Xq7", "tempo: 3", "part: C4"):
             with self.assertRaises(mw.notation.NotationError, msg=bad):
                 mw.notation.parse_mws(bad)
+
+    def test_mws_presets_and_drum_steps(self):
+        s = mw.notation.parse_mws("part kick: x...X...*2\npart shaker: xx:1/4 -:1 x\npart pad: A3+C4:4\npart lead 73: E5:1\n")
+        kick, shaker, pad, lead = s.tracks
+        self.assertTrue(kick.drums and shaker.drums and not pad.drums)
+        self.assertEqual([n.start for n in kick.notes], [0.0, 2.0, 4.0, 6.0])
+        self.assertEqual([n.vel for n in kick.notes[:2]], [100, 125])  # X accents
+        self.assertEqual({n.pitch for n in kick.notes}, {36})
+        self.assertEqual([n.start for n in shaker.notes], [0.0, 0.25, 1.5])  # a rest of 1, then the half-beat default
+        self.assertEqual((pad.program, lead.program), (89, 73))  # preset program, or the one written
+        with self.assertRaises(mw.notation.NotationError):
+            mw.notation.parse_mws("part kick: C4:1")
+
+    def test_arrange_writes_a_playable_mws(self):
+        f = Path(tempfile.mkdtemp(prefix="mw_arr_")) / "a.mws"
+        code, d = run("arrange", "--parts", "kick,brush,shaker,pad,bass,lead", "--chords", "Am F", "--bars", "4", "--out", f)
+        self.assertEqual(code, 0, d)
+        text = f.read_text(encoding="utf-8")
+        self.assertIn("# chords: Am:4 F:4 Am:4 F:4", text)  # cycled; a comment since the pad holds them
+        self.assertIn("part bass: A2:4 F2:4 A2:4 F2:4", text)
+        self.assertEqual(d["beats"], 16.0)
+        names = [t["name"] for t in d["tracks"]]
+        self.assertEqual(names, ["kick", "brush", "shaker", "pad", "bass", "lead"])
+        code, d = run("arrange", "--parts", "kick,hat", "--meter", "3/4", "--bars", "2", "--out", f)
+        self.assertEqual(d["beats"], 6.0)
+        self.assertIn("part hat: xxxxxx*2", f.read_text(encoding="utf-8"))
+        code, d = run("arrange", "--parts", "kazoo", "--chords", "C", "--out", f)
+        self.assertFalse(d["ok"])
+        self.assertIn("no preset", d["error"])
 
     def test_tab_tuning_frets_and_step(self):
         s, kind = mw.notation.load(FIXTURES / "riff.txt", bpm=100)

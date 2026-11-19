@@ -303,6 +303,15 @@ def add_chord_track(score, chords, end_beat, program=0):
 MWS_KEY = re.compile(r"(?i)^(title|bpm|meter|program|chords|melody|part)\b\s*([^:]*):\s*(.*)$")
 MWS_TOKEN = re.compile(r"^(>?)([^:]+?)(?::(\d+(?:\.\d+)?|\d+/\d+))?$")
 MWS_SNIFF = re.compile(r"(?mi)^(melody|chords|part\b[^:\n]*)\s*:")
+MWS_STEPS = re.compile(r"^([xX.]+)(?::(\d+(?:\.\d+)?|\d+/\d+))?(?:\*(\d+))?$")
+# Part presets: a part named after one gets its sound without a program number.
+# Drums take step patterns (x hit, X accent, . rest; default step half a beat; *N repeats).
+MWS_DRUMS = {"kick": (36, 100), "snare": (38, 95), "brush": (38, 50), "rim": (37, 80), "clap": (39, 90),
+             "hat": (42, 70), "openhat": (46, 70), "shaker": (82, 60), "ride": (51, 70), "tom": (45, 85)}
+MWS_PITCHED = {"pad": 89, "lead": 81, "bass": 33, "keys": 4, "piano": 0, "strings": 48, "harp": 46,
+               "bells": 14, "flute": 73, "pluck": 25, "organ": 16}
+ARRANGE_DRUMS = {"kick": "x...x...", "snare": "..x...x.", "brush": "..X.x.X.", "rim": "..x...x.", "clap": "..x...x.",
+                 "hat": "xxxxxxxx", "openhat": ".x.x.x.x", "shaker": "XxxxXxxx", "ride": "x.xxx.xx", "tom": "......xx"}
 
 
 def _mws_beats(txt, line_no):
@@ -324,6 +333,7 @@ def parse_mws(text):
     chords: Am7/G:4 F:2 G:2               symbol:beats, slash bass, default one bar
     melody: C4+E4:2 >G4:1 -:1             pitch:beats, + stacks, > slides in from the last note, - rests
     part bass 33: A2:2 G2:2               a named part with its General MIDI program
+    part kick: x...x...*2                 a preset part (MWS_DRUMS, MWS_PITCHED) needs no program
 
     A token without :beats keeps the previous length (1 at the start). Lines of one part join up.
     """
@@ -375,8 +385,28 @@ def parse_mws(text):
     bar = num * 4.0 / den
     for name in order:
         pr = parts[name]
-        t = Track(name, default_prog if pr["prog"] is None else pr["prog"])
+        base = name.lower().rstrip("0123456789")
+        drum = MWS_DRUMS.get(base) if pr["prog"] is None else None
+        prog = pr["prog"] if pr["prog"] is not None else MWS_PITCHED.get(base, default_prog)
+        t = Track(name, prog, drums=bool(drum))
         beat, length, prev = 0.0, 1.0, None
+        if drum:
+            for tok, line_no in pr["toks"]:
+                dm = MWS_STEPS.match(tok)
+                rm = MWS_TOKEN.match(tok)
+                if not dm and rm and rm.group(2) == "-":
+                    beat += _mws_beats(rm.group(3), line_no) or 0.5
+                    continue
+                if not dm:
+                    raise NotationError(f"line {line_no}: drum part {name} takes steps like x..x or X.x.:1/4*2, got {tok!r}")
+                step = _mws_beats(dm.group(2), line_no) or 0.5
+                for _ in range(int(dm.group(3) or 1)):
+                    for ch in dm.group(1):
+                        if ch != ".":
+                            t.notes.append(Note(beat, step, drum[0], min(127, drum[1] + (25 if ch == "X" else 0))))
+                        beat += step
+            score.tracks.append(t)
+            continue
         for tok, line_no in pr["toks"]:
             tm = MWS_TOKEN.match(tok)
             if not tm:
@@ -409,6 +439,63 @@ def parse_mws(text):
     if not score.tracks and not chords:
         raise NotationError("no melody, part or chords line found")
     return score
+
+
+def _pname(p):
+    return ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"][p % 12] + str(p // 12 - 1)
+
+
+def arrange_mws(parts, chords, bars=4, bpm=96, meter=(4, 4), title=""):
+    """Short part list + chord list -> .mws text, one bar per chord, cycled to fill the bars.
+
+    Drums get a stock one-bar pattern (cut or doubled to the meter); pad, strings and organ hold the chord,
+    keys, piano, harp and pluck strike it on each beat, bass plays roots, lead walks chord tones,
+    the other pitched presets hold the top note. A first draft to edit, not an arrangement.
+    """
+    num, den = meter
+    beats = num * 4.0 / den
+    steps = int(round(beats * 2))
+    seq = [chords[i % len(chords)] for i in range(bars)] if chords else []
+    for c in seq:
+        if chord_pitches(c) is None:
+            raise NotationError(f"chord symbol {c!r} not understood (e.g. Am7, F#m, Bb/D)")
+    b = f"{beats:g}"
+    whole, rest = int(beats), beats - int(beats)
+    tail = [f"-:{rest:g}"] if rest else []
+    lines = ([f"title: {title}"] if title else []) + [f"bpm: {bpm:g}", f"meter: {num}/{den}"]
+    if seq:  # the chords line plays; with a harmony part it stays as a comment so the chord is not doubled
+        held = any(p.strip().lower() in ("pad", "strings", "organ", "keys", "piano", "harp", "pluck") for p in parts)
+        lines.append(("# " if held else "") + "chords: " + " ".join(f"{c}:{b}" for c in seq))
+    for raw in parts:
+        name = raw.strip().lower()
+        if not name:
+            continue
+        if name in ARRANGE_DRUMS:
+            pat = (ARRANGE_DRUMS[name] * 2)[:steps]
+            lines.append(f"part {name}: {pat}*{bars}")
+            continue
+        if name not in MWS_PITCHED:
+            raise NotationError(f"no preset called {name!r}: drums {', '.join(ARRANGE_DRUMS)}; pitched {', '.join(MWS_PITCHED)}")
+        if not seq:
+            raise NotationError(f"{name} needs chords to follow")
+        toks = []
+        for c in seq:
+            ps = chord_pitches(c)
+            root = ps[1] if "/" in c else ps[0]
+            top3 = "+".join(_pname(x + 12) for x in ps[-3:])
+            if name == "bass":
+                toks.append(f"{_pname(root % 12 + 36)}:{b}")
+            elif name in ("pad", "strings", "organ"):
+                toks.append(f"{top3}:{b}")
+            elif name in ("keys", "piano", "harp", "pluck"):
+                toks += [f"{top3}:1"] * whole + tail
+            elif name == "lead":
+                walk = [ps[-3] + 24, ps[-2] + 24, ps[-1] + 24, ps[-2] + 24]
+                toks += [f"{_pname(walk[i % 4])}:1" for i in range(whole)] + tail
+            else:
+                toks.append(f"{_pname(ps[-1] + 24)}:{b}")
+        lines.append(f"part {name}: " + " ".join(toks))
+    return "\n".join(lines) + "\n"
 
 
 # ---------------------------------------------------------------- ABC
@@ -1774,10 +1861,20 @@ def synth_wav(score, path, rate=22050, tail=1.5):
             amp = 0.25 * (n.vel / 127.0)
             i0 = int(t0 * rate)
             if kind == "drum":
-                ln = int(0.12 * rate)
+                if n.pitch in (35, 36, 41, 43, 45):  # kick and toms: a falling sine thump
+                    ln, f0, ph = int(0.25 * rate), (55.0 if n.pitch <= 36 else 110.0), 0.0
+                    for k in range(ln):
+                        if i0 + k < n_samples:
+                            ph += 2 * math.pi * f0 * (1 + 2.5 * math.exp(-k / (0.01 * rate))) / rate
+                            buf[i0 + k] += 2.4 * amp * math.sin(ph) * math.exp(-k / (0.07 * rate))
+                    continue
+                short = 0.012 if n.pitch in (42, 70, 82) else 0.06 if n.pitch in (46, 51) else 0.03
+                ln, lp = int(min(8 * short, 0.4) * rate), 0.0
                 for k in range(ln):
                     if i0 + k < n_samples:
-                        buf[i0 + k] += amp * (rng.random() * 2 - 1) * math.exp(-k / (0.03 * rate))
+                        w = rng.random() * 2 - 1
+                        lp += 0.3 * (w - lp)
+                        buf[i0 + k] += amp * (w - lp if short < 0.02 else w) * math.exp(-k / (short * rate))
                 continue
             f = 440.0 * 2 ** ((n.pitch - 69) / 12.0)
             if n.bent():  # slides and vibrato: one pluck that glides (the string model)

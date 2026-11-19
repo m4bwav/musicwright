@@ -58,7 +58,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.39"
+VERSION = "0.1.40"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1584,6 +1584,62 @@ def cmd_monobass(a):
             "next": "listen: the low end should sit centred and firmer; nothing above the crossover changes"}
 
 
+def synth_ir(path, seconds=2.5, power=2.2, seed=7, rate=48000, bright=9000.0, dark=1500.0):
+    """Stereo reverb impulse from seeded noise (produce's mixing.md recipe): (1 - t/T)^p decay, a one-pole
+    lowpass gliding from bright to dark. Returns the Schroeder RT60 (T30 extrapolated) of the left side."""
+    import random
+    n = int(seconds * rate)
+    chans = []
+    for side in (0, 1):
+        rng, y, out = random.Random(seed * 2 + side), 0.0, []
+        for i in range(n):
+            t = i / n
+            fc = bright * (dark / bright) ** t
+            y += (1 - math.exp(-2 * math.pi * fc / rate)) * ((rng.random() * 2 - 1) - y)
+            out.append(y * (1 - t) ** power)
+        pk = max(abs(v) for v in out) or 1.0
+        chans.append([v / pk for v in out])
+    with wave.open(str(path), "wb") as w:
+        w.setnchannels(2)
+        w.setsampwidth(2)
+        w.setframerate(rate)
+        w.writeframes(array("h", [int(32767 * c[i]) for i in range(n) for c in chans]).tobytes())
+    e = [v * v for v in chans[0]]
+    tot, acc, t5, t35 = sum(e), sum(e), None, None
+    for i, v in enumerate(e):
+        lv = 10 * math.log10(max(acc / tot, 1e-12))
+        if t5 is None and lv <= -5:
+            t5 = i
+        if lv <= -35:
+            t35 = i
+            break
+        acc -= v
+    return round(2 * (t35 - t5) / rate, 2) if t5 is not None and t35 is not None else None
+
+
+def cmd_reverb(a):
+    src = need_file(a.input)
+    dst = out_file(a.out)
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_reverb_"))
+    try:
+        ir = Path(a.ir_out) if a.ir_out else tmpd / "ir.wav"
+        rt60 = synth_ir(ir, a.seconds, a.power, a.seed)
+        # afir's default IR norm left the wet path about 43 dB under the dry on a test phrase; irnorm=2 keeps it
+        # near the dry level, so --wet means what it says. A gentle compressor on the wet bus holds big hits back.
+        fc = (f"[0:a]aformat=channel_layouts=stereo,apad=pad_dur={a.seconds}[x];[x]asplit[d][w];"
+              f"[w][1:a]afir=irnorm=2:irgain=1,acompressor=threshold=0.5:ratio=6[f];"
+              f"[d]volume={1 - a.wet}[dd];[f]volume={a.wet}[ff];[dd][ff]amix=inputs=2:normalize=0:duration=first[o]")
+        ffmpeg(["-nostdin", "-y", "-i", str(src), "-i", str(ir), "-filter_complex", fc, "-map", "[o]"] + out_codec(dst) + [str(dst)])
+    finally:
+        if not a.ir_out:
+            shutil.rmtree(tmpd, ignore_errors=True)
+    m = measure_file(dst)
+    return {"ok": True, "out": str(dst.resolve()), "ir": str(Path(a.ir_out).resolve()) if a.ir_out else None,
+            "rt60_s": rt60, "seed": a.seed, "wet": a.wet,
+            "measure": {k: m[k] for k in ("duration_s", "lufs_i", "true_peak_dbtp")},
+            "next": "listen beside the dry file on matched copies (mw.py preview); the same seed is the same room"}
+
+
 # ---------------------------------------------------------------- notation: render, notate, transcribe
 
 SCORE_EXT = {".abc": "abc", ".mid": "midi", ".midi": "midi", ".musicxml": "musicxml", ".xml": "musicxml",
@@ -1694,6 +1750,22 @@ def cmd_render(a):
                 "next": "listen, or make it sound performed with an AI cover of this render: mw.py gen --recipe acestep-rest "
                         "--task cover --src OUT --strength 0.6 --caption \"<instruments, style>\" --seeds 1,2,3 (try 0.5-0.9)"})
     return res
+
+
+def cmd_arrange(a):
+    m = re.fullmatch(r"(\d+)/(\d+)", a.meter.strip())
+    if not m:
+        raise MwError("write the meter like 4/4 or 6/8")
+    parts = [x for x in re.split(r"[,\s]+", a.parts) if x]
+    try:
+        text = notation.arrange_mws(parts, a.chords.split(), a.bars, a.bpm, (int(m.group(1)), int(m.group(2))), a.title or "")
+        score = notation.parse_mws(text)
+    except notation.NotationError as e:
+        raise MwError(str(e))
+    dst = out_file(a.out)
+    dst.write_text(text, encoding="utf-8")
+    return {"ok": True, "out": str(dst.resolve()), "parts": parts, **score.summary(), "warnings": score.warnings,
+            "next": "edit the parts by hand (a stock first draft), then mw.py render %s --out sketch.wav" % dst.name}
 
 
 def cmd_notate(a):
@@ -2944,6 +3016,16 @@ def build_parser():
     s.add_argument("--hz", type=float, default=160.0, help="crossover; the lows are fully mono about an octave under it (200 for a mono low end to 120 Hz)")
     s.set_defaults(fn=cmd_monobass)
 
+    s = sub.add_parser("reverb", help="synthesised seeded-noise room (no recorded impulse needed), convolved under the dry signal")
+    s.add_argument("input")
+    s.add_argument("--out", required=True)
+    s.add_argument("--seconds", type=float, default=2.5, help="impulse length; the tail is padded on")
+    s.add_argument("--power", type=float, default=2.2, help="decay (1 - t/T)^p; higher dies sooner")
+    s.add_argument("--wet", type=float, default=0.2, help="wet share 0-1 (0.1-0.25 sits behind a mix)")
+    s.add_argument("--seed", type=int, default=7, help="the same seed is the same room")
+    s.add_argument("--ir-out", help="also keep the impulse WAV here")
+    s.set_defaults(fn=cmd_reverb)
+
     def score_opts(s):
         s.add_argument("--bpm", type=float, help="tempo in quarter notes a minute (overrides the score's)")
         s.add_argument("--program", help="General MIDI instrument for every part: a number 0-127 or a name (flute, guitar, piano)")
@@ -2968,6 +3050,17 @@ def build_parser():
     s.add_argument("--roll", help="with --check: also write a piano-roll PNG here for a vision check")
     score_opts(s)
     s.set_defaults(fn=cmd_render)
+
+    s = sub.add_parser("arrange", help="short part list + chords -> a .mws score with preset parts (kick, shaker, pad, lead...)")
+    s.add_argument("--parts", required=True, help="comma list of presets: drums kick snare brush rim clap hat openhat shaker ride tom; "
+                   "pitched pad lead bass keys piano strings harp bells flute pluck organ")
+    s.add_argument("--chords", default="", help="one chord a bar, cycled, e.g. 'Am F C G'")
+    s.add_argument("--bars", type=int, default=4)
+    s.add_argument("--bpm", type=float, default=96)
+    s.add_argument("--meter", default="4/4")
+    s.add_argument("--title")
+    s.add_argument("--out", required=True, help="the .mws file to write")
+    s.set_defaults(fn=cmd_arrange)
 
     s = sub.add_parser("notate", help="convert between notations: ABC, MusicXML, MIDI, ASCII tab")
     s.add_argument("score")

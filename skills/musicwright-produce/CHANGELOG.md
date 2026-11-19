@@ -2,7 +2,12 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-20261107-2 · 2026-11-07 · Stretch, varispeed and formant notes
+Entry shape: `### C-20261118-2 · 2026-11-18 · Reverb recipe measured; flag tables to flags.md
+- because: user request (turn the recipe into a measured result; size budget back to green)
+- files: references/mixing.md (Reverb and delay by job: measured RT60 and tail, afir irnorm=2), references/flags.md (new: mixcheck and analyze flag tables moved whole), SKILL.md (one line shortened)
+- `mw.py reverb` runs the recipe. With afir's default IR norm the wet path sat about 43 dB under the dry; irnorm=2 fixes it. Not judged by ear yet. Evals not re-run.
+
+### C-20261107-2 · 2026-11-07 · Stretch, varispeed and formant notes
 - because: book distillation, Roads, The Computer Music Tutorial 2e (everscout ai-music beat)
 - files: references/ffmpeg.md (time-stretch note)
 

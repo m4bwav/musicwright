@@ -119,7 +119,7 @@ Add it to `music.json` deliverables (hub references/contract.md). A lesson worth
 - Never let a listener compare copies at different loudness: preview them matched first.
 - Master last, once. Re-mastering a mastered file stacks artefacts.
 - Keep the original take untouched in `takes/`; write results to `out/`.
-- Tools that are GPL or AGPL (Matchering, Essentia) are called as separate programs, never vendored.
+- GPL and AGPL tools (Matchering, Essentia) run as separate programs, never vendored.
 
 ## References
 

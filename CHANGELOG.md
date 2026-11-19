@@ -2,6 +2,12 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.40 (2026-11-18)
+
+- `.mws` part presets: `kick snare brush rim clap hat openhat shaker ride tom` take step patterns (`x...X...*4`), `pad lead bass keys piano strings harp bells flute pluck organ` need no program. `mw.py arrange --parts kick,shaker,pad,bass,lead --chords "Am F C G"` writes a first-draft `.mws`. The built-in synth gets a sine kick and high-passed hats and shakers.
+- `mw.py reverb`: the synthesised-impulse recipe as a command (seeded stereo noise, power-law decay, darkening lowpass, afir with irnorm=2, wet-bus compressor); prints the impulse RT60. Measured on a test phrase: RT60 2.85 s, tail 14 dB under the last bar, silent 2.25 s after; afir's default norm had left the wet path about 43 dB down.
+- Size budget: theory.md scales sections to scales.md, mixing.md flag tables to flags.md, three generate cheat-sheet rows to acestep.md (moved whole). Ideas from vitaminclaude/voidstruck (PolyForm Strict; our own words, no code).
+
 ## 0.1.39 (2026-11-18)
 
 - `mw.py render` reads `.mws` score text: chord symbols with slash bass (`Am7/G:4`), melody strings (`C4+E4:2 >G4:1 -:1`: + stacks, > slides, - rests) and named parts, to MIDI and audio. musicwright-produce: mixing.md gains a synthesised reverb impulse recipe (seeded noise, power-law decay, falling one-pole lowpass). Ideas from [vitaminclaude/voidstruck](https://github.com/vitaminclaude/voidstruck) (PolyForm Strict; our own words, no code).
