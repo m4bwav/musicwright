@@ -110,6 +110,18 @@ Which to use, transitions, stinger kinds, layer fades and a flip-flop guard: [in
 
 - Wait 1-3 s in a new game state before switching music, so brief changes do not flip it (one author's advice, untested). Also hold after a change: interactive.md "Implementation check".
 
+## Live code sequencer (WebAudio)
+
+When the music is played by code (WebAudio oscillators or samples scheduled at runtime) rather than from rendered files, tempo, mode and density become live game parameters (R-20261118-1).
+
+- **Pick it** for small web or jam games with no audio files, or when game state should drive tempo or key, not only layers.
+- **Write notes as scale degrees**, not pitches: one function maps degree to frequency through the current scale, so a mode change re-tunes the whole song. In minor, raise the 7th over the V chord.
+- **Schedule ahead**: a timer fills the next 100-200 ms of notes on the audio clock; never time notes with the frame loop.
+- **Tempo from state**: base bpm + k x progress, capped; fixed tempos for title and finale.
+- **Layers by threshold**: pad, arpeggio and extra voices enter as progress passes set values.
+- **Change mode on a bar line only** (for example minor to its parallel major at half progress), with a short run or glissando to carry it.
+- **Stingers and pitched SFX read the live scale**: take notes from a pentatonic of the current mode so they always fit.
+
 ## Middleware terms
 
 - **Wwise**: Music Switch Container (chooses by State or Switch), Music Playlist Container,

@@ -50,6 +50,13 @@ Best sources: Unity manual and issue tracker, middleware docs and courses, Steam
 
 Newest first. `Track` is subject, tooling, practice, or testing.
 
+### R-20261118-1 · 2026-11-18 · Practice: live code sequencer driven by game state
+- Finding: a small web game plays its whole score from code: melody and chords as scale degrees mapped through the current scale, a look-ahead scheduler, tempo as base plus a share of progress, layers entering at progress thresholds, a minor-to-parallel-major switch gated to bar lines with a harp run, and pickup chimes drawn from a pentatonic of the current mode. Read from source; the repository has no licence, so ideas only, no code copied.
+- Track: practice
+- Sources: robinduckett/boo-mas (src/audio.js), read 2026-11-18
+- Magnitude: 1
+- Applied: C-20261118-1
+
 ### R-20261113-1 · 2026-11-13 · Game audio strategy: layers, transitions
 - Finding: vertical layers change density only; tempo, key or urgency changes call for horizontal switching. Stems are ordered sparse to dense with an all-on clarity check. Intro stingers stay open, outros resolve, switches land on the next bar. Also noted, not built: playtests often find too much music, so plan silence in the cue list; balance a mix before any bus compression. A stem RMS-order check in mw.py was left out (would not fit cleanly). Book rules, unverified by our tools.
 - Track: practice

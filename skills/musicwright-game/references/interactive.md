@@ -54,7 +54,7 @@ Decide first whether it is **local** or **global**. A local stinger shares the t
 ## Layers
 
 - **Stems are not layers.** Mix stems are made to play together, layers to play in changing subsets. Demucs stems are usable, as inFAMOUS 2's grouped session parts were, but check every combination the game will use.
-- **Layers add density, nothing else.** Fading parts in or out can make a cue fuller or thinner, but it cannot speed it up, change key or make it urgent; when a state needs any of those, switch horizontally (Zdanowicz and Bambrick, book rule, unverified).
+- **Layers add density, nothing else.** Fading parts in or out can make a cue fuller or thinner, but it cannot speed it up, change key or make it urgent; when a state needs any of those, switch horizontally (Zdanowicz and Bambrick, book rule, unverified). This limit is for rendered stems: a live code sequencer can change tempo and key as it plays ([adaptive.md](adaptive.md) "Live code sequencer").
 - Order the layers from sparse to dense, so each one entering is heard as a step up, and listen to all of them on at once: the full stack must still read clearly and stay under full scale (sum the stems and run `mw.py measure`).
 - Group stems into low, medium and high intensity rather than one layer per instrument. Two to four layers is normal, and each above the first needs its own trigger, so write the trigger beside the layer.
 - **Additive** layers stack on one rising value and all fit together. **Individual** layers each have an input (flying, low health). **Interchange** is a foundation plus alternates that replace each other and clash if played together; keep alternates related with `gen --task cover` or `repaint` from one take (untested for this).
