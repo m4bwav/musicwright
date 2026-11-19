@@ -8,6 +8,10 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · State-change delay before switch
 
 State-change delay before switching music, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261118-1 · 2026-11-18 · Live code sequencer (WebAudio)
+- because: R-20261118-1 (idea from robinduckett/boo-mas)
+- files: references/adaptive.md (new Live code sequencer), references/interactive.md (Layers caveat)
+
 ### C-20261117-1 · 2026-11-17 · piro as the retro/NES chiptune route
 - because: technique harvest D3, [piropipo](https://github.com/miyo-hime/piropipo) README
 - files: references/interactive.md (new Retro and NES chiptune)

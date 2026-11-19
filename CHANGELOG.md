@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.38 (2026-11-18)
+
+- musicwright-game: adaptive.md gains Live code sequencer (WebAudio): scale degrees, look-ahead scheduling, tempo and mode from game state, bar-line mode changes; interactive.md notes the layers-only limit is for rendered stems. Idea from robinduckett/boo-mas (no licence; our own words, no code).
+
 ## 0.1.37 (2026-11-18)
 
 - musicwright-compose: theory.md Form gains the small-group jazz standard routine (Faulkner and Becker, *Do You Know...?*; book rule, unverified).
