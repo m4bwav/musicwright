@@ -1,8 +1,12 @@
 # Handoff
 
+## Style LoRA "fretwood" rejected (2026-11-14)
+
+The owner's acoustic-guitar folder became a personal-only dataset (commercial recordings, never in sold projects): 106 clips, trigger `fretwood`, LoKr on turbo, 50 epochs (loss 1.069 to 1.027). e30 and e50 were installed in ComfyUI with `lora-check`, and 20 same-seed takes went on a blind askwright page. Verdict: rejected, nothing kept (metallic tone, artifacts, near-identical variants; the one pick copied a training melody). Detail lives in the owner's private acoustic-lora README. No retrain without a new plan. Lesson: answers for private datasets live beside the data, so run `ask.py pending` first, never a file search in this repo. The finished chain prompts for the slide and style LoRA runs were archived beside the private datasets, not committed.
+
 ## Slide guitar, 0.1.31 (2026-11-13)
 
-Tab slides now render as glides (see [research/2026-11-13-slide-guitar-study.md](research/2026-11-13-slide-guitar-study.md)). Owed: a listener A/B of `--slide-engine midi` (SoundFont glide) against `string` on one tab; ACE-Step prompt-tag A/B for slide; then the plan's palette and LoRA steps. The main clone's uncommitted hub LEARNINGS entries from another session name private projects and must be generalised before they are committed; their `no-slide-or-bend-in-render` entry is superseded by L-guitar-slide-bends here.
+Tab slides now render as glides (see [research/2026-11-13-slide-guitar-study.md](research/2026-11-13-slide-guitar-study.md)). Owed: a listener A/B of `--slide-engine midi` (SoundFont glide) against `string` on one tab; ACE-Step prompt-tag A/B for slide; then the plan's palette and LoRA steps. The main clone's uncommitted hub LEARNINGS entries were generalised and committed on 2026-11-18; their `no-slide-or-bend-in-render` entry was dropped as superseded by L-guitar-slide-bends.
 
 ## 0.1.20 release repaired (2026-11-07, later still)
 

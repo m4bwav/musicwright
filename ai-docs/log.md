@@ -359,3 +359,12 @@ README "Works with" section and a wiki Works-With page now say what crosses each
 ## 2026-11-15 · musicwright-generate evergreen refresh
 
 Quiet check (R-20261115-1); no SKILL.md change.
+
+## 2026-11-14 (style and slide LoRA chains)
+
+- slidesteel XL SFT LoKr finished (50 epochs, loss flat at about 0.90 after epoch 20, about 4.7 h). The XL adapter loads on acestep_v1.5_xl_sft_bf16 in ComfyUI (lora-check: 360 modules match). 36 same-seed takes through `mw.py gen --lora` (its first real renders), no failures; blind verdict recorded in #141.
+- Style LoRA fretwood rejected by the owner's blind A/B (artifacts, metallic tone, little style change; the one kept pick copied a training melody). Nothing kept. To find askwright answers, use `ask.py pending`: sets for private data live outside this repo.
+
+## 2026-11-18 (stray notes merged)
+
+- Another session's uncommitted notes in the shared clone (hub and score LEARNINGS, HANDOFF, log) were generalised (no private project names) and merged; the clone was reset to main so the installed plugin could move past 0.1.33.
