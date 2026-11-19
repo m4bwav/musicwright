@@ -12,6 +12,42 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Rule: render slides with `mw.py render` (0.1.31+: one pluck, RPN 0 = +-12, bend curve; `--slide-engine string` for the model) and keep recorded samples for picked notes. No listener verdict on the 0.1.31 render yet.
 - Scope: skill · Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-13
 
+### L-blind-preview-leaks-key · 2026-11-12 · `blind-preview-prints-gains-in-input-order`
+- Trigger: `mw.py preview --blind` shuffles file names but prints `previews[].gain_db` (and the files keep their own durations and peaks), so an agent that passed a quiet draft and a loud take could tell which letter was which (+12.4 dB could only be the -34 LUFS draft).
+- Hypothesis: the gain list is printed in input order.
+- Rule: the listener stays blind, so the test holds, but say on the page that matching revealed the order and keep any guess unnamed. Fix idea: with `--blind`, print gains sorted by size without take names.
+- Scope: skill · Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-12
+
+### L-sampled-beats-additive · 2026-11-12 · `recorded-plucks-beat-additive-model`
+- Trigger: in four blind, loudness-matched A/Bs of fingerstyle pieces the listener picked a GM SoundFont draft (FluidSynth + GeneralUser GS) over an additive string model every time, though the model had won for a slide line.
+- Hypothesis: plain picked notes and chords expose a synthetic pluck; a continuous glide hides it.
+- Rule: for plucked guitar start from recorded samples; keep a model for what samples cannot do (slides, bends past 2 semitones). An SFZ library with plain key zones, velocity layers and random round robins plays fine from a ~150-line numpy sampler, no sfizz needed.
+- Scope: skill · Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-12
+
+### L-meta-steel-guitar · 2026-11-12 · `meta-steel-guitar-raw-files-need-trim-and-levelling`
+- Trigger: Meta Steel Guitar v1.0.0 (CC0, facebookincubator/Meta-open-sound, 375 WAVs, six strings fret by fret, 3 velocity layers) measured before use: plucks start 0-46 ms in (median 24 ms); levels per string and layer scatter 2.4-4 dB; the soft layer is louder than medium on 37 of 125 notes; medium falls 10 dB from low E to B; a render measured 8 dB under a GM steel patch at 2-5 kHz.
+- Hypothesis: raw one-take sample sets are unedited.
+- Rule: index the library first (onset, level), trim to onset, even levels per string and layer, rebalance strings before judging it. Cleanest-licensed steel-string set found as of 2026-11-12. No listener verdict yet.
+- Scope: skill · Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-12
+
+### L-damped-last-chord · 2026-11-12 · `measure-does-not-see-a-damped-last-chord`
+- Trigger: a sampler that stopped each note at its written length also stopped the last chord; in five guitar renders the level fell 20 dB within half a second, 5.3 s into the final chord, and `measure` and `mixcheck` raised no flag.
+- Hypothesis: they report tail silence, not how the music got there.
+- Rule: for a rendered piece that must end (not loop), measure the last chord's decay (onset to 30 dB under the body; largest drop between quarter-second frames) and let final notes ring their natural length.
+- Scope: skill · Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-12
+
+### L-velocity-scatter-layers · 2026-11-12 · `random-velocity-scatter-crosses-sample-layers`
+- Trigger: a +-4 random velocity humanise pushed 4 of 532 notes over a layer boundary (97 on Meta Steel Guitar); one became the file's peak by 3 dB and cost 3.8 dB of peak-to-loudness.
+- Hypothesis: scatter near a layer boundary picks a different, harder recording by chance.
+- Rule: count notes per velocity layer after humanising; a layer holding under ~2% of notes is an accident, so clamp the scatter at the boundary and write hard plucks on purpose.
+- Scope: skill · Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-12
+
+### L-loop-fold-tail · 2026-11-12 · `render-from-notes-loops-by-folding-the-tail`
+- Trigger: `mw.py loop` crossfades a cut tail into the head; for pieces rendered from notes a circular render is exact. `mw.py seam` read "check by ear" on two such loops only for its level figure (0.5 and 5.0 dB), which was a composed downbeat after a held note.
+- Hypothesis: the seam's level change means little unless compared with the file's other bar lines (49 of 57 and 5 of 63 changed more).
+- Rule: for note-rendered loops render the bars plus a few seconds, add the ring-on after the last bar onto the first bars and any pickup onto the end, master three copies end to end and keep the middle; judge the seam's level change against the other bar lines.
+- Scope: skill · Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-12
+
 ### L-006 · 2026-10-25 · A workaround that changes the input must not feed the numbers it changes
 - Trigger: the 0.1.2 wiki run on static ffmpeg 7.0.2 found the padded retry reading a 3.5 s 44.1 kHz file at -9.1 LUFS against -8.9 unpadded on 9.0.1, and `duration_s` 4 for 3.5 s; the 0.1.2 retry test used a whole-second fixture, where padding adds nothing.
 - Hypothesis: the padded half second of silence falls inside gated loudness blocks and lowers the integrated value; the per-second block count rounds the length up.

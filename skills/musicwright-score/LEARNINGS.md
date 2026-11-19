@@ -15,3 +15,9 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill | repo:<slug> | env:<name> | global
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
 -->
+
+### L-score-tail-pad · 2026-11-08 · `render-movements-12-15s-longer-than-slot`
+- Trigger: a game trailer cue; ACE-Step 1.5 XL movements rendered "a few seconds longer" than their slots (26 s for 22 s, 42 s for 38 s) ended with 7.5-9.8 s of quiet (`mw.py measure` tail_silence_s), so `join` crossfaded into silence and left a hole at the hit point; two re-rolls.
+- Hypothesis: the model writes its own outro whatever the duration.
+- Rule: duration = slot + 12-15 s; run `mw.py measure` for tail_silence_s before `join`, and look at the sheet of the joined cue. Retire when Step 2's wording says this or a recipe trims trailing quiet itself.
+- Scope: skill · Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-08
