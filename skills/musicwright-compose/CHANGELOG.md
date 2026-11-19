@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261118-2 · 2026-11-18 · Score text (.mws)
+- because: user request (technique harvest from vitaminclaude/voidstruck, ideas only)
+- files: references/notation.md (Score text an agent can write, input table)
+- Chord symbols with slash bass and melody strings (+ stacks, > slides, - rests) read by notation.py parse_mws and played by `mw.py render`.
+
 ### C-20261118-1 · 2026-11-18 · Small-group jazz form
 - because: R-20261118-1
 - files: references/theory.md (Form)

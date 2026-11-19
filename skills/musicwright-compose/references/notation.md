@@ -17,6 +17,7 @@ mw.py render song.musicxml --program flute --transpose -2 --out out/song.flac
 | Input | Read | Not read (reported, never guessed) |
 |---|---|---|
 | ABC (`.abc`, or text with X: and K:) | ABC 2.1 notes, accidentals and key signatures with modes, lengths, rests, ties, chords `[CEG]`, broken rhythm `>` `<`, tuplets `(3`, repeats `|: :|` with endings `[1 [2`, voices `V:`, `%%MIDI program`, inline fields, chord symbols (`--chords` plays them) | grace notes, lyrics, decorations as sound, `%%` directives other than MIDI program |
+| Score text (`.mws`, or text with `melody:`, `chords:` or `part` lines) | see Score text below | key signatures (write sharps and flats on each pitch), ties, dynamics |
 | ASCII tab (`.txt`) | 4 to 8 string lines (`e|--0--3--|`), multi-digit frets, labelled tunings, bar lines, slides `5/7` `7\5` `5s7` `/7` and vibrato `7~` (see Slides below); `--tuning` for others (dropd, dadgad, openg, bass, bass5, guitar7, ukulele, or `E2,A2,D3,G3,B3,E4`) | rhythm (tabs carry none: the usual gap between notes counts as an eighth note unless `--tab-step` says), bends (`b`), hammer-ons and pull-offs as legato |
 | MusicXML (`.musicxml`, `.xml`, `.mxl`) | partwise scores: parts with their MIDI programs, chords, backup and forward (several voices), ties, repeats and endings, tempo marks | timewise scores, grace and cue notes |
 | MIDI (`.mid`) | format 0 and 1, tempo map, time and key signature, programs, the drum channel | SMPTE timing, pan and other controllers (the render is mono; for stereo, run the .mid through FluidSynth directly) |
@@ -41,6 +42,23 @@ Sound:
 Models writing ABC: benchmarks find good syntax but weak structure, so always run
 `mw.py render --check` on ABC an agent wrote. A bar that is too long or too short almost always
 means a wrong note length. Fix it before rendering.
+
+## Score text an agent can write
+
+A `.mws` file is the shortest way to write a sketch: one line per job, no bar lines to count.
+
+```text
+title: Night road
+bpm: 96
+meter: 4/4
+program: piano                 # default General MIDI program for the parts
+chords: Am7/G:4 F:2 G          # symbol:beats, slash bass, bare symbol = one bar
+melody: C4+E4:2 >G4:1 -:1      # pitch:beats; + stacks a chord, > slides in from the last note, - rests
+melody: A4:1/2 B4              # more of the same part; no :beats keeps the last length
+part bass 33: A2:4 F2:2 G2:2   # a named part with its program
+```
+
+Chord lines always play (no `--chords` needed). A `>` slide uses the string model, like tab slides. Errors name the line. Idea from vitaminclaude/voidstruck (PolyForm Strict: our own words, no code).
 
 ## Slides
 

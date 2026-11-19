@@ -298,6 +298,121 @@ def add_chord_track(score, chords, end_beat, program=0):
 
 # ---------------------------------------------------------------- ABC
 
+# ---------------------------------------------------------------- compact score text (.mws)
+
+MWS_KEY = re.compile(r"(?i)^(title|bpm|meter|program|chords|melody|part)\b\s*([^:]*):\s*(.*)$")
+MWS_TOKEN = re.compile(r"^(>?)([^:]+?)(?::(\d+(?:\.\d+)?|\d+/\d+))?$")
+MWS_SNIFF = re.compile(r"(?mi)^(melody|chords|part\b[^:\n]*)\s*:")
+
+
+def _mws_beats(txt, line_no):
+    if txt is None:
+        return None
+    try:
+        v = float(Fraction(txt))
+    except (ValueError, ZeroDivisionError):
+        raise NotationError(f"line {line_no}: cannot read length {txt!r}")
+    if v <= 0:
+        raise NotationError(f"line {line_no}: a length must be above 0, got {txt!r}")
+    return v
+
+
+def parse_mws(text):
+    """Compact score text an agent can write in one go (musicwright score, .mws).
+
+    title: Night road        bpm: 96        meter: 4/4        program: 0
+    chords: Am7/G:4 F:2 G:2               symbol:beats, slash bass, default one bar
+    melody: C4+E4:2 >G4:1 -:1             pitch:beats, + stacks, > slides in from the last note, - rests
+    part bass 33: A2:2 G2:2               a named part with its General MIDI program
+
+    A token without :beats keeps the previous length (1 at the start). Lines of one part join up.
+    """
+    score = Score()
+    parts, order, chords = {}, [], []
+    num, den = 4, 4
+    default_prog = 0
+    for line_no, raw in enumerate(text.splitlines(), 1):
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        m = MWS_KEY.match(line)
+        if not m:
+            raise NotationError(f"line {line_no}: expected 'title:', 'bpm:', 'meter:', 'program:', 'chords:', "
+                                f"'melody:' or 'part NAME PROGRAM:', got {line[:40]!r}")
+        key, arg, val = m.group(1).lower(), m.group(2).split(), m.group(3).strip()
+        if key == "title":
+            score.title = val
+        elif key == "bpm":
+            score.tempos = [(0.0, float(_mws_beats(val, line_no)))]
+        elif key == "meter":
+            mm = re.fullmatch(r"(\d+)\s*/\s*(\d+)", val)
+            if not mm:
+                raise NotationError(f"line {line_no}: write the meter like 4/4 or 6/8")
+            num, den = int(mm.group(1)), int(mm.group(2))
+            score.meter = (num, den)
+        elif key == "program":
+            default_prog = program_of(val)
+        elif key == "chords":
+            for tok in val.split():
+                tm = MWS_TOKEN.match(tok)
+                sym = tm.group(2) if tm else tok
+                if chord_pitches(sym) is None:
+                    raise NotationError(f"line {line_no}: chord symbol {sym!r} not understood (e.g. Am7, F#m, Bb/D, Am7/G)")
+                chords.append((sym, _mws_beats(tm.group(3), line_no) if tm else None))
+        else:
+            if key == "melody":
+                name, prog = "melody", None
+            else:
+                if not arg:
+                    raise NotationError(f"line {line_no}: name the part, e.g. 'part bass 33: A2:2'")
+                name, prog = arg[0], (program_of(arg[1]) if len(arg) > 1 else None)
+            if name not in parts:
+                parts[name] = {"prog": prog, "toks": []}
+                order.append(name)
+            elif prog is not None:
+                parts[name]["prog"] = prog
+            parts[name]["toks"] += [(t, line_no) for t in val.split()]
+    bar = num * 4.0 / den
+    for name in order:
+        pr = parts[name]
+        t = Track(name, default_prog if pr["prog"] is None else pr["prog"])
+        beat, length, prev = 0.0, 1.0, None
+        for tok, line_no in pr["toks"]:
+            tm = MWS_TOKEN.match(tok)
+            if not tm:
+                raise NotationError(f"line {line_no}: cannot read {tok!r} (write C4:1, C4+E4:2, >G4 or -:1)")
+            length = _mws_beats(tm.group(3), line_no) or length
+            body = tm.group(2)
+            if body == "-":
+                beat += length
+                continue
+            ps = [parse_pitch_name(x) for x in body.split("+")]
+            top = max(ps)
+            for p in ps:
+                n = Note(beat, length, p)
+                if tm.group(1):
+                    if prev is None:
+                        score.warnings.append(f"line {line_no}: '>' on the first note of {name} has nothing to slide from")
+                    else:
+                        n.slide_in = max(-12, min(12, prev - top))
+                t.notes.append(n)
+            prev = top
+            beat += length
+        score.tracks.append(t)
+    if chords:
+        beat, ch = 0.0, []
+        for sym, ln in chords:
+            ch.append((beat, sym))
+            beat += ln or bar
+        score._chords = ch
+        score._chords_end = beat
+    if not score.tracks and not chords:
+        raise NotationError("no melody, part or chords line found")
+    return score
+
+
+# ---------------------------------------------------------------- ABC
+
 ABC_TUPLET_Q = {2: 3, 3: 2, 4: 3, 5: 2, 6: 2, 7: 2, 8: 3, 9: 2}
 ABC_NOTE = re.compile(r"(\^\^|\^|__|_|=)?([A-Ga-g])([,']*)(\d*)(/*)(\d*)")
 ABC_REST = re.compile(r"([zx])(\d*)(/*)(\d*)")
@@ -1475,14 +1590,18 @@ def load(path, tuning=None, tab_step=None, bpm=None, program=None, chords=False,
         kind = "musicxml"
     else:
         text = p.read_text(encoding="utf-8", errors="replace")
-        if ext == ".abc" or re.search(r"(?m)^K:", text) and re.search(r"(?m)^X:", text):
+        if ext == ".mws" or (MWS_SNIFF.search(text) and not re.search(r"(?m)^X:", text)):
+            score = parse_mws(text)
+            kind = "mws"
+            chords = chords or bool(getattr(score, "_chords", None))  # chord lines are written to be heard
+        elif ext == ".abc" or re.search(r"(?m)^K:", text) and re.search(r"(?m)^X:", text):
             score = parse_abc(text, tune)
             kind = "abc"
         elif tab_systems(text):
             score = parse_tab(text, tuning, tab_step, bpm, program)
             kind = "tab"
         else:
-            raise NotationError(f"cannot tell what {p.name} holds: use .abc, .mid, .musicxml/.mxl, or a text file of ASCII tab")
+            raise NotationError(f"cannot tell what {p.name} holds: use .abc, .mws, .mid, .musicxml/.mxl, or a text file of ASCII tab")
     if bpm and kind == "midi":
         # MIDI is timed: keep every note where it sounds and count it in the new tempo (notation of a performance)
         if len(score.tempos) > 1:
@@ -1500,7 +1619,7 @@ def load(path, tuning=None, tab_step=None, bpm=None, program=None, chords=False,
             if not t.drums and t.name != "chords":
                 t.program = program
     if chords and getattr(score, "_chords", None):
-        add_chord_track(score, score._chords, score.length_beats())
+        add_chord_track(score, score._chords, max(score.length_beats(), getattr(score, "_chords_end", 0.0)))
     elif getattr(score, "_chords", None):
         score.warnings.append(f"{len(score._chords)} chord symbols were not played (add --chords to play them)")
     return score, kind
