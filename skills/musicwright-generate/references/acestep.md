@@ -97,3 +97,13 @@ degraded: restart ComfyUI when nobody else is using it, then requeue.
 - Cover, repaint, extend, extract: REST server ([acestep-rest.md](acestep-rest.md)). In ComfyUI: cover and repaint on the XL recipes, extract on `acestep-xl-base` (`mw.py gen --recipe acestep-xl-base --task extract --src mix.wav --track drums`) through the MW nodes vendored in `comfy_nodes/musicwright_nodes/acestep15` (MIT, from ComfyUI_RyanOnTheInside). 15 s warm for 30 s. The source must hold the part: on a mix with no clear drums or vocals both takes came out nearly the same (correlation 0.97); on a punk mix with both they separated (0.02) and a listener rated each as mostly that part alone (2026-11-03), though near the end of the drums the cymbals sounded a little too much like a synth note, heard as a leak (2026-11-04), so listen to the end of a take before relying on it. Cover follows the source's semantic hints unless `--strength` is given (MWAceStep15CoverGuider; see acestep-rest.md).
 - Cover keeps structure and feel, not the tune: the maintainer says it does not preserve a melody note for note (issue #972), and users report either a near copy or a different song (discussions #1250, #1252). To keep a melody, try the hint cover, compare strengths on one seed, and judge by ear. A chroma or alignment score cannot settle it: it reads harmony, not the sung line, and has no accepted threshold for one pair, only rankings across a set (Müller 2nd ed., 7.3). Pitch tracking assumes one lead line, and overlap and strong upper harmonics trip it (8.2), so a failed match on a dense mix proves little. YuE2 has a route built for it: ComfyUI's `audio_yue2_music_cover` template transcribes the melody with SheetSage2 into an editable ABC score, then sings new style and lyrics over it (non-commercial terms for companies): `mw.py gen --recipe yue2-3b-int8 --task cover --src FILE --lyrics-file L --caption STYLE`, no listener verdict yet.
 - Only use reference audio the user owns or has licensed.
+
+## More fixes
+
+Moved from the SKILL.md cheat-sheet (ACE-Step XL).
+
+| Problem | Change |
+|---|---|
+| loops on itself or wanders off | temperature ladder: hold the seed, try LM temperature 0.7, 0.85, 1.0, then change the seed (low = safe, loopy; high = wanders) |
+| a reference or cover was used | before release, transcribe both (`mw.py transcribe`) and compare melodic contours and note n-grams; a long shared run is a copy |
+| any cue going out, no reference used | listen for a tune you already know before release; models trained on little music can return a training track (Hands-On GenAI ch. 9, unverified); if one shows, change seed or caption |

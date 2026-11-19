@@ -91,7 +91,8 @@ write each note's bar and slot, so each line checks on its own.
 
 ## References
 
-- [references/theory.md](references/theory.md): modes, world scales, progressions, tempo, meter, form, motif development, melody, harmonic rhythm, arrangement, endings, ranges.
+- [references/scales.md](references/scales.md): pentatonic and world scales, modes over a drone.
+- [references/theory.md](references/theory.md): modes, progressions, tempo, meter, form, motif development, melody, harmonic rhythm, arrangement, endings, ranges.
 - [references/vocabulary.md](references/vocabulary.md): caption vocabulary, describing a reference, failure modes.
 - [references/symbolic.md](references/symbolic.md): MIDI, ABC, MusicXML, LilyPond, Strudel, DAW and notation MCP servers, learning path.
 - [references/notation.md](references/notation.md): render, notate and transcribe: what each format reads, FluidSynth and SoundFonts, pyin and basic-pitch, limits.

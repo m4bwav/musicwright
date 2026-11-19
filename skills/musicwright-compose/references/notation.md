@@ -58,6 +58,8 @@ melody: A4:1/2 B4              # more of the same part; no :beats keeps the last
 part bass 33: A2:4 F2:2 G2:2   # a named part with its program
 ```
 
+A part named after a preset needs no program: drums `kick snare brush rim clap hat openhat shaker ride tom` take steps (`x` hit, `X` accent, `.` rest, half a beat each unless `:1/4`, `*4` repeats: `part kick: x...x...*4`); pitched `pad lead bass keys piano strings harp bells flute pluck organ` take notes. `mw.py arrange --parts kick,shaker,pad,bass,lead --chords "Am F C G" --bars 8 --out s.mws` writes a stock first draft from such a list (one chord a bar, cycled) to edit by hand.
+
 Chord lines always play (no `--chords` needed). A `>` slide uses the string model, like tab slides. Errors name the line. Idea from vitaminclaude/voidstruck (PolyForm Strict: our own words, no code).
 
 ## Slides
