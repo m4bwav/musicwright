@@ -1421,6 +1421,36 @@ class NotationReaders(unittest.TestCase):
         with self.assertRaises(mw.notation.NotationError):
             mw.notation.parse_abc("just some words")
 
+    def test_mws_chords_stacks_slides_rests(self):
+        text = ("title: Night road\nbpm: 90\nmeter: 4/4\n# a comment\n"
+                "chords: Am7/G:4 F:2 G\nmelody: C4+E4:2 >G4:1 -:1\nmelody: A4:1/2 B4\npart bass 33: A2:4\n")
+        f = Path(tempfile.mkdtemp(prefix="mw_mws_")) / "s.mws"
+        f.write_text(text, encoding="utf-8")
+        s, kind = mw.notation.load(f)
+        self.assertEqual(kind, "mws")
+        self.assertEqual(s.title, "Night road")
+        self.assertEqual(s.tempos, [(0.0, 90.0)])
+        mel = s.tracks[0]
+        self.assertEqual(pitches(mel), ["C4", "E4", "G4", "A4", "B4"])
+        self.assertEqual([n.start for n in mel.notes], [0.0, 0.0, 2.0, 4.0, 4.5])  # the rest moves A4 to beat 4
+        self.assertEqual(mel.notes[4].dur, 0.5)  # B4 keeps the last length
+        self.assertEqual(mel.notes[2].slide_in, -3)  # > slides up from E4
+        self.assertEqual(s.tracks[1].program, 33)
+        ch = s.tracks[-1]
+        self.assertEqual(ch.name, "chords")  # chord lines play without --chords
+        self.assertIn("G2", pitches(ch))  # slash bass under Am7
+        self.assertAlmostEqual(max(n.end() for n in ch.notes), 10.0)  # 4 + 2 + one bar for bare G
+        mid = f.with_suffix(".mid")
+        mw.notation.write_midi(s, mid)
+        self.assertEqual(len(mw.notation.parse_midi(mid.read_bytes()).notes()), len(s.notes()))
+        wav = f.with_suffix(".wav")
+        mw.notation.synth_wav(s, wav, rate=8000, tail=0.2)
+        with wave.open(str(wav)) as w:
+            self.assertGreater(w.getnframes(), 8000 * 6)
+        for bad in ("melody: H4", "melody: C4:0", "chords: Xq7", "tempo: 3", "part: C4"):
+            with self.assertRaises(mw.notation.NotationError, msg=bad):
+                mw.notation.parse_mws(bad)
+
     def test_tab_tuning_frets_and_step(self):
         s, kind = mw.notation.load(FIXTURES / "riff.txt", bpm=100)
         self.assertEqual(kind, "tab")

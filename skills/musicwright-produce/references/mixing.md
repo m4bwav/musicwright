@@ -56,6 +56,15 @@ One reverb does five jobs at once. Pick the job, then the settings (Senior, *Mix
 
 A delay does the same jobs and masks less. A delay on the tempo sinks into the mix; one off the tempo pops out, so keep it for effects.
 
+**Synthesised impulse when there is no room to convolve with** (a browser game's ConvolverNode, an ffmpeg `afir` pass, a built-in render). Build the impulse from noise instead of shipping a recorded one:
+
+1. Seeded white noise, one channel per side (different seeds give width), 1.5 to 4 s long.
+2. Decay as a power of what is left: gain = (1 - t/T)^p with p near 2 to 2.5. It falls slowly, then fast, so the tail ends at zero without a click and no fade is needed.
+3. Darken as it decays: a one-pole lowpass (y += a(x - y)) whose cutoff glides from about 8-10 kHz at the start to 1-2 kHz at the end, as air and walls eat the highs first.
+4. Normalise the impulse, keep the reverb send low (wet 10-25 %), and put a gentle bus compressor after it (about -6 dB threshold, 6:1) so a loud hit does not swamp the tail.
+
+The seed makes it repeatable: the same seed is the same room every run. Idea from vitaminclaude/voidstruck (PolyForm Strict: our own words, no code); not yet judged by ear.
+
 ## A render is premixed audio
 
 A stereo render has the problem of a sample from a finished record: it was made to stand alone and leaves no room. Senior's rebalancing moves (ch. 15.2) carry over; applying them to AI renders is our inference, untested. Stems (stems.md) come first when separation is clean.

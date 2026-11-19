@@ -8,6 +8,11 @@ Entry shape: `### C-20261107-2 · 2026-11-07 · Stretch, varispeed and formant n
 
 Added the book's failure modes as a short check; not tested on generated audio.
 
+### C-20261118-1 · 2026-11-18 · Synthesised reverb impulse
+- because: user request (technique harvest from vitaminclaude/voidstruck, ideas only)
+- files: references/mixing.md (Reverb and delay by job)
+- Seeded noise, power-law decay and a falling one-pole lowpass as a recipe; not judged by ear.
+
 ### C-20261114-1 · 2026-11-14 · Roughness, quiet playback, stretch stems
 - because: book distillation, Loy, Musimathics vols. 1-2 (R-20261114-1)
 - files: references/mixing.md (one line), references/ffmpeg.md (one sentence)
