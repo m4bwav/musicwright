@@ -8,6 +8,10 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · State-change delay before switch
 
 State-change delay before switching music, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261119-1 · 2026-11-19 · Unity mixer zones, duck knee, stinger ADPCM, stem DSP cost
+- because: book round 6, Lanham, *Game Audio Development with Unity 5.X* (Packt 2017) ch. 3-5, 11; book rule, Unity 5 era, field names checked against unity.md's Unity 6.6 table
+- files: references/unity.md (import table, Mixer), references/adaptive.md (Vertical layering)
+
 ### C-20261118-1 · 2026-11-18 · Live code sequencer (WebAudio)
 - because: R-20261118-1 (idea from robinduckett/boo-mas)
 - files: references/adaptive.md (new Live code sequencer), references/interactive.md (Layers caveat)
