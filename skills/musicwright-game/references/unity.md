@@ -7,7 +7,7 @@ https://docs.unity3d.com/Manual/class-AudioClip.html, https://docs.unity3d.com/M
 | Setting | Music (long) | Short loop or stinger |
 |---|---|---|
 | Load Type | Streaming (decodes from disk, about 200 KB overhead per stream) | Compressed In Memory |
-| Compression Format | Vorbis (quality ~70% to start; lower until audible, then raise a little) | Vorbis, or PCM for very short stingers |
+| Compression Format | Vorbis (quality ~70% to start; lower until audible, then raise a little) | ADPCM (3-4x smaller than PCM, cheap to decode) or PCM for stingers under about 2 s; Vorbis on a short clip wastes decode CPU (Lanham ch. 11) |
 | Load In Background | on | optional |
 | Preload Audio Data | off; call `LoadAudioData` before playing | on |
 | Force To Mono | off | off |
@@ -41,5 +41,10 @@ current track's start time and bpm, schedule the new source there and fade the o
 Route music to an AudioMixer group. Snapshots handle states (explore, combat, paused); duck music
 under dialogue or important SFX with a send to a ducking effect. Without middleware this is
 enough for a card or strategy game. Set snapshot transition times from the fade rule in interactive.md: in over 0.5-1.5 s, out over 3-5 s.
+
+- Snapshots switch many values at once (states, pause, zones); an exposed parameter suits one value driven every frame from script (an intensity layer's volume).
+- A level with distinct areas gets a start snapshot plus one per zone, blended by the player's distance with `AudioMixer.TransitionToSnapshots(snapshots, weights, time)`, not one global mix (Lanham ch. 4).
+- A snapshot selected in the editor records every change made with no save step; check which is selected before tweaking. A script holding snapshot fields disables itself when one is unassigned rather than throwing each frame.
+- Duck Volume: a send from the trigger group feeds the ducked group's receive. If the duck pumps or chatters, raise Knee before touching threshold; start attack near 10 ms (Lanham ch. 3). Duck Volume and reverb are costly: put them on a return, one reverb per mix (ch. 11).
 
 A stinger is a plain `PlayOneShot`; use `PlayScheduled` only for a quantised one.

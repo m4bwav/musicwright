@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.41 (2026-11-19)
+
+- musicwright-game: unity.md gains per-zone snapshots blended with `TransitionToSnapshots`, snapshot vs exposed parameter, the duck knee fix, costly effects on a return, and ADPCM/PCM for short stingers; adaptive.md notes every playing stem costs DSP (about four on mobile or web). Lanham, *Game Audio Development with Unity 5.X*.
+
 ## 0.1.40 (2026-11-18)
 
 - `.mws` part presets: `kick snare brush rim clap hat openhat shaker ride tom` take step patterns (`x...X...*4`), `pad lead bass keys piano strings harp bells flute pluck organ` need no program. `mw.py arrange --parts kick,shaker,pad,bass,lead --chords "Am F C G"` writes a first-draft `.mws`. The built-in synth gets a sine kick and high-passed hats and shakers.

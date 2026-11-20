@@ -95,6 +95,9 @@ Which to use, transitions, stinger kinds, layer fades and a flip-flop guard: [in
   boundaries (next bar, next beat, a cue point), with transition segments or stingers.
 - **Vertical layering**: stems of one piece in sync; game state fades layers (drums when enemies
   appear, brass when health is low). Same length, tempo and key for every stem.
+  Every playing stem costs mixer DSP even at zero volume (a profiling pass found four stems taking over half
+  the audio DSP; Lanham ch. 5, 11): keep to about four stems on mobile or web, and stop an idle stem only
+  if it can rejoin in sync (`PlayScheduled` at its offset).
 - **Stingers**: short phrases over or between music on events. Play at once when the event must be felt
   now, which is the usual case, with neutral content because the chord underneath is unknown. Quantise
   in music-driven games, or when the engine knows the beat and a short delay is acceptable.
