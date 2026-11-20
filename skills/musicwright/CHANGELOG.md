@@ -9,6 +9,11 @@ Entry shape: `### C-20261118-1 · 2026-11-18 · mw.py arrange and reverb; .mws p
 
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261120-1 · 2026-11-20 · mw.py stemcheck: do separated stems sum to the mix
+- because: user request (technique harvest, arXiv:2610.17821 FLOMSS, adopt-partly: judge separation on mixture consistency); L-stemcheck-thresholds
+- files: scripts/mw.py (stemcheck, _stem_energy_series, envelope_corr), references/cli.md (stemcheck row); tests/test_mw.py (StemCheck)
+- New command; SKILL.md text unchanged, so no eval rerun. Written from the paper's description, no code copied.
+
 ### C-20261114-1 · 2026-11-14 · mw.py envelopes for music-driven visuals
 - because: user request 2026-11-14 (per-frame band envelopes live in mw.py so visual plugins call it, not their own copy)
 - files: scripts/envelopes.py (new), scripts/mw.py (envelopes), references/cli.md (envelopes row)

@@ -58,7 +58,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.41"
+VERSION = "0.1.42"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1241,6 +1241,191 @@ def cmd_envelopes(a):
         res["envelopes"] = d
     return res
 
+
+
+# stemcheck: do the stems add back up to the mix? Mixture consistency as a separation check, after
+# arXiv:2610.17821 (FLOMSS), which judges generative separators on whether their stems sum to the input.
+STEMCHECK_BANDS = (("low", "lowpass=f=250"), ("mid", "highpass=f=250,lowpass=f=4000"), ("high", "highpass=f=4000"))
+STEMCHECK_RESIDUAL_DB = -15.0  # residual above this: the stems lost or invented content
+STEMCHECK_BLEED = 0.6          # envelope correlation above this: one stem's part leaks into another
+STEMCHECK_SILENT_DB = -40.0    # a stem holding less of the mix's energy than this is near silent
+STEMCHECK_ENV_RATE = 1000      # squared signal resampled to this rate, then averaged per frame
+STEMCHECK_FRAME = 50           # samples at ENV_RATE per frame (50 ms)
+
+
+def _db_ratio(num, den, floor=-150.0):
+    if den <= 0:
+        return None
+    return round(max(floor, 10 * math.log10(num / den)) if num > 0 else floor, 2)
+
+
+def _stem_energy_series(inputs, rate, band_filter, outputs, tmpd):
+    """One ffmpeg run. inputs[0] is the mix, the rest are stems. outputs names the series wanted:
+    'mix', 'residual' (mix minus the sum of stems), 'sum' (sum of stems), or a stem index 1..N.
+    Each comes back as per-frame mean energy (both channels summed), so the arithmetic is linear end to end."""
+    n = len(inputs)
+    norm = f"aresample={rate},aformat=sample_fmts=flt:channel_layouts=stereo" + ("," + band_filter if band_filter else "")
+    uses = {i: 0 for i in range(n)}
+    for o in outputs:
+        if o == "mix":
+            uses[0] += 1
+        elif o == "residual":
+            for i in range(n):
+                uses[i] += 1
+        elif o == "sum":
+            for i in range(1, n):
+                uses[i] += 1
+        else:
+            uses[o] += 1
+    parts, pads = [], {i: [] for i in range(n)}
+    for i in range(n):
+        k = uses[i]
+        if not k:
+            continue
+        labels = [f"i{i}_{j}" for j in range(k)]
+        parts.append(f"[{i}:a]{norm}" + (f",asplit={k}" if k > 1 else "") + "".join(f"[{x}]" for x in labels))
+        pads[i] = labels
+    energy = f"aeval=val(0)*val(0)|val(1)*val(1):c=stereo,pan=mono|c0=c0+c1,aresample={STEMCHECK_ENV_RATE}"
+    maps = []
+    for oi, o in enumerate(outputs):
+        tag = f"o{oi}"
+        if o == "mix":
+            parts.append(f"[{pads[0].pop()}]{energy}[{tag}]")
+        elif o in ("residual", "sum"):
+            first = 0 if o == "residual" else 1
+            ins = []
+            for i in range(first, n):
+                src = pads[i].pop()
+                if o == "residual" and i > 0:
+                    parts.append(f"[{src}]aeval=-val(0)|-val(1):c=stereo[neg{oi}_{i}]")
+                    src = f"neg{oi}_{i}"
+                ins.append(f"[{src}]")
+            if len(ins) == 1:
+                parts.append(f"{ins[0]}{energy}[{tag}]")
+            else:
+                parts.append("".join(ins) + f"amix=inputs={len(ins)}:normalize=0:duration=shortest:dropout_transition=0,{energy}[{tag}]")
+        else:
+            parts.append(f"[{pads[o].pop()}]{energy}[{tag}]")
+        maps.append((o, tag, Path(tmpd) / f"{uuid.uuid4().hex}.f32"))
+    args = ["-y"]
+    for p in inputs:
+        args += ["-i", str(p)]
+    args += ["-filter_complex", ";".join(parts)]
+    for _, tag, raw in maps:
+        args += ["-map", f"[{tag}]", "-f", "f32le", "-c:a", "pcm_f32le", str(raw)]
+    ffmpeg(args)
+    res = {}
+    for o, _, raw in maps:
+        b = array("f")
+        b.frombytes(raw.read_bytes())
+        if sys.byteorder == "big":
+            b.byteswap()
+        raw.unlink()
+        frames = [max(0.0, sum(b[i:i + STEMCHECK_FRAME]) / len(b[i:i + STEMCHECK_FRAME]))
+                  for i in range(0, len(b) - STEMCHECK_FRAME // 2, STEMCHECK_FRAME)] or [0.0]
+        res[o] = frames
+    m = min(len(v) for v in res.values())
+    return {k: v[:m] for k, v in res.items()}
+
+
+def envelope_corr(a, b, floor_db=-60.0):
+    """Pearson correlation of two log-energy envelopes, each floored floor_db under its own loudest frame."""
+    def logs(x):
+        top = max(x) if x else 0.0
+        if top <= 0:
+            return None
+        lo = top * 10 ** (floor_db / 10)
+        return [10 * math.log10(max(v, lo)) for v in x]
+    la, lb = logs(a), logs(b)
+    if la is None or lb is None or len(la) < 3:
+        return None
+    n = min(len(la), len(lb))
+    la, lb = la[:n], lb[:n]
+    ma, mb = sum(la) / n, sum(lb) / n
+    va = sum((v - ma) ** 2 for v in la)
+    vb = sum((v - mb) ** 2 for v in lb)
+    if va <= 0 or vb <= 0:
+        return None
+    return round(sum((x - ma) * (y - mb) for x, y in zip(la, lb)) / math.sqrt(va * vb), 3)
+
+
+def cmd_stemcheck(a):
+    """Residual of mix minus the sum of the stems, overall and per band; each stem's share; pairwise bleed."""
+    mix = need_file(a.mix)
+    stems = [need_file(s) for s in a.stems]
+    if a.rate < 8000 or a.rate > 192000:
+        raise MwError("--rate must be between 8000 and 192000")
+    inputs = [mix] + stems
+    warnings = []
+    durs = [probe(p)["duration_s"] or 0.0 for p in inputs]
+    if max(durs) - min(durs) > 0.1:
+        warnings.append(f"lengths differ by {max(durs) - min(durs):.2f} s; compared over the shortest. "
+                        "A stem that starts late or was trimmed shows up as residual")
+    tmpd = Path(tempfile.mkdtemp(prefix="mw_stem_"))
+    try:
+        full = _stem_energy_series(inputs, a.rate, None, ["mix", "residual", "sum"] + list(range(1, len(inputs))), tmpd)
+        bands = {name: _stem_energy_series(inputs, a.rate, flt, ["mix", "residual"], tmpd) for name, flt in STEMCHECK_BANDS}
+    finally:
+        shutil.rmtree(tmpd, ignore_errors=True)
+    em, er, es = sum(full["mix"]), sum(full["residual"]), sum(full["sum"])
+    if em <= 0:
+        raise MwError("the mix is silent")
+    flags = []
+    residual_db = _db_ratio(er, em)
+    # one gain for all stems that best explains the mix: tells a level change apart from lost content
+    cross = (em + es - er) / 2
+    best_gain = cross / es if es > 0 else None
+    fitted = max(0.0, em - cross * cross / es) if es > 0 else em
+    fitted_db = _db_ratio(fitted, em)
+    if residual_db > a.residual:
+        if fitted_db is not None and fitted_db <= a.residual and best_gain and abs(20 * math.log10(abs(best_gain))) > 1:
+            flags.append(f"stems are scaled: the mix is {20 * math.log10(abs(best_gain)):+.1f} dB from their sum; with that gain the residual is {fitted_db} dB")
+        else:
+            flags.append(f"stems do not sum to the mix (residual {residual_db} dB, above {a.residual}): lost or invented content")
+    band_rows = []
+    for name, _ in STEMCHECK_BANDS:
+        b = bands[name]
+        bm, br = sum(b["mix"]), sum(b["residual"])
+        row = {"band": name, "mix_share_db": _db_ratio(bm, em), "residual_db": _db_ratio(br, bm) if bm > 0 else None,
+               "residual_of_mix_db": _db_ratio(br, em)}
+        row["flag"] = bool(row["residual_db"] is not None and row["residual_db"] > a.residual and row["mix_share_db"] > -30)
+        if row["flag"]:
+            flags.append(f"{name} band: residual {row['residual_db']} dB of that band; a part is missing or added there")
+        band_rows.append(row)
+    stem_rows = []
+    for i, p in enumerate(stems, 1):
+        e = sum(full[i])
+        row = {"stem": p.name, "share_db": _db_ratio(e, em), "share_pct": round(100 * e / em, 1)}
+        row["silent"] = row["share_db"] is None or row["share_db"] < STEMCHECK_SILENT_DB
+        if row["silent"]:
+            flags.append(f"{p.name} is near silent ({row['share_db']} dB of the mix)")
+        stem_rows.append(row)
+    pairs = []
+    for i in range(1, len(inputs)):
+        for j in range(i + 1, len(inputs)):
+            c = envelope_corr(full[i], full[j])
+            quiet = stem_rows[i - 1]["silent"] or stem_rows[j - 1]["silent"]
+            row = {"a": stems[i - 1].name, "b": stems[j - 1].name, "corr": c,
+                   "flag": bool(c is not None and c > a.bleed and not quiet)}
+            if quiet:
+                row["skipped"] = "a near-silent stem holds only leakage, so its envelope follows whatever leaks"
+            if row["flag"]:
+                flags.append(f"{row['a']} and {row['b']} rise and fall together (envelope corr {c}, above {a.bleed}): likely bleed")
+            pairs.append(row)
+    res = {"ok": True, "command": "stemcheck", "mix": str(mix.resolve()), "stems": len(stems),
+           "seconds": round(len(full["mix"]) * STEMCHECK_FRAME / STEMCHECK_ENV_RATE, 2),
+           "residual_db": residual_db, "best_gain": round(best_gain, 4) if best_gain is not None else None,
+           "gain_fitted_residual_db": fitted_db, "bands": band_rows, "stems_detail": stem_rows, "bleed": pairs,
+           "thresholds": {"residual_db": a.residual, "bleed_corr": a.bleed, "silent_db": STEMCHECK_SILENT_DB},
+           "flags": flags, "warnings": warnings, "pass": not flags,
+           "note": "residual = energy(mix - sum of stems) / energy(mix). Near -inf: the stems rebuild the mix. Above the threshold: "
+                   "the separator dropped or invented content (generative separators hallucinate). Bleed is envelope correlation, a proxy: "
+                   "parts that play in time together correlate a little on their own; listen before blaming the separator"}
+    if a.json:
+        dst = out_file(a.json)
+        dst.write_text(json.dumps(res, indent=1), encoding="utf-8")
+        res["out"] = str(dst.resolve())
+    return res
 
 
 def parse_shape(spec, dur):
@@ -2976,6 +3161,15 @@ def build_parser():
     s.add_argument("--rate", type=int, default=22050, help="analysis sample rate (sub-bass runs at a quarter of it)")
     s.add_argument("--allow-mp3", action="store_true", help="measure an MP3 anyway (refused by default)")
     s.set_defaults(fn=cmd_envelopes)
+
+    s = sub.add_parser("stemcheck", help="do separated stems add back up to the mix? residual overall and per band, stem shares, pairwise bleed")
+    s.add_argument("mix")
+    s.add_argument("stems", nargs="+")
+    s.add_argument("--residual", type=float, default=STEMCHECK_RESIDUAL_DB, help="flag a residual (mix minus the stems' sum) above this many dB of the mix")
+    s.add_argument("--bleed", type=float, default=STEMCHECK_BLEED, help="flag a pair whose energy envelopes correlate above this")
+    s.add_argument("--rate", type=int, default=44100, help="common sample rate every file is resampled to")
+    s.add_argument("--json", help="also write the report here")
+    s.set_defaults(fn=cmd_stemcheck)
 
     s = sub.add_parser("curve", help="rank takes against a target loudness shape (film cues)")
     s.add_argument("files", nargs="+")

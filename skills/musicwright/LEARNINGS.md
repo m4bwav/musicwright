@@ -6,6 +6,12 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-stemcheck-thresholds · 2026-11-20 · `stemcheck-thresholds-from-one-demucs-run`
+- Trigger: building `mw.py stemcheck` (arXiv:2610.17821 harvest), thresholds needed a real separator. One Demucs htdemucs run (uvx demucs, CPU, 8 s) on a 20 s song made with `mw.py arrange` + `render --synth builtin` (a real recording was not used): residual -32.9 dB overall, bands low -27.7, mid -41.7, high -30.9 dB; best gain 1.0003. The built-in synth bass landed in `other`, so `bass` and `vocals` held only leakage (-43 and -44 dB) and their envelopes correlated 0.94 with each other; the one real pair (drums/other) scored 0.18. Synthetic stems: clean -141 dB; an invented 1 kHz tone -4.9 dB (mid band -1.1); a 30% bleed moved one pair from -0.10 to 0.40.
+- Hypothesis: Demucs stems sum to within about -28 dB per band, so -15 dB keeps over 10 dB of margin; envelope correlation is a weak bleed proxy that only crosses 0.6 for heavy bleed, and near-silent stems must be left out of bleed pairs.
+- Rule: keep -15 dB residual and 0.6 bleed as defaults; pass `--bleed 0.35` to catch a 30% leak; skip bleed pairs with a near-silent stem (done in code). Re-check both on real songs from Demucs, RoFormer and a generative separator before trusting a bleed flag.
+- Scope: skill · Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-20
+
 ### L-guitar-slide-bends · 2026-11-13 · `no-slide-or-bend-in-render` (fixed in 0.1.31)
 - Trigger: tab slides rendered as new plucks with no bend; a slide line faked outside the plugin (own MIDI channel, glide from up to 2 semitones on the GM +-2 range, eased-in vibrato) and a numpy string model with one pluck and a glide won a blind A/B against sampled slides, while recorded samples won for plain plucks.
 - Hypothesis: a re-pluck and the +-2 default bend range are what make sequenced slides sound fake; a continuous glide hides a synthetic pluck.

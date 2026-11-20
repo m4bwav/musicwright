@@ -21,5 +21,7 @@ uvx --with numpy demucs -n htdemucs_ft song.wav          # drums, bass, other, v
 
 uv installs the CPU build of torch from PyPI. For the GPU, add `--with torch --index https://download.pytorch.org/whl/cu128` (unchecked) or run it in a venv that already has CUDA torch, and pass `-d cuda`.
 
-After separating, `mw.py measure` each stem: all layers of one piece must share length, tempo
+After separating, run `mw.py stemcheck song.wav separated/htdemucs/song/*.wav`: do the stems sum back to the mix (residual, per band), each stem's share, and bleed between pairs; generative separators (SAM Audio, FLOMSS-style flow models) need it most.
+
+Then `mw.py measure` each stem: all layers of one piece must share length, tempo
 and key, and should be mastered to the same preset.

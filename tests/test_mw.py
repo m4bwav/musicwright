@@ -2189,5 +2189,97 @@ class Envelopes(unittest.TestCase):
         self.assertEqual(code, 0, d)
         self.assertTrue(d["warnings"])
 
+
+@NEEDS_FFMPEG
+class StemCheck(unittest.TestCase):
+    """mw.py stemcheck on synthetic stems: three gated parts that never play in step, their exact sum as the mix,
+    then the same stems with an invented tone, with 30% of one part leaked into another, and at half level."""
+
+    @classmethod
+    def setUpClass(cls):
+        d = TMP / "stems"
+        d.mkdir(exist_ok=True)
+        cls.d = d
+
+        def gen(src, name, af):
+            ff("-f", "lavfi", "-i", src, "-af", af, "-c:a", "pcm_f32le", d / name)
+
+        def mix(names, out, pre=""):
+            ins = []
+            for n in names:
+                ins += ["-i", d / n]
+            ff(*ins, "-filter_complex", pre + f"amix=inputs={len(names)}:normalize=0", "-c:a", "pcm_f32le", d / out)
+
+        gen(f"sine=f=220:r={RATE}:d=4", "low.wav", "volume='if(lt(mod(t,2),1),0.5,0)':eval=frame")
+        gen(f"anoisesrc=c=pink:r={RATE}:a=0.2:d=4:seed=3", "noise.wav", "volume='if(lt(mod(t,1.5),0.75),1,0)':eval=frame")
+        gen(f"sine=f=3000:r={RATE}:d=4", "high.wav", "volume='if(lt(mod(t,0.7),0.35),0.3,0)':eval=frame")
+        mix(["low.wav", "noise.wav", "high.wav"], "mix.wav")
+        gen(f"sine=f=1000:r={RATE}:d=4", "tone.wav", "volume=0.3")
+        mix(["noise.wav", "tone.wav"], "noise_tone.wav")
+        ff("-i", d / "low.wav", "-af", "volume=0.7", "-c:a", "pcm_f32le", d / "low70.wav")
+        ff("-i", d / "noise.wav", "-i", d / "low.wav", "-filter_complex", "[1]volume=0.3[b];[0][b]amix=inputs=2:normalize=0",
+           "-c:a", "pcm_f32le", d / "noise_bleed.wav")
+        for n in ("low", "noise", "high"):
+            ff("-i", d / f"{n}.wav", "-af", "volume=0.5", "-c:a", "pcm_f32le", d / f"{n}_half.wav")
+
+    def check(self, *stems, extra=()):
+        code, r = run("stemcheck", self.d / "mix.wav", *[self.d / s for s in stems], *extra)
+        self.assertTrue(r["ok"], r)
+        return code, r
+
+    def test_clean_stems_rebuild_the_mix(self):
+        _, r = self.check("low.wav", "noise.wav", "high.wav")
+        self.assertLess(r["residual_db"], -60)
+        self.assertTrue(r["pass"], r["flags"])
+        self.assertTrue(all(b["residual_db"] < -60 for b in r["bands"]), r["bands"])
+        self.assertAlmostEqual(sum(s["share_pct"] for s in r["stems_detail"]), 100, delta=15)
+        self.assertTrue(all(p["corr"] < 0.3 for p in r["bleed"]), r["bleed"])
+
+    def test_invented_tone_is_flagged_in_its_band(self):
+        _, r = self.check("low.wav", "noise_tone.wav", "high.wav")
+        self.assertGreater(r["residual_db"], -15)
+        self.assertFalse(r["pass"])
+        self.assertTrue(any("do not sum" in f for f in r["flags"]), r["flags"])
+        bands = {b["band"]: b for b in r["bands"]}
+        self.assertTrue(bands["mid"]["flag"], bands)  # the 1 kHz tone sits in the mid band
+        self.assertFalse(bands["low"]["flag"], bands)
+
+    def test_missing_stem_is_flagged(self):
+        _, r = self.check("low.wav", "noise.wav")
+        self.assertGreater(r["residual_db"], -15)
+        self.assertEqual(r["stems"], 2)
+
+    def test_bleed_raises_the_pair_correlation(self):
+        _, clean = self.check("low.wav", "noise.wav", "high.wav")
+        _, leak = self.check("low70.wav", "noise_bleed.wav", "high.wav")
+        self.assertLess(leak["residual_db"], -60)  # bleed moves content between stems; the sum still holds
+        c0, c1 = clean["bleed"][0]["corr"], leak["bleed"][0]["corr"]
+        self.assertGreater(c1, c0 + 0.3, (c0, c1))
+        self.assertFalse(leak["bleed"][0]["flag"])  # 30% bleed scores about 0.4, under the default 0.6
+        _, strict = self.check("low70.wav", "noise_bleed.wav", "high.wav", extra=("--bleed", "0.3"))
+        self.assertTrue(strict["bleed"][0]["flag"], strict["bleed"])
+        self.assertTrue(any("bleed" in f for f in strict["flags"]))
+
+    def test_scaled_stems_are_named_as_a_level_change(self):
+        _, r = self.check("low_half.wav", "noise_half.wav", "high_half.wav")
+        self.assertGreater(r["residual_db"], -15)
+        self.assertAlmostEqual(r["best_gain"], 2.0, delta=0.02)
+        self.assertLess(r["gain_fitted_residual_db"], -60)
+        self.assertTrue(any("scaled" in f for f in r["flags"]), r["flags"])
+
+    def test_near_silent_stem_and_json_out(self):
+        quiet = self.d / "quiet.wav"
+        ff("-i", self.d / "high.wav", "-af", "volume=0.001", "-c:a", "pcm_f32le", quiet)
+        out = self.d / "report.json"
+        _, r = self.check("low.wav", "noise.wav", "quiet.wav", extra=("--json", out))
+        self.assertTrue(r["stems_detail"][2]["silent"])
+        self.assertTrue(all(not p["flag"] for p in r["bleed"] if "quiet.wav" in (p["a"], p["b"])))
+        self.assertEqual(json.loads(out.read_text(encoding="utf-8"))["stems"], 3)
+
+    def test_missing_file_fails_soft(self):
+        code, r = run("stemcheck", self.d / "mix.wav", self.d / "nope.wav")
+        self.assertEqual(code, 1)
+        self.assertFalse(r["ok"])
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)
