@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.42 (2026-11-20)
+
+- `mw.py stemcheck MIX STEM [STEM ...]`: does a separation add back up to the mix? Residual (mix minus the sum of the stems) overall and per band, flagged above -15 dB (stems that lost or invented content, the hallucination risk of generative separators); a best single gain so scaled stems are named as a level change; each stem's share of the mix energy; pairwise bleed as envelope correlation, flagged above 0.6. ffmpeg does the sums, so it runs in seconds. Measured on one Demucs htdemucs run (a synthetic song, CPU): residual -32.9 dB, worst band -27.7 dB, a real stem pair 0.18. Mixture consistency as a separation check after arXiv:2610.17821 (FLOMSS; method from the paper's description, no code). musicwright-produce: stems.md points to it.
+
 ## 0.1.41 (2026-11-19)
 
 - musicwright-game: unity.md gains per-zone snapshots blended with `TransitionToSnapshots`, snapshot vs exposed parameter, the duck knee fix, costly effects on a return, and ADPCM/PCM for short stingers; adaptive.md notes every playing stem costs DSP (about four on mobile or web). Lanham, *Game Audio Development with Unity 5.X*.
