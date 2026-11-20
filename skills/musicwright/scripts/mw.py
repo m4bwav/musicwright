@@ -58,7 +58,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.42"
+VERSION = "0.1.43"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -775,8 +775,9 @@ def encode_f32(buf, rate, dst, tmpd):
     raw.unlink()
 
 
-def automation(specs, n):
-    """--automate '2:0=0,28=0,30=-3' (repeatable): file number, then seconds=dB breakpoints on the mix timeline."""
+def automation(specs, n, flag="--automate", unit="DB", eg="2:0=0,28=0,30=-3"):
+    """--automate '2:0=0,28=0,30=-3' (repeatable): file number, then seconds=value breakpoints on the mix timeline.
+    --pan-keys uses the same form with pan positions (-1..1) as values."""
     env = [None] * n
     for spec in specs or []:
         idx, _, pts = spec.partition(":")
@@ -784,11 +785,17 @@ def automation(specs, n):
             k = int(idx) - 1
             pairs = sorted((float(t), float(g)) for t, g in (p.split("=") for p in pts.split(",")))
         except ValueError:
-            raise MwError(f"--automate takes FILE:SECONDS=DB,SECONDS=DB, e.g. 2:0=0,28=0,30=-3; got {spec}")
+            raise MwError(f"{flag} takes FILE:SECONDS={unit},SECONDS={unit}, e.g. {eg}; got {spec}")
         if not 0 <= k < n or not pairs:
-            raise MwError(f"--automate {spec}: file number must be 1 to {n}, with at least one breakpoint")
+            raise MwError(f"{flag} {spec}: file number must be 1 to {n}, with at least one breakpoint")
         env[k] = pairs
     return env
+
+
+def pan_gains(pan, lin=1.0):
+    """Equal-power balance: centre leaves both channels at unity, hard left or right is +3 dB on one side."""
+    ang = (pan + 1) * math.pi / 4
+    return lin * math.cos(ang) * math.sqrt(2), lin * math.sin(ang) * math.sqrt(2)
 
 
 def gain_at(pairs, t):
@@ -809,8 +816,9 @@ def cmd_mix(a):
     pans = per_file(a.pans, n, "pans")
     shelves = per_file(a.shelves, n, "shelves")
     envs = automation(a.automate, n)
-    if any(abs(p) > 1 for p in pans):
-        raise MwError("--pans values run from -1 (left) to 1 (right)")
+    pkeys = automation(a.pan_keys, n, "--pan-keys", "PAN", "1:0=-1,8=1")
+    if any(abs(p) > 1 for p in pans) or any(abs(v) > 1 for k in pkeys if k for _, v in k):
+        raise MwError("--pans and --pan-keys values run from -1 (left) to 1 (right)")
     rate = a.rate
     tmpd = Path(tempfile.mkdtemp(prefix="mw_mix_"))
     try:
@@ -818,8 +826,7 @@ def cmd_mix(a):
         for f, g, off, pan, sh in zip(files, gains, offsets, pans, shelves):
             buf = decode_f32(f, rate, tmpd, f"highshelf=g={sh}:f={a.shelf_hz}" if sh else None)
             lin = 10 ** (g / 20.0)
-            ang = (pan + 1) * math.pi / 4  # equal-power balance; centre leaves both channels at unity
-            gl, gr = lin * math.cos(ang) * math.sqrt(2), lin * math.sin(ang) * math.sqrt(2)
+            gl, gr = pan_gains(pan, lin)
             shift = int(round(off * rate))
             if shift < 0:
                 buf = buf[-shift * 2:]
@@ -836,12 +843,16 @@ def cmd_mix(a):
         mix = array("f", bytes(4 * 2 * total))
         aligned = []
         blk = rate // 100  # automation resolution: 10 ms
-        for (buf, start, gl, gr), env in zip(stems, envs):
+        for (buf, start, gl, gr), env, pk, g in zip(stems, envs, pkeys, gains):
             one = array("f", bytes(4 * 2 * total)) if a.stems else None
             frames = min(len(buf) // 2, total - start)
             mult = [10 ** (gain_at(env, b / 100.0) / 20.0) for b in range(total // blk + 2)] if env else None
+            # moving pan: linear between keys, equal power, one pair of channel gains per 10 ms block
+            lr = [pan_gains(gain_at(pk, b / 100.0), 10 ** (g / 20.0)) for b in range(total // blk + 2)] if pk else None
             for i in range(max(frames, 0)):
                 j, k = 2 * (start + i), 2 * i
+                if lr:
+                    gl, gr = lr[(start + i) // blk]
                 left, right = buf[k] * gl, buf[k + 1] * gr
                 if mult:
                     m = mult[(start + i) // blk]
@@ -874,8 +885,8 @@ def cmd_mix(a):
         shutil.rmtree(tmpd, ignore_errors=True)
     m = measure_file(dst)
     return {"ok": True, "out": str(dst.resolve()), "duration_s": round(total / rate, 3),
-            "layers": [{"file": str(f), "gain_db": g, "offset_s": o, "pan": p, "high_shelf_db": sh, "automation": e}
-                       for f, g, o, p, sh, e in zip(files, gains, offsets, pans, shelves, envs)],
+            "layers": [{"file": str(f), "gain_db": g, "offset_s": o, "pan": p, "high_shelf_db": sh, "automation": e, "pan_keys": pk}
+                       for f, g, o, p, sh, e, pk in zip(files, gains, offsets, pans, shelves, envs, pkeys)],
             "scaled_db": round(20 * math.log10(scale), 2), "stems": stem_files,
             "measure": {k: m[k] for k in ("lufs_i", "true_peak_dbtp", "lra")}, "warnings": warn,
             "next": "sheet the mix beside its stems, then master it to the destination preset"}
@@ -3139,6 +3150,7 @@ def build_parser():
     s.add_argument("--shelves", help="high-shelf dB per file (negative darkens a background part), comma separated")
     s.add_argument("--shelf-hz", type=float, default=3000, help="corner of --shelves (default 3000)")
     s.add_argument("--automate", action="append", help="gain envelope for one file: FILE:SECONDS=DB,SECONDS=DB (1-based file number; repeat per file)")
+    s.add_argument("--pan-keys", action="append", help="moving pan for one file: FILE:SECONDS=PAN,SECONDS=PAN (-1..1, linear between keys, held outside them; replaces --pans for that file)")
     s.set_defaults(fn=cmd_mix)
 
     s = sub.add_parser("analyze", help="tempo, key, tuning, repetition and sections (librosa)")
