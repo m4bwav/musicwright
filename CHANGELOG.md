@@ -2,6 +2,10 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.43 (2026-11-20)
+
+- `mw.py mix --pan-keys FILE:SECONDS=PAN,...`: moving pan per file, same form as `--automate` (pan -1..1 on the mix timeline, linear between keys, held outside them, equal power, one gain pair per 10 ms block); replaces `--pans` for that file. Measured on a 440 Hz tone swept -1 to +1 over 8 s: L/R +19.0, +10.2, +5.4, +1.7, -1.7, -5.4, -10.2, -18.9 dB per second; a centred key reads 0.0 dB in every second. `--pans` output is byte-identical to a single constant key. Keyframed source trajectories rendered by code after arXiv:2610.34415 (AMBIT; method from the paper's description, no code).
+
 ## 0.1.42 (2026-11-20)
 
 - `mw.py stemcheck MIX STEM [STEM ...]`: does a separation add back up to the mix? Residual (mix minus the sum of the stems) overall and per band, flagged above -15 dB (stems that lost or invented content, the hallucination risk of generative separators); a best single gain so scaled stems are named as a level change; each stem's share of the mix energy; pairwise bleed as envelope correlation, flagged above 0.6. ffmpeg does the sums, so it runs in seconds. Measured on one Demucs htdemucs run (a synthetic song, CPU): residual -32.9 dB, worst band -27.7 dB, a real stem pair 0.18. Mixture consistency as a separation check after arXiv:2610.17821 (FLOMSS; method from the paper's description, no code). musicwright-produce: stems.md points to it.

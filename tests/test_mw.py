@@ -1328,6 +1328,33 @@ class FixesAndPreviews(unittest.TestCase):
         code, d = run("mix", FX["tone"], "--automate", "1:zero=0", "--out", TMP / "x.wav")
         self.assertIn("FILE:SECONDS=DB", d["error"])
 
+    def test_mix_pan_keys_move_the_pan(self):
+        # moving pan after arXiv:2610.34415 (AMBIT keyframed trajectories): linear between keys, equal power
+        L, R = "pan=mono|c0=c0", "pan=mono|c0=c1"
+        dst = TMP / "pk" / "sweep.wav"
+        code, d = run("mix", FX["tone"], "--pan-keys", "1:1=-1,9=1", "--out", dst, "--no-limit")
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["layers"][0]["pan_keys"], [[1.0, -1.0], [9.0, 1.0]])
+        diff = [mean_volume(dst, t, t + 1, L) - mean_volume(dst, t, t + 1, R) for t in range(1, 9)]
+        self.assertTrue(all(a > b + 1 for a, b in zip(diff, diff[1:])), diff)  # steadily falling L/R
+        self.assertLess(mean_volume(dst, 0.1, 0.9, R), -80)  # held hard left (the 16-bit floor) before the first key
+        self.assertLess(mean_volume(dst, 9.1, 9.9, L), -80)  # and hard right after the last
+        self.assertAlmostEqual(diff[3], -diff[4], delta=0.5)  # symmetric about the centre
+        mid = TMP / "pk" / "centre.wav"
+        code, d = run("mix", FX["tone"], "--pan-keys", "1:0=0,10=0", "--out", mid, "--no-limit")
+        self.assertAlmostEqual(mean_volume(mid, 1, 9, L), mean_volume(mid, 1, 9, R), delta=0.5)
+        self.assertAlmostEqual(mean_volume(mid, 1, 9, L), mean_volume(FX["tone"], 1, 9, L), delta=0.2)
+        # fixed pan unchanged: --pans 0.5 sits cot(3pi/8) = -7.66 dB L/R, and one constant key renders the same file
+        fixed, keyed = TMP / "pk" / "fixed.wav", TMP / "pk" / "keyed.wav"
+        run("mix", FX["tone"], "--pans", "0.5", "--out", fixed, "--no-limit")
+        run("mix", FX["tone"], "--pan-keys", "1:0=0.5", "--out", keyed, "--no-limit")
+        self.assertAlmostEqual(mean_volume(fixed, 1, 9, L) - mean_volume(fixed, 1, 9, R), -7.66, delta=0.2)
+        self.assertEqual(fixed.read_bytes(), keyed.read_bytes())
+        code, d = run("mix", FX["tone"], "--pan-keys", "1:0=2", "--out", TMP / "x.wav")
+        self.assertIn("--pan-keys", d["error"])
+        code, d = run("mix", FX["tone"], "--pan-keys", "1:left=0", "--out", TMP / "x.wav")
+        self.assertIn("FILE:SECONDS=PAN", d["error"])
+
     def test_master_peak_mode_and_lra_hint(self):
         code, d = run("master", FX["tone"], "--peak", "-6", "--out", TMP / "pre.wav")
         self.assertEqual(code, 0, d)
