@@ -14,8 +14,8 @@
   "topic": "Routing music work for agents: brief, route, the take loop for an agent that cannot listen, mw.py, the project contract",
   "tier": "fast",
   "interval_days": 14.0,
-  "last_checked": "2026-11-03",
-  "next_due": "2026-11-17",
+  "last_checked": "2026-11-20",
+  "next_due": "2026-12-03",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -38,12 +38,18 @@
       "m": 0.05,
       "interval_after": 14.0,
       "note": "quiet: no new music agent tooling; shared research pass; cost: searches 6 · fetches 1 · tool calls 9 (shared)"
+    },
+    {
+      "date": "2026-11-20",
+      "m": 0.2,
+      "interval_after": 14.0,
+      "note": "Mubert hosted MCP and DJ Claude Strudel plugin noted; ACE-Step 1.5 XL Comfy hub workflows; cost: searches 5 shared · fetches 0 · tool calls ~10"
     }
   ],
   "counts": {
     "learnings": 0,
     "changes": 0,
-    "research": 1,
+    "research": 2,
     "tests": 2
   },
   "consolidate_every": 25,

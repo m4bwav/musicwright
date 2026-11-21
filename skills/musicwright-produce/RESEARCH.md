@@ -48,6 +48,14 @@ Best sources: standards bodies, platform help pages, ffmpeg docs; practitioner b
 
 ## Findings log
 
+### R-20261120-1 · 2026-11-20 · Quiet check
+
+- Summary: Spotify loudness page unchanged (-14 LUFS ITU 1770, Loud -11 / Quiet -19, playback-only, true-peak-limited lift). Tooling: nothing new. Testing: nothing new.
+- Track: subject, tooling, testing
+- Sources: support.spotify.com/artists/article/loudness-normalization/
+- Magnitude: 0
+- applied: none
+
 Newest first. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261106-8 · 2026-11-06 · Blind pair: one level or one gain across three cues

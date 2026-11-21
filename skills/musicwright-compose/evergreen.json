@@ -13,9 +13,9 @@
   "source": null,
   "topic": "Music theory for prompting and judging, caption vocabulary, notes-first routes (MIDI, ABC, MusicXML, code music, DAW MCP servers)",
   "tier": "moderate",
-  "interval_days": 30,
-  "last_checked": "2026-10-17",
-  "next_due": "2026-11-16",
+  "interval_days": 30.0,
+  "last_checked": "2026-11-20",
+  "next_due": "2026-12-19",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -32,12 +32,18 @@
       "m": null,
       "interval_after": 30,
       "note": "created"
+    },
+    {
+      "date": "2026-11-20",
+      "m": 0.15,
+      "interval_after": 30.0,
+      "note": "DJ Claude Strudel route noted; cost: searches 5 shared · fetches 0 · tool calls ~10"
     }
   ],
   "counts": {
     "learnings": 0,
     "changes": 0,
-    "research": 0,
+    "research": 1,
     "tests": 3
   },
   "consolidate_every": 25,
