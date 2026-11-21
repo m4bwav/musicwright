@@ -9,6 +9,10 @@ Moved from [theory.md](theory.md) to keep it small: pentatonic and world scales,
 - Minor pentatonic 0 3 5 7 10: blues, rock, and the primary scale of contemporary six-hole
   Native American flutes (common keys F#4, G4, A4). Prompt: "native american flute, breathy,
   solo, canyon reverb".
+- Blues scale 0 3 5 6 7 10: the minor pentatonic plus the flat fifth. Built from the major scale,
+  leave out 2 and 6 and flatten 3 and 7; the flattened notes are the blue notes. A solo can stay
+  inside it over the whole 12-bar form, starting and ending on the tonic (Surmani and Manus,
+  *Alfred's Essentials of Music Theory*, Book 3).
 - Japanese in (miyako-bushi) 0 1 5 7 8: dark, plaintive (koto, shakuhachi). Yo 0 2 5 7 9: folk,
   festive.
 - Maqam: Ajam ~ major, Nahawand ~ harmonic minor, Kurd ~ Phrygian, Hijaz 1 b2 3 4 (the "desert"

@@ -32,7 +32,7 @@ Pentatonic and world scales, and modes as intervals over a drone: [scales.md](sc
 - Wonder: I-II (Lydian); chromatic mediants I-bVI, I-III, I-bIII.
 - Sad: vi-IV-I-V; i-iv; I-iii-vi-IV.
 - Menace: i-bII; i-bVI-iv-V in harmonic minor; tritone moves.
-- Flamenco: i-bVII-bVI-V. Jazz/lo-fi: ii7-V7-Imaj7, turnaround I-vi-ii-V. Blues: 12-bar.
+- Flamenco: i-bVII-bVI-V. Jazz/lo-fi: ii7-V7-Imaj7, turnaround I-vi-ii-V. Blues: 12-bar, bars I I I I, IV IV I I, V(7) IV I I.
 - Ambient: one or two chords changing every 4-8 bars over a drone.
 
 A phrase ending on V stays open; V-I closes it. Chords borrowed from the parallel mode (bVI in major, a major tonic ending a minor piece) add colour without changing key; only a cadence confirms a new key (Open Music Theory, cadences and mixture).
@@ -45,7 +45,8 @@ After Hewitt, *Music Theory for Computer Musicians* (2008), ch. 13, 18, 23.
   by a fourth (one shared note, the strongest pull, can run as a cycle), by a third (two shared notes, smooth, little
   contrast), by a second (no shared note, most contrast, least smooth). Pick the move for the job, then voice it.
 - Doubling: double the root and fifth first, since they carry the chord's identity. Closed spacing is dense, open
-  spacing spreads over the register. Hold shared notes across a change so the parts move as lines.
+  spacing spreads over the register. Hold shared notes across a change so the parts move as lines; `mw.py render`
+  voices chord symbols that way. With only three voices, a V7 leaves out its fifth (Surmani and Manus, Book 3).
 - Thinning extended chords: an eleventh needs root, third, seventh and eleventh, and the natural eleventh clashes with
   the third, so raise it (the Lydian colour). A thirteenth needs root, seventh and thirteenth; leave out the third or
   raise the eleventh. Dense harmony stays legible over clear root movement.

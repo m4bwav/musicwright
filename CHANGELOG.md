@@ -2,6 +2,12 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.44 (2026-11-20)
+
+- Chord symbols play voice-led: each chord after the first takes the close inversion that moves least from the one before, holding shared notes in a fixed register; slash chords keep their named bass; `--root-chords` gives the old root-position blocks. Total motion on eight progressions (I-IV-V-I, I-IV-V7-I, I-V-vi-IV, i-iv-V7-i, ii7-V7-Imaj7, a 12-bar blues, the fixture tune, a slash-bass line): 487 semitones in root position, 115 voice-led.
+- `mw.py render --check` adds `chord_fit` (strong-beat melody notes outside the sounding chord symbol; passing and neighbour notes pass, up to a beat long on the half bar) and `cadence` (the last two chords as Roman numerals: closed for V or V7 to I, open for an ending on V, other). On four chorded tunes (three traditional, the fixture): 24 of 24 seeded in-key wrong notes found where key_fit found none, 1 flag on 66 clean strong-beat notes (an appoggiatura); the key_fit half-bar rule alone had flagged 7. Cadence named all four endings V-I closed.
+- musicwright-compose: six-note blues scale in scales.md, the 12-bar layout and the three-voice V7 line in theory.md. Surmani, Surmani and Manus, *Alfred's Essentials of Music Theory*, Book 3.
+
 ## 0.1.43 (2026-11-20)
 
 - `mw.py mix --pan-keys FILE:SECONDS=PAN,...`: moving pan per file, same form as `--automate` (pan -1..1 on the mix timeline, linear between keys, held outside them, equal power, one gain pair per 10 ms block); replaces `--pans` for that file. Measured on a 440 Hz tone swept -1 to +1 over 8 s: L/R +19.0, +10.2, +5.4, +1.7, -1.7, -5.4, -10.2, -18.9 dB per second; a centred key reads 0.0 dB in every second. `--pans` output is byte-identical to a single constant key. Keyframed source trajectories rendered by code after arXiv:2610.34415 (AMBIT; method from the paper's description, no code).
