@@ -276,14 +276,79 @@ def chord_pitches(sym):
     return ps
 
 
-def add_chord_track(score, chords, end_beat, program=0):
+def chord_parts(sym):
+    """(root pitch class, quality, interval list, slash-bass pitch class or None), or None when not understood."""
+    m = re.fullmatch(r"([A-G])([#b]?)([^/]*)(?:/([A-G][#b]?))?", sym.strip())
+    if not m:
+        return None
+    root = (LETTER_PC[m.group(1)] + {"#": 1, "b": -1, "": 0}[m.group(2)]) % 12
+    iv = dict(CHORD_INTERVALS).get(m.group(3))
+    if iv is None:
+        return None
+    bass = None
+    if m.group(4):
+        bass = (LETTER_PC[m.group(4)[0]] + {"#": 1, "b": -1, "": 0}[m.group(4)[1:] or ""]) % 12
+    return root, m.group(3), iv, bass
+
+
+def voice_motion(a, b):
+    """Semitones moved from voicing a to voicing b: sorted voices paired when the counts match, else each note of the
+    larger chord to the nearest note of the smaller one."""
+    a, b = sorted(a), sorted(b)
+    if len(a) == len(b):
+        return sum(abs(x - y) for x, y in zip(a, b))
+    big, small = (a, b) if len(a) > len(b) else (b, a)
+    return sum(min(abs(x - y) for y in small) for x in big)
+
+
+def _voicings(root, iv, lo=40, hi=67):
+    """Every close-position inversion of a chord with its lowest note in [lo, lo + 12) and its top at most hi."""
+    pcs = []
+    for i in iv:
+        if (root + i) % 12 not in pcs:
+            pcs.append((root + i) % 12)
+    out = []
+    for k in range(len(pcs)):
+        rot = pcs[k:] + pcs[:k]
+        first = lo + (rot[0] - lo) % 12
+        v = [first]
+        for pc in rot[1:]:
+            v.append(v[-1] + (pc - v[-1]) % 12)
+        if v[-1] <= hi:
+            out.append(v)
+    return out
+
+
+def voice_lead(chords, root_position=False):
+    """Pitches for each chord symbol (None when not understood). The first chord, and every chord with root_position,
+    is chord_pitches' root position; later chords take the close inversion that moves least from the previous voicing
+    (after Surmani and Manus, Alfred's Essentials of Music Theory, Book 3: shared notes held, IV in second inversion
+    and V in first). Ties go to the voicing nearest the middle of the register. Slash chords keep their named bass."""
+    out, prev = [], None
+    for sym in chords:
+        ps, parts = chord_pitches(sym), chord_parts(sym)
+        if ps is None or parts is None:
+            out.append(None)
+            continue
+        root, _, iv, bass = parts
+        upper = ps[1:] if bass is not None else ps
+        if prev is not None and not root_position:
+            cands = _voicings(root, iv) or [upper]
+            upper = min(cands, key=lambda v: (voice_motion(prev, v), abs(sum(v) / len(v) - 54)))
+        prev = upper
+        out.append(([36 + bass] if bass is not None else []) + upper)
+    return out
+
+
+def add_chord_track(score, chords, end_beat, program=0, root_position=False):
     if not chords:
         return 0
     t = Track("chords", program)
     bad = []
+    voiced = voice_lead([sym for _, sym in chords], root_position)
     for i, (beat, sym) in enumerate(chords):
         nxt = chords[i + 1][0] if i + 1 < len(chords) else end_beat
-        ps = chord_pitches(sym)
+        ps = voiced[i]
         if ps is None:
             bad.append(sym)
             continue
@@ -1666,7 +1731,7 @@ def parse_midi(data):
 
 # ---------------------------------------------------------------- load any
 
-def load(path, tuning=None, tab_step=None, bpm=None, program=None, chords=False, tune=None):
+def load(path, tuning=None, tab_step=None, bpm=None, program=None, chords=False, tune=None, root_chords=False):
     p = Path(path)
     ext = p.suffix.lower()
     if ext in (".mid", ".midi"):
@@ -1706,7 +1771,8 @@ def load(path, tuning=None, tab_step=None, bpm=None, program=None, chords=False,
             if not t.drums and t.name != "chords":
                 t.program = program
     if chords and getattr(score, "_chords", None):
-        add_chord_track(score, score._chords, max(score.length_beats(), getattr(score, "_chords_end", 0.0)))
+        add_chord_track(score, score._chords, max(score.length_beats(), getattr(score, "_chords_end", 0.0)),
+                        root_position=root_chords)
     elif getattr(score, "_chords", None):
         score.warnings.append(f"{len(score._chords)} chord symbols were not played (add --chords to play them)")
     return score, kind
@@ -1756,6 +1822,93 @@ def key_fit(score):
             "outside_share": round(outside, 3), "strong_beat_outside": flagged[:20],
             "flag": bool(flagged), "reading": "a hint, not an error: chromatic notes on strong beats can be meant; "
             "when the key was not declared it was estimated, so declare K: or a key signature"}
+
+
+def _strong_beats(score):
+    num, den = score.meter
+    bar = num * 4.0 / den
+    return bar, [0.0] + ([bar / 2] if num % 2 == 0 and num >= 4 else [])
+
+
+def chord_fit(score):
+    """Chord-fit hint: melody notes on strong beats that are not in the chord symbol sounding there (after Surmani and
+    Manus, Alfred's Essentials of Music Theory, Book 3: chord tones on the beat, passing and neighbour tones between).
+    Uses the score's chord symbols (ABC "Am", .mws chords:), whether or not they are played. The strong beats and the
+    passing/neighbour exemption are key_fit's. Lines are every pitched part except the chord part."""
+    chords = getattr(score, "_chords", None) or []
+    spans = []
+    for beat, sym in chords:
+        parts = chord_parts(sym)
+        if parts:
+            root, _, iv, bass = parts
+            spans.append((beat, {(root + i) % 12 for i in iv} | ({bass} if bass is not None else set()), sym))
+    lines = [t for t in score.tracks if not t.drums and t.notes and t.name != "chords"]
+    if not spans or not lines:
+        return None
+    bar, strong = _strong_beats(score)
+    checked, flagged = 0, []
+    for t in lines:
+        ns = sorted(t.notes, key=lambda n: (n.start, n.pitch))
+        for i, n in enumerate(ns):
+            pos = n.start % bar
+            if not any(abs(pos - s) < 1e-6 for s in strong) or n.start < spans[0][0] - 1e-6:
+                continue
+            at = [sp for sp in spans if sp[0] <= n.start + 1e-6][-1]
+            checked += 1
+            if n.pitch % 12 in at[1]:
+                continue
+            prev, nxt = (ns[i - 1] if i else None), (ns[i + 1] if i + 1 < len(ns) else None)
+            # a passing or neighbour note: up to half a beat on the downbeat (key_fit's test), up to a beat on the half bar
+            if (n.dur <= (0.5 if pos < 1e-6 else 1.0) and prev and nxt and 0 < abs(n.pitch - prev.pitch) <= 2
+                    and 0 < abs(nxt.pitch - n.pitch) <= 2):
+                continue
+            flagged.append({"track": t.name, "bar": int(n.start // bar) + 1, "beat": round(pos + 1, 3),
+                            "note": midi_name(n.pitch), "chord": at[2]})
+    return {"chords": len(spans), "strong_beat_notes": checked, "outside_chord": flagged[:20], "flag": bool(flagged),
+            "reading": "a hint, not an error: a suspension or appoggiatura on the beat can be meant; many of these "
+            "mean the chord symbols and the melody disagree"}
+
+
+ROMAN = ["I", "bII", "II", "bIII", "III", "IV", "#IV", "V", "bVI", "VI", "bVII", "VII"]  # degrees of the major scale
+ROMAN_MINOR = ["I", "bII", "II", "III", "#III", "IV", "#IV", "V", "VI", "#VI", "VII", "#VII"]  # of the natural minor
+ROMAN_SUFFIX = {"7": "7", "9": "9", "maj7": "maj7", "m7": "7", "dim7": "o7", "m7b5": "7b5", "dim": "o", "6": "6",
+                "m6": "6", "sus4": "sus4", "sus2": "sus2", "7sus4": "7sus4", "aug": "+", "+": "+"}
+
+
+def _roman(sym, tonic, mode="major"):
+    """(Roman numeral against the tonic, is it a dominant: a major-third chord on the fifth degree)."""
+    root, qual, iv, _ = chord_parts(sym)
+    num = (ROMAN if mode == "major" else ROMAN_MINOR)[(root - tonic) % 12]
+    if 3 in iv and 4 not in iv:
+        num = num.lower()
+    dominant = (root - tonic) % 12 == 7 and 4 in iv and 8 not in iv and 11 not in iv
+    return num + ROMAN_SUFFIX.get(qual, ""), dominant
+
+
+def cadence(score):
+    """Name the last two chord symbols in Roman numerals against the declared (or estimated) key and call the ending:
+    closed for V or V7 to I (i in minor), open for an ending on V, other for the rest (after Surmani and Manus,
+    Alfred's Essentials of Music Theory, Book 3, and Open Music Theory, cadences). A report, never a flag: many cues
+    are meant to end open."""
+    chords = [sym for _, sym in (getattr(score, "_chords", None) or []) if chord_parts(sym)]
+    lines = [t for t in score.tracks if not t.drums and t.notes]
+    if not chords or (score.key is None and not lines):
+        return None
+    declared = score.key is not None
+    fifths, mode = score.key if declared else estimate_key([n for t in lines for n in t.notes])
+    tonic = (fifths * 7) % 12 if mode == "major" else ((fifths * 7) - 3) % 12
+    tail = chords[-2:]
+    romans = [_roman(c, tonic, mode) for c in tail]
+    last_root = chord_parts(tail[-1])[0]
+    if last_root == tonic and len(romans) == 2 and romans[0][1]:
+        ending = "closed"
+    elif (last_root - tonic) % 12 == 7:
+        ending = "open"
+    else:
+        ending = "other"
+    return {"key": key_name(fifths, mode), "declared": declared, "last_two": tail, "roman": [r for r, _ in romans],
+            "ending": ending, "reading": "closed = V or V7 to the tonic; open = ends on V; a report of what the "
+            "chords do, not an error"}
 
 
 def melody_hints(score):

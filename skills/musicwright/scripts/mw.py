@@ -58,7 +58,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.43"
+VERSION = "0.1.44"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1870,7 +1870,7 @@ def load_score(a, path):
     prog = notation.program_of(getattr(a, "program", None))
     score, kind = notation.load(need_file(path), tuning=getattr(a, "tuning", None), tab_step=getattr(a, "tab_step", None),
                                 bpm=getattr(a, "bpm", None), program=prog, chords=getattr(a, "chords", False),
-                                tune=getattr(a, "tune", None))
+                                tune=getattr(a, "tune", None), root_chords=getattr(a, "root_chords", False))
     if getattr(a, "transpose", 0):
         notation.transpose(score, a.transpose)
     return score, kind
@@ -1882,6 +1882,8 @@ def cmd_render(a):
     if a.check:
         res["melody"] = notation.melody_hints(score)
         res["key_fit"] = notation.key_fit(score)
+        res["chord_fit"] = notation.chord_fit(score)
+        res["cadence"] = notation.cadence(score)
         res["bar_lengths"] = {"ok": not score.bar_issues, "bad": score.bar_issues}
         if a.roll:
             res["roll"] = notation.piano_roll_png(score, out_file(a.roll))
@@ -3240,6 +3242,8 @@ def build_parser():
         s.add_argument("--tuning", help="tab tuning: guitar, dropd, dadgad, openg, bass, bass5, guitar7, ukulele, or pitches low to high (E2,A2,D3,G3,B3,E4)")
         s.add_argument("--tab-step", type=float, help="beats per tab column (default: the usual gap between notes is an eighth note)")
         s.add_argument("--tune", help="which X: tune of a multi-tune ABC file (default the first)")
+        s.add_argument("--root-chords", action="store_true",
+                       help="play every chord in root position (default: each chord after the first takes the inversion nearest the last)")
 
     s = sub.add_parser("render", help="notation to audio: ABC, ASCII tab, MusicXML or MIDI -> MIDI + WAV/FLAC")
     s.add_argument("score")

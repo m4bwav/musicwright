@@ -2,12 +2,17 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-20261118-3 · 2026-11-18 · .mws part presets and arrange; scales.md split out
+Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+
+### C-20261120-1 · 2026-11-20 · Voice-led chords, chord_fit and cadence hints, blues scale and layout
+- because: R-20261120-1
+- files: SKILL.md (Step 3 check paragraph), references/notation.md (input table), references/theory.md (Progressions, Root movement and voicing), references/scales.md (Pentatonic and world scales); hub notation.py and mw.py
+- Chord symbols now play voice-led (`--root-chords` for the old root-position blocks); `render --check` adds `chord_fit` and `cadence`. Six-note blues scale, the 12-bar layout and the three-voice V7 line, in our own words. Evals not re-run (no trigger change).
+
+### C-20261118-3 · 2026-11-18 · .mws part presets and arrange; scales.md split out
 - because: user request (arranger helper; size budget back to green)
 - files: references/notation.md (Score text), references/scales.md (new: Pentatonic and world scales, Modes as intervals over a drone moved whole from theory.md), references/theory.md (pointer), SKILL.md (References)
 - No text lost; theory.md fell under the 3,500-token reference budget. Evals not re-run (no trigger change).
-
-### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261118-2 · 2026-11-18 · Score text (.mws)
 - because: user request (technique harvest from vitaminclaude/voidstruck, ideas only)

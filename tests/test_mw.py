@@ -1595,6 +1595,55 @@ class KeyFit(unittest.TestCase):
         self.assertFalse(self.fit("A2 B2 c2 d2|e4 ^G4|A8|", key="Am")["flag"])
 
 
+class ChordHints(unittest.TestCase):
+    """Voice-led chord track, render --check chord_fit and cadence (Surmani and Manus, Alfred's Essentials, Book 3)."""
+    def abc(self, body, key="C", meter="4/4"):
+        return mw.notation.parse_abc(f"X:1\nM:{meter}\nL:1/4\nQ:1/4=100\nK:{key}\n{body}\n")
+
+    def motion(self, voiced):
+        return sum(mw.notation.voice_motion(a, b) for a, b in zip(voiced, voiced[1:]))
+
+    def test_voice_leading_moves_less_and_holds_shared_notes(self):
+        N = mw.notation
+        led, root = N.voice_lead("C F G C".split()), N.voice_lead("C F G C".split(), root_position=True)
+        self.assertEqual(led[0], N.chord_pitches("C"))  # the first chord stays in root position
+        self.assertEqual(root, [N.chord_pitches(c) for c in "C F G C".split()])
+        self.assertEqual([[N.midi_name(p) for p in v] for v in led[1:3]], [["C3", "F3", "A3"], ["D3", "G3", "B3"]])
+        self.assertEqual((self.motion(root), self.motion(led)), (60, 18))  # IV in second inversion, V in first
+        for prog in ("C G Am F", "Am Dm E7 Am", "Dm7 G7 Cmaj7"):
+            self.assertLess(self.motion(N.voice_lead(prog.split())), self.motion(N.voice_lead(prog.split(), True)) / 2, prog)
+        slash = N.voice_lead(["Am", "Am/G", "F"])
+        self.assertEqual(slash[1][0], 43)  # the named bass G2 stays under the voicing
+        self.assertTrue(all(40 <= min(v) and max(v) <= 67 for v in N.voice_lead("A7 D7 E7 A7 Bb F#m C#dim".split())))
+        self.assertIsNone(N.voice_lead(["Xq7"])[0])
+
+    def test_chord_fit_flags_strong_beat_notes_outside_the_chord(self):
+        clean = '"C"C C G G|"F"A A "C"G2|"F"F F "C"E E|"G"D D "C"C2|]'
+        d = mw.notation.chord_fit(self.abc(clean))
+        self.assertFalse(d["flag"], d)
+        self.assertEqual(d["strong_beat_notes"], 8)
+        d = mw.notation.chord_fit(self.abc('"C"C C G G|"F"B A "C"G2|"F"F F "C"E E|"G"D D "C"C2|]'))  # B on F's downbeat
+        self.assertEqual([(f["bar"], f["note"], f["chord"]) for f in d["outside_chord"]], [(2, "B4", "F")])
+        self.assertFalse(mw.notation.key_fit(self.abc('"F"B A "C"G2|]'))["flag"])  # in key, so key_fit misses it
+        self.assertFalse(mw.notation.chord_fit(self.abc('"C"E E F G|"G"G F E D|]'))["flag"])  # passing quarters on beat 3
+        self.assertTrue(mw.notation.chord_fit(self.abc('"G"E3/2 D/2 D2|]'))["flag"])  # a long note on the downbeat
+        self.assertIsNone(mw.notation.chord_fit(self.abc("C D E F|]")))  # no chord symbols
+
+    def test_cadence_names_the_ending(self):
+        def end(chords, key="C"):
+            body = "|".join(f'"{c}"C4' for c in chords.split()) + "|]"
+            return mw.notation.cadence(self.abc(body, key))
+        d = end("C F G7 C")
+        self.assertEqual((d["roman"], d["ending"], d["declared"]), (["V7", "I"], "closed", True))
+        self.assertEqual(end("C F C")["ending"], "other")  # plagal
+        self.assertEqual(end("C Am F G")["roman"], ["IV", "V"])
+        self.assertEqual(end("C Am F G")["ending"], "open")
+        d = end("Am Dm E7 Am", key="Am")
+        self.assertEqual((d["roman"], d["ending"]), (["V7", "i"], "closed"))
+        self.assertEqual(end("Am F C Bdim", key="Am")["roman"], ["III", "iio"])
+        self.assertIsNone(mw.notation.cadence(self.abc("C D E F|]")))
+
+
 @NEEDS_FFMPEG
 class NotationCommands(unittest.TestCase):
     def test_render_check_and_builtin_render(self):
@@ -1604,6 +1653,10 @@ class NotationCommands(unittest.TestCase):
         self.assertEqual(d["beats"], 24.0)
         self.assertIn("chord symbols were not played", " ".join(d["warnings"]))
         self.assertIn("key_fit", d)
+        self.assertFalse(d["chord_fit"]["flag"], d["chord_fit"])
+        self.assertEqual((d["cadence"]["roman"], d["cadence"]["ending"]), (["V", "I"], "closed"))
+        code, d = run("render", FIXTURES / "tune.abc", "--check", "--chords", "--root-chords")
+        self.assertEqual(code, 0, d)
         dst = TMP / "nt" / "tune.wav"
         code, d = run("render", FIXTURES / "tune.abc", "--chords", "--synth", "builtin", "--out", dst)
         self.assertEqual(code, 0, d)
