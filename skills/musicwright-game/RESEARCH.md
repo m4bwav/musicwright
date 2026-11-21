@@ -48,6 +48,14 @@ Best sources: Unity manual and issue tracker, middleware docs and courses, Steam
 
 ## Findings log
 
+### R-20261120-1 · 2026-11-20 · Quiet check
+
+- Summary: Unity PlayScheduled docs (6000.x and 7000.0) unchanged: schedule 100-200 ms ahead, two alternating AudioSources, SetScheduledEndTime for joins. Forum still reports MP3 padding and occasional OGG hiccups, matching current understanding. Tooling: nothing new. Testing: nothing new.
+- Track: subject, tooling, testing
+- Sources: docs.unity.com/en-us/engine/7000.0/script-reference/unityengine/audiosource/playscheduled; discussions.unity.com/t/need-help-getting-audio-to-loop-seamlessly-a-certain-amount-of-times/1719532
+- Magnitude: 0.05
+- applied: none
+
 Newest first. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261118-1 · 2026-11-18 · Practice: live code sequencer driven by game state

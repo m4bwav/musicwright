@@ -46,6 +46,14 @@ Best sources: theory texts and pedagogy sites, library docs, the MCP server repo
 
 ## Findings log
 
+### R-20261120-1 · 2026-11-20 · Refresh: Strudel as a notes-first route
+
+- Summary: tooling: DJ Claude (Claude Code plugin + MCP server) exposes Strudel language resources so an agent composes as live code; another notes-first route beside MIDI/ABC, same read-back rule applies. MuseScore and Melrose MCP servers still listed on directories, unverified. Subject, practice, testing: nothing new.
+- Track: tooling
+- Sources: mcpmarket.com/tools/skills/dj-claude-music-context; glama.ai/mcp/servers/@ghchen99/mcp-musescore
+- Magnitude: 0.15
+- applied: none (note only)
+
 Newest first. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261106-8 · 2026-11-06 · Lerch on polyphonic transcription

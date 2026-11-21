@@ -46,6 +46,14 @@ Best sources: ai-docs research 00-02 (first pass), ComfyUI releases, the repos n
 
 ## Findings log
 
+### R-20261120-1 · 2026-11-20 · Refresh: two music MCP options, no engine change
+
+- Summary: tooling: Mubert ships a hosted MCP server (one HTTP endpoint, 21 tools, licensed tracks; OAuth fails in `claude -p` and Agent SDK runs), and DJ Claude is a Claude Code plugin with an MCP server that teaches agents Strudel for live code music. Both are options, not replacements: paid/hosted or live-coded, while the hub's local render-measure-ask loop stands. Subject: ACE-Step 1.5 XL now has official Comfy hub workflows; cover/repaint still not in core ComfyUI per the docs. Practice and testing: nothing new.
+- Track: tooling, subject
+- Sources: mubert.com/blog/?p=6026; mcpmarket.com/tools/skills/dj-claude-music-context; comfy.org/hub/workflows/ace-step-1-5xl-base-text-to-music-536dc32faee1; docs.comfy.org/tutorials/audio/ace-step/ace-step-v1-5
+- Magnitude: 0.2
+- applied: none (note only)
+
 ### R-20261103-1 · 2026-11-03 · Quiet check
 
 - Summary: no new music agent skills or MCP servers (an 'acestep-docs' docs-reading skill on aggregators only); no ComfyUI audio node changes since 2026-10-17. Testing: CMI-RewardBench v2 shows LLM judges under 80% agreement with people, supporting the hub's render-measure-ask loop. Practice: nothing new.

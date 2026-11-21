@@ -13,15 +13,15 @@
   "source": null,
   "topic": "Finishing music: loudness targets, mastering, formats, QC checks, mixing rules, stem separation",
   "tier": "moderate",
-  "interval_days": 30,
-  "last_checked": "2026-10-17",
-  "next_due": "2026-11-16",
+  "interval_days": 37.5,
+  "last_checked": "2026-11-20",
+  "next_due": "2026-12-27",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
-    "quiet": 0,
+    "quiet": 1,
     "pinned_min": 0,
     "pinned_max": 0,
     "vau_quiet": 0
@@ -32,12 +32,18 @@
       "m": null,
       "interval_after": 30,
       "note": "created"
+    },
+    {
+      "date": "2026-11-20",
+      "m": 0.0,
+      "interval_after": 37.5,
+      "note": "quiet; Spotify -14 LUFS unchanged; cost: searches 5 shared · fetches 0 · tool calls ~10"
     }
   ],
   "counts": {
     "learnings": 0,
     "changes": 0,
-    "research": 0,
+    "research": 1,
     "tests": 2
   },
   "consolidate_every": 25,

@@ -46,6 +46,14 @@ Best sources: practitioner scoring texts, delivery specs, tool docs. Noisy: SEO 
 
 ## Findings log
 
+### R-20261120-1 · 2026-11-20 · Refresh: video-to-music research, nothing usable locally
+
+- Summary: subject: NarraScore (Feb 2026, global mood anchor + local emotion tracking) and JenBridge (Jun 2026, per-segment scoring joined across scene transitions) are papers, not local tools; JenBridge's segment-then-join design matches the skill's render-movements-and-join advice. Tooling, practice, testing: nothing new.
+- Track: subject
+- Sources: arxiv.org/html/2602.09070; arxiv.org/html/2606.01703
+- Magnitude: 0.1
+- applied: none
+
 Newest first. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261113-1 · 2026-11-13 · Ducking: critical vs background dialogue
