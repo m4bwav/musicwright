@@ -9,6 +9,11 @@ Entry shape: `### C-20261118-1 · 2026-11-18 · mw.py arrange and reverb; .mws p
 
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261122-1 · 2026-11-22 · mw.py fatigue
+- because: harvest: a colony sim's adaptive music, 2026-11-22
+- files: scripts/mw.py (fatigue), references/cli.md (fatigue row)
+- New command; SKILL.md text unchanged, so no eval rerun.
+
 ### C-20261120-2 · 2026-11-20 · mw.py mix --pan-keys: moving pan
 - because: user request (technique harvest, arXiv:2610.34415 AMBIT, adopt-partly script plan)
 - files: scripts/mw.py (mix --pan-keys, pan_gains, automation shared parser), references/cli.md (mix row)

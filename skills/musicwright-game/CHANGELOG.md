@@ -8,6 +8,11 @@ Entry shape: `### C-20261105-9 · 2026-11-05 · State-change delay before switch
 
 State-change delay before switching music, from round-two reading; see the RESEARCH entry for how strong each source is.
 
+### C-20261122-1 · 2026-11-22 · rest music between songs in long sessions
+- because: harvest: a colony sim's adaptive music, 2026-11-22
+- files: SKILL.md (fatigue rule list)
+- One line: long-session games rest music between songs, checked with mw.py fatigue. Adds a pointer, no new trigger, so no eval rerun.
+
 ### C-20261119-1 · 2026-11-19 · Unity mixer zones, duck knee, stinger ADPCM, stem DSP cost
 - because: book round 6, Lanham, *Game Audio Development with Unity 5.X* (Packt 2017) ch. 3-5, 11; book rule, Unity 5 era, field names checked against unity.md's Unity 6.6 table
 - files: references/unity.md (import table, Mixer), references/adaptive.md (Vertical layering)

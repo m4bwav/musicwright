@@ -2361,5 +2361,28 @@ class StemCheck(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertFalse(r["ok"])
 
+class Fatigue(unittest.TestCase):
+    def test_no_rest_one_track(self):
+        code, d = run("fatigue", "230")
+        self.assertEqual(code, 0, d)
+        self.assertEqual(d["plays_per_hour"], 15.7)
+        self.assertEqual(d["music_fraction"], 1.0)
+
+    def test_rest_between_songs(self):
+        code, d = run("fatigue", "230", "--gap", "120,300", "--seed", "7")
+        self.assertEqual(code, 0, d)
+        self.assertTrue(8.0 <= d["plays_per_hour"] <= 9.0, d)
+        self.assertTrue(0.50 <= d["music_fraction"] <= 0.60, d)
+
+    def test_per_track_repeats(self):
+        code, d = run("fatigue", "200", "100", "--session", "600")
+        self.assertEqual(d["plays_per_track"], [2.0, 2.0])
+
+    def test_bad_input_fails_soft(self):
+        code, d = run("fatigue", "0")
+        self.assertEqual(code, 1)
+        self.assertFalse(d["ok"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

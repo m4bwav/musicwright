@@ -21,6 +21,7 @@ effects, not tire the player, and import cleanly. Script: `<this folder>/../musi
 - A turn-based or card game runs for hours: fatigue is the enemy. Prefer 2-4 min loops with A/B
   variation, several tracks per area, no hook every 20 s, a sparse 1-4 kHz range for SFX, and
   silence between fights. An action game does the reverse: a simpler track carries through a lull.
+- Long-session games should rest music between songs; check with `mw.py fatigue`.
 - One main theme reused across menu, map, boss and victory (different tempo, mode, instruments)
   makes the set feel authored. Keep the motif's notes in the brief (musicwright-compose). Fragments
   as background figures and its chords with no melody tire less. A timbre that means one character

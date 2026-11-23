@@ -2,6 +2,11 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.45 (2026-11-22)
+
+- `mw.py fatigue <seconds...>`: plays the tracks in turn over a session with a seeded random rest between songs and prints the music fraction, plays per hour and plays per track. One 230 s track over an hour: 15.7 plays with no rest; with 120-300 s rests, 8.4 plays and 54% music (200 seeded runs). Reason: harvest: a colony sim's adaptive music, 2026-11-22.
+- musicwright-game: long-session games should rest music between songs; check with `fatigue`.
+
 ## 0.1.44 (2026-11-20)
 
 - Chord symbols play voice-led: each chord after the first takes the close inversion that moves least from the one before, holding shared notes in a fixed register; slash chords keep their named bass; `--root-chords` gives the old root-position blocks. Total motion on eight progressions (I-IV-V-I, I-IV-V7-I, I-V-vi-IV, i-iv-V7-i, ii7-V7-Imaj7, a 12-bar blues, the fixture tune, a slash-bass line): 487 semitones in root position, 115 voice-led.
