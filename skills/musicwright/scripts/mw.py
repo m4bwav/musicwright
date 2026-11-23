@@ -34,6 +34,7 @@ Commands
   ledger   list a project's takes with recipes and verdicts
   note     append a taste note, lesson or recipe to the studio
 """
+import random
 import argparse
 import copy
 import datetime as _dt
@@ -58,7 +59,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.44"
+VERSION = "0.1.45"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -1193,6 +1194,26 @@ def pulse_of(path, tmpd, threshold="global"):
     if row["pulse"] == "none":  # no beat, so no tempo or grid to report
         row.update({"tempo_bpm": None, "grid_deviation": None, "grid_chance": None})
     return row
+
+
+def cmd_fatigue(a):
+    L = [float(x) for x in a.tracks]
+    g = sorted(float(x) for x in (a.gap + "," + a.gap).split(",")[:2])
+    if min(L) <= 0 or a.session <= 0 or g[0] < 0:
+        raise MwError("track lengths and --session must be positive, --gap MIN,MAX not negative")
+    rng, heard, music = random.Random(a.seed), [0.0] * len(L), 0.0
+    for _ in range(a.runs):
+        t, i = 0.0, 0
+        while t < a.session:
+            p = min(L[i % len(L)], a.session - t)
+            heard[i % len(L)] += p / a.runs
+            music += p / a.runs
+            t += p + rng.uniform(*g)
+            i += 1
+    h = a.session / 3600
+    per = [round(x / n, 2) for x, n in zip(heard, L)]
+    return {"ok": True, "gap_s": g, "music_fraction": round(music / a.session, 3), "plays_per_hour": round(sum(per) / h, 1),
+            "plays_per_track": per, "reading": "a song cut off at the session end counts by the share heard"}
 
 
 def cmd_pulse(a):
@@ -3160,6 +3181,14 @@ def build_parser():
     s.add_argument("--sections", nargs="?", const="0", help="also find section boundaries: alone for an automatic count, a number, or the tags joined by | to name them")
     s.add_argument("--bpm", type=float, help="expected tempo: librosa's start_bpm, a prior that fights doubled or halved readings")
     s.set_defaults(fn=cmd_analyze)
+
+    s = sub.add_parser("fatigue", help="music fraction and plays per hour for track lengths with seeded rests")
+    s.add_argument("tracks", nargs="+")
+    s.add_argument("--session", type=float, default=3600.0)
+    s.add_argument("--gap", default="0", help="MIN,MAX seconds")
+    s.add_argument("--seed", type=int, default=7)
+    s.add_argument("--runs", type=int, default=200)
+    s.set_defaults(fn=cmd_fatigue)
 
     s = sub.add_parser("pulse", help="is there a beat? onsets, IOI spread, autocorrelation, grid fit (stdlib)")
     s.add_argument("files", nargs="+")
