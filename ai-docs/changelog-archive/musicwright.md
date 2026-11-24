@@ -1,0 +1,124 @@
+# musicwright changelog, entries before 2026-11-10
+
+Newer entries: [skills/musicwright/CHANGELOG.md](../../skills/musicwright/CHANGELOG.md).
+
+### C-20261123-1 · 2026-11-23 · mw.py lyriccheck and the gen tag warning
+- because: user request (harvest of the ACE-Step 1.5 Tutorial, MIT, rows T6, T19)
+- files: scripts/mw.py (tag_conflicts in gen, lyriccheck), references/cli.md (gen and lyriccheck rows)
+- New command and warning; SKILL.md unchanged, so no eval rerun.
+
+### C-20261122-1 · 2026-11-22 · mw.py fatigue
+- because: harvest: a colony sim's adaptive music, 2026-11-22
+- files: scripts/mw.py (fatigue), references/cli.md (fatigue row)
+- New command; SKILL.md text unchanged, so no eval rerun.
+
+### C-20261120-2 · 2026-11-20 · mw.py mix --pan-keys: moving pan
+- because: user request (technique harvest, arXiv:2610.34415 AMBIT, adopt-partly script plan)
+- files: scripts/mw.py (mix --pan-keys, pan_gains, automation shared parser), references/cli.md (mix row)
+- New option; SKILL.md text unchanged, so no eval rerun.
+
+### C-20261120-1 · 2026-11-20 · mw.py stemcheck: do separated stems sum to the mix
+- because: user request (technique harvest, arXiv:2610.17821 FLOMSS, adopt-partly: judge separation on mixture consistency); L-stemcheck-thresholds
+- files: scripts/mw.py (stemcheck, _stem_energy_series, envelope_corr), references/cli.md (stemcheck row); tests/test_mw.py (StemCheck)
+- New command; SKILL.md text unchanged, so no eval rerun. Written from the paper's description, no code copied.
+
+### C-20261114-1 · 2026-11-14 · mw.py envelopes for music-driven visuals
+- because: user request 2026-11-14 (per-frame band envelopes live in mw.py so visual plugins call it, not their own copy)
+- files: scripts/envelopes.py (new), scripts/mw.py (envelopes), references/cli.md (envelopes row)
+- New command; SKILL.md text unchanged, so no eval rerun.
+
+### C-20261110-1 · 2026-11-10 · harvest.json: technique-harvest targets for this unit
+- because: user request 2026-11-10: plugins store their own technique-harvest targets (evergreen 1.1.0 harvest.json)
+- files: harvest.json (new)
+- Data file only; no skill text or version changed.
+
+### C-20261109-1 · 2026-11-09 · gen tags FLAC/OGG takes with their provenance
+- because: user request (technique harvest, Plenio Music Production System, Apache-2.0, idea only)
+- files: scripts/mw.py (tag_take, take_row); tests/test_mw.py (test_gen_provenance_tags_keep_loop_tags)
+
+A stray take file now names its recipe, model, seed, caption, lyrics and ledger take id; WAV and MP3 are left alone.
+
+### C-20261107-2 · 2026-11-07 · Judging takes with several listeners
+- because: book distillation, Dean (ed.), The Oxford Handbook of Computer Music (everscout ai-music beat)
+- files: references/listening.md (Judging takes with several listeners). Book claims, untested here.
+
+### C-20261107-1 · 2026-11-07 · CLI reference catches up with 0.1.18
+- because: found while updating the wiki; the reference is where the hub looks a command up
+- files: references/cli.md
+
+Adds diff, seam --chords, analyze --bpm and key_ends, loop --bits.
+
+### C-20261106-2 · 2026-11-06 · Boundary with sfxwright recorded
+- because: user request
+- files: SKILL.md (before Step 1)
+- Notes, key or tempo stay here; single hits and non-musical stingers go to sfxwright. Measured 2026-11-06 on 4 prompts, not yet heard.
+
+### C-20261106-1 · 2026-11-06 · Tempo and pulse readings; transcribe row
+- because: musicwright-produce R-20261106-7, Lerch 9.3.3.3 and 9.5.1.3 (onsets F about 60-90%, tempo above 90% with half and double forgiven); musicwright-compose R-20261106-8
+- files: scripts/mw.py (ANALYZE_READING, pulse reading), references/cli.md (transcribe)
+- Wording only; no measure or flag changed.
+
+### C-20261104-1 · 2026-11-04 · Recipe source notes from second-round listening
+- because: user request (listening page ask-round2)
+- files: references/recipes.json (minimax-music3, stable-audio3-medium, yue2-3b-int8)
+- Source notes only; no setting changed.
+
+### C-20261103-2 · 2026-11-03 · doctor finds askwright; the rule reaches the siblings
+- because: T-20261103-1 (0/3, routed to produce, and no way to tell whether askwright was present)
+- files: scripts/mw.py (askwright_script, cmd_doctor), references/cli.md, references/listening.md, SKILL.md (Step 3), TESTS.md
+- `mw.py doctor` reports the `ask.py` path from MUSICWRIGHT_ASKWRIGHT, the studio config or the plugin cache.
+
+### C-20261103-1 · 2026-11-03 · Sound tests go on an askwright page
+- because: user request
+- files: SKILL.md (Step 3), references/listening.md (Log sound tests with askwright), evals/evals.json (action-askwright)
+- Listening tests are asked on an askwright page when that plugin is installed, read back, then recorded with `mw.py verdict`; chat is the fallback.
+
+### C-20261025-1 · 2026-10-25 · 0.1.3: loudness from the original after the padded retry; exact mixcheck duration; no tempo beside pulse none
+- because: L-006; wiki verification of 0.1.2 (ai-docs/HANDOFF.md, 0.1.3 candidates)
+- files: scripts/mw.py (mix_series, mixcheck_of, pulse_of), references/cli.md (pulse)
+- After the best_input retry, a plain ebur128 pass over the original gives integrated loudness and true peak; mixcheck duration_s comes from ffprobe; pulse nulls tempo_bpm and the grid numbers when it says none.
+
+### C-20261023-5 · 2026-10-23 · mixcheck retries on the ffmpeg 7.0.2 abort; seam level jump at the seam; pulse onset rise
+- because: L-005; wiki verification of 0.1.1 (ai-docs/HANDOFF.md item 5)
+- files: scripts/mw.py (mix_series, seam_score, pulse_of), references/cli.md (seam; pulse)
+- mixcheck pads a copy to whole seconds and measures again when ffmpeg aborts with best_input; seam fits a Theil-Sen line to the 50 ms levels each side and reads it at the seam; pulse reports onset_rise_db and says none under 1 dB.
+
+### C-20261023-4 · 2026-10-23 · 0.1.1: listening-check flags and bug fixes in mw.py; cli and contract corrections
+- because: decisions 2026-10-23-listening-checks
+- files: scripts/mw.py (hosts, seam, master, new, verdict, gen, analyze), references/cli.md (errors; seam; analyze), references/contract.md (music.json)
+- Hosts without a scheme work; seam's level jump uses a median over half a second; master names a custom target and words dynamic mode on a flat source correctly; new checks the preset; verdict refuses a missing file; gen reports filled-in or ignored bpm and key; analyze drops REPEATS and moves TUNING-GAP to 30 cents.
+
+### C-20261023-3 · 2026-10-23 · analyze reports tuning, repetition and sections
+- because: decisions 2026-10-23-books-track11; T-20261023-2 (produce, compose)
+- files: scripts/mw.py (analyze), references/cli.md (analyze row), references/listening.md (what analyze's numbers mean)
+- `analyze` gains tuning against A440 (offset, spread, trend), a gap from the first file, a repetition share, `--sections` (automatic, a count, or tags) and the flags OFF-A440, DRIFT, REPEATS and TUNING-GAP. librosa stays optional.
+
+### C-20261023-2 · 2026-10-23 · One MAINTENANCE.md for the plugin
+- because: size budget (installed skills 446 KB, green line 400); decisions 2026-10-23-books-track9 M1
+- files: MAINTENANCE.md of compose, curate, game, generate, produce and score
+- The six sibling copies were the same pointer template as this one; they now point here and list their own files. This file is unchanged.
+
+### C-20261023-1 · 2026-10-23 · Hand over loudness-matched copies; mixcheck in the look step; new mw.py commands
+- because: R-20261023-1 (musicwright-produce), L-003, L-004, T-20261023-1
+- files: SKILL.md (Step 3), references/listening.md (Numbers that point at the mix; questions 8-9; Checks a script can add), references/cli.md, references/loudness.json (lra_hint per preset), scripts/mw.py (mixcheck, compare, preview, monobass; mix --shelves, --shelf-hz, --automate; master --peak; doctor checks the new filters), scripts/notation.py (melody_hints), evals/evals.json (action-2)
+- The take loop now gives the listener matched copies, because a louder take wins on loudness alone; listening.md explains the mixcheck numbers and replaces a mono rule that would have flagged a mono-safe file measured without dual-mono.
+
+### C-20261017-4 · 2026-10-17 · mw.py: mix, source tasks on the REST route, duck keeps the music length, --out folders
+- because: user request (add parts to a kept take); HANDOFF bugs (missing --out folders, duck cut the music to the key's length, REST ignored --cfg/--steps/--set, gen made --out on dry runs); R-20261017-4, R-20261017-5 in musicwright-generate
+- files: scripts/mw.py (mix, gen --task/--src/--track/--start/--end/--strength/--model, duck --stem, out_file), references/cli.md (gen, duck, mix rows)
+- `mix` layers stems with gain, offset and pan, sums in Python (L-001) and writes aligned stems; `gen` uploads a source for cover, repaint, lego, complete and extract with the planner off; `duck` pads the key so the music keeps its length and `--stem` returns the music alone; master, edit, join, loop, duck and sheet create their output folder; gen validates before creating anything.
+
+### C-20261017-3 · 2026-10-17 · Ranking order for takes judged from sheets
+- because: L-002
+- files: references/listening.md (Reading an mw.py sheet)
+- Rank on excluded parts first, then melody, then the ending; a silent tail is a trim.
+
+### C-20261017-2 · 2026-10-17 · mw.py loop and OGG output made portable across ffmpeg builds
+- because: L-001
+- files: scripts/mw.py (cmd_loop, out_codec, join)
+- The loop crossfade runs on raw float samples in Python; atrim options are named; .ogg falls back to ffmpeg's built-in Vorbis encoder when libvorbis is missing.
+
+### C-20261017-1 · 2026-10-17 · Created as an evergreen unit
+- because: user request
+- files: SKILL.md, RESEARCH.md, LEARNINGS.md, evergreen.json (skills: also TESTS.md and evals/evals.json)
+- Initial version. Tier `fast`, interval 14d. See R-20261017-1 for the research basis; the first test run, for a skill, is logged in TESTS.md.

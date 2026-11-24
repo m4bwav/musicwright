@@ -100,7 +100,7 @@ Effects sit on top of a step and fit some styles better than others:
 
 - Plausible bar to bar is not song form. A 1950 note-to-note statistical machine failed on exactly this (Manning p. 88), so listen across sections, not to one good passage.
 - Conflicting styles fuse badly: put contrast in time.
-- Caption and sections disagree: the model follows neither well.
+- Caption and sections disagree: the model follows neither well. Check three pairs: every instrument a section tag names is in the caption (a violin caption with a `[Guitar Solo]` tag clashes); energy tags fit the caption's mood; vocal tags match the caption's voice, and an instrumental caption carries none. `mw.py gen` warns on the instrument and voice pairs.
 - Over-stacked tags get sung as lyrics in vocal tracks.
 - Metadata contradicts the caption ("slow ballad" at 170 bpm).
 - Extreme tempo, rare keys or very long durations go unstable or repetitive.
@@ -119,6 +119,12 @@ was not measured.
 Each verse develops a new idea; the chorus sums up and repeats word for word, in no fixed tense or
 person where possible. Important words and the title go in first and last lines, and the last verse
 line leads into the chorus (Pattison ch. 6, 7, 9, 15).
+
+Four checks before generating, against lyrics that read as machine-written (ACE-Step 1.5 Tutorial):
+- No chains of adjectives or loose images; one concrete picture per line.
+- One rhyme plan per section, kept; never bend a word to hit a rhyme.
+- Each line sung in one breath; split any that run long.
+- One core image for the song, seen from new sides, not a new metaphor every verse.
 
 Stable or unstable, chosen per section to match the emotion (one author's analysis, Pattison ch. 18-21):
 

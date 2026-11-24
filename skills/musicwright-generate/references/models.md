@@ -24,6 +24,8 @@ ai-docs/research/01-models-landscape.md.
 | Suno v6 / v6-wild / v6-mini | hosted | paid tiers get rights within a monthly download cap; remixes non-commercial | n/a | none | no public API; downloads capped (Pro 20, Premier 60 a month) |
 | Udio | hosted | downloads disabled since 2025-10-29 | n/a | none | |
 
+ACE-Step turbo also ships as turbo-shift1 (more detail, looser prompt following), turbo-shift3 (clearer timbre, can sound dry and thin) and an experimental turbo-continuous; the REST server picks one with `--model`, e.g. `acestep-v15-turbo-shift3` (ACE-Step 1.5 Tutorial). None tested here.
+
 Local default order: ACE-Step XL, then MiniMax Music 3, YuE2 for score-led songs, Stable Audio 3
 for loops and SFX.
 

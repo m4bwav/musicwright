@@ -59,7 +59,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import notation  # noqa: E402  (same folder; stdlib only)
 
-VERSION = "0.1.45"
+VERSION = "0.1.46"
 HERE = Path(__file__).resolve().parent
 REFS = HERE.parent / "references"
 NODES = HERE.parent / "comfy_nodes" / "musicwright_nodes"
@@ -2920,6 +2920,9 @@ def cmd_gen(a):
         outdir.mkdir(parents=True, exist_ok=True)
     fn = gen_comfy if r["route"] == "comfy" else gen_rest
     res = fn(a, r, seeds, caption, lyrics, outdir)
+    warns = tag_conflicts(caption, lyrics)
+    if warns:
+        res["warnings"] = res.get("warnings", []) + warns
     if res.get("dry_run"):
         return res
     led = find_ledger(outdir) or (outdir / "ledger.jsonl")
@@ -2937,6 +2940,114 @@ def cmd_gen(a):
     res["ledger"] = str(led.resolve())
     res["next"] = "mw.py sheet <takes> --out sheets/<name>.png, look at it, then ask the listener and record mw.py verdict"
     return res
+
+
+# ---------------------------------------------------------------- lyric checks
+
+TAG_INSTRUMENTS = {
+    "guitar": ("guitar",), "piano": ("piano", "keys", "keyboard"), "violin": ("violin", "fiddle", "strings"),
+    "cello": ("cello", "strings"), "strings": ("strings", "violin", "cello", "orchestra"), "bass": ("bass",),
+    "drum": ("drum", "percussion", "beat"), "sax": ("sax",), "trumpet": ("trumpet", "brass", "horn"),
+    "brass": ("brass", "trumpet", "horn", "trombone"), "flute": ("flute", "woodwind"), "synth": ("synth", "electronic"),
+    "organ": ("organ",), "harp": ("harp",), "banjo": ("banjo",), "accordion": ("accordion",), "ukulele": ("ukulele",),
+    "harmonica": ("harmonica",), "choir": ("choir", "choral"), "rap": ("rap", "hip hop", "hip-hop"),
+}
+TAG_VOICES = {"male": ("female",), "female": ("male",)}
+
+
+def tag_conflicts(caption, lyrics):
+    """Warnings for section tags naming an instrument or voice the caption does not."""
+    cap = " " + (caption or "").lower() + " "
+    warn = []
+    instrumental = "instrumental" in cap
+    for tag in re.findall(r"\[([^\]]+)\]", lyrics or ""):
+        t = tag.lower()
+        for word, ok in TAG_INSTRUMENTS.items():
+            if re.search(r"\b" + word, t) and not any(w in cap for w in ok):
+                warn.append(f"[{tag}] names {word}, which the caption does not")
+        for word, clash in TAG_VOICES.items():
+            if re.search(r"\b" + word + r"\b", t):
+                if instrumental:
+                    warn.append(f"[{tag}] asks for a {word} voice but the caption says instrumental")
+                elif any(re.search(r"\b" + c + r"\b", cap) for c in clash) and not re.search(r"\b" + word + r"\b", cap):
+                    warn.append(f"[{tag}] asks for a {word} voice; the caption describes a {clash[0]} one")
+    return sorted(set(warn))
+
+
+def lyric_words(text):
+    text = re.sub(r"\[[^\]]*\]", " ", text or "")
+    return re.findall(r"[a-z0-9']+", text.lower().replace("\u2019", "'"))
+
+
+def word_errors(ref, hyp):
+    """Levenshtein distance between two word lists."""
+    prev = list(range(len(hyp) + 1))
+    for i, r in enumerate(ref, 1):
+        cur = [i]
+        for j, h in enumerate(hyp, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (r != h)))
+        prev = cur
+    return prev[-1]
+
+
+def lyric_score(lyrics, transcript, line_hit=0.5):
+    ref, hyp = lyric_words(lyrics), lyric_words(transcript)
+    if not ref:
+        raise MwError("the lyrics hold no words once section tags are stripped")
+    heard = set(hyp)
+    missed = []
+    lines = [l for l in (lyrics or "").splitlines() if lyric_words(l)]
+    for line in lines:
+        w = lyric_words(line)
+        if sum(x in heard for x in w) / len(w) < line_hit:
+            missed.append(line.strip())
+    wer = word_errors(ref, hyp) / len(ref)
+    return {"wer": round(wer, 3), "ref_words": len(ref), "heard_words": len(hyp),
+            "lines": len(lines), "missed_lines": missed}
+
+
+WHISPER_SNIPPET = ("import sys\nfrom faster_whisper import WhisperModel\n"
+                   "m = WhisperModel(sys.argv[2], compute_type='auto')\n"
+                   "segs, _ = m.transcribe(sys.argv[1], vad_filter=True)\n"
+                   "sys.stdout.write(' '.join(s.text.strip() for s in segs))\n")
+
+
+def whisper_text(path, model):
+    try:
+        import faster_whisper  # noqa: F401
+        cmd = [sys.executable, "-c", WHISPER_SNIPPET, str(path), model]
+    except ImportError:
+        if not shutil.which("uv"):
+            raise MwError("faster-whisper is not installed: pip install faster-whisper, or install uv, "
+                          "or pass --transcript with text from another recogniser")
+        cmd = ["uv", "run", "--no-project", "--with", "faster-whisper", "python", "-c", WHISPER_SNIPPET, str(path), model]
+    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if p.returncode != 0:
+        raise MwError("faster-whisper failed: " + (p.stderr or "").strip()[-400:])
+    return p.stdout
+
+
+def cmd_lyriccheck(a):
+    lyrics = Path(a.lyrics_file).read_text(encoding="utf-8")
+    rows = []
+    for take in a.takes:
+        if a.transcript:
+            text = Path(a.transcript).read_text(encoding="utf-8")
+        else:
+            if not Path(take).is_file():
+                raise MwError(f"no such file: {take}")
+            text = whisper_text(take, a.model)
+        r = {"file": str(take), **lyric_score(lyrics, text)}
+        if a.show_text:
+            r["transcript"] = text.strip()
+        rows.append(r)
+        led = find_ledger(Path(take).resolve().parent)
+        if led and not a.transcript:
+            append_jsonl(led, {"type": "lyriccheck", "date": now(), "file": str(Path(take).resolve()),
+                               "wer": r["wer"], "missed_lines": len(r["missed_lines"])})
+    rows.sort(key=lambda r: r["wer"])
+    return {"ok": True, "takes": rows,
+            "note": "word error rate against the lyrics: a screen for intelligibility, not a verdict; listen to the best"}
 
 
 # ---------------------------------------------------------------- doctor
@@ -3074,6 +3185,14 @@ def build_parser():
     s.add_argument("--install", metavar="DIR", help="copy it here when it fits (ComfyUI models/loras)")
     s.add_argument("--name", help="file name for --install, e.g. the trigger word")
     s.set_defaults(fn=cmd_lora_check)
+
+    s = sub.add_parser("lyriccheck", help="screen sung takes: faster-whisper transcript vs the lyrics, word error rate and missed lines")
+    s.add_argument("takes", nargs="+")
+    s.add_argument("--lyrics-file", required=True, help="the lyrics the takes were made from; section tags are ignored")
+    s.add_argument("--model", default="large-v3", help="faster-whisper model name")
+    s.add_argument("--transcript", help="text file to score instead of running faster-whisper")
+    s.add_argument("--show-text", action="store_true", help="include the transcript")
+    s.set_defaults(fn=cmd_lyriccheck)
 
     s = sub.add_parser("measure", help="loudness, peaks, silences")
     s.add_argument("files", nargs="+")
