@@ -8,6 +8,8 @@ description: "Use when music should come from an AI model and the question is wh
 Text (and sometimes audio) in, music audio out. This skill chooses the model, writes the prompt,
 runs the takes through `mw.py gen` (`<this folder>/../musicwright/scripts/mw.py`, the sibling hub folder) and steers the re-rolls.
 The hub's take loop (sheet, report, verdict) applies to every render.
+For sung takes, run `mw.py lyriccheck takes/*.flac --lyrics-file lyrics.txt` first (faster-whisper,
+the user's install): rank by word error rate and missed lines, then put only the best before the listener.
 
 ## Step 1: choose the model
 

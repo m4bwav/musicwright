@@ -2383,6 +2383,43 @@ class Fatigue(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertFalse(d["ok"])
 
+class LyricChecks(unittest.TestCase):
+    def test_tag_conflicts(self):
+        w = mw.tag_conflicts("solo violin, warm female vocal", "[Intro]\n[Guitar Solo]\n[Verse - male vocal]\nla la")
+        self.assertTrue(any("guitar" in x for x in w), w)
+        self.assertTrue(any("male voice" in x for x in w), w)
+        self.assertEqual(mw.tag_conflicts("acoustic guitar folk, male vocal", "[Guitar Solo]\n[Verse - male]"), [])
+        self.assertTrue(mw.tag_conflicts("instrumental piano", "[Chorus - female vocal]"))
+
+    def test_gen_dry_run_warns(self):
+        code, d = run("gen", "--recipe", "acestep-xl-sft", "--caption", "solo violin", "--lyrics", "[Guitar Solo]",
+                      "--seeds", "1", "--out", TMP / "lint_out", "--dry-run")
+        self.assertEqual(code, 0, d)
+        self.assertTrue(any("guitar" in x for x in d.get("warnings", [])), d)
+
+    def test_score_logic(self):
+        lyrics = "[Verse]\nthe river runs to the sea\nI wait by the open door\n[Chorus]\nhold on hold on"
+        r = mw.lyric_score(lyrics, "the river runs to sea. hold on, hold on")
+        self.assertEqual(r["ref_words"], 16)
+        self.assertEqual(r["missed_lines"], ["I wait by the open door"])
+        self.assertAlmostEqual(r["wer"], round(7 / 16, 3), places=3)
+        self.assertEqual(mw.lyric_score("a b", "a b")["wer"], 0.0)
+
+    def test_lyriccheck_with_transcript(self):
+        lf, tf = TMP / "lyr.txt", TMP / "heard.txt"
+        lf.write_text("[Verse]\nhello there world", encoding="utf-8")
+        tf.write_text("hello world", encoding="utf-8")
+        code, d = run("lyriccheck", "take.wav", "--lyrics-file", lf, "--transcript", tf)
+        self.assertEqual(code, 0, d)
+        self.assertAlmostEqual(d["takes"][0]["wer"], 0.333, places=3)
+
+    def test_lyriccheck_missing_take_fails_soft(self):
+        lf = TMP / "lyr2.txt"
+        lf.write_text("one two", encoding="utf-8")
+        code, d = run("lyriccheck", TMP / "nope.wav", "--lyrics-file", lf)
+        self.assertEqual(code, 1)
+        self.assertFalse(d["ok"])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=1)

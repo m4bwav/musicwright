@@ -2,6 +2,13 @@
 
 Plugin versions. Reasoned changes per skill are in each `skills/<name>/CHANGELOG.md`.
 
+## 0.1.46 (2026-11-23)
+
+- `mw.py gen` warns when a lyric section tag names an instrument or a voice the caption does not, or a vocal tag sits under an instrumental caption. Warning only.
+- `mw.py lyriccheck TAKE... --lyrics-file F`: transcribes sung takes with faster-whisper and ranks them by word error rate against the lyrics, with the lines barely heard; `--transcript` scores text from elsewhere. A screen before listening, not a verdict.
+- Docs: caption and tag pairs and four lyric checks (compose vocabulary.md); choosing a reference clip (acestep.md); the 3-90 s repaint window, `chunk_mask_mode` explicit and a seam repaint (acestep-rest.md); turbo variants, untested (models.md); lyriccheck before listening (generate SKILL.md).
+- Ideas from the ACE-Step 1.5 Tutorial (MIT), written fresh; none tested on a GPU here.
+
 ## 0.1.45 (2026-11-22)
 
 - `mw.py fatigue <seconds...>`: plays the tracks in turn over a session with a seeded random rest between songs and prints the music fraction, plays per hour and plays per track. One 230 s track over an hour: 15.7 plays with no rest; with 120-300 s rests, 8.4 plays and 54% music (200 seeded runs). Reason: harvest: a colony sim's adaptive music, 2026-11-22.
