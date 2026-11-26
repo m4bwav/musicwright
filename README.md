@@ -78,7 +78,7 @@ plugins use (folder layout, `music.json`, ledger): [contract.md](skills/musicwri
 The skills install nothing and spend nothing on their own. ffmpeg, ComfyUI and its model weights, the ACE-Step
 server, FluidSynth and a SoundFont, librosa or basic-pitch for transcription, hosted APIs and DAW bridges are yours to install or pay for; `mw.py doctor` says what is missing.
 
-As a Claude Code plugin:
+In Claude Code:
 
     /plugin marketplace add m4bwav/musicwright
     /plugin install musicwright@musicwright
